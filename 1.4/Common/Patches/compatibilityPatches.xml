@@ -1,6 +1,6 @@
 <Patch>
   <Operation Class="PatchOperationAdd">
-    <!-- <success>Always</success> -->
+    <success>Always</success>
     <xpath>Defs/ThingDef/modExtensions/li[@Class="HeavyWeapons.HeavyWeapon"][not(supportedTraits)]</xpath>
     <value>
       <supportedTraits/>
@@ -8,7 +8,7 @@
   </Operation>
   
   <Operation Class="PatchOperationAdd">
-    <!-- <success>Always</success> -->
+    <success>Always</success>
     <xpath>Defs/ThingDef/modExtensions/li[@Class="HeavyWeapons.HeavyWeapon"]/supportedTraits</xpath>
     <value>
       <li>BS_Giant</li>
