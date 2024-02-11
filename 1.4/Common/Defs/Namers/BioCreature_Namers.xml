@@ -1,0 +1,106 @@
+<Defs>
+  <RulePackDef>
+    <defName>BS_NamerBiological</defName>
+    <rulePack>
+      <include>
+        <li>BS_NamerFirstNameBio</li>
+        <li>BS_NamerLastNameBio</li>
+      </include>
+      <rulesStrings>
+        <li>r_name->[firstName] [lastName]</li>
+      </rulesStrings>
+    </rulePack>
+  </RulePackDef>
+
+  <RulePackDef>
+    <defName>BS_NamerFirstNameBio</defName>
+    <rulePack>
+      <rulesStrings>
+        <li>firstName->[firstNamePrefix][firstNameSuffix]</li>
+        <li>firstName->[firstNamePrefix]-[firstNameNumber1]</li>
+        <li>firstName->[firstNamePrefix][firstNameSuffix]-[firstNameNumber1]</li>
+        <li>firstName->[firstNamePrefix][firstNameSuffix]-[firstNameNumber1][firstNameNumber1]</li>
+        <li>firstName->[firstNamePrefix][firstNameSuffix]-[firstNameNumber1][firstNameNumber1][firstNameNumber1]</li>
+        <li>firstName->[firstNamePrefix][firstNameSuffix]-[firstNameNumber1][firstNameLetter]</li>
+        <li>firstName->[firstNamePrefix][firstNameSuffix]-[firstNameNumber1][firstNameNumber1][firstNameLetter]</li>
+
+        <!-- Prefix -->
+        <li>firstNamePrefix->bio</li>
+        <li>firstNamePrefix->gene</li>
+        <li>firstNamePrefix->proto</li>
+        <li>firstNamePrefix->cell</li>
+        <li>firstNamePrefix->vivi</li>
+        <li>firstNamePrefix->necro</li>
+        <li>firstNamePrefix->muta</li>
+        <li>firstNamePrefix->para</li>
+        <li>firstNamePrefix->xeno</li>
+        <li>firstNamePrefix->pro</li>
+        <li>firstNamePrefix->anti</li>
+        
+        <!-- Suffix -->
+        <li>firstNameSuffix->gen</li>
+        <li>firstNameSuffix->sect</li>
+        <li>firstNameSuffix->morph</li>
+        <li>firstNameSuffix->hybrid</li>
+        <li>firstNameSuffix->syte</li>
+        <li>firstNameSuffix->form</li>
+        <li>firstNameSuffix->pslam</li>
+        <li>firstNameSuffix->mutant</li>
+
+        <!-- Number -->
+        <li>firstNameNumber1->1</li>
+        <li>firstNameNumber1->2</li>
+        <li>firstNameNumber1->3</li>
+        <li>firstNameNumber1->4</li>
+        <li>firstNameNumber1->5</li>
+        <li>firstNameNumber1->6</li>
+        <li>firstNameNumber1->7</li>
+        <li>firstNameNumber1->8</li>
+        <li>firstNameNumber1->9</li>
+        <li>firstNameNumber1->0</li>
+
+        <li>firstNameLetter->A</li>
+        <li>firstNameLetter->D</li>
+        <li>firstNameLetter->T</li>
+        <li>firstNameLetter->M</li>
+        <li>firstNameLetter->X</li>
+        <li>firstNameLetter->Y</li>
+        <li>firstNameLetter->E</li>
+        <li>firstNameLetter->R</li>
+        <li>firstNameLetter->Z</li>
+      </rulesStrings>
+    </rulePack>
+  </RulePackDef>
+
+  <RulePackDef>
+    <defName>BS_NamerLastNameBio</defName>
+    <rulePack>
+      <rulesStrings>
+        <li>lastName->[lastNamePrefix][lastNameSuffix]</li>
+        
+        <!-- Prefix -->
+        <li>lastNamePrefix->bio</li>
+        <li>lastNamePrefix->necro</li>
+        <li>lastNamePrefix->muta</li>
+
+        <li>lastNamePrefix->mutagen </li>
+        <li>lastNamePrefix->aberrant </li>
+        <li>lastNamePrefix->hybrid </li>
+        <li>lastNamePrefix->genomorph </li>
+        
+        <!-- Suffix -->
+        <li>lastNameSuffix->organism</li>
+        <li>lastNameSuffix->abomination</li>
+        <li>lastNameSuffix->creature</li>
+        <li>lastNameSuffix->monstrosity</li>
+        <li>lastNameSuffix->experiment</li>
+        <li>lastNameSuffix->flesh</li>
+        <li>lastNameSuffix->mimic</li>
+        <li>lastNameSuffix->homunculus</li>
+        <li>lastNameSuffix->organism</li>
+
+
+      </rulesStrings>
+    </rulePack>
+  </RulePackDef>
+</Defs>

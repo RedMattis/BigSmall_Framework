@@ -1,0 +1,78 @@
+<Patch>
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/ThingDef[@Name="MealBaseIngredientless"]/ingestible/maxNumToIngestAtOnce</xpath>
+    <value>
+      <maxNumToIngestAtOnce>20</maxNumToIngestAtOnce>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/ThingDef[defName="Chocolate"]/ingestible/maxNumToIngestAtOnce</xpath>
+    <value>
+      <maxNumToIngestAtOnce>20</maxNumToIngestAtOnce>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[@Name="PlantFoodRawBase"]/ingestible</xpath>
+    <value>
+      <maxNumToIngestAtOnce>400</maxNumToIngestAtOnce>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[defName="Pemmican"]/ingestible</xpath>
+    <value>
+      <maxNumToIngestAtOnce>400</maxNumToIngestAtOnce>
+    </value>
+  </Operation>
+
+  <!--This could probably be its own mod, but I honestly doubt anyone cares enough.-->
+	<Operation Class="PatchOperationReplace">
+    <xpath>Defs/ThoughtDef[defName="Ugly"]/stages</xpath>
+		<value>
+			<stages>
+				<li>
+					<label>physically unsightly</label>
+					<baseOpinionOffset>-20</baseOpinionOffset>
+				</li>
+				<li>
+					<label>physically hideous</label>
+					<baseOpinionOffset>-40</baseOpinionOffset>
+				</li>
+				<li>
+					<label>physically digusting</label>
+					<baseOpinionOffset>-50</baseOpinionOffset>
+				</li>
+				<li>
+					<label>physically revolting</label>
+					<baseOpinionOffset>-60</baseOpinionOffset>
+				</li>
+			</stages>
+		</value>
+  </Operation>
+
+	<Operation Class="PatchOperationReplace">
+    <xpath>Defs/ThoughtDef[defName="Pretty"]/stages</xpath>
+		<value>
+			<stages>
+				<li>
+					<label>physically appealing</label>
+					<baseOpinionOffset>20</baseOpinionOffset>
+				</li>
+				<li>
+					<label>physically stunning</label>
+					<baseOpinionOffset>40</baseOpinionOffset>
+				</li>
+				<li>
+					<label>physically breathtaking</label>
+					<baseOpinionOffset>45</baseOpinionOffset>
+				</li>
+				<li>
+					<label>physically awestriking</label>
+					<baseOpinionOffset>50</baseOpinionOffset>
+				</li>
+			</stages>
+		</value>
+  </Operation>
+</Patch>

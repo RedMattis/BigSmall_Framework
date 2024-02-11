@@ -1,0 +1,17 @@
+<Defs>
+  <TraitDef>
+    <defName>BS_Giant</defName>
+    <commonality>0.0</commonality>
+    <degreeDatas>
+      <li>
+        <label>giant</label>
+        <description>{PAWN_nameDef} is able to use oversized weapons.</description> <!---->
+      </li>
+    </degreeDatas>
+  </TraitDef>
+
+  <WeaponClassDef>
+		<defName>BS_GiantWeapon</defName>
+		<label>oversized</label>
+	</WeaponClassDef>
+</Defs>

@@ -1,0 +1,52 @@
+<Defs>
+
+  <AlienRace.ThingDef_AlienRace ParentName="HumanRace">
+		<defName>BS_FacialAnimDisabledHuman</defName>
+		<label>Human (FA Disabled)</label>
+    <comps>
+      <li Class="BigAndSmall.CompProperties_CompRemover">
+        <compNamespaceList><li>FacialAnimation</li></compNamespaceList>
+      </li>
+    </comps>
+    
+		<alienRace>
+			<generalSettings>
+        <humanRecipeImport>true</humanRecipeImport>
+      </generalSettings>
+			<graphicPaths></graphicPaths>
+			<styleSettings></styleSettings>
+			<thoughtSettings></thoughtSettings>
+			<relationSettings></relationSettings>
+			<raceRestriction></raceRestriction>
+			<compatibility></compatibility>
+		</alienRace>
+	</AlienRace.ThingDef_AlienRace>
+
+
+  <!-- <AlienRace.ThingDef_AlienRace ParentName="HumanRace">
+		<defName>BS_FacialAnimNoHeadHuman</defName>
+		<alienRace>
+			<generalSettings>
+        <humanRecipeImport>true</humanRecipeImport>
+      </generalSettings>
+			<graphicPaths></graphicPaths>
+			<styleSettings></styleSettings>
+			<thoughtSettings></thoughtSettings>
+			<relationSettings></relationSettings>
+			<raceRestriction></raceRestriction>
+			<compatibility></compatibility>
+		</alienRace>
+	</AlienRace.ThingDef_AlienRace> -->
+
+  <!-- <PawnKindDef ParentName="MercenaryGunnerBase">
+    <defName>DEBUG_AnimDisabledTest</defName>
+    <race>BS_FacialAnimDisabledHuman</race>
+    <initialResistanceRange>6~10</initialResistanceRange>
+  </PawnKindDef>
+
+  <PawnKindDef ParentName="MercenaryGunnerBase">
+    <defName>DEBUG_NoHeadTest</defName>
+    <race>BS_FacialAnimNoHeadHuman</race>
+    <initialResistanceRange>6~10</initialResistanceRange>
+  </PawnKindDef> -->
+</Defs>

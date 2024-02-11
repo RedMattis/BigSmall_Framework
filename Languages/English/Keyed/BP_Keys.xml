@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <BP_GenePrerequisites>Gene Prerequisites</BP_GenePrerequisites>
+  <BP_PrerequisiteSet>prerequisites</BP_PrerequisiteSet>
+  <BP_AnyOf>Any of the listed</BP_AnyOf>
+  <BP_AllOf>All of the listed</BP_AllOf>
+  <BP_NoneOf>None of the listed</BP_NoneOf>
+  <BP_GeneNotFoundInGame>Gene not active in your game</BP_GeneNotFoundInGame>
+  <BP_GenesSuppressed>Genes Suppressed</BP_GenesSuppressed>
+  
+  <BP_ActiveOnCondition>Conditions to Activate</BP_ActiveOnCondition>
+  <BS_ActiveIf>activates if</BS_ActiveIf>
+  <BS_PickAListedGene>Pick one of the listed genes to gain</BS_PickAListedGene>
+  <BS_Metabolism>M</BS_Metabolism>
+  <GenePreventsEquipping>Gene prevents equipping this.</GenePreventsEquipping>
+  <BS_PawnIsNotAGiant>Pawn is not giant.</BS_PawnIsNotAGiant>
+
+  <BS_TargetLacksSlimeProliferation>Target lacks the Proliferation Gene.</BS_TargetLacksSlimeProliferation>
+  <BS_ProliferationBirth>Proliferation Successful.</BS_ProliferationBirth>
+  <BS_ProliferationDescription>A new baby has been born.</BS_ProliferationDescription>
+  <BS_ZombieApocalypse>There is a restless feeling in the air...</BS_ZombieApocalypse>
+  <BS_ZombieReason>Returned from the dead</BS_ZombieReason>
+
+  <BS_EnterPilotable>Enter as Operator</BS_EnterPilotable>
+  <BS_TooLargeToPilot>is too large to pilot this</BS_TooLargeToPilot>
+  <BS_NotEnoughRoomForPilot>Not enough space for operator</BS_NotEnoughRoomForPilot>
+  <BS_PilotCapReached>The maximum pilot capacity has been reached</BS_PilotCapReached>
+  <BS_CannotPilotNonDownedEnemy>Cannot pilot character of other factions unless downed and emptied.</BS_CannotPilotNonDownedEnemy>
+  <BS_CannotEnterEnemyAsOperator>Cannot enter character of other faction as operator</BS_CannotEnterEnemyAsOperator>
+  <BS_ConsciousnessFromPilot>Consciousness from pilot</BS_ConsciousnessFromPilot>
+  <BS_EjectPilots>Eject Pilot(s)</BS_EjectPilots>
+  <BS_PilotedBy>Contains: </BS_PilotedBy>
+  <BS_PilotEjectCoutndown>Non-functional; pilot ejection imminent...</BS_PilotEjectCoutndown>
+  <BS_StatsReport_Warm>Alcohol (warm)</BS_StatsReport_Warm>
+  <BS_StatsReport_Tipsy>Alcohol (tipsy)</BS_StatsReport_Tipsy>
+  <BS_StatsReport_Drunk>Alcohol (drunk)</BS_StatsReport_Drunk>
+
+  <BS_TargetAlreadyUndead>Target is already undead.</BS_TargetAlreadyUndead>
+</LanguageData>

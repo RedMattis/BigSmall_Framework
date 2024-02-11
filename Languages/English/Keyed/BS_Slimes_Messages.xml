@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <BS_EngulfedContents>Engulfed Contents:</BS_EngulfedContents>
+  <DigestiveAbillityTooLow>Digestive abillity is too low.</DigestiveAbillityTooLow>
+  <MessagerTargetTooBigToEngulf>Target is too large to engulf.</MessagerTargetTooBigToEngulf>
+  <BS_NotEnoughRoom>Not enough space left.</BS_NotEnoughRoom>
+  <BS_EngulfedVomit>{0} threw up due to internal damage or reduced digestive ability.</BS_EngulfedVomit>
+</LanguageData>

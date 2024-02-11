@@ -1,0 +1,20 @@
+C:\Steam\steamapps\common\RimWorld\Mods\FasterGenesRegrowing\Assemblies\FasterGenesRegrowing.dll
+C:\Steam\steamapps\common\RimWorld\Mods\FasterGenesRegrowing\Source\FasterGenesRegrowing\obj\Debug\FasterGenesRegrowing.csproj.AssemblyReference.cache
+C:\Steam\steamapps\common\RimWorld\Mods\FasterGenesRegrowing\Source\FasterGenesRegrowing\obj\Debug\FasterGenesRegrowing.csproj.CoreCompileInputs.cache
+C:\Steam\steamapps\common\RimWorld\Mods\FasterGenesRegrowing\Source\FasterGenesRegrowing\obj\Debug\FasterGenesRegrowing.dll
+C:\Games\Steam\steamapps\common\RimWorld\Mods\FasterGenesRegrowing\Assemblies\FasterGenesRegrowing.dll
+C:\Games\Steam\steamapps\common\RimWorld\Mods\FasterGenesRegrowing\Source\FasterGenesRegrowing\obj\Debug\FasterGenesRegrowing.csproj.AssemblyReference.cache
+C:\Games\Steam\steamapps\common\RimWorld\Mods\FasterGenesRegrowing\Source\FasterGenesRegrowing\obj\Debug\FasterGenesRegrowing.csproj.CoreCompileInputs.cache
+C:\Games\Steam\steamapps\common\RimWorld\Mods\FasterGenesRegrowing\Source\FasterGenesRegrowing\obj\Debug\FasterGenesRegrowing.dll
+C:\Games\Steam\steamapps\common\RimWorld\Mods\BetterGenePrerequisites\Assemblies\BetterPrerequisites.dll
+C:\Games\Steam\steamapps\common\RimWorld\Mods\BetterGenePrerequisites\Source\BetterPrerequisites\obj\Debug\BetterPrerequisites.csproj.AssemblyReference.cache
+C:\Games\Steam\steamapps\common\RimWorld\Mods\BetterGenePrerequisites\Source\BetterPrerequisites\obj\Debug\BetterPrerequisites.csproj.CoreCompileInputs.cache
+C:\Games\Steam\steamapps\common\RimWorld\Mods\BetterGenePrerequisites\Source\BetterPrerequisites\obj\Debug\BetterPrerequisites.dll
+C:\Steam\steamapps\common\RimWorld\Mods\Better Prerequisites\1.4\Main\Assemblies\BetterPrerequisites.dll
+C:\Steam\steamapps\common\RimWorld\Mods\Better Prerequisites\1.4\Main\Source\BetterPrerequisites\obj\Debug\BetterPrerequisites.csproj.AssemblyReference.cache
+C:\Steam\steamapps\common\RimWorld\Mods\Better Prerequisites\1.4\Main\Source\BetterPrerequisites\obj\Debug\BetterPrerequisites.csproj.CoreCompileInputs.cache
+C:\Steam\steamapps\common\RimWorld\Mods\Better Prerequisites\1.4\Main\Source\BetterPrerequisites\obj\Debug\BetterPrerequisites.dll
+C:\Games\Steam\steamapps\common\RimWorld\Mods\Better Prerequisites\1.4\Main\Assemblies\BetterPrerequisites.dll
+C:\Games\Steam\steamapps\common\RimWorld\Mods\Better Prerequisites\1.4\Main\Source\BetterPrerequisites\obj\Debug\BetterPrerequisites.csproj.AssemblyReference.cache
+C:\Games\Steam\steamapps\common\RimWorld\Mods\Better Prerequisites\1.4\Main\Source\BetterPrerequisites\obj\Debug\BetterPrerequisites.csproj.CoreCompileInputs.cache
+C:\Games\Steam\steamapps\common\RimWorld\Mods\Better Prerequisites\1.4\Main\Source\BetterPrerequisites\obj\Debug\BetterPrerequisites.dll

@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F0272DF1-D703-495D-8F95-48D6BAB3A0B9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BetterPrerequisites</RootNamespace>
+    <AssemblyName>BetterPrerequisites</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Assemblies\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\..\..\..\..\..\..\..\workshop\content\294100\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>..\..\..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\..\..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Abillities\MeleeAttackAbility.cs" />
+    <Compile Include="BetterPrerequisites\GeneGraphics.cs" />
+    <Compile Include="BetterPrerequisites\PawnRenderingCache.cs" />
+    <Compile Include="BigAndSmall\AI\AICombat.cs" />
+    <Compile Include="BigAndSmall\AI\Lovin.cs" />
+    <Compile Include="BigAndSmall\AI\Romance.cs" />
+    <Compile Include="BigAndSmall\Balancing\AttackCooldown.cs" />
+    <Compile Include="BigAndSmall\Balancing\BiotechExpansion_Patches\PawnProduction.cs" />
+    <Compile Include="BigAndSmall\Balancing\DamageScaling.cs" />
+    <Compile Include="BigAndSmall\Balancing\Factions.cs" />
+    <Compile Include="BigAndSmall\Balancing\FoodNeedPatch.cs" />
+    <Compile Include="BigAndSmall\Buildings\Beds.cs" />
+    <Compile Include="BigAndSmall\Cache.cs" />
+    <Compile Include="BigAndSmall\Compatibility\Zombieland.cs" />
+    <Compile Include="BigAndSmall\CompRemover.cs" />
+    <Compile Include="BigAndSmall\ConditionalStatAffecters\ConditionalStatAffectors.cs" />
+    <Compile Include="BigAndSmall\FastAcccess.cs" />
+    <Compile Include="BigAndSmall\GeneHelpers.cs" />
+    <Compile Include="BigAndSmall\HumanoidPawnScaler.cs" />
+    <Compile Include="BigAndSmall\OnKill.cs" />
+    <Compile Include="BigAndSmall\PawnGeneration\PawnGroupMaker.cs" />
+    <Compile Include="BigAndSmall\PlayerFactionPatcher.cs" />
+    <Compile Include="BigAndSmall\Quests\QuestPawnGenerator.cs" />
+    <Compile Include="BigAndSmall\Quests\Raid.cs" />
+    <Compile Include="BigAndSmall\Rendering\TextureCaching.cs" />
+    <Compile Include="BigAndSmall\Tattoos\TattooGenePatch.cs" />
+    <Compile Include="Damage Workers\ReducedDamageAttack.cs" />
+    <Compile Include="Defs.cs" />
+    <Compile Include="Genes\AnimalFriendGene.cs" />
+    <Compile Include="Abillities\SprayLiquid.cs" />
+    <Compile Include="Genes\CanEquip.cs" />
+    <Compile Include="Genes\Diet\DietGenes.cs" />
+    <Compile Include="Genes\ForcedUnarmed.cs" />
+    <Compile Include="Genes\Frankenstein\IncorporateAbillity.cs" />
+    <Compile Include="Genes\Gender and Reproduction\Pregnancy.cs" />
+    <Compile Include="Genes\Lamia\PetrifiedPawn.cs" />
+    <Compile Include="Genes\Production\ProductionGene.cs" />
+    <Compile Include="Genes\Slime\SlimeEngufAttack.cs" />
+    <Compile Include="Genes\Slime\SlimeEngulfComp.cs" />
+    <Compile Include="Genes\Slime\SlimeProliferation.cs" />
+    <Compile Include="Genes\Slime\SlimeResourceGene.cs" />
+    <Compile Include="Genes\SpecialGenes\HealingGenes.cs" />
+    <Compile Include="Genes\SpecialGenes\Nekomata.cs" />
+    <Compile Include="Genes\SuccubusCutBond.cs" />
+    <Compile Include="Genes\Werewolves\WerewolfInfect.cs" />
+    <Compile Include="GeneWealth.cs" />
+    <Compile Include="Hediffs\AcidBuildUp.cs" />
+    <Compile Include="Hediffs\HediffAbillityGiver.cs" />
+    <Compile Include="Hediffs\PilotedHediff.cs" />
+    <Compile Include="Hediffs\ReturningHediff.cs" />
+    <Compile Include="Hediffs\SuccubusBondVictim.cs" />
+    <Compile Include="Hediffs\TemperatureGenerator.cs" />
+    <Compile Include="Traits\Gentle.cs" />
+    <Compile Include="Traits\GiantTrait.cs" />
+    <Compile Include="BigAndSmall\Balancing\MechanicalChanges.cs" />
+    <Compile Include="BigAndSmall\Balancing\Pawn_BodySize.cs" />
+    <Compile Include="BigAndSmall\Balancing\skill_learning.cs" />
+    <Compile Include="BigAndSmall\Balancing\VEF_Patches\PawnProduction.cs" />
+    <Compile Include="BigAndSmall\BigAndSmallMain.cs" />
+    <Compile Include="BigAndSmall\Compatibility\RooMinotaur.cs" />
+    <Compile Include="BigAndSmall\Compatibility\SoS_Patches.cs" />
+    <Compile Include="BigAndSmall\Compatibility\Universum_Patches.cs" />
+    <Compile Include="Hediffs\DraculVampirism.cs" />
+    <Compile Include="Hediffs\TransitioningHediff.cs" />
+    <Compile Include="Hediffs\SizeRays.cs" />
+    <Compile Include="Items\AnimalSizeSerum.cs" />
+    <Compile Include="Items\Discombobulator.cs" />
+    <Compile Include="Items\Reanimator.cs" />
+    <Compile Include="Items\StatusBullet.cs" />
+    <Compile Include="BigAndSmall\Misc\MiscPatches.cs" />
+    <Compile Include="Genes\Gender and Reproduction\Androgynous.cs" />
+    <Compile Include="Genes\Gender and Reproduction\Genderbender.cs" />
+    <Compile Include="Genes\Gender and Reproduction\MaleFemale.cs" />
+    <Compile Include="Genes\Lamia\Lamia_Attack.cs" />
+    <Compile Include="Genes\Lamia\Lamia_Babykiller.cs" />
+    <Compile Include="Genes\Lamia\Lamia_Comp.cs" />
+    <Compile Include="Genes\Lamia\Lamia_CursedResource.cs" />
+    <Compile Include="Genes\PowerPools\PowerPool.cs" />
+    <Compile Include="Genes\SelfRegenerate.cs" />
+    <Compile Include="Genes\SuccubusGenes.cs" />
+    <Compile Include="Genes\Unliving\UnlivingDamagePatch.cs" />
+    <Compile Include="Genes\Vampires\DraculVampirism.cs" />
+    <Compile Include="Genes\Vampires\VampireBite.cs" />
+    <Compile Include="BigAndSmall\ModSettings.cs" />
+    <Compile Include="BigAndSmall\Utilities\ScalingMethods.cs" />
+    <Compile Include="BigAndSmall\Utilities\Stability.cs" />
+    <Compile Include="BigAndSmall\Utilities\utilities.cs" />
+    <Compile Include="BetterPrerequisites\CondtionalAffectors.cs" />
+    <Compile Include="Genes\SpecialGenes\LockedNeedGene.cs" />
+    <Compile Include="BetterPrerequisites\PrerequisiteGene.cs" />
+    <Compile Include="BetterPrerequisites\Extensions\GeneExtension.cs" />
+    <Compile Include="BetterPrerequisites\GeneSupresser.cs" />
+    <Compile Include="BetterPrerequisites\HarmonyPatches.cs" />
+    <Compile Include="BetterPrerequisites\GeneHelpers.cs" />
+    <Compile Include="BetterPrerequisites\Main.cs" />
+    <Compile Include="BetterPrerequisites\PrerequisiteValidator.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="BigAndSmall\Crafting\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

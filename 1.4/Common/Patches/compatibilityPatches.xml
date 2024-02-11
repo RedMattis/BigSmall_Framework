@@ -1,0 +1,45 @@
+<Patch>
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/ThingDef/modExtensions/li[@Class="HeavyWeapons.HeavyWeapon"]</xpath>
+    <match Class="PatchOperationSequence">
+      <operations>
+        <li Class="PatchOperationConditional">
+          <xpath>Defs/ThingDef/modExtensions/li[@Class="HeavyWeapons.HeavyWeapon"]/supportedTraits</xpath>
+          <match Class="PatchOperationAdd">
+            <xpath>Defs/ThingDef/modExtensions/li[@Class="HeavyWeapons.HeavyWeapon"]/supportedTraits</xpath>
+            <value>
+              <li>BS_Giant</li>
+            </value>
+          </match>
+          <nomatch Class="PatchOperationAdd">
+            <xpath>Defs/ThingDef/modExtensions/li[@Class="HeavyWeapons.HeavyWeapon"]</xpath>
+            <value>
+              <supportedTraits>
+                <li>BS_Giant</li>
+              </supportedTraits>
+            </value>
+          </nomatch>
+        </li>
+      </operations>
+    </match>
+  </Operation>
+
+
+  <!-- Roo's Minotaurs-->
+
+  <!-- <Operation Class="PatchOperationRemove">
+    <xpath>Defs/GeneDef[defName="RBM_Herculean"]/modExtensions/li[@Class="VanillaGenesExpanded.GeneExtension"]</xpath>
+  </Operation> -->
+  <Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Rooboid.Minotaur</li>
+		</mods>
+    <match  Class="PatchOperationAdd">
+      <xpath>Defs/GeneDef[defName="RBM_Herculean"]/statOffsets</xpath>
+      <value>
+        <SM_Cosmetic_BodySizeOffset>0.35</SM_Cosmetic_BodySizeOffset>
+        <SM_HeadSize_Cosmetic>-0.10</SM_HeadSize_Cosmetic>
+      </value>
+      </match>
+    </Operation>
+</Patch>

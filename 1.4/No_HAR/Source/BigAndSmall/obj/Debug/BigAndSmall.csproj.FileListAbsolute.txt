@@ -1,0 +1,8 @@
+C:\Steam\steamapps\common\RimWorld\Mods\Better Prerequisites\1.4\No_HAR\Assemblies\BigAndSmall.dll
+C:\Steam\steamapps\common\RimWorld\Mods\Better Prerequisites\1.4\No_HAR\Source\BigAndSmall\obj\Debug\BigAndSmall.csproj.AssemblyReference.cache
+C:\Steam\steamapps\common\RimWorld\Mods\Better Prerequisites\1.4\No_HAR\Source\BigAndSmall\obj\Debug\BigAndSmall.csproj.CoreCompileInputs.cache
+C:\Steam\steamapps\common\RimWorld\Mods\Better Prerequisites\1.4\No_HAR\Source\BigAndSmall\obj\Debug\BigAndSmall.dll
+C:\Games\Steam\steamapps\common\RimWorld\Mods\Better Prerequisites\1.4\No_HAR\Assemblies\BigAndSmall.dll
+C:\Games\Steam\steamapps\common\RimWorld\Mods\Better Prerequisites\1.4\No_HAR\Source\BigAndSmall\obj\Debug\BigAndSmall.csproj.AssemblyReference.cache
+C:\Games\Steam\steamapps\common\RimWorld\Mods\Better Prerequisites\1.4\No_HAR\Source\BigAndSmall\obj\Debug\BigAndSmall.csproj.CoreCompileInputs.cache
+C:\Games\Steam\steamapps\common\RimWorld\Mods\Better Prerequisites\1.4\No_HAR\Source\BigAndSmall\obj\Debug\BigAndSmall.dll

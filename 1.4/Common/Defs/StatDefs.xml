@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+    <StatCategoryDef>
+        <defName>SM_Stats</defName>
+        <label>Big and Small</label>
+        <displayOrder>9999</displayOrder>
+    </StatCategoryDef>
+
+    <StatDef>
+        <defName>SM_BodySizeOffset</defName>
+        <label>body size offset</label>
+        <description>Offsets the pawn's size by this amount. This affects a variety of mechanics.</description>
+        <category>BasicsPawn</category>
+        <alwaysHide>false</alwaysHide>
+        <minValue>-99</minValue>
+        <toStringStyle>FloatOne</toStringStyle>
+        <defaultBaseValue>0.0</defaultBaseValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_Cosmetic_BodySizeOffset</defName>
+        <label>body size cosmetic offset</label>
+        <category>SM_Stats</category>
+        <alwaysHide>true</alwaysHide>
+        <minValue>-99</minValue>
+        <toStringStyle>FloatOne</toStringStyle>
+        <defaultBaseValue>0.0</defaultBaseValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_BodySizeMultiplier</defName>
+        <label>body size multipler</label>
+        <description>Multiplies the pawn's size by this amount. This affects a variety of mechanics.</description>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.05</minValue>
+        <toStringStyle>PercentZero</toStringStyle>
+        <defaultBaseValue>1.0</defaultBaseValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_RaidWealthMultiplier</defName>
+        <label>raid wealth multiplier</label>
+        <description>Multiplier how valuable the pawn is considered for the purpose of raids.</description>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.05</minValue>
+        <toStringStyle>PercentZero</toStringStyle>
+        <defaultBaseValue>1.0</defaultBaseValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_RaidWealthOffset</defName>
+        <label>raid wealth</label>
+        <description>Changes to how valuable the pawn is considered for the purpose of raids. Applied AFTER the raid wealth multiplier.</description>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>-99999</minValue>
+        <toStringStyle>Money</toStringStyle>
+        <defaultBaseValue>0</defaultBaseValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_HeadSize_Cosmetic</defName>
+        <label>head size multiplier</label>
+        <alwaysHide>true</alwaysHide>
+        <category>SM_Stats</category>
+        <minValue>0.05</minValue>
+        <toStringStyle>PercentZero</toStringStyle>
+        <defaultBaseValue>1.0</defaultBaseValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_EVA_Level</defName>
+        <label>EVA Level Override</label>
+        <alwaysHide>true</alwaysHide>
+        <category>SM_Stats</category>
+        <minValue>0</minValue>
+        <toStringStyle>Integer</toStringStyle>
+        <defaultBaseValue>0</defaultBaseValue>
+    </StatDef>
+
+    <!-- Will not lower skill learning speed below the default. -->
+    <StatDef>
+        <defName>SM_Minimum_Learning_Speed</defName>
+        <label>skill learning (no passion)</label>
+        <description>This is how fast the pawn learns when they don't have a passion in the skill.</description>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.35</minValue>
+        <toStringStyle>FloatTwo</toStringStyle>
+        <defaultBaseValue>0.35</defaultBaseValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_Food_Need_Capacity</defName>
+        <description>How much food the pawn can save up. Let's them eat more rarely.</description>
+        <label>Food Capacity Multiplier</label>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.01</minValue>
+        <toStringStyle>FloatOne</toStringStyle>
+        <defaultBaseValue>1.0</defaultBaseValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_AttackSpeed</defName>
+        <label>Attack Cooldown Time</label>
+        <description>Reduces time between melee attacks.</description>
+        <alwaysHide>true</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.01</minValue>
+        <toStringStyle>FloatOne</toStringStyle>
+        <!-- <defaultBaseValue>1.0</defaultBaseValue> -->
+        <defaultBaseValue>1.0</defaultBaseValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_BulletDmgMult</defName>
+        <label>Piercing resistance multiplier</label>
+        <description>A multiplier to damage taken from bullets, also reduces damage from piercing attacks.</description>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.01</minValue>
+        <toStringStyle>FloatOne</toStringStyle>
+        <!-- <defaultBaseValue>1.0</defaultBaseValue> -->
+        <defaultBaseValue>1.0</defaultBaseValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_ConcussiveDmgMult</defName>
+        <label>Concussive damage multiplier</label>
+        <description>A multiplier to damage taken from explosions, also reduces blunt attack damage by roughly half the amount.</description>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.01</minValue>
+        <toStringStyle>FloatOne</toStringStyle>
+        <!-- <defaultBaseValue>1.0</defaultBaseValue> -->
+        <defaultBaseValue>1.0</defaultBaseValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_AcidDmgMult</defName>
+        <label>Acid damage multiplier</label>
+        <description>A multiplier to damage taken from any type of acid, also reduces damage taken from venom or poison for about half the amount. Negative values count as immunity.</description>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.0</minValue>
+        <toStringStyle>FloatOne</toStringStyle>
+        <!-- <defaultBaseValue>1.0</defaultBaseValue> -->
+        <defaultBaseValue>1.0</defaultBaseValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_FlirtChance</defName>
+        <label>flirty chance</label>
+        <description>affects the chance that the character will flirt.</description>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.0</minValue>
+        <toStringStyle>FloatOne</toStringStyle>
+        <!-- <defaultBaseValue>1.0</defaultBaseValue> -->
+        <defaultBaseValue>1.0</defaultBaseValue>
+    </StatDef>
+    
+</Defs>

@@ -1,0 +1,26 @@
+<LanguageData>
+  <BS_BigAndSmall>Big and Small</BS_BigAndSmall>
+
+  <BS_CacheUpdateTickRate>Tick Update Frequency (Higher = Better Performance)</BS_CacheUpdateTickRate>
+  <BS_RealtimeUpdate>Real-time Update System</BS_RealtimeUpdate>
+  <BS_GameMechanics>Game Mechanics</BS_GameMechanics>
+  <BS_ScaleAnimals>Apply Scaling and other behaviour to Animals</BS_ScaleAnimals>
+  <BS_LowestUsed>Note: LOWEST of Multiplicate and Linear damage will be used for each given attack.</BS_LowestUsed>
+  <BS_MultDamageExplain>Multiplicative damage change from size. 0 = no increase. 1 = linear increase.</BS_MultDamageExplain>
+  <BS_DamageExponentExplain>Damage Exponent (default 0.75)  </BS_DamageExponentExplain>
+  <BS_FlatDMGExplain>Flat bonus to all attacks per size-level.</BS_FlatDMGExplain>
+  <BS_FlatDamageBonunsField>Flat Damage bonus (default 8)  </BS_FlatDamageBonunsField>
+  <BS_NutritionBurnExplain>Nutrition Burn. 0.0 = no change. 1.0 = Modified based on body size.</BS_NutritionBurnExplain>
+  <BS_HungerMultiplierField>Hunger Multiplier (default 1) </BS_HungerMultiplierField>
+  <BS_Rendering>Rendering</BS_Rendering>
+  <BS_SizeOffsetPawn>Size offsets pawn</BS_SizeOffsetPawn>
+  <BS_DisabeVFCachine>Disable Texture Caching (fixes cropped pawns):</BS_DisabeVFCachine>
+  <BS_ScalePawnDefault>Scale Pawn. Default values are 1.</BS_ScalePawnDefault>
+  <BS_ScaleLargerPawns>Scale Larger Pawns </BS_ScaleLargerPawns>
+  <BS_ScaleSmallerPawns>Scale Smaller Pawns </BS_ScaleSmallerPawns>
+  <BS_HeadSizeExplain>Head Size of large pawns. Higher Value = Large Head.</BS_HeadSizeExplain>
+  <BS_HeadExponentLargeField>Head Exponent Larger (default 0.8) </BS_HeadExponentLargeField>
+  <BS_HeadExponentSmallExplain>Change head size of small pawns. Smaller Values = Larger Head.</BS_HeadExponentSmallExplain>
+  <BS_HeadExponentSmalleField>Head Exponent Smaller (default 0.65) </BS_HeadExponentSmalleField>
+  <BS_NormalizeBodyType>Normalize bodytype scale for Hulka and Fat (Recommended).</BS_NormalizeBodyType>
+</LanguageData>

@@ -1,0 +1,46 @@
+<Defs>
+
+  <GeneDef>
+		<defName>BS_FacialAnimDisabled</defName>
+		<label>custom head</label>
+		<description>Carriers of this gene have a custom head that is not affected by Nals Animations. This can be useful if you have genes with graphics which Nals would normally hide.\nThis will only work on Humans.\n\nIt technically swaps their race for one identical to humans aside from not using Nal's comps. Other body-replacement genes will take priority over this.\n\n Requires you to Save+Load the game to visually take effect.</description>
+		<iconPath>GeneIcons/BS_NoFacialAnim</iconPath>
+		<displayOrderInCategory>0</displayOrderInCategory>
+		<biostatCpx>0</biostatCpx>
+		<biostatMet>0</biostatMet>
+    <geneClass>BetterPrerequisites.PGene</geneClass>
+		<selectionWeight>0</selectionWeight>
+		 <modExtensions>
+			<li Class="BetterPrerequisites.GeneExtension">
+				<thingDefSwap MayRequire="erdelf.HumanoidAlienRaces">BS_FacialAnimDisabledHuman</thingDefSwap>
+				<forceThingDefSwap>false</forceThingDefSwap>
+			</li>
+		</modExtensions>
+	</GeneDef>
+
+  <!-- <FacialAnimation.HeadTypeDef>
+    <defName>BS_FacialAnimNoHead</defName>
+    <texPath>Things/Pawn/NoHead/Heads_Blank/Normal</texPath>
+    <raceName>BS_FacialAnimNoHeadHuman</raceName>
+    <shader>Cutout</shader>
+  </FacialAnimation.HeadTypeDef> -->
+
+  <!--
+  <FacialAnimation.HeadTypeDef>
+    <defName>BS_FacialAnimDisabled</defName>
+    <texPath>Things/Pawn/NoHead/Heads_Blank/Normal</texPath>
+    <raceName>BS_FacialAnimDisabledHuman</raceName>
+    <shader>Cutout</shader>
+  </FacialAnimation.HeadTypeDef>
+
+
+  <FacialAnimation.EyeballTypeDef>
+    <defName>EyeNormal</defName>
+    <texPath>Things/Pawn/Humanlike/Eyes/Normal</texPath>
+    <raceName>BS_FacialAnimDisabledHuman</raceName>
+    <shader>Map/CutoutComplex</shader>
+      <minColor>RGB(0.25,0.25,0.25)</minColor>
+      <maxColor>RGB(0.85,0.85,0.85)</maxColor>
+    </FacialAnimation.EyeballTypeDef> -->
+
+</Defs>
