@@ -14,6 +14,13 @@ namespace BigAndSmall
     [DefOf]
     public static class BSDefs
     {
+        public static StatDef SM_BodySizeOffset;
+        public static StatDef SM_Cosmetic_BodySizeOffset;
+        public static StatDef SM_BodySizeMultiplier;
+        public static StatDef SM_HeadSize_Cosmetic;
+        public static StatDef SM_Minimum_Learning_Speed;
+        public static StatDef SM_Food_Need_Capacity;
+
         public static TraitDef BS_Gentle;
         public static GeneDef Body_Androgynous;
         public static GeneDef Body_MaleOnly;

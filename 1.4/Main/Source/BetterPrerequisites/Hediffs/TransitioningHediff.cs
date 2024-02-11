@@ -152,11 +152,9 @@ namespace BigAndSmall
                 statWasActive = onStat;
                 //TestConditionals
             }
-            catch(Exception ex)
+            catch
             {
-                Log.Error(ex.StackTrace);
-                Log.Error(ex.ToString());
-                throw (ex);
+                throw;
             }
         }
 

@@ -7,12 +7,14 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using Verse.AI;
 
 namespace BigAndSmall
 {
     public class BigAndSmallCache : GameComponent
     {
         public static List<BSCache> scribedCache = new List<BSCache>();
+        public static bool regenerationAttempted = false;
         public Game game;
         public BigAndSmallCache(Game game)
         {
@@ -20,7 +22,7 @@ namespace BigAndSmall
         }
         public override void ExposeData()
         {
-            Scribe_Collections.Look(ref scribedCache, saveDestroyedThings:false, "BS_scribedCache", LookMode.Deep);
+            Scribe_Collections.Look(ref scribedCache, saveDestroyedThings: false, "BS_scribedCache", LookMode.Deep);
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 scribedCache = scribedCache.Distinct().ToList();
@@ -170,8 +172,8 @@ namespace BigAndSmall
         public void ExposeData()
         {
             // Scribe Pawn
-            Scribe_Values.Look(ref id, "BS_CachePawnID", defaultValue:"BS_DefaultCahced");
-            
+            Scribe_Values.Look(ref id, "BS_CachePawnID", defaultValue: "BS_DefaultCahced");
+
             // Scribe Values
             Scribe_Values.Look(ref bodyRenderSize, "BS_BodyRenderSize", 1);
             Scribe_Values.Look(ref headRenderSize, "BS_HeadRenderSize", 1);
@@ -226,31 +228,32 @@ namespace BigAndSmall
 
         public bool RegenerateCache()
         {
-            if (pawn == null) { throw new Exception("Big & Small: Cannot regenerate Pawn Cache because the Pawn is null.");}
+            if (pawn == null) { throw new Exception("Big & Small: Cannot regenerate Pawn Cache because the Pawn is null."); }
 
             if (regenerationInProgress) { return false; }
             regenerationInProgress = true;
             try
             {
+                var activeGenes = Helpers.GetAllActiveGenes(pawn);
+                List<GeneExtension> geneExts = activeGenes
+                    .Where(x => x?.def?.modExtensions != null && x.def.modExtensions.Any(y => y.GetType() == typeof(GeneExtension)))
+                    .Select(x => x.def.GetModExtension<GeneExtension>()).ToList();
+
                 var dStage = pawn.DevelopmentalStage;
                 float sizeFromAge = pawn.ageTracker.CurLifeStage.bodySizeFactor;
                 float baseSize = pawn.RaceProps.baseBodySize;
                 float previousTotalSize = sizeFromAge * baseSize;
 
-                StatDef statOffsetDef = StatDef.Named("SM_BodySizeOffset");
-                float sizeOffset = pawn.GetStatValue(statOffsetDef);
-
-                StatDef statCosmeticOffsetDef = StatDef.Named("SM_Cosmetic_BodySizeOffset");
-                float cosmeticSizeOffset = pawn.GetStatValue(statCosmeticOffsetDef);
+                float sizeOffset = pawn.GetStatValue(BSDefs.SM_BodySizeOffset);
+                float cosmeticSizeOffset = pawn.GetStatValue(BSDefs.SM_Cosmetic_BodySizeOffset);
+                float sizeMultiplier = pawn.GetStatValue(BSDefs.SM_BodySizeMultiplier);
 
                 cosmeticSizeOffset += sizeOffset;
-
-                StatDef statMultDef = StatDef.Named("SM_BodySizeMultiplier");
-                float sizeMultiplier = pawn.GetStatValue(statMultDef);
 
                 //float cosmeticSizeMultiplier = 1f; // Not currently implemented.
 
                 float bodySizeOffset = ((baseSize + sizeOffset) * sizeMultiplier * sizeFromAge) - previousTotalSize;
+                float offsetFromSizeByAge = geneExts.Where(x => x.sizeByAge != null).Sum(x => x.sizeByAge.GetSize(pawn?.ageTracker?.AgeBiologicalYearsFloat));
 
                 float bodySizeCosmeticOffset = ((baseSize + cosmeticSizeOffset) * sizeMultiplier * sizeFromAge) - previousTotalSize;
 
@@ -300,8 +303,7 @@ namespace BigAndSmall
                     totalSize = Mathf.Max(totalSize, 0.02f);
                 }
 
-                StatDef statHeadSize = StatDef.Named("SM_HeadSize_Cosmetic");
-                float headSize = pawn.GetStatValue(statHeadSize);
+                float headSize = pawn.GetStatValue(BSDefs.SM_HeadSize_Cosmetic);
 
                 // Less difference for animals, they seem to get double-dipped somewhere?
                 if (!pawn.RaceProps.Humanlike)
@@ -320,15 +322,11 @@ namespace BigAndSmall
                     cosmeticScaleMultiplier.linear = Mathf.Min(Mathf.Lerp(cosmeticScaleMultiplier.linear, 1.5f, 0.65f), maxSize);
                 }
 
-                StatDef statMinLearn = StatDef.Named("SM_Minimum_Learning_Speed");
-                float minimumLearning = pawn.GetStatValue(statMinLearn);
-
-                StatDef statFoodNeedCapMult = StatDef.Named("SM_Food_Need_Capacity");
-                float foodNeedCapacityMult = pawn.GetStatValue(statFoodNeedCapMult);
+                float minimumLearning = pawn.GetStatValue(BSDefs.SM_Minimum_Learning_Speed);
+                float foodNeedCapacityMult = pawn.GetStatValue(BSDefs.SM_Food_Need_Capacity);
 
                 // Traits on pawn
                 var traits = pawn.story?.traits?.allTraits;
-
 
                 // Hediff Caching
                 var hediffs = pawn.health?.hediffSet.hediffs;
@@ -362,11 +360,11 @@ namespace BigAndSmall
 
                 bool animalUndead = animalReturned || animalVampirism;
 
-                var allActiveGenes = Helpers.GetAllActiveGenes(pawn);
 
-                bool noBlood = allActiveGenes.Any(x => x.def.defName == "VU_NoBlood") || animalReturned;
+
+                bool noBlood = activeGenes.Any(x => x.def.defName == "VU_NoBlood") || animalReturned;
                 bool verySlowBleeding = animalVampirism;
-                bool slowBleeding = allActiveGenes.Any(x => x.def.defName == "BS_SlowBleeding");
+                bool slowBleeding = activeGenes.Any(x => x.def.defName == "BS_SlowBleeding");
 
                 BleedRateState bleedState = noBlood ? BleedRateState.NoBleeding
                                                   : verySlowBleeding ? BleedRateState.VerySlowBleeding
@@ -374,10 +372,10 @@ namespace BigAndSmall
                                                   : BleedRateState.Unchanged;
 
                 // Has Deathlike gene or VU_AnimalReturned Hediff.
-                bool deathlike = allActiveGenes.Any(x => x.def.defName == "BS_Deathlike") || animalUndead;
-                bool unarmedOnly = allActiveGenes.Any(x => new List<string> { "BS_UnarmedOnly", "BS_NoEquip", "BS_UnarmedOnly_Android" }.Contains(x.def.defName));
+                bool deathlike = activeGenes.Any(x => x.def.defName == "BS_Deathlike") || animalUndead;
+                bool unarmedOnly = activeGenes.Any(x => new List<string> { "BS_UnarmedOnly", "BS_NoEquip", "BS_UnarmedOnly_Android" }.Contains(x.def.defName));
                 bool succubusUnbonded = false;
-                if (allActiveGenes.Any(x => x.def.defName == "VU_LethalLover"))
+                if (activeGenes.Any(x => x.def.defName == "VU_LethalLover"))
                 {
                     // Check if psychic bond is active
                     if (pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.PsychicBond) == null)
@@ -385,14 +383,14 @@ namespace BigAndSmall
                         succubusUnbonded = true;
                     }
                 }
-                bool fastPregnancy = allActiveGenes.Any(x => x.def.defName == "BS_ShortPregnancy");
-                bool everFertile = allActiveGenes.Any(x => x.def.defName == "BS_EverFertile");
+                bool fastPregnancy = activeGenes.Any(x => x.def.defName == "BS_ShortPregnancy");
+                bool everFertile = activeGenes.Any(x => x.def.defName == "BS_EverFertile");
                 bool animalFriend = pawn.story?.traits?.allTraits.Any(x => !x.Suppressed && x.def.defName == "BS_AnimalFriend") == true;
 
 
-                bool cannotWearClothing = allActiveGenes.Any(x => x.def.defName == "BS_CannotWearClothing");
-                bool cannotWearArmor = allActiveGenes.Any(x => x.def.defName == "BS_CannotWearArmor");
-                bool cannotWearApparel = allActiveGenes.Any(x => x.def.defName == "BS_CannotWearClothingOrArmor");
+                bool cannotWearClothing = activeGenes.Any(x => x.def.defName == "BS_CannotWearClothing");
+                bool cannotWearArmor = activeGenes.Any(x => x.def.defName == "BS_CannotWearArmor");
+                bool cannotWearApparel = activeGenes.Any(x => x.def.defName == "BS_CannotWearClothingOrArmor");
 
                 StatDef statAttackSpeed = StatDef.Named("SM_AttackSpeed");
                 float attackSpeedMultiplier = pawn.GetStatValue(statAttackSpeed);
@@ -449,6 +447,19 @@ namespace BigAndSmall
 
                 bodyRenderSize = GetBodyRenderSize();
                 headRenderSize = GetHeadRenderSize();
+            }
+            catch
+            {
+                // Remove the cache entry so it can be regenerated if this has not already been attempted.
+                if (!BigAndSmallCache.regenerationAttempted)
+                {
+                    Log.Warning($"Issue reloading cache of {pawn} ({id}). Removing entire cache so it can be regenerated.");
+                    // Reassigning instead of clearing in case it is null for some reason.
+                    HumanoidPawnScaler.Cache = new Dictionary<Pawn, BSCache>();
+                    BigAndSmallCache.scribedCache = new List<BSCache>();
+                    BigAndSmallCache.regenerationAttempted = true;
+                }
+                throw;
             }
             finally
             {
@@ -572,7 +583,7 @@ namespace BigAndSmall
         public float GetBodyRenderSize()
         {
             float bodyScale = cosmeticScaleMultiplier.linear;
-            
+
             if (bodyScale == 1)
             {
                 //return 1;
@@ -635,6 +646,6 @@ namespace BigAndSmall
             return bodyScale;
         }
 
-        
+
     }
 }

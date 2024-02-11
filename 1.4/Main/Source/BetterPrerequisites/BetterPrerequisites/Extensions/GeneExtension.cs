@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using Verse;
 
 namespace BetterPrerequisites
@@ -24,6 +25,8 @@ namespace BetterPrerequisites
         public bool forceThingDefSwap = false;
         public List<GeneDef> hiddenGenes = new List<GeneDef>();
         public bool hiddenAddon = false;
+
+        public SizeByAge sizeByAge = null;
 
         public float bodyPosOffset = 0f;
         public float headPosMultiplier = 0f;
@@ -92,5 +95,19 @@ namespace BetterPrerequisites
         public string graphicPath;
     }
 
-    
+    public class SizeByAge
+    {
+        // Size of the pawn at the bottom of the range.
+        public float minOffset = 0;
+        // Size of the pawn at the top of the range.
+        public float maxOffset = 0;
+        // The float range
+        public FloatRange range = new FloatRange(0, 0);
+
+        public float GetSize(float? age)
+        {
+            if (age == null) return 0;
+            return Mathf.Lerp(minOffset, maxOffset, range.InverseLerpThroughRange(age.Value));
+        }
+    }
 }

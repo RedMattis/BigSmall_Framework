@@ -52,11 +52,11 @@ namespace BetterPrerequisites
                             pawnsQueueForRendering.Remove(pawn);
                         }
                     }
-                    catch (Exception e)
+                    catch
                     {
                         Log.Error($"Error when setting graphics dirty. Actual error below.");
                         pawnsQueueForRendering.Clear();
-                        throw (e);
+                        throw;
                     }
                 }
             }
