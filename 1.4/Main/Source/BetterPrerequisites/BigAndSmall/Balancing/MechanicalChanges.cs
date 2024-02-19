@@ -65,6 +65,11 @@ namespace BigAndSmall
 
         }
 
+        /// <summary>
+        /// Calculates the health based on some fudged math. Technically it should probably be the cubic change, but that makes large creatures tank antigrain warheads.
+        /// </summary>
+        /// <param name="scalMult"></param>
+        /// <returns></returns>
         private static float CalculateHealthMultiplier(BSCache.PercentChange scalMult)
         {
             float quad = scalMult.quadratic;
@@ -74,7 +79,7 @@ namespace BigAndSmall
                 roughylLinear = (scalMult.linear - 1) * 0.8f + 1; // Nerf scaling a bit, large pawns are tanky enough already.
             }
             if (roughylLinear > quad) { quad = roughylLinear; } // Make sure small creatures don't get absolutely unreasonably low health.
-            return Mathf.Lerp(roughylLinear, quad, 0.20f);
+            return Mathf.Lerp(roughylLinear, quad, 0.55f);
         }
     }
 

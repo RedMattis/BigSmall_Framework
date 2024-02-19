@@ -14,11 +14,14 @@ namespace BigAndSmall
     {
         public static void Postfix(ref float __result, Pawn __instance)
         {
-            if (!BSCache.regenerationInProgress)
+            if (!BSCache.regenerationInProgress
+                && HumanoidPawnScaler.GetBSDict(__instance) is BSCache sizeCache)
             {
-                var sizeCache = HumanoidPawnScaler.GetBSDict(__instance);
-                if (sizeCache != null)
-                    __result = sizeCache.totalSize;
+                __result += sizeCache.sizeOffset;
+                if (__result < 0.05f)
+                {
+                    __result = 0.05f;
+                }
             }
         }
     }

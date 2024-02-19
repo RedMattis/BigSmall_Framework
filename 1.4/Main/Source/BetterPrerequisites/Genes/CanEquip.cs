@@ -26,9 +26,9 @@ namespace BigAndSmall
         ArgumentType.Normal
     })]
         [HarmonyPostfix]
-        public static bool CanEquip_Postfix(bool __result, Thing thing, Pawn pawn, ref string cantReason, bool checkBonded = true)
+        public static void CanEquip_Postfix(ref bool __result, Thing thing, Pawn pawn, ref string cantReason, bool checkBonded = true)
         {
-            return CanEquipThing(__result, thing.def, pawn, ref cantReason);
+            __result = CanEquipThing(__result, thing.def, pawn, ref cantReason);
         }
 
         public static bool CanEquipThing(bool __result, ThingDef thing, Pawn pawn, ref string cantReason)
@@ -53,16 +53,17 @@ namespace BigAndSmall
             {
                 if (!CanWearClothing(__result, thing, ref cantReason, pawn))
                 {
+                    cantReason = "BS_GenePreventsEquipping".Translate();
                     return false;
                 }
             }
 
             List<WeaponClassDef> weaponClasses = thing.weaponClasses;
-            if (weaponClasses == null || !weaponClasses.Contains(BSDefs.BS_GiantWeapon))
+            if (weaponClasses == null || !weaponClasses.Any(x=>x.defName == BSDefs.BS_GiantWeapon.defName))
             {
-                return true;
+                return __result;
             }
-            else if (pawn.genes == null)
+            else if (pawn.genes != null)
             {
                 bool hasValidGene = genes.GenesListForReading.Any(x => x.def.defName.ToLower().Contains("herculean"));
 

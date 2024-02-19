@@ -11,12 +11,16 @@ using Verse;
 
 namespace BigAndSmall
 {
-    [HarmonyPatch(typeof(PawnRenderer), nameof(PawnRenderer.RenderPawnAt))]
-    public static class RenderPawnAt_Patch
+    [HarmonyPatch(typeof(Pawn_DrawTracker), nameof(Pawn_DrawTracker.DrawPos), MethodType.Getter)]
+    public static class Pawn_DrawTracker_Patch
     {
-        public static void Prefix(ref Vector3 drawLoc, Pawn ___pawn)
+        public static bool skipOffset = false;
+        [HarmonyPostfix]
+        public static void DrawPos_Patch(ref Vector3 __result, Pawn_DrawTracker __instance, Pawn ___pawn)
         {
-            if (BigSmallMod.settings.offsetBodyPos && ___pawn.GetPosture() == PawnPosture.Standing)
+            if (!skipOffset 
+                && BigSmallMod.settings.offsetBodyPos
+                && ___pawn.GetPosture() == PawnPosture.Standing)
             {
                 if (___pawn?.RaceProps?.Humanlike == true)
                 {
@@ -26,9 +30,45 @@ namespace BigAndSmall
                     if (factor < 1) { factor = 1; }
                     float offsetFromCache = cache.bodyPosOffset;
 
-                    drawLoc.z += (factor - 1) / 2 * (offsetFromCache + 1) + offsetFromCache * 0.25f * (originalFactor < 1 ? originalFactor : 1) * ___pawn.story.bodyType.bodyGraphicScale.y;
+                    var bodyType = ___pawn.story.bodyType;
+
+                    // Check if hulk. If so increase the value, because hulks are weirldy offset down in vanilla.
+                    if (bodyType == BodyTypeDefOf.Hulk)
+                    {
+                        offsetFromCache += 0.25f;
+                    }
+
+                    __result.z += (factor - 1) / 2 * (offsetFromCache + 1) + offsetFromCache * 0.30f * (originalFactor < 1 ? originalFactor : 1) * bodyType.bodyGraphicScale.y;
                 }
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(SelectionDrawer), nameof(SelectionDrawer.DrawSelectionBracketFor))]
+    public static class SelectionDrawer_DrawSelection_Patch
+    {
+        public static void Prefix(object obj)
+        {
+            Pawn_DrawTracker_Patch.skipOffset = true;
+        }
+
+        public static void Postfix(object obj)
+        {
+            Pawn_DrawTracker_Patch.skipOffset = false;
+        }
+    }
+
+    [HarmonyPatch(typeof(PawnUIOverlay), nameof(PawnUIOverlay.DrawPawnGUIOverlay))]
+    public static class PawnUIOverlay_DrawSelection_Patch
+    {
+        public static void Prefix()
+        {
+            Pawn_DrawTracker_Patch.skipOffset = true;
+        }
+
+        public static void Postfix()
+        {
+            Pawn_DrawTracker_Patch.skipOffset = false;
         }
     }
 

@@ -16,6 +16,8 @@ namespace BigAndSmall
         public static List<BSCache> scribedCache = new List<BSCache>();
         public static bool regenerationAttempted = false;
         public Game game;
+
+        public Queue<Pawn> refreshQueue = new Queue<Pawn>();
         public BigAndSmallCache(Game game)
         {
             this.game = game;
@@ -40,6 +42,34 @@ namespace BigAndSmall
                 }
             }
         }
+
+        public override void GameComponentTick()
+        {
+            base.GameComponentTick();
+
+            if (Find.TickManager.TicksGame % 100 != 0)
+            {
+                return;
+            }
+            // If the queue is empty, enqueue the HumanoidPawnScaler.Cache.
+            if (refreshQueue.Count == 0)
+            {
+                foreach (var cache in HumanoidPawnScaler.Cache.Values)
+                {
+                    if (cache.pawn != null)
+                        refreshQueue.Enqueue(cache.pawn);
+                }
+            }
+            else
+            {
+                // If the queue is not empty, dequeue the first cache and refresh it.
+                var cachedPawn = refreshQueue.Dequeue();
+                if (cachedPawn != null)
+                {
+                    HumanoidPawnScaler.GetBSDict(cachedPawn, forceRefresh: true);
+                }
+            }
+        }
     }
 
     public class HumanoidPawnScaler : DictCache<Pawn, BSCache>
@@ -49,7 +79,7 @@ namespace BigAndSmall
         /// null-check everything that calls this method.
         /// </summary>
         /// <returns></returns>
-        public static BSCache GetBSDict(Pawn pawn, bool forceRefresh = false)
+        public static BSCache GetBSDict(Pawn pawn, bool forceRefresh = false, bool regenerateIfTimer = false)
         {
             if (pawn == null)
             {
@@ -60,7 +90,7 @@ namespace BigAndSmall
             BSCache result;
             if (RunNormalCalculations(pawn))
             {
-                result = GetCache(pawn, out newEntry, forceRefresh: forceRefresh);
+                result = GetCache(pawn, out newEntry, forceRefresh: forceRefresh, regenerateIfTimer: regenerateIfTimer);
             }
             else
             {
@@ -110,6 +140,7 @@ namespace BigAndSmall
         public static BSCache defaultCache = new BSCache();
 
         public Pawn pawn = null;
+        public bool refreshQueued = false;
         public CacheTimer Timer { get; set; } = new CacheTimer();
 
         public float bodyRenderSize = 1;
@@ -161,6 +192,8 @@ namespace BigAndSmall
 
         public FoodKind diet = FoodKind.Any;
 
+        public List<ApparelCache> apparelCaches = new List<ApparelCache>();
+
         public string id = "BS_DefaultID";
 
         // Default Comparer function
@@ -211,6 +244,7 @@ namespace BigAndSmall
             Scribe_Values.Look(ref bodyPosOffset, "BS_BodyPosOffset", 0);
             Scribe_Values.Look(ref headPosMultiplier, "BS_HeadPosMultiplier", 1);
             Scribe_Values.Look(ref diet, "BS_Diet", FoodKind.Any);
+            Scribe_Collections.Look(ref apparelCaches, "BS_ApparelCaches", LookMode.Deep);
         }
 
         // Used for the Scribe.
@@ -405,6 +439,47 @@ namespace BigAndSmall
                 var alcoholHediff = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.AlcoholHigh);
                 float alcoholLevel = alcoholHediff?.Severity ?? 0;
 
+                bool selfRepairingApparel = activeGenes.Any(x => x.def.defName == "BS_SelfRepairingApparel");
+                bool indestructibleApparel = activeGenes.Any(x => x.def.defName == "BS_IndestructibleApparel");
+
+                int currentTick = Find.TickManager.TicksGame;
+
+                // Get all armour
+                if (selfRepairingApparel || indestructibleApparel)
+                {
+                    var wornApparel = pawn.apparel.WornApparel;
+                    foreach (var apparel in wornApparel)
+                    {
+                        bool found = false;
+                        foreach (var apparelCache in apparelCaches.Where(x => x.apparelID == apparel.ThingID))
+                        {
+                            found = true;
+                            if (indestructibleApparel)
+                            {
+                                apparelCache.RepairAllDurability(apparel);
+                            }
+                            else if (selfRepairingApparel)
+                            {
+                                // Repair 10% of the durability every day.
+                                apparelCache.RepairDurability(apparel, currentTick, 0.06f);
+                            }
+                        }
+                        if (!found)
+                        {
+                            apparelCaches.Add(new ApparelCache(apparel));
+                        }
+                    }
+                    // Check if any apparel has been removed, and remove it from the cache if so.
+                    for (int idx = apparelCaches.Count - 1; idx >= 0; idx--)
+                    {
+                        ApparelCache apparelCache = apparelCaches[idx];
+                        if (!wornApparel.Any(x => x.ThingID == apparelCache.apparelID))
+                        {
+                            apparelCaches.RemoveAt(idx);
+                        }
+                    }
+                }
+
 
                 // Set Cache Values
                 this.totalSize = totalSize;
@@ -506,10 +581,8 @@ namespace BigAndSmall
                 float prevBodySize = sizeFromAge * baseSize;
                 float postBodySize = prevBodySize + bodySizeOffset;
                 float percentChange = postBodySize / prevBodySize;
-                // This math is 'effed, but it happens to give nice results, so, whatever.
-                // Not changing it now since the balance is fine.
-                float quadratic = Mathf.Pow(percentChange, 2) - 1;
-                float cubic = Mathf.Pow(percentChange, 3) - 1;
+                float quadratic = Mathf.Pow(postBodySize, 2) - Mathf.Pow(prevBodySize, 2);
+                float cubic = Mathf.Pow(postBodySize, 3) - Mathf.Pow(prevBodySize, 3);
 
                 // Ensure we don't get negative values.
                 percentChange = Mathf.Clamp(percentChange, 0.04f, 9999999);
@@ -647,5 +720,62 @@ namespace BigAndSmall
         }
 
 
+    }
+    
+    public class ApparelCache : IExposable
+    {
+        public string apparelID;
+        public int highestSeenDurability = 1;
+        public int lastSeenTick = 0;
+        public float accumulatedHp = 0;
+
+        public ApparelCache()
+        {
+        }
+
+        public ApparelCache(Apparel apparel)
+        {
+            apparelID = apparel.ThingID;
+            highestSeenDurability = apparel.HitPoints;
+            lastSeenTick = Find.TickManager.TicksGame;
+        }
+
+        public void RepairDurability(Apparel apparel, int currentTick, float fractionPerDay)
+        {
+            int ticksPerDay = 60000;
+            int ticksSinceLastSeen = currentTick - lastSeenTick;
+            // The apparel should repair by <fraction> per day, calculated from the last time we saw it.
+            float repairRate = ticksSinceLastSeen / (float)ticksPerDay * fractionPerDay;
+            
+            // Restore hp
+            int apparelMaxHp = apparel.MaxHitPoints;
+            int apparelHp = apparel.HitPoints;
+            float hpToAdd = repairRate * (apparelMaxHp - apparelHp);
+            // Since the value is likely less than 1 we accumulate it until it's enough to repair a whole point.
+            accumulatedHp += hpToAdd;
+
+            if (accumulatedHp > 1)
+            {
+                int newHp = apparelHp + (int)accumulatedHp;
+                newHp = Math.Min(apparelMaxHp, newHp);
+                newHp = Math.Min(newHp, highestSeenDurability);
+                apparel.HitPoints = newHp;
+                accumulatedHp = 0;
+            }
+            lastSeenTick = currentTick;
+        }
+
+        public void RepairAllDurability(Apparel apparel)
+        {
+            apparel.HitPoints = highestSeenDurability;
+        }
+
+        public void ExposeData()
+        {
+            Scribe_Values.Look(ref apparelID, "apparelID");
+            Scribe_Values.Look(ref highestSeenDurability, "highestSeenDurability");
+            Scribe_Values.Look(ref lastSeenTick, "lastSeenTick");
+            Scribe_Values.Look(ref accumulatedHp, "accumulatedHp");
+        }
     }
 }

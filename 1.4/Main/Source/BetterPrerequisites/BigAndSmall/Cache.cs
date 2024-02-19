@@ -29,7 +29,7 @@ namespace BigAndSmall
         /// <param name="forceRefresh"></param>
         /// <param name="forceDefault">The Cache will not be regenerated, it will simply return default values.</param>
         /// <returns></returns>
-        public static V GetCache(T key, out bool newEntry, bool forceRefresh=false, bool forceDefault=false)
+        public static V GetCache(T key, out bool newEntry, bool forceRefresh=false, bool forceDefault=false, bool regenerateIfTimer=false)
         {
             newEntry = false;
             if (key == null)
@@ -37,7 +37,7 @@ namespace BigAndSmall
             if (Cache.TryGetValue(key, out V data))
             {
                 // Check if the cache has timed out
-                if (data.Timer.AnyTimeout() || forceRefresh)
+                if (forceRefresh || regenerateIfTimer && data.Timer.AnyTimeout())
                 {
                     data.RegenerateCache();
                     data.Timer.ResetTimers();
@@ -69,8 +69,8 @@ namespace BigAndSmall
     /// </summary>
     public class CacheTimer
     {
-        public int UpdateIntervalSeconds = 3;
-        public int UpdateIntervalTicks = 250;
+        public int UpdateIntervalSeconds = 1;
+        public int UpdateIntervalTicks = 50;
 
         public int lastUpdateSeconds = 0;
         public int lastUpdateTicks = 0;

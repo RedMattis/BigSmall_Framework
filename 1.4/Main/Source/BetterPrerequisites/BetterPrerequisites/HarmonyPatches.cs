@@ -60,6 +60,10 @@ namespace BetterPrerequisites
                     }
                 }
             }
+            if (__instance != null)
+            {
+                HumanoidPawnScaler.GetBSDict(__instance, forceRefresh: true);
+            }
         }
     }
 
@@ -75,6 +79,12 @@ namespace BetterPrerequisites
             catch (Exception e)
             {
                 Log.Warning(e.ToString());
+            }
+
+            // Update the Cache
+            if (__instance?.pawn != null)
+            {
+                HumanoidPawnScaler.GetBSDict(__instance.pawn, forceRefresh: true);
             }
         }
     }
@@ -108,6 +118,10 @@ namespace BetterPrerequisites
                         }
                     }
                 }
+            }
+            if (__instance?.pawn != null)
+            {
+                HumanoidPawnScaler.GetBSDict(__instance.pawn, forceRefresh: true);
             }
         }
     }
@@ -147,6 +161,11 @@ namespace BetterPrerequisites
                 catch (Exception e)
                 {
                     Log.Warning($"{e.Message}\n{e.StackTrace}");
+                }
+
+                if (gene?.pawn != null)
+                {
+                    HumanoidPawnScaler.GetBSDict(gene.pawn, regenerateIfTimer:true);
                 }
             }
         }
