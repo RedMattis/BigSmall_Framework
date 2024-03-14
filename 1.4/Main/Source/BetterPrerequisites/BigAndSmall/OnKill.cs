@@ -68,7 +68,7 @@ namespace BigAndSmall
                     {
                         VUReturning.lastCheckTick = Find.TickManager.TicksGame + ticksPerDay * 2;
                         VUReturning.zombieApocalypseMode = true;
-                        TriggerZombieApocalypse();
+                        TriggerZombieApocalypse(__instance?.Map);
                     }
                     else if (Rand.Chance(deadRisingChance))
                     {
@@ -121,7 +121,7 @@ namespace BigAndSmall
             }
         }
 
-        public static void TriggerZombieApocalypse(bool sendMessage=true)
+        public static void TriggerZombieApocalypse(Map targetMap,bool sendMessage=true)
         {
             if (sendMessage)
             {
@@ -129,14 +129,14 @@ namespace BigAndSmall
                 Find.LetterStack.ReceiveLetter("BS_ZombieApocalypse".Translate(), "BS_ZombieApocalypse".Translate(), LetterDefOf.ThreatSmall, null);
             }
 
-            if (Find.CurrentMap?.listerThings == null)
+            if (targetMap?.listerThings == null)
             {
                 // This can trigger when the map generates in which case this might not even be initialized yet.
                 return;
             }
 
             // Get all dead bodies which are not dessicated and not mechanoids
-            IEnumerable<Corpse> corpses = Find.CurrentMap.listerThings.ThingsInGroup(ThingRequestGroup.Corpse).Cast<Corpse>()
+            IEnumerable<Corpse> corpses = targetMap.listerThings.ThingsInGroup(ThingRequestGroup.Corpse).Cast<Corpse>()
                 .Where(x => !x.IsDessicated() && x.InnerPawn.RaceProps.IsFlesh && !x.InnerPawn.IsUndead());
 
             // 50% chance of adding the hediff to each corpse

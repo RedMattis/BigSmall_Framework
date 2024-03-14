@@ -1,0 +1,36 @@
+<Patch>
+  <Operation Class="PatchOperationAdd">
+    <success>Always</success>
+    <xpath>Defs/ThingDef/modExtensions/li[@Class="HeavyWeapons.HeavyWeapon"][not(supportedTraits)]</xpath>
+    <value>
+      <supportedTraits/>
+    </value>
+  </Operation>
+  
+  <Operation Class="PatchOperationAdd">
+    <success>Always</success>
+    <xpath>Defs/ThingDef/modExtensions/li[@Class="HeavyWeapons.HeavyWeapon"]/supportedTraits</xpath>
+    <value>
+      <li>BS_Giant</li>
+    </value>
+  </Operation>
+
+
+  <!-- Roo's Minotaurs-->
+
+  <!-- <Operation Class="PatchOperationRemove">
+    <xpath>Defs/GeneDef[defName="RBM_Herculean"]/modExtensions/li[@Class="VanillaGenesExpanded.GeneExtension"]</xpath>
+  </Operation> -->
+  <Operation Class="PatchOperationFindMod">
+    <mods>
+      <li>Rooboid.Minotaur</li>
+    </mods>
+    <match Class="PatchOperationAdd">
+      <xpath>Defs/GeneDef[defName="RBM_Herculean"]/statOffsets</xpath>
+      <value>
+        <SM_Cosmetic_BodySizeOffset>0.35</SM_Cosmetic_BodySizeOffset>
+        <SM_HeadSize_Cosmetic>-0.10</SM_HeadSize_Cosmetic>
+      </value>
+    </match>
+  </Operation>
+</Patch>

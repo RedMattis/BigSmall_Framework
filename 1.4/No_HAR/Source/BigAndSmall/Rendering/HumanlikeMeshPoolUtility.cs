@@ -124,7 +124,10 @@ namespace BigAndSmall
                     factor = pawn.ageTracker.CurLifeStage.bodyWidth.Value;
                 }
                 factor *= HumanoidPawnScaler.GetBSDict(pawn).bodyRenderSize;
-
+                if (BigSmallLegacy.VEFActive && VEF_CachedPawnDataWrapper.CachedPawnData.TryGetValue(pawn, out VEF_CachedPawnDataWrapper VEPawnData))
+                {
+                    factor *= VEPawnData.bodyRenderSize;
+                }
                 __result = MeshPool.GetMeshSetForWidth(factor);
             }
         }
@@ -144,6 +147,12 @@ namespace BigAndSmall
                 }
                 factor *= HumanoidPawnScaler.GetBSDict(pawn).headRenderSize;
 
+                if (BigSmallLegacy.VEFActive && VEF_CachedPawnDataWrapper.CachedPawnData.TryGetValue(pawn, out VEF_CachedPawnDataWrapper VEPawnData))
+                {
+                    factor *= VEPawnData.headRenderSize;
+                }
+
+
                 __result = MeshPool.GetMeshSetForWidth(factor);
             }
         }
@@ -156,12 +165,17 @@ namespace BigAndSmall
         {
             public static void Postfix(ref GraphicMeshSet __result, Pawn pawn)
             {
+
                 Vector2 hairMeshSize = pawn.story.headType.hairMeshSize;
                 if (ModsConfig.BiotechActive && pawn.ageTracker.CurLifeStage.headSizeFactor.HasValue)
                 {
                     hairMeshSize *= pawn.ageTracker.CurLifeStage.headSizeFactor.Value;
                 }
                 hairMeshSize *= HumanoidPawnScaler.GetBSDict(pawn).headRenderSize;
+                if (BigSmallLegacy.VEFActive && VEF_CachedPawnDataWrapper.CachedPawnData.TryGetValue(pawn, out VEF_CachedPawnDataWrapper VEPawnData))
+                {
+                    hairMeshSize *= VEPawnData.headRenderSize;
+                }
                 __result = MeshPool.GetMeshSetForWidth(hairMeshSize.x, hairMeshSize.y);
             }
         }
@@ -181,6 +195,10 @@ namespace BigAndSmall
                     hairMeshSize *= pawn.ageTracker.CurLifeStage.headSizeFactor.Value;
                 }
                 hairMeshSize *= HumanoidPawnScaler.GetBSDict(pawn).headRenderSize;
+                if (BigSmallLegacy.VEFActive && VEF_CachedPawnDataWrapper.CachedPawnData.TryGetValue(pawn, out VEF_CachedPawnDataWrapper VEPawnData))
+                {
+                    hairMeshSize *= VEPawnData.headRenderSize;
+                }
                 __result = MeshPool.GetMeshSetForWidth(hairMeshSize.x, hairMeshSize.y);
             }
         }

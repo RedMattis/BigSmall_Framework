@@ -165,6 +165,7 @@ namespace BigAndSmall
         public bool isBloodFeeder = false;
         public bool hasSizeAffliction = false;
         public float attackSpeedMultiplier = 1;
+        public float attackSpeedUnarmedMultiplier = 1;
         public float psychicSensitivity = 1;
         public float alcoholmAmount = 0;
 
@@ -189,6 +190,8 @@ namespace BigAndSmall
 
         public float bodyPosOffset = 0;
         public float headPosMultiplier = 1;
+
+        public bool preventDisfigurement = false;
 
         public FoodKind diet = FoodKind.Any;
 
@@ -245,6 +248,7 @@ namespace BigAndSmall
             Scribe_Values.Look(ref headPosMultiplier, "BS_HeadPosMultiplier", 1);
             Scribe_Values.Look(ref diet, "BS_Diet", FoodKind.Any);
             Scribe_Collections.Look(ref apparelCaches, "BS_ApparelCaches", LookMode.Deep);
+            Scribe_Values.Look(ref preventDisfigurement, "BS_PreventDisfigurement", false);
         }
 
         // Used for the Scribe.
@@ -426,15 +430,13 @@ namespace BigAndSmall
                 bool cannotWearArmor = activeGenes.Any(x => x.def.defName == "BS_CannotWearArmor");
                 bool cannotWearApparel = activeGenes.Any(x => x.def.defName == "BS_CannotWearClothingOrArmor");
 
-                StatDef statAttackSpeed = StatDef.Named("SM_AttackSpeed");
-                float attackSpeedMultiplier = pawn.GetStatValue(statAttackSpeed);
-
                 // Get all genes with the GeneExtension
                 List<GeneExtension> genesWithExtension = Helpers.GetAllActiveGenes(pawn).Select(x => x.def.GetModExtension<GeneExtension>()).Where(x => x != null).ToList();
 
                 // Add together bodyPosOffset from GeneExtension.
                 float bodyPosOffset = genesWithExtension.Sum(x => x.bodyPosOffset);
                 float headPosMultiplier = genesWithExtension.Sum(x => x.headPosMultiplier);
+                bool preventDisfigurement = genesWithExtension.Any(x => x.preventDisfigurement);
 
                 var alcoholHediff = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.AlcoholHigh);
                 float alcoholLevel = alcoholHediff?.Severity ?? 0;
@@ -493,7 +495,9 @@ namespace BigAndSmall
                 headSizeMultiplier = headSize;
                 isBloodFeeder = IsBloodfeederPatch.IsBloodfeeder(pawn) || bleedState == BSCache.BleedRateState.NoBleeding;
                 this.hasSizeAffliction = hasSizeAffliction;
-                this.attackSpeedMultiplier = attackSpeedMultiplier;
+                attackSpeedMultiplier = pawn.GetStatValue(BSDefs.SM_AttackSpeed);
+                attackSpeedUnarmedMultiplier = pawn.GetStatValue(BSDefs.SM_UnarmedAttackSpeed);
+
                 psychicSensitivity = pawn.GetStatValue(StatDefOf.PsychicSensitivity);
                 alcoholmAmount = alcoholLevel;
 

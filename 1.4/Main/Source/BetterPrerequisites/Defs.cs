@@ -20,6 +20,8 @@ namespace BigAndSmall
         public static StatDef SM_HeadSize_Cosmetic;
         public static StatDef SM_Minimum_Learning_Speed;
         public static StatDef SM_Food_Need_Capacity;
+        public static StatDef SM_AttackSpeed;
+        public static StatDef SM_UnarmedAttackSpeed;
 
         public static TraitDef BS_Gentle;
         public static GeneDef Body_Androgynous;
@@ -38,6 +40,16 @@ namespace BigAndSmall
 
         public static MentalStateDef BS_LostManhunter;
         public static MentalStateDef BS_LostManhunterPermanent;
+
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static DamageDef BS_BiteDevourDmg;
+
+        // Organs
+        public static ThingDef Heart;
+        public static ThingDef Lung;
+        public static ThingDef Kidney;
+        public static ThingDef Liver;
+
 
 
 

@@ -1,0 +1,77 @@
+<Defs>
+  <GeneCategoryDef>
+    <defName>ForcedSex</defName>
+    <label>Biological Sex</label>
+    <displayPriorityInXenotype>401</displayPriorityInXenotype>
+  </GeneCategoryDef>
+
+  <GeneDef Name="BM_MaleAndFemaleBase" Abstract="True">
+    <displayCategory>ForcedSex</displayCategory>
+    <exclusionTags>
+      <li>ForcedSex</li>
+    </exclusionTags>
+    <selectionWeight>0.0</selectionWeight>
+    <modExtensions>
+			<li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="VanillaGenesExpanded.GeneExtension">
+				<backgroundPathEndogenes>GeneIcons/BS_BackEndogene</backgroundPathEndogenes>
+				<backgroundPathXenogenes>GeneIcons/BS_BackXenogene</backgroundPathXenogenes>
+			</li>
+		</modExtensions>
+  </GeneDef>
+
+  <GeneDef ParentName="BM_MaleAndFemaleBase">
+    <defName>Body_FemaleOnly</defName>
+    <label>Female</label>
+    <description>Carriers of this gene are physically female.</description>
+    <iconPath>GeneIcons/BS_Female</iconPath>
+    <biostatCpx>0</biostatCpx>
+  </GeneDef>
+
+  <GeneDef ParentName="BM_MaleAndFemaleBase">
+    <defName>Body_MaleOnly</defName>
+    <label>Male</label>
+    <description>Carriers of this gene are physically male.</description>
+    <iconPath>GeneIcons/BS_Male</iconPath>
+    <biostatCpx>0</biostatCpx>
+  </GeneDef>
+
+  <GeneDef>
+    <defName>Body_Androgynous</defName>
+    <label>Androgynous</label>
+    <biostatCpx>0</biostatCpx>
+    <endogeneCategory>BodyType</endogeneCategory>
+    <displayCategory>Cosmetic_Body</displayCategory>
+    <iconColor>(0.75, 0.75, 0.75)</iconColor>
+    <randomChosen>true</randomChosen>
+    <description>Carriers of this gene tend to appear Androgynous. A person can have more than one body type gene; one body type will be chosen among those that are allowed.\n\nNote that some mods will unfortunately override this, in which case you may need to use the Character Editor to "fix" it.</description>
+    <iconPath>GeneIcons/BS_Androgynous</iconPath>
+    <displayOrderInCategory>1</displayOrderInCategory>
+    <selectionWeight>0.0</selectionWeight>
+    <modExtensions>
+			<li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="VanillaGenesExpanded.GeneExtension">
+				<backgroundPathEndogenes>GeneIcons/BS_BackEndogene</backgroundPathEndogenes>
+				<backgroundPathXenogenes>GeneIcons/BS_BackXenogene</backgroundPathXenogenes>
+			</li>
+		</modExtensions>
+  </GeneDef>
+
+    <TraitDef>
+    <defName>BS_Gentle</defName>
+    <commonality>0.5</commonality>
+    <degreeDatas>
+      <li>
+        <label>gentle</label>
+        <description>{PAWN_nameDef} has a gentle and cool-headed nature. {PAWN_pronoun} is less likely to insult others or starts fights, and will sometimes cheer up others.</description>
+        <statOffsets>
+          <MentalBreakThreshold>-0.20</MentalBreakThreshold>
+        </statOffsets>
+      </li>
+    </degreeDatas>
+    <conflictingTraits>
+      <li>Abrasive</li>
+      <li>Kind</li>
+      <li>Psychopath</li>
+    </conflictingTraits>
+  </TraitDef>
+  
+</Defs>

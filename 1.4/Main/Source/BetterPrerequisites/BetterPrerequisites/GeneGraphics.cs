@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using Verse;
 
 namespace BetterPrerequisites
@@ -45,5 +46,17 @@ namespace BetterPrerequisites
                 }
             }
         }
+
+        // Eh. I'll fix this in the next version.
+        //[HarmonyPostfix]
+        //[HarmonyPatch(typeof(GeneGraphicData), "GetGraphics")]
+        //public static void GetGraphics(ref (Graphic, Graphic) __result, GeneGraphicData __instance, Pawn pawn, Shader skinShader, Color rottingColor)
+        //{
+        //    Graphic item1 = __result.Item1;
+        //    Graphic item2 = __result.Item2;
+        //    // Get GeneExtension
+        //    __instance.
+        //}
     }
+
 }

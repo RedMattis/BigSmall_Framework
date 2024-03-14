@@ -593,17 +593,16 @@ namespace BetterPrerequisites
                 HashSet<BodyPartRecord> notMissingParts = gene.pawn.health.hediffSet.GetNotMissingParts().ToHashSet();
                 foreach (HediffToBodyparts item in extension.applyPartHediff)
                 {
-                    int num = 0;
+                    //int num = 0;
                     if (activate && ConditionalManager.TestConditionals(gene, item.conditionals))
                     {
                         foreach (BodyPartDef bodypart in item.bodyparts)
                         {
-                            if (!gene.pawn.RaceProps.body.GetPartsWithDef(bodypart).EnumerableNullOrEmpty() && num <= gene.pawn.RaceProps.body.GetPartsWithDef(bodypart).Count)
+                            if (!gene.pawn.RaceProps.body.GetPartsWithDef(bodypart).EnumerableNullOrEmpty()) //  && num <= gene.pawn.RaceProps.body.GetPartsWithDef(bodypart).Count
                             {
                                 var allParts = gene.pawn.RaceProps.body.GetPartsWithDef(bodypart).ToArray();
-                                if (allParts.Count() > num)
+                                foreach(var part in allParts)
                                 {
-                                    var part = gene.pawn.RaceProps.body.GetPartsWithDef(bodypart).ToArray()[num];
                                     // Use hediffset to check if the part exists
                                     if (notMissingParts.Contains(part))
                                     {
@@ -623,8 +622,6 @@ namespace BetterPrerequisites
                                             changeMade = true;
                                             gene.pawn.health.AddHediff(item.hediff, part);
                                         }
-                                        num++;
-
                                     }
                                 }
                             }
@@ -681,6 +678,7 @@ namespace BetterPrerequisites
 
         private static void AddHediffToPawn(bool activate, ref bool changeMade, Gene gene, GeneExtension extension)
         {
+            List<HediffToBody> toRemove = new List<HediffToBody>();
             if (extension.applyBodyHediff != null)
             {
                 foreach (HediffToBody item in extension.applyBodyHediff)
@@ -728,7 +726,18 @@ namespace BetterPrerequisites
                     else
                     {
                         Log.Warning($"{gene.def.defName} on {gene.pawn} tried to grant a Hediff, but the Hediff was null.");
+
+                        // Remove it from the list so we don't get spammed with warnings.
+                        toRemove.Add(item);
                     }
+                }
+            }
+            if (toRemove.Count > 0)
+            {
+                for (int idx = toRemove.Count - 1; idx >= 0; idx--)
+                {
+                    HediffToBody item = toRemove[idx];
+                    extension.applyBodyHediff.Remove(item);
                 }
             }
         }

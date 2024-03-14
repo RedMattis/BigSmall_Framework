@@ -36,4 +36,6 @@
   <BS_StatsReport_Drunk>Alcohol (drunk)</BS_StatsReport_Drunk>
 
   <BS_TargetAlreadyUndead>Target is already undead.</BS_TargetAlreadyUndead>
+
+  <MessageMimicryGenesRemoved>Mimicry went way past the limit (-15) and random xenogenes have been lost.</MessageMimicryGenesRemoved>
 </LanguageData>

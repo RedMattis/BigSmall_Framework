@@ -564,23 +564,7 @@ namespace BigAndSmall
             }
             try
             {
-                if (innerPawn.RaceProps.Humanlike)
-                {
-                    Thought_Memory thought_Memory = null;
-                    if (attacker?.story?.traits?.HasTrait(TraitDefOf.Cannibal) ?? false)
-                    {
-                        thought_Memory = (Thought_Memory)ThoughtMaker.MakeThought(ThoughtDefOf.AteHumanlikeMeatDirectCannibal);
-                        attacker.mindState.lastHumanMeatIngestedTick = Find.TickManager.TicksGame;
-                    }
-                    else
-                    {
-                        thought_Memory = (Thought_Memory)ThoughtMaker.MakeThought(ThoughtDefOf.AteHumanlikeMeatDirect);
-                    }
-                    if (attacker?.needs?.mood?.thoughts?.memories != null)
-                    {
-                        attacker.needs.mood.thoughts.memories.TryGainMemory(thought_Memory);
-                    }
-                }
+                GetEatenCorpseMeatThoughts(attacker, innerPawn);
             }
             catch (Exception e)
             {
@@ -591,6 +575,27 @@ namespace BigAndSmall
             if (killThirds != null)
             {
                 killThirds.CurLevelPercentage = 1;
+            }
+        }
+
+        public static void GetEatenCorpseMeatThoughts(Pawn attacker, Pawn target)
+        {
+            if (target.RaceProps.Humanlike)
+            {
+                Thought_Memory thought_Memory;
+                if (attacker?.story?.traits?.HasTrait(TraitDefOf.Cannibal) ?? false)
+                {
+                    thought_Memory = (Thought_Memory)ThoughtMaker.MakeThought(ThoughtDefOf.AteHumanlikeMeatDirectCannibal);
+                    attacker.mindState.lastHumanMeatIngestedTick = Find.TickManager.TicksGame;
+                }
+                else
+                {
+                    thought_Memory = (Thought_Memory)ThoughtMaker.MakeThought(ThoughtDefOf.AteHumanlikeMeatDirect);
+                }
+                if (attacker?.needs?.mood?.thoughts?.memories != null)
+                {
+                    attacker.needs.mood.thoughts.memories.TryGainMemory(thought_Memory);
+                }
             }
         }
 

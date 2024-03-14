@@ -1,0 +1,24 @@
+<Defs>
+
+  <ToolCapacityDef>
+    <defName>BS_Plasma</defName>
+    <label>plasma</label>
+  </ToolCapacityDef>
+
+  <ManeuverDef>
+    <defName>BS_Plasma</defName>
+    <requiredCapacity>BS_Plasma</requiredCapacity>
+    <verb>
+      <verbClass>Verb_MeleeAttackDamage</verbClass>
+      <ai_IsWeapon>true</ai_IsWeapon>
+      <meleeDamageDef>Flame</meleeDamageDef>
+    </verb>
+    <logEntryDef>MeleeAttack</logEntryDef>
+    <combatLogRulesHit>Maneuver_Slash_MeleeHit</combatLogRulesHit>
+    <combatLogRulesDeflect>Maneuver_Slash_MeleeDeflect</combatLogRulesDeflect>
+    <combatLogRulesMiss>Maneuver_Slash_MeleeMiss</combatLogRulesMiss>
+    <combatLogRulesDodge>Maneuver_Slash_MeleeDodge</combatLogRulesDodge>
+  </ManeuverDef>
+
+
+</Defs>

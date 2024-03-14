@@ -94,6 +94,8 @@ namespace BigAndSmall
         public override void Tick()
         {
             base.Tick();
+
+
             // Every 1500 ticks, adjust the resource updwards or downwards based on the target value and whether the pawn is starved or not.
             if (Find.TickManager.TicksGame % 2500 == 0)
             {
@@ -197,6 +199,9 @@ namespace BigAndSmall
                 cur += currentBonus;
                 targetValue += currentBonus;
             }
+
+            // Refresh Cache
+            HumanoidPawnScaler.GetBSDict(pawn, forceRefresh: true);
         }
 
         public override void PostAdd()

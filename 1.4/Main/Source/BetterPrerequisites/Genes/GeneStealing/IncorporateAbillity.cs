@@ -41,79 +41,14 @@ namespace BigAndSmall
         public static void IncorporateGenes(Pawn pawn, Corpse corpse, int genePickCount=4, bool stealTraits=true)
         {
             var genesOnCorpse = corpse.InnerPawn?.genes.GenesListForReading;
-            var traitsOnCorpse = corpse.InnerPawn?.story?.traits?.allTraits;
-            var allGeneDefs = DefDatabase<GeneDef>.AllDefsListForReading;
 
             var genesToPick = new List<GeneDef>();
             if (genesOnCorpse == null)
                 return;
 
-            if (stealTraits)
+            if (stealTraits && corpse.InnerPawn != null)
             {
-                if (traitsOnCorpse != null)
-                {
-                    var beautyTraits = traitsOnCorpse.Where(x => x.def.defName.StartsWith("Beauty"));
-                    if (beautyTraits.Count() > 0)
-                    {
-                        var bTrait = beautyTraits.First();
-                        if (bTrait.Degree == 2)
-                            genesToPick.Add(allGeneDefs.Where(x => x.defName == "Beauty_Beautiful").First());
-                        if (bTrait.Degree == 1)
-                            genesToPick.Add(allGeneDefs.Where(x => x.defName == "Beauty_Pretty").First());
-                        if (bTrait.Degree == -1)
-                            genesToPick.Add(allGeneDefs.Where(x => x.defName == "Beauty_Ugly").First());
-                        if (bTrait.Degree == -2)
-                            genesToPick.Add(allGeneDefs.Where(x => x.defName == "Beauty_VeryUgly").First());
-                    }
-
-                    var toughTrait = traitsOnCorpse.Any(x => x.def.defName.StartsWith("Tough"));
-                    if (toughTrait)
-                    {
-                        genesToPick.Add(allGeneDefs.Where(x => x.defName == "Robust").First());
-                    }
-
-                    var speedTraits = traitsOnCorpse.Where(x => x.def.defName.StartsWith("SpeedOffset"));
-                    if (speedTraits.Count() > 0)
-                    {
-                        var speedTrait = speedTraits.First();
-                        if (speedTrait.Degree == 2)
-                            genesToPick.Add(allGeneDefs.Where(x => x.defName == "MoveSpeed_VeryQuick").First());
-                        if (speedTrait.Degree == 1)
-                            genesToPick.Add(allGeneDefs.Where(x => x.defName == "MoveSpeed_Quick").First());
-                        if (speedTrait.Degree == -1)
-                            genesToPick.Add(allGeneDefs.Where(x => x.defName == "MoveSpeed_Slow").First());
-                    }
-                }
-
-                if (corpse.InnerPawn?.gender == Gender.Male)
-                {
-                    genesToPick.Add(allGeneDefs.Where(x => x.defName == "Body_MaleOnly").First());
-                }
-                else if (corpse.InnerPawn?.gender == Gender.Female)
-                {
-                    genesToPick.Add(allGeneDefs.Where(x => x.defName == "Body_FemaleOnly").First());
-                }
-
-                if (corpse.InnerPawn?.story.bodyType == BodyTypeDefOf.Male)
-                {
-                    genesToPick.Add(allGeneDefs.Where(x => x.defName == "Body_Standard").First());
-                }
-                else if (corpse.InnerPawn?.story.bodyType == BodyTypeDefOf.Female)
-                {
-                    genesToPick.Add(allGeneDefs.Where(x => x.defName == "Body_Standard").First());
-                }
-                else if (corpse.InnerPawn?.story.bodyType == BodyTypeDefOf.Hulk)
-                {
-                    genesToPick.Add(allGeneDefs.Where(x => x.defName == "Body_Hulk").First());
-                }
-                else if (corpse.InnerPawn?.story.bodyType == BodyTypeDefOf.Fat)
-                {
-                    genesToPick.Add(allGeneDefs.Where(x => x.defName == "Body_Fat").First());
-                }
-                else if (corpse.InnerPawn?.story.bodyType == BodyTypeDefOf.Thin)
-                {
-                    genesToPick.Add(allGeneDefs.Where(x => x.defName == "Body_Thin").First());
-                }
+                GetGenesFromTraits(corpse.InnerPawn, genesToPick);
             }
             genePickCount += genesToPick.Count();
             List<Gene> unpickedGenes = genesOnCorpse.ToList();
@@ -128,12 +63,108 @@ namespace BigAndSmall
                 }
             }
 
+            var allGeneDefs = DefDatabase<GeneDef>.AllDefsListForReading;
+            try
+            {
+                ReplaceGeneInList(genesToPick, allGeneDefs, "BS_GeneStabilizing_Extreme", "BS_Instability_Catastrophic");
+                ReplaceGeneInList(genesToPick, allGeneDefs, "BS_GeneStabilizing_Great", "Instability_Major");
+                ReplaceGeneInList(genesToPick, allGeneDefs, "BS_GeneStabilizing_Moderate", "Instability_Mild");
+            }
+            catch { }
+            
 
             if (genesToPick.Any())
             {
                 // Reverse so traits (etc.) are at the bottom.
                 genesToPick.Reverse();
                 Find.WindowStack.Add(new Dialog_PickGenes(pawn, genesToPick));
+            }
+        }
+
+        private static void ReplaceGeneInList(List<GeneDef> genesToPick, List<GeneDef> allGeneDefs, string stabilityExtreme, string instabilityExtreme)
+        {
+            foreach (var gene in genesToPick)
+            {
+                if (gene.defName.StartsWith(stabilityExtreme))
+                {
+                    var newGene = allGeneDefs.Where(x => x.defName == instabilityExtreme).FirstOrDefault();
+                    if (newGene != null)
+                    {
+                        genesToPick.Remove(gene);
+                        genesToPick.Add(newGene);
+                    }
+                }
+            }
+        }
+
+        public static void GetGenesFromTraits(Pawn target, List<GeneDef> genesToPick, bool onlyZeroCostGenes=false)
+        {
+            if (target == null) return;
+            var allGeneDefs = DefDatabase<GeneDef>.AllDefsListForReading;
+            var traitsOnCorpse = target?.story?.traits?.allTraits;
+            if (traitsOnCorpse != null && !onlyZeroCostGenes)
+            {
+                var beautyTraits = traitsOnCorpse.Where(x => x.def.defName.StartsWith("Beauty"));
+                if (beautyTraits.Count() > 0)
+                {
+                    var bTrait = beautyTraits.First();
+                    if (bTrait.Degree == 2)
+                        genesToPick.Add(allGeneDefs.Where(x => x.defName == "Beauty_Beautiful").First());
+                    if (bTrait.Degree == 1)
+                        genesToPick.Add(allGeneDefs.Where(x => x.defName == "Beauty_Pretty").First());
+                    if (bTrait.Degree == -1)
+                        genesToPick.Add(allGeneDefs.Where(x => x.defName == "Beauty_Ugly").First());
+                    if (bTrait.Degree == -2)
+                        genesToPick.Add(allGeneDefs.Where(x => x.defName == "Beauty_VeryUgly").First());
+                }
+
+                var toughTrait = traitsOnCorpse.Any(x => x.def.defName.StartsWith("Tough"));
+                if (toughTrait)
+                {
+                    genesToPick.Add(allGeneDefs.Where(x => x.defName == "Robust").First());
+                }
+
+                var speedTraits = traitsOnCorpse.Where(x => x.def.defName.StartsWith("SpeedOffset"));
+                if (speedTraits.Count() > 0)
+                {
+                    var speedTrait = speedTraits.First();
+                    if (speedTrait.Degree == 2)
+                        genesToPick.Add(allGeneDefs.Where(x => x.defName == "MoveSpeed_VeryQuick").First());
+                    if (speedTrait.Degree == 1)
+                        genesToPick.Add(allGeneDefs.Where(x => x.defName == "MoveSpeed_Quick").First());
+                    if (speedTrait.Degree == -1)
+                        genesToPick.Add(allGeneDefs.Where(x => x.defName == "MoveSpeed_Slow").First());
+                }
+            }
+
+            if (target?.gender == Gender.Male)
+            {
+                genesToPick.Add(allGeneDefs.Where(x => x.defName == "Body_MaleOnly").First());
+            }
+            else if (target?.gender == Gender.Female)
+            {
+                genesToPick.Add(allGeneDefs.Where(x => x.defName == "Body_FemaleOnly").First());
+            }
+
+            if (target?.story.bodyType == BodyTypeDefOf.Male)
+            {
+                genesToPick.Add(allGeneDefs.Where(x => x.defName == "Body_Standard").First());
+            }
+            else if (target?.story.bodyType == BodyTypeDefOf.Female)
+            {
+                genesToPick.Add(allGeneDefs.Where(x => x.defName == "Body_Standard").First());
+            }
+            else if (target?.story.bodyType == BodyTypeDefOf.Hulk)
+            {
+                genesToPick.Add(allGeneDefs.Where(x => x.defName == "Body_Hulk").First());
+            }
+            else if (target?.story.bodyType == BodyTypeDefOf.Fat)
+            {
+                genesToPick.Add(allGeneDefs.Where(x => x.defName == "Body_Fat").First());
+            }
+            else if (target?.story.bodyType == BodyTypeDefOf.Thin)
+            {
+                genesToPick.Add(allGeneDefs.Where(x => x.defName == "Body_Thin").First());
             }
         }
 
@@ -145,16 +176,17 @@ namespace BigAndSmall
                 var corpse = (Corpse)target.Thing;
                 corpse?.Destroy();
             }
-            RemoveGenesOverLimit(parent.pawn);
+            RemoveGenesOverLimit(parent.pawn, -9);
         }
 
-        public static void RemoveGenesOverLimit(Pawn pawn)
+        public static bool RemoveGenesOverLimit(Pawn pawn, int limit)
         {
             var xGenes = pawn.genes.Xenogenes;
+            bool removed = false;
 
             int idx = 0;
             // Sum up the metabolism cost of the new genes
-            while (pawn.genes.GenesListForReading.Where(x => !x.Overridden).Sum(x => x.def.biostatMet) < -9 || idx > 100)
+            while (pawn.genes.GenesListForReading.Where(x => !x.Overridden).Sum(x => x.def.biostatMet) < limit || idx > 100)
             {
                 if (xGenes.Count == 1)
                     break;
@@ -163,6 +195,7 @@ namespace BigAndSmall
                 if (geneToRemove != null)
                 {
                     xGenes.Remove(geneToRemove);
+                    removed = true;
                 }
                 else
                 {
@@ -170,6 +203,7 @@ namespace BigAndSmall
                 }
                 idx++;  // Ensure we don't get stuck in an infinite loop no matter what.
             }
+            return removed;
         }
     }
     // UI grabbed from another mod.

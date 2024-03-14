@@ -1,22 +1,134 @@
 <Defs>
 
-  <GeneDef>
-		<defName>BS_FacialAnimDisabled</defName>
-		<label>custom head</label>
-		<description>Carriers of this gene have a custom head that is not affected by Nals Animations. This can be useful if you have genes with graphics which Nals would normally hide.\nThis will only work on Humans.\n\nIt technically swaps their race for one identical to humans aside from not using Nal's comps. Other body-replacement genes will take priority over this.\n\n Requires you to Save+Load the game to visually take effect.</description>
-		<iconPath>GeneIcons/BS_NoFacialAnim</iconPath>
-		<displayOrderInCategory>0</displayOrderInCategory>
-		<biostatCpx>0</biostatCpx>
-		<biostatMet>0</biostatMet>
-    <geneClass>BetterPrerequisites.PGene</geneClass>
-		<selectionWeight>0</selectionWeight>
-		 <modExtensions>
-			<li Class="BetterPrerequisites.GeneExtension">
-				<thingDefSwap MayRequire="erdelf.HumanoidAlienRaces">BS_FacialAnimDisabledHuman</thingDefSwap>
-				<forceThingDefSwap>false</forceThingDefSwap>
+  <GeneCategoryDef>
+    <defName>BS_NalDisable</defName>
+    <label>Facial Animation Toggles</label>
+    <displayPriorityInXenotype>-9999</displayPriorityInXenotype>
+  </GeneCategoryDef>
+
+  <GeneDef Name="BS_NalDisableBase" Abstract="True">
+    <displayCategory>BS_NalDisable</displayCategory>
+    <biostatCpx>0</biostatCpx>
+    <biostatMet>0</biostatMet>
+    <selectionWeight>0</selectionWeight>
+    <geneClass>BetterPrerequisites.PGene</geneClass> <!--Don't miss this one if you're making your own version.-->
+    <exclusionTags><li>BS_NalsDisableTag</li></exclusionTags>
+  </GeneDef>
+
+  <GeneDef ParentName="BS_NalDisableBase">
+    <defName>BS_FacialAnimDisabled</defName>
+    <label>Blank FA Head</label>
+    <description>Retains Nal's head.</description>
+    <iconPath>GeneIcons/BS_NoFacialAnim</iconPath>
+    <modExtensions>
+      <li Class="BetterPrerequisites.GeneExtension">
+        <facialDisabler>
+          <headName>retain</headName>
+        </facialDisabler>
+      </li>
+      <li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="VanillaGenesExpanded.GeneExtension">
+				<backgroundPathEndogenes>GeneIcons/BS_BackEndogene</backgroundPathEndogenes>
+				<backgroundPathXenogenes>GeneIcons/BS_BackXenogene</backgroundPathXenogenes>
 			</li>
-		</modExtensions>
-	</GeneDef>
+    </modExtensions>
+  </GeneDef>
+
+  <GeneDef ParentName="BS_NalDisableBase">
+    <defName>BS_FA_Keep_Brows</defName>
+    <label>FA (Brow)</label>
+    <description>Retains only animations related to the brows.</description>
+    <iconPath>GeneIcons/BS_NoFacialAnim</iconPath>
+    <modExtensions>
+      <li Class="BetterPrerequisites.GeneExtension">
+        <facialDisabler>
+          <headName>retain</headName>
+          <browName>retain</browName>
+        </facialDisabler>
+      </li>
+      <li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="VanillaGenesExpanded.GeneExtension">
+				<backgroundPathEndogenes>GeneIcons/BS_BackEndogene</backgroundPathEndogenes>
+				<backgroundPathXenogenes>GeneIcons/BS_BackXenogene</backgroundPathXenogenes>
+			</li>
+    </modExtensions>
+  </GeneDef>
+
+  <GeneDef ParentName="BS_NalDisableBase">
+    <defName>BS_FA_Keep_Lid</defName>
+    <label>FA (Brow, Lid)</label>
+    <description>Retains only animations related to the lids.</description>
+    <iconPath>GeneIcons/BS_NoFacialAnim</iconPath>
+    <modExtensions>
+      <li Class="BetterPrerequisites.GeneExtension">
+        <facialDisabler>
+          <headName>retain</headName>
+          <lidName>retain</lidName>
+        </facialDisabler>
+      </li>
+      <li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="VanillaGenesExpanded.GeneExtension">
+				<backgroundPathEndogenes>GeneIcons/BS_BackEndogene</backgroundPathEndogenes>
+				<backgroundPathXenogenes>GeneIcons/BS_BackXenogene</backgroundPathXenogenes>
+			</li>
+    </modExtensions>
+  </GeneDef>
+
+  <GeneDef ParentName="BS_NalDisableBase">
+    <defName>BS_FA_Keep_Eyes</defName>
+    <label>FA (Eyes+)</label>
+    <description>Retains only animations related to the eyes/lids.</description>
+    <iconPath>GeneIcons/BS_NoFacialAnim</iconPath>
+    <modExtensions>
+      <li Class="BetterPrerequisites.GeneExtension">
+        <facialDisabler>
+          <headName>retain</headName>
+          <lidName>retain</lidName>
+          <lidOptionsName>retain</lidOptionsName>
+          <eyeballName>retain</eyeballName>
+        </facialDisabler>
+      </li>
+      <li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="VanillaGenesExpanded.GeneExtension">
+				<backgroundPathEndogenes>GeneIcons/BS_BackEndogene</backgroundPathEndogenes>
+				<backgroundPathXenogenes>GeneIcons/BS_BackXenogene</backgroundPathXenogenes>
+			</li>
+    </modExtensions>
+  </GeneDef>
+
+
+  <GeneDef ParentName="BS_NalDisableBase">
+    <defName>BS_FA_Keep_LidBrow</defName>
+    <label>FA (Lid and Brow)</label>
+    <description>Retains the lids and brows.</description>
+    <iconPath>GeneIcons/BS_NoFacialAnim</iconPath>
+    <modExtensions>
+      <li Class="BetterPrerequisites.GeneExtension">
+        <facialDisabler>
+          <headName>retain</headName>
+          <lidName>retain</lidName>
+          <browName>retain</browName>
+        </facialDisabler>
+      </li>
+      <li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="VanillaGenesExpanded.GeneExtension">
+				<backgroundPathEndogenes>GeneIcons/BS_BackEndogene</backgroundPathEndogenes>
+				<backgroundPathXenogenes>GeneIcons/BS_BackXenogene</backgroundPathXenogenes>
+			</li>
+    </modExtensions>
+  </GeneDef>
+
+  <GeneDef ParentName="BS_NalDisableBase">
+    <defName>BS_FA_NoHead</defName>
+    <label>No FA + Remove Nal's Head</label>
+    <description>Removes the entire head when used with Nal's Animations. Unless there is a gene adding a head graphic they will appear headless.</description>
+    <iconPath>GeneIcons/BS_NoFacialAnim</iconPath>
+    <modExtensions>
+      <li Class="BetterPrerequisites.GeneExtension">
+        <facialDisabler />
+      </li>
+      <li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="VanillaGenesExpanded.GeneExtension">
+				<backgroundPathEndogenes>GeneIcons/BS_BackEndogene</backgroundPathEndogenes>
+				<backgroundPathXenogenes>GeneIcons/BS_BackXenogene</backgroundPathXenogenes>
+			</li>
+    </modExtensions>
+  </GeneDef>
+
 
   <!-- <FacialAnimation.HeadTypeDef>
     <defName>BS_FacialAnimNoHead</defName>

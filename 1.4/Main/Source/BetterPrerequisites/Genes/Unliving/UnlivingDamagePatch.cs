@@ -15,7 +15,7 @@ namespace BigAndSmall
             if (__instance is Pawn pawn == false)
                 return;
 
-            var sizeCache = HumanoidPawnScaler.GetBSDict(pawn);
+            var sizeCache = HumanoidPawnScaler.GetBSDict(pawn, regenerateIfTimer:true);
             if (sizeCache == null)
                 return;
 
@@ -35,6 +35,8 @@ namespace BigAndSmall
 
             // For Acid resistance
             bool isAcid = dinfo.Def.defName.ToLower().Contains("acid") || dinfo.Def.defName.ToLower().Contains("corrode");
+
+
 
             // if instance is a pawn.
             if (isBullet || isArrow || isStab)

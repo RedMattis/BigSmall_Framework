@@ -44,7 +44,7 @@ namespace BetterPrerequisites
                                 break;
                             }
                             var pawn = pawnsQueueForRendering.RandomElement();
-                            if (pawn?.Drawer?.renderer.graphics != null)
+                            if (pawn?.Drawer?.renderer?.graphics != null)
                             {
 
                                 pawn.Drawer.renderer.graphics.SetAllGraphicsDirty();

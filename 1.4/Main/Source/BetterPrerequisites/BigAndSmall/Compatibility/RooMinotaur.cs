@@ -91,7 +91,7 @@ namespace BigAndSmall
         {
             try
             {
-                Pawn Partner = (Pawn)(Thing)__instance.job.GetTarget(___PartnerInd);
+                Pawn Partner = (Pawn)__instance.job.GetTarget(___PartnerInd);
 
                 if (Partner != null)
                 {

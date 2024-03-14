@@ -1,9 +1,10 @@
 <ModMetaData>
-	<name>Big and Small + Prerequisites Framework</name>
+	<name>Big and Small - Framework</name>
   <packageId>RedMattis.BetterPrerequisites</packageId>
 	<author>RedMattis</author>
 	<supportedVersions>
 		<li>1.4</li>
+    <li>1.5</li>
 	</supportedVersions>
 	<modDependencies>
 		<li>

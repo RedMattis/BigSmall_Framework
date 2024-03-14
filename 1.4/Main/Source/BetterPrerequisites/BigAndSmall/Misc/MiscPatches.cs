@@ -105,6 +105,24 @@ namespace BigAndSmall
         }
     }
 
+    [HarmonyPatch(typeof(RelationsUtility))]
+    [HarmonyPatch("IsDisfigured")]
+    public static class IsDisfigured_Patch
+    {
+        [HarmonyPostfix]
+        public static void RemoveDisfigurement(ref bool __result, Pawn pawn)
+        {
+            if (HumanoidPawnScaler.GetBSDict(pawn) is BSCache cache)
+            {
+                if (cache.preventDisfigurement)
+                {
+                    __result = false;
+                }
+            }
+        }
+    }
+
+
 
     // Move this elsewhere later...
     [HarmonyPatch(typeof(FiringIncident), MethodType.Constructor, new Type[]

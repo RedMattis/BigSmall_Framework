@@ -68,6 +68,20 @@ namespace BetterPrerequisites
                     // Add hidden gene
                     pawn.genes.AddGene(geneDef, xenoGene);
                 }
+                // Disable facial animations from Nal's Facial Animation mod
+                try
+                {
+
+                    if (ModsConfig.IsActive("nals.facialanimation") && geneExt.facialDisabler != null)
+                    {
+                        NalFaceExt.DisableFacialAnimations(pawn, geneExt.facialDisabler, revert:false);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Message($"Error in PostAdd: {e.Message}");
+                }
+                
             }
         }
 
@@ -104,6 +118,22 @@ namespace BetterPrerequisites
                         }
                     }
                 }
+                if (ModsConfig.IsActive("nals.facialanimation") && geneExt.facialDisabler != null)
+                {
+                    // Check if any other genes have facialDisabler
+                    bool otherFacialDisabler = pawn.genes.GenesListForReading.Any(x => x.def.HasModExtension<GeneExtension>() && x.def.GetModExtension<GeneExtension>().facialDisabler != null);
+                    if (!otherFacialDisabler)
+                    {
+                        try
+                        {
+                            NalFaceExt.DisableFacialAnimations(pawn, geneExt.facialDisabler, revert:true);
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Message($"Error in PostRemove: {e.Message}");
+                        }
+                    }
+                }
             }
         }
 
@@ -121,6 +151,9 @@ namespace BetterPrerequisites
                 }
                 // Clear saved Hediffs. It is only to be used for the instant when a swap occurs.
                 hediffsToReapply.Clear();
+
+                // Try triggering transform genes if it exists.
+                geneExt?.transformGene?.TryTransform(pawn, this);
             }
             if (Find.TickManager.TicksGame % 5000 == 5)
             {

@@ -14,6 +14,14 @@ namespace BigAndSmall
         public override void Tick()
         {
             base.Tick();
+            // Tick every 250 ticks
+            if (Find.TickManager.TicksGame % 250 == 0)
+            {
+                // Refresh Cache
+                HumanoidPawnScaler.GetBSDict(pawn, forceRefresh: true);
+            }
+
+
             if (Severity >= def.lethalSeverity)
             {
                 // This will normally happen only if the pawn cannot be downed.
@@ -72,8 +80,16 @@ namespace BigAndSmall
         public override void PostTick()
         {
             base.PostTick();
+
+            // Tick every 250 ticks
+            if (Find.TickManager.TicksGame % 250 == 0)
+            {
+                // Refresh Cache
+                HumanoidPawnScaler.GetBSDict(pawn, forceRefresh:true);
+            }
+
             // In case it was a shrink ray, kill the target is they just got unreasonably tiny.
-            if (pawn.BodySize <= 0.03f)
+            if (pawn.BodySize <= 0.051f)
             {
                 // kill pawn
                 KillTarget();
