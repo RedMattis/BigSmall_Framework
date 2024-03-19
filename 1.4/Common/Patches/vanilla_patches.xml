@@ -93,4 +93,19 @@
 			</stages>
 		</value>
 	</Operation>
+
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Royalty</li>
+		</mods>
+
+		<match Class="PatchOperationAdd">
+			<success>Always</success>
+			<xpath>Defs/FactionDef[defName="Empire"]/permanentEnemyToEveryoneExcept</xpath>
+			<value>
+				<li>BS_PlayerTribeXenoPlus</li>
+				<li>BS_PlayerColonyXenoPlus</li>
+			</value>
+		</match>
+	</Operation>
 </Patch>
