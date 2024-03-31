@@ -146,8 +146,9 @@ namespace BigAndSmall
         public static int ModifyProductionBasedOnSize(int result, Pawn pawn)
         {
             var cache = FastAcccess.GetCache(pawn);
+
             if (cache != null)
-                result = Math.Max(1, (int)(result * cache.scaleMultiplier.TripleMaxLinear));
+                result = Math.Max(1, (int)(result * cache.scaleMultiplier.DoubleMaxLinear));
             return result;
         }
 

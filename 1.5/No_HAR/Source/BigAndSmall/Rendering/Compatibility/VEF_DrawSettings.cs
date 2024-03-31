@@ -11,6 +11,7 @@ namespace BigAndSmall
     [HarmonyPatch]
     public static class VFECore_PawnDataCache_Patch
     {
+        public static bool VFE_Loaded = false;
         private static FieldInfo headRenderSizeField = null;
         private static FieldInfo bodyRenderSizeField = null;
         private static FieldInfo pawnField = null;
@@ -25,7 +26,11 @@ namespace BigAndSmall
             string[] vlfa_methods = VEF_GetPawnDataCachePatches;
             for (int i = 0; i < vlfa_methods.Length; i++)
             {
-                if (!(AccessTools.Method(vlfa_methods[i],new Type[] { }) == null)) return true;
+                if (!(AccessTools.Method(vlfa_methods[i], new Type[] { }) == null))
+                {
+                    VFE_Loaded = true;
+                    return true;
+                }
             }
             return false;
         }

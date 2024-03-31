@@ -122,10 +122,6 @@ namespace BigAndSmall
                         {
                             __instance.pawn.needs.mood.thoughts.memories.TryGainMemory(crushed);
                         }
-                        else
-                        {
-                            Log.Warning("RBM: Crushed memory not found");
-                        }
                     }
                 }
             }

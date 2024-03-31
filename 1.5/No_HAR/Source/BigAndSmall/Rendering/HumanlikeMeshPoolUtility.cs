@@ -22,11 +22,16 @@ namespace BigAndSmall
             Pawn pawn = (Pawn)field.GetValue(__instance);
             if (pawn != null)
             {
-                var sizeCache = HumanoidPawnScaler.GetBSDict(pawn);
-                if (sizeCache != null)
+                float factorFromVEF = 1;
+                //if (BigSmallLegacy.VEFActive && VEF_CachedPawnDataWrapper.CachedPawnData.TryGetValue(pawn, out VEF_CachedPawnDataWrapper VEPawnData))
+                //{
+                //    factorFromVEF *= VEPawnData.bodyRenderSize;
+                //}
+
+                if (HumanoidPawnScaler.GetBSDict(pawn) is BSCache sizeCache)
                 {
                     var bodySize = sizeCache.bodyRenderSize;
-                    var headSize = sizeCache.headRenderSize;
+                    var headSize = sizeCache.headRenderSize * factorFromVEF;
                     var headPos = Mathf.Lerp(bodySize, headSize, 0.8f);
                     headPos *= sizeCache.headPosMultiplier;
                     //var headPos = Mathf.Max(bodySize, headSize);
@@ -36,6 +41,8 @@ namespace BigAndSmall
                     __result.z *= headPos;
                     __result.x *= headPos;
                 }
+
+                
             }
         }
         public static FieldInfo pawnFieldInfo = null;
@@ -50,23 +57,47 @@ namespace BigAndSmall
         }
     }
 
+    
+
 
     //[HarmonyPatch(typeof(Pawn_DrawTracker), nameof(Pawn_DrawTracker.DrawPos), MethodType.Getter)]
     [HarmonyPatch(typeof(PawnRenderer), "ParallelGetPreRenderResults")]
-    public static class Pawn_DrawTracker_Patch
+    public static class ParallelGetPreRenderResults_Patch
     {
         public static bool skipOffset = false;
 
         public static void Prefix(PawnRenderer __instance, ref Vector3 drawLoc, Rot4 rotOverride, bool neverAimWeapon, ref bool disableCache, Pawn ___pawn)
         {
+            if (___pawn == null || ___pawn?.Spawned == false) return;
+
             // If caching disabled...
-            if (BigSmallMod.settings.disableTextureCaching)
+            if (!disableCache && BigSmallMod.settings.disableTextureCaching)
             {
                 if (FastAcccess.GetCache(___pawn) is BSCache cache)
                 {
                     if (cache.sizeOffset > 0 || cache.scaleMultiplier.linear > 1)
                     {
+                        //if (VFECore_PawnDataCache_Patch.VFE_Loaded)
+                        //{
+                        //    __instance.EnsureGraphicsInitialized();
+                        //}
                         disableCache = true;
+                        //var renderTree = __instance.renderTree;
+                        //Traverse nodeQueueField = GetNodeQueueField(renderTree);
+                        //var ___nodeQueue = nodeQueueField.GetValue<Queue<PawnRenderNode>>();
+
+                        //// Iterrate the ___nodeQueue and check so none of them are null.
+                        //bool allNodesNotNull = ___nodeQueue != null && ___nodeQueue.All(n => n != null);
+                        //if (allNodesNotNull)
+                        //{
+                        //    // If all nodes are not null, then we can safely disable the cache.
+                        //    disableCache = true;
+                        //}
+                        //else
+                        //{
+                        //    // Log the issue.
+                        //    Log.Warning($"BigAndSmall: Found null nodes in the render tree for {___pawn}. Disabling cache for this pawn.");
+                        //}
                     }
                 }
             }
@@ -84,6 +115,15 @@ namespace BigAndSmall
                 }
             }
         }
+        //static Traverse nodeQueueFieldInfo = null;
+        //private static Traverse GetNodeQueueField(PawnRenderTree renderTree)
+        //{
+        //    if (nodeQueueFieldInfo == null)
+        //    {
+        //        nodeQueueFieldInfo = Traverse.Create(renderTree).Field("nodeQueue");
+        //    }
+        //    return nodeQueueFieldInfo;
+        //}
 
         public static float GetOffset(Pawn ___pawn)
         {
@@ -110,12 +150,12 @@ namespace BigAndSmall
     {
         public static void Prefix(object obj)
         {
-            Pawn_DrawTracker_Patch.skipOffset = true;
+            ParallelGetPreRenderResults_Patch.skipOffset = true;
         }
 
         public static void Postfix(object obj)
         {
-            Pawn_DrawTracker_Patch.skipOffset = false;
+            ParallelGetPreRenderResults_Patch.skipOffset = false;
         }
     }
 
@@ -124,15 +164,16 @@ namespace BigAndSmall
     {
         public static void Prefix()
         {
-            Pawn_DrawTracker_Patch.skipOffset = true;
+            ParallelGetPreRenderResults_Patch.skipOffset = true;
         }
 
         public static void Postfix()
         {
-            Pawn_DrawTracker_Patch.skipOffset = false;
+            ParallelGetPreRenderResults_Patch.skipOffset = false;
         }
     }
 
+    [HarmonyPatch]
     public static partial class HarmonyPatches
     {
         static readonly float lifestageFactor = 1.5f;
@@ -140,96 +181,121 @@ namespace BigAndSmall
         /// <summary>
         /// Body
         /// </summary>
-        [HarmonyPatch(typeof(HumanlikeMeshPoolUtility), nameof(HumanlikeMeshPoolUtility.GetHumanlikeBodySetForPawn))]
-        public static class HumanlikeMeshPoolUtility_GetHumanlikeBodySetForPawnPatch
+        //[HarmonyPatch(typeof(HumanlikeMeshPoolUtility), nameof(HumanlikeMeshPoolUtility.GetHumanlikeBodySetForPawn))]
+        //public static class HumanlikeMeshPoolUtility_GetHumanlikeBodySetForPawnPatch
+        //{
+        //    public static void Prefix(ref GraphicMeshSet __result, Pawn pawn, ref float wFactor, ref float hFactor)
+        //    {
+        //        //float factor = lifestageFactor;
+        //        //if (ModsConfig.BiotechActive && pawn.ageTracker.CurLifeStage.bodyWidth.HasValue)
+        //        //{
+        //        //    factor = pawn.ageTracker.CurLifeStage.bodyWidth.Value;
+        //        //}
+        //        float factor = HumanoidPawnScaler.GetBSDict(pawn).bodyRenderSize;
+        //        //if (BigSmallLegacy.VEFActive && VEF_CachedPawnDataWrapper.CachedPawnData.TryGetValue(pawn, out VEF_CachedPawnDataWrapper VEPawnData))
+        //        //{
+        //        //    factor *= VEPawnData.bodyRenderSize;
+        //        //}
+        //        wFactor *= factor;
+        //        hFactor *= factor;
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Head
+        ///// </summary>
+        //[HarmonyPatch(typeof(HumanlikeMeshPoolUtility), nameof(HumanlikeMeshPoolUtility.GetHumanlikeHeadSetForPawn))]
+        //public static class HumanlikeMeshPoolUtility_HumanlikeMeshPoolUtilityPatch
+        //{
+        //    public static void Prefix(ref GraphicMeshSet __result, Pawn pawn, ref float wFactor, ref float hFactor)
+        //    {
+        //        //float factor = lifestageFactor;
+        //        //if (ModsConfig.BiotechActive && pawn.ageTracker.CurLifeStage.bodyWidth.HasValue)
+        //        //{
+        //        //    factor = pawn.ageTracker.CurLifeStage.bodyWidth.Value;
+        //        //}
+        //        float factor = HumanoidPawnScaler.GetBSDict(pawn).headRenderSize;
+
+        //        //if (BigSmallLegacy.VEFActive && VEF_CachedPawnDataWrapper.CachedPawnData.TryGetValue(pawn, out VEF_CachedPawnDataWrapper VEPawnData))
+        //        //{
+        //        //    factor *= VEPawnData.headRenderSize;
+        //        //}
+
+        //        wFactor *= factor;
+        //        hFactor *= factor;
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Hair
+        ///// </summary>
+        //[HarmonyPatch(typeof(HumanlikeMeshPoolUtility), nameof(HumanlikeMeshPoolUtility.GetHumanlikeHairSetForPawn))]
+        //public static class HumanlikeMeshPoolUtility_GetHumanlikeHairSetForPawPatch
+        //{
+        //    public static void Prefix(ref GraphicMeshSet __result, Pawn pawn, ref float wFactor, ref float hFactor)
+        //    {
+
+        //        //Vector2 hairMeshSize = pawn.story.headType.hairMeshSize;
+        //        //if (ModsConfig.BiotechActive && pawn.ageTracker.CurLifeStage.headSizeFactor.HasValue)
+        //        //{
+        //        //    hairMeshSize *= pawn.ageTracker.CurLifeStage.headSizeFactor.Value;
+        //        //}
+        //        float hairMeshSize = HumanoidPawnScaler.GetBSDict(pawn).headRenderSize;
+        //        //if (BigSmallLegacy.VEFActive && VEF_CachedPawnDataWrapper.CachedPawnData.TryGetValue(pawn, out VEF_CachedPawnDataWrapper VEPawnData))
+        //        //{
+        //        //    hairMeshSize *= VEPawnData.headRenderSize;
+        //        //}
+        //        wFactor *= hairMeshSize;
+        //        hFactor *= hairMeshSize;
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Beard
+        ///// </summary>
+        //[HarmonyPatch(typeof(HumanlikeMeshPoolUtility), nameof(HumanlikeMeshPoolUtility.GetHumanlikeBeardSetForPawn))]
+        //public static class HumanlikeMeshPoolUtility_GetHumanlikeBeardSetForPawnPatch
+        //{
+
+        //    public static void Prefix(ref GraphicMeshSet __result, Pawn pawn, ref float wFactor, ref float hFactor)
+        //    {
+        //        //Vector2 hairMeshSize = pawn.story.headType.hairMeshSize;
+        //        //if (ModsConfig.BiotechActive && pawn.ageTracker.CurLifeStage.headSizeFactor.HasValue)
+        //        //{
+        //        //    hairMeshSize *= pawn.ageTracker.CurLifeStage.headSizeFactor.Value;
+        //        //}
+        //        float hairMeshSize = HumanoidPawnScaler.GetBSDict(pawn).headRenderSize;
+        //        //if (BigSmallLegacy.VEFActive && VEF_CachedPawnDataWrapper.CachedPawnData.TryGetValue(pawn, out VEF_CachedPawnDataWrapper VEPawnData))
+        //        //{
+        //        //    hairMeshSize *= VEPawnData.headRenderSize;
+        //        //}
+        //        wFactor *= hairMeshSize;
+        //        hFactor *= hairMeshSize;
+        //    }
+        //}
+
+
+        // This WORKS, but maybe it is a bit too aggresive since it patches everything? Using it for the time being just so it is the same as VEF.
+        [HarmonyPatch(typeof(PawnRenderNodeWorker), nameof(PawnRenderNodeWorker.ScaleFor))]
+        [HarmonyPostfix]
+        public static void ScaleForPatch(ref Vector3 __result, PawnRenderNode node, PawnDrawParms parms)
         {
-            public static void Prefix(ref GraphicMeshSet __result, Pawn pawn, ref float wFactor, ref float hFactor)
+            var pawn = parms.pawn;
+            if (HumanoidPawnScaler.GetBSDict(pawn) is BSCache cache)
             {
-                //float factor = lifestageFactor;
-                //if (ModsConfig.BiotechActive && pawn.ageTracker.CurLifeStage.bodyWidth.HasValue)
-                //{
-                //    factor = pawn.ageTracker.CurLifeStage.bodyWidth.Value;
-                //}
-                float factor = HumanoidPawnScaler.GetBSDict(pawn).bodyRenderSize;
-                if (BigSmallLegacy.VEFActive && VEF_CachedPawnDataWrapper.CachedPawnData.TryGetValue(pawn, out VEF_CachedPawnDataWrapper VEPawnData))
+                if (node is PawnRenderNode_Body)
                 {
-                    factor *= VEPawnData.bodyRenderSize;
+                    __result *= cache.bodyRenderSize;
                 }
-                wFactor *= factor;
-                hFactor *= factor;
-            }
-        }
-
-        /// <summary>
-        /// Head
-        /// </summary>
-        [HarmonyPatch(typeof(HumanlikeMeshPoolUtility), nameof(HumanlikeMeshPoolUtility.GetHumanlikeHeadSetForPawn))]
-        public static class HumanlikeMeshPoolUtility_HumanlikeMeshPoolUtilityPatch
-        {
-            public static void Prefix(ref GraphicMeshSet __result, Pawn pawn, ref float wFactor, ref float hFactor)
-            {
-                //float factor = lifestageFactor;
-                //if (ModsConfig.BiotechActive && pawn.ageTracker.CurLifeStage.bodyWidth.HasValue)
-                //{
-                //    factor = pawn.ageTracker.CurLifeStage.bodyWidth.Value;
-                //}
-                float factor = HumanoidPawnScaler.GetBSDict(pawn).headRenderSize;
-
-                if (BigSmallLegacy.VEFActive && VEF_CachedPawnDataWrapper.CachedPawnData.TryGetValue(pawn, out VEF_CachedPawnDataWrapper VEPawnData))
+                else if (node is PawnRenderNode_Head)
                 {
-                    factor *= VEPawnData.headRenderSize;
+                    __result *= cache.headRenderSize;
                 }
 
-                wFactor *= factor;
-                hFactor *= factor;
-            }
-        }
-
-        /// <summary>
-        /// Hair
-        /// </summary>
-        [HarmonyPatch(typeof(HumanlikeMeshPoolUtility), nameof(HumanlikeMeshPoolUtility.GetHumanlikeHairSetForPawn))]
-        public static class HumanlikeMeshPoolUtility_GetHumanlikeHairSetForPawPatch
-        {
-            public static void Prefix(ref GraphicMeshSet __result, Pawn pawn, ref float wFactor, ref float hFactor)
-            {
-
-                //Vector2 hairMeshSize = pawn.story.headType.hairMeshSize;
-                //if (ModsConfig.BiotechActive && pawn.ageTracker.CurLifeStage.headSizeFactor.HasValue)
-                //{
-                //    hairMeshSize *= pawn.ageTracker.CurLifeStage.headSizeFactor.Value;
-                //}
-                float hairMeshSize = HumanoidPawnScaler.GetBSDict(pawn).headRenderSize;
-                if (BigSmallLegacy.VEFActive && VEF_CachedPawnDataWrapper.CachedPawnData.TryGetValue(pawn, out VEF_CachedPawnDataWrapper VEPawnData))
+                if (node.gene != null)
                 {
-                    hairMeshSize *= VEPawnData.headRenderSize;
+                    //__result *= pawn?.story?.bodyType?.bodyGraphicScale.x ?? 1;
                 }
-                wFactor *= hairMeshSize;
-                hFactor *= hairMeshSize;
-            }
-        }
-
-        /// <summary>
-        /// Beard
-        /// </summary>
-        [HarmonyPatch(typeof(HumanlikeMeshPoolUtility), nameof(HumanlikeMeshPoolUtility.GetHumanlikeBeardSetForPawn))]
-        public static class HumanlikeMeshPoolUtility_GetHumanlikeBeardSetForPawnPatch
-        {
-            
-            public static void Prefix(ref GraphicMeshSet __result, Pawn pawn, ref float wFactor, ref float hFactor)
-            {
-                //Vector2 hairMeshSize = pawn.story.headType.hairMeshSize;
-                //if (ModsConfig.BiotechActive && pawn.ageTracker.CurLifeStage.headSizeFactor.HasValue)
-                //{
-                //    hairMeshSize *= pawn.ageTracker.CurLifeStage.headSizeFactor.Value;
-                //}
-                float hairMeshSize = HumanoidPawnScaler.GetBSDict(pawn).headRenderSize;
-                if (BigSmallLegacy.VEFActive && VEF_CachedPawnDataWrapper.CachedPawnData.TryGetValue(pawn, out VEF_CachedPawnDataWrapper VEPawnData))
-                {
-                    hairMeshSize *= VEPawnData.headRenderSize;
-                }
-                wFactor *= hairMeshSize;
-                hFactor *= hairMeshSize;
             }
         }
     }

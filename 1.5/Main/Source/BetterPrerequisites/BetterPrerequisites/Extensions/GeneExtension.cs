@@ -35,7 +35,6 @@ namespace BetterPrerequisites
         public List<ThingDef> thingDefsToSupress = new List<ThingDef>();
         public bool forceThingDefSwap = false;
         public List<GeneDef> hiddenGenes = new List<GeneDef>();
-        public bool hiddenAddon = false;
 
         public TransformationGene transformGene = null;
         public SizeByAge sizeByAge = null;

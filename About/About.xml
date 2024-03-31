@@ -6,6 +6,7 @@
 		<li>1.4</li>
     <li>1.5</li>
 	</supportedVersions>
+	<modIconPath IgnoreIfNoMatchingField="True">BS_ModIcon</modIconPath>
 	<modDependencies>
 		<li>
 			<packageId>Ludeon.RimWorld.Biotech</packageId>

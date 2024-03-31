@@ -15,36 +15,36 @@ namespace BigAndSmall
     }
 
     // postfix Rimworld.Abillity AICanTargetNow using Harmony
-    [HarmonyPatch(typeof(JobGiver_AIFightEnemy), "GetAbilityJob")]
-    public class GetAbillityJobPatch_CombatBuff
-    {
-        static int errorsSent = 0;
-        public static void Postfix(ref Verse.AI.Job __result, JobGiver_AIFightEnemy __instance, Pawn pawn, Thing enemyTarget)
-        {
-            if (__result == null & pawn != null && pawn.Map != null && pawn.Map.pawnDestinationReservationManager != null)
-            {
-                try
-                {
-                    if (pawn.Position.Standable(pawn.Map) && pawn.Position != null && pawn.Map.pawnDestinationReservationManager.CanReserve(pawn.Position, pawn, pawn.Drafted) && pawn.Spawned && pawn.abilities != null)
-                    {
-                        foreach (var abillity in pawn.abilities
-                            .AllAbilitiesForReading.Where(x => x != null && x.def.GetModExtension<CombatBuff>() != null && x.CanCast && x.verb != null && x.verb.CanHitTarget(pawn)))
-                        {
-                            __result = abillity.GetJob(pawn, pawn);
-                        }
-                    }
-                }
-                catch (NullReferenceException e)
-                {
-                    if (errorsSent < 10)
-                    {
-                        Log.Warning("Null Error in GetAbillityJobPatch_CombatBuff.\n" + e.Message);
-                        errorsSent++;
-                    }
-                }
-            }
-        }
-    }
+    //[HarmonyPatch(typeof(JobGiver_AIFightEnemy), "GetAbilityJob")]
+    //public class GetAbillityJobPatch_CombatBuff
+    //{
+    //    static int errorsSent = 0;
+    //    public static void Postfix(ref Job __result, JobGiver_AIFightEnemy __instance, Pawn pawn, Thing enemyTarget)
+    //    {
+    //        if (__result == null & pawn != null && pawn.Map != null && pawn.Map.pawnDestinationReservationManager != null)
+    //        {
+    //            try
+    //            {
+    //                if (pawn.Position.Standable(pawn.Map) && pawn.Position != null && pawn.Map.pawnDestinationReservationManager.CanReserve(pawn.Position, pawn, pawn.Drafted) && pawn.Spawned && pawn.abilities != null)
+    //                {
+    //                    foreach (var abillity in pawn.abilities
+    //                        .AllAbilitiesForReading.Where(x => x != null && x.def.GetModExtension<CombatBuff>() != null && x.CanCast && x.verb != null && x.verb.CanHitTarget(pawn)))
+    //                    {
+    //                        __result = abillity.GetJob(pawn, pawn);
+    //                    }
+    //                }
+    //            }
+    //            catch (NullReferenceException e)
+    //            {
+    //                if (errorsSent < 10)
+    //                {
+    //                    Log.Warning("Null Error in GetAbillityJobPatch_CombatBuff.\n" + e.Message);
+    //                    errorsSent++;
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 
     [HarmonyPatch(typeof(Pawn_MeleeVerbs), nameof(Pawn_MeleeVerbs.TryMeleeAttack))]
     public static class TryMeleeAttack_MeleeAbility_Patch

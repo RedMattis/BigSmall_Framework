@@ -67,7 +67,7 @@ namespace BigAndSmall.Balancing.VEPatches
 
                         previousSpawnCount = (int)spawnCountField.GetValue(hediffCP_Spawner);
                         //var thing = (ThingDef)thingToSpawn.GetValue(hediffCP_Spawner);
-                        float value = sizeCache.scaleMultiplier.TripleMaxLinear;
+                        float value = sizeCache.scaleMultiplier.DoubleMaxLinear;
 
                         int targetSpawnCount = Mathf.Max(1, (int)(value * previousSpawnCount));
                         spawnCountField.SetValue(hediffCP_Spawner, targetSpawnCount);

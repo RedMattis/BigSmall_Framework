@@ -553,8 +553,8 @@ namespace BigAndSmall
             public float quadratic = 1;
             public float cubic = 1;
             public float KelibersLaw => Mathf.Pow(cubic, 0.75f);    // Results in a colonist that does nothing but eat. Not a great idea...
-            public float DoubleMaxLinear => linear < 1 ? linear : 1 + (linear - 1) * 2;
-            public float TripleMaxLinear => linear < 1 ? linear : 1 + (linear - 1) * 3;
+            public float DoubleMaxLinear => linear < 1 ? linear : 1 + ((linear - 1) * 2);
+            public float TripleMaxLinear => linear < 1 ? linear : 1 + ((linear - 1) * 3);
 
             // For Scribe
             public PercentChange() { }

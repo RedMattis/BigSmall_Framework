@@ -58,10 +58,6 @@ namespace BigAndSmall
                 var draculStageProgression = (DraculStageProgression)HediffMaker.MakeHediff(BSDefs.VU_DraculAge, pawn);
                 int ticksPerDay = 60000;
                 int durationTicks = days * ticksPerDay;
-                //Log.Message($"Setting progression duration based on Dracul Stage {draculStage}. Result is {durationTicks}");
-
-                //// DEBUG! REMOVE THIS!
-                //durationTicks = 10000;
 
                 // Get the comps in the hediff and set the HediffCompProperties_Disappears disappars to the duration
                 foreach (var comp in draculStageProgression.comps)

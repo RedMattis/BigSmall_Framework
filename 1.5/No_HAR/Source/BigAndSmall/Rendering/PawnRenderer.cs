@@ -55,6 +55,42 @@ namespace BigAndSmall
         }
     }
 
+    [HarmonyPatch(typeof(PawnRenderer), "ParallelPreRenderPawnAt")]
+    public static class PawnRenderer_ParallelPreRenderPawnAt_Patch
+    {
+        /// <summary>
+        /// Set the pawn schedueled for rendering as the active pawn for scaling.
+        /// </summary>
+        [HarmonyPrefix]
+        public static void SetBSActivePawn(PawnRenderTree __instance, Pawn ___pawn)
+        {
+            BigSmall.activePawn = ___pawn;
+        }
+
+
+        /// <summary>
+        /// Pawn has been processed, time to remove it.
+        /// </summary>
+        [HarmonyPostfix]
+        public static void ClearBSActivePawn()
+        {
+            BigSmall.activePawn = null;
+        }
+    }
+
+    //[HarmonyPatch(typeof(Graphic), nameof(Graphic.DrawWorker))]
+    //public static class PawnRenderer_DrawWorker_Patch
+    //{
+    //    /// <summary>
+    //    /// Set the pawn schedueled for rendering as the active pawn for scaling.
+    //    /// </summary>
+    //    public static void Prefix(Vector3 loc, Rot4 rot, ThingDef thingDef, Thing thing, float extraRotation)
+    //    {
+    //        if (thing is Pawn pawn)
+    //            BigSmall.activePawn = pawn;
+    //    }
+    //}
+
 
     //[HarmonyPatch(typeof(PawnRenderer), "DrawBodyGenes")]
     //public static class PawnRenderer_DrawBodyGenes_Patch

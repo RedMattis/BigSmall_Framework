@@ -541,7 +541,7 @@ namespace BigAndSmall
             bool makesBlood = damageType.makesBlood;
 
             // If damage is less than 1/40 of the part health when adjusted for incomming damage multiplier, abort.
-            if (damage < targetPart.def.GetMaxHealth(innerPawn) * pawn.GetStatValue(StatDefOf.IncomingDamageFactor) / 40)
+            if (damage < targetPart.def.GetMaxHealth(pawn) * pawn.GetStatValue(StatDefOf.IncomingDamageFactor) / 40)
             {
                 return;
             }

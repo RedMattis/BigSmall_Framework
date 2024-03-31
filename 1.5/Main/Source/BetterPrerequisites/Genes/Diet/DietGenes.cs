@@ -30,15 +30,21 @@ namespace BigAndSmall
 
             if (p.RaceProps.Humanlike && p.genes != null)
             {
+                // Allow nutrient paste. It is too much of a hassle to check if it is acceptable. Er. I mean the nutrient paste is so
+                // nutritionally perfected that it is acceptable. Ofc.
+                if (food?.def?.defName?.Contains("NutrientPaste") == true)
+                {
+                    return true;
+                }
                 var cache = HumanoidPawnScaler.GetBSDict(p);
                 if (cache != null)
                 {
                     if (cache.diet == FoodKind.Any)
                         return true;
-                    if (cache.diet == FoodKind.NonMeat && !RimWorld.FoodUtility.AcceptableVegetarian(food))
+                    if (cache.diet == FoodKind.NonMeat && !FoodUtility.AcceptableVegetarian(food))
                         return false;
 
-                    if (cache.diet == FoodKind.Meat && !RimWorld.FoodUtility.AcceptableCarnivore(food))
+                    if (cache.diet == FoodKind.Meat && !FoodUtility.AcceptableCarnivore(food))
                         return false;
                 }
             }

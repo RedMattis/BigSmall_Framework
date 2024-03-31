@@ -29,6 +29,8 @@ namespace BetterPrerequisites
         public float lastUpdateTicks = 0f;
         public float lastUpdate = 0f;
 
+        public bool triggerNalFaceDisable = false;
+
         [Unsaved(false)]
         private bool setupvars = false;
         
@@ -69,19 +71,10 @@ namespace BetterPrerequisites
                     pawn.genes.AddGene(geneDef, xenoGene);
                 }
                 // Disable facial animations from Nal's Facial Animation mod
-                try
+                if (ModsConfig.IsActive("nals.facialanimation") && geneExt.facialDisabler != null)
                 {
-
-                    if (ModsConfig.IsActive("nals.facialanimation") && geneExt.facialDisabler != null)
-                    {
-                        NalFaceExt.DisableFacialAnimations(pawn, geneExt.facialDisabler, revert:false);
-                    }
+                    triggerNalFaceDisable = true;
                 }
-                catch (Exception e)
-                {
-                    Log.Message($"Error in PostAdd: {e.Message}");
-                }
-                
             }
         }
 
@@ -159,6 +152,22 @@ namespace BetterPrerequisites
             {
                 PostPostAdd();
             }
+            if (Find.TickManager.TicksGame % 100 == 0 && triggerNalFaceDisable)
+            {
+                try
+                {
+                    if (ModsConfig.IsActive("nals.facialanimation") && geneExt != null && geneExt.facialDisabler != null)
+                    {
+                        triggerNalFaceDisable = false;
+                        NalFaceExt.DisableFacialAnimations(pawn, geneExt.facialDisabler, revert: false);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Message($"Error in Tick: {e.Message}");
+                }
+            }
+
         }
 
         public static Dictionary<Pawn, List<Hediff>> hediffsToReapply = new Dictionary<Pawn, List<Hediff>>();

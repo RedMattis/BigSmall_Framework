@@ -28,6 +28,8 @@ namespace BetterPrerequisites
         public bool? previouslyActive = null;
         public float lastUpdateTicks = 0f;
         public float lastUpdate = 0f;
+        public bool triggerNalFaceDisable = false;
+
 
         [Unsaved(false)]
         private bool setupvars = false;
@@ -53,12 +55,6 @@ namespace BetterPrerequisites
                 {
                     SwapThingDef(true);
                 }
-                bool valid = HiddenGeneHasParent();
-                // If not, remove this.
-                if (!valid)
-                {
-                    pawn.genes.RemoveGene(this);
-                }
 
                 // Check if this is a xenogene.
                 bool xenoGene = pawn.genes.Xenogenes.Any(x => x == this);
@@ -71,10 +67,9 @@ namespace BetterPrerequisites
                 // Disable facial animations from Nal's Facial Animation mod
                 try
                 {
-
                     if (ModsConfig.IsActive("nals.facialanimation") && geneExt.facialDisabler != null)
                     {
-                        NalFaceExt.DisableFacialAnimations(pawn, geneExt.facialDisabler, revert:false);
+                        triggerNalFaceDisable = true;
                     }
                 }
                 catch (Exception e)
@@ -126,7 +121,7 @@ namespace BetterPrerequisites
                     {
                         try
                         {
-                            NalFaceExt.DisableFacialAnimations(pawn, geneExt.facialDisabler, revert:true);
+                            //NalFaceExt.DisableFacialAnimations(pawn, geneExt.facialDisabler, revert:true);
                         }
                         catch (Exception e)
                         {
@@ -143,12 +138,6 @@ namespace BetterPrerequisites
             // Every 5000 ticks
             if (Find.TickManager.TicksGame % 5000 == 0)
             {
-                // Remove hidden gene if it has no parent. This is to catch genes added by mods that some avoid triggering the PostAdd. (Sarg. What are you doing?) ^_^;;
-                if (geneExt != null && !HiddenGeneHasParent())
-                {
-                    pawn.genes.RemoveGene(this);
-                    //Log.Message($"Removed Orphaned Gene: {def.defName} from {pawn.Name}.");
-                }
                 // Clear saved Hediffs. It is only to be used for the instant when a swap occurs.
                 hediffsToReapply.Clear();
 
@@ -158,6 +147,21 @@ namespace BetterPrerequisites
             if (Find.TickManager.TicksGame % 5000 == 5)
             {
                 PostPostAdd();
+            }
+            if (Find.TickManager.TicksGame % 100 == 0 && triggerNalFaceDisable)
+            {
+                try
+                {
+                    if (ModsConfig.IsActive("nals.facialanimation") && geneExt != null && geneExt.facialDisabler != null)
+                    {
+                        triggerNalFaceDisable = false;
+                        NalFaceExt.DisableFacialAnimations(pawn, geneExt.facialDisabler, revert: false);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Message($"Error in Tick: {e.Message}");
+                }
             }
         }
 
@@ -315,18 +319,6 @@ namespace BetterPrerequisites
         }
 
         /// <summary>
-        /// Despite the name the gene is actually visible. It otherwise works as intended, but I should probably fix UI issue...
-        /// </summary>
-        private bool HiddenGeneHasParent()
-        {
-            if (geneExt != null && geneExt.hiddenAddon)
-            {
-                return pawn.genes.GenesListForReading.Any(x => x.def.HasModExtension<GeneExtension>() && x.def.GetModExtension<GeneExtension>().hiddenGenes.Any(y => y == def));
-            }
-            return true;
-        }
-
-        /// <summary>
         /// Mostly because PostAdd doesn't run on save load and stuff like that. But I don't think trying to fetch the ModExtension every time is a good idea.
         /// </summary>
         public void SetupVars()
@@ -400,7 +392,7 @@ namespace BetterPrerequisites
             bool result;
             bool prerequisitesValid = true;
             bool conditionalsValid = true;
-            bool isSupressedByGene = false;
+            bool isSupressedByGene = Overridden;
             bool refreshGraphics = false;
 
 
@@ -411,9 +403,7 @@ namespace BetterPrerequisites
                 {
                     supressPostfix = true;
                     conditionalsValid = ConditionalManager.TestConditionals(this);
-                    prerequisitesValid = PrerequisiteValidator.Validate(def, pawn) && HiddenGeneHasParent();
-
-                    isSupressedByGene = Overridden;
+                    prerequisitesValid = PrerequisiteValidator.Validate(def, pawn);
                     if (conditionalsValid != this.conditionalsValid || prerequisitesValid != this.prerequisitesValid)
                     {
                         refreshGraphics = true;
@@ -431,7 +421,9 @@ namespace BetterPrerequisites
             bool isSupressedByHediff = GeneSuppressorManager.IsSupressedByHediff(def.defName, pawn);
             result = prerequisitesValid && conditionalsValid && !isSupressedByGene && !isSupressedByHediff;
 
-            if (!supressPostfix2 && !supressPostfix)
+            
+
+            if (!supressPostfix && !supressPostfix2)
             {
                 supressPostfix2 = true;
 
@@ -472,8 +464,6 @@ namespace BetterPrerequisites
                         var change = GeneEffectManager.RefreshGeneEffects(this, result, geneExt: geneExt);
 
                         // Check if on main thread
-
-
                         if (change && Thread.CurrentThread == BigSmall.mainThread)
                         {
                             pawn.Drawer.renderer.SetAllGraphicsDirty();
@@ -488,8 +478,11 @@ namespace BetterPrerequisites
 
                 lastUpdate = Time.realtimeSinceStartup;
                 lastUpdateTicks = Find.TickManager.TicksGame;// Time.realtimeSinceStartup;
-                
-                
+                //if (previouslyActive != result)
+                //{
+                //    Log.Message($"CHANGED PREVIOUSLY ACTIVE from {previouslyActive} to {result}: {def.defName} - {result} && {prerequisitesValid} && {conditionalsValid} && {Overridden}: {overriddenByGene?.def.defName} && {isSupressedByHediff}");
+                //}
+
                 previouslyActive = result;
             }
 
