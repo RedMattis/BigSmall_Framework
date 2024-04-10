@@ -162,6 +162,7 @@ namespace BigAndSmall
         {
             base.PostRemoved();
             IList<Thing> content = innerContainer;
+
             for (int i = content.Count - 1; i >= 0; i--)
             {
                 Thing thing = content[i];
@@ -212,6 +213,7 @@ namespace BigAndSmall
                         digestionEffiency += (digestionEffiency - 1) * 3; // If digestion is above 100%, increase damage further, because the pawn likely has a nuclear furnace for a stomach or something.
                     }
                 }
+                bool ejectDownedPrisoner = pawn.health.Downed && pawn.IsPrisonerOfColony;
                 bool stomachIntact = true;
                 bool torsoIntact = true;
 
@@ -243,7 +245,7 @@ namespace BigAndSmall
                 }
 
                 // If a pawn can't vomit they will take damage to the torso instead. If the torso is destroyed, the contents will spill out.
-                if ((digestionEffiency < 0.51f || stomachIntact == false) && canEject || !torsoIntact || Fullness > 1.25f)
+                if (ejectDownedPrisoner || (digestionEffiency < 0.51f || stomachIntact == false) && canEject || !torsoIntact || Fullness > 1.25f)
                 {
                     // Remove this Hediff
                     pawn.health.RemoveHediff(this);
@@ -292,7 +294,7 @@ namespace BigAndSmall
                                 bool isEnemy = innerPawn.Faction == null || pawn.Faction == null ||
                                     (pawn.Faction != null && pawn.Faction.HostileTo(innerPawn.Faction) && !innerPawn.IsSlaveOfColony && !innerPawn.IsPrisonerOfColony);
 
-                                if (alliesAttackBack || isEnemy || selfDamageMultiplier > 0)
+                                if (alliesAttackBack || isEnemy)
                                 {
                                     AttackPossessor(stomach, innerPawn);
                                 }
@@ -350,7 +352,7 @@ namespace BigAndSmall
             const int ticksPerDay = 60000;
             // Heal amount is the healingRate * tickrate / ticks per day "1" amount means healing 1 hp of injuryies per day.
             float healAmount = healPerDay * tickRate / ticksPerDay;
-            healAmount *= innerPawn.BodySize > 1 ? innerPawn.HealthScale : 1;
+            healAmount = (innerPawn.BodySize > 1 ? innerPawn.HealthScale : 1) * pawn.BodySize;
 
             // Add the Pawns' regular healing amount to the heal amount.
             var hFactor = innerPawn.GetStatValue(StatDefOf.InjuryHealingFactor);
@@ -595,6 +597,10 @@ namespace BigAndSmall
                 if (attacker?.needs?.mood?.thoughts?.memories != null)
                 {
                     attacker.needs.mood.thoughts.memories.TryGainMemory(thought_Memory);
+                }
+                foreach(var gene in Helpers.GetAllActiveGenes(attacker))
+                {
+                    gene.Notify_IngestedThing(target, 1);
                 }
             }
         }

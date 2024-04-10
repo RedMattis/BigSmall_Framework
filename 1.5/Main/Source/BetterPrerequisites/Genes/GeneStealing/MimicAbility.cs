@@ -42,6 +42,7 @@ namespace BigAndSmall
     public class CompPropertiesMimicOff : CompProperties_AbilityEffect
     {
         public List<GeneDef> genesToRetain = new List<GeneDef>();
+        public bool spawnFilth = true;
         public CompPropertiesMimicOff()
         {
             compClass = typeof(CompProperticesMimicOffEffect);
@@ -54,12 +55,12 @@ namespace BigAndSmall
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             base.Apply(target, dest);
-            EndMimicry(parent.pawn, Props.genesToRetain, spawnGibs:true);
+            EndMimicry(parent.pawn, Props.genesToRetain, spawnFilith:Props.spawnFilth);
         }
 
-        public static void EndMimicry(Pawn pawn, List<GeneDef> genesToRetain, bool spawnGibs=false)
+        public static void EndMimicry(Pawn pawn, List<GeneDef> genesToRetain, bool spawnFilith=false)
         {
-            if (spawnGibs)
+            if (spawnFilith)
             {
                 Gibblets.SpawnGibblets(pawn, pawn.Position, pawn.Map, gibbletChance:0);
             }

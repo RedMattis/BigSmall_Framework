@@ -2,9 +2,9 @@
 <LanguageData>
   <BP_GenePrerequisites>Gene Prerequisites</BP_GenePrerequisites>
   <BP_PrerequisiteSet>prerequisites</BP_PrerequisiteSet>
-  <BP_AnyOf>Any of the listed</BP_AnyOf>
-  <BP_AllOf>All of the listed</BP_AllOf>
-  <BP_NoneOf>None of the listed</BP_NoneOf>
+  <BP_AnyOf>Requires ANY of the listed</BP_AnyOf>
+  <BP_AllOf>Requires ALL of the listed</BP_AllOf>
+  <BP_NoneOf>Must not have ANY of the listed</BP_NoneOf>
   <BP_GeneNotFoundInGame>Gene not active in your game</BP_GeneNotFoundInGame>
   <BP_GenesSuppressed>Genes Suppressed</BP_GenesSuppressed>
   
@@ -38,4 +38,7 @@
   <BS_TargetAlreadyUndead>Target is already undead.</BS_TargetAlreadyUndead>
 
   <MessageMimicryGenesRemoved>Mimicry went way past the limit (-15) and random xenogenes have been lost.</MessageMimicryGenesRemoved>
+
+  <SizeOffsetByAge>Size Offset by Age</SizeOffsetByAge>
+  <SizeByAgeOffset>Size Offset at age</SizeByAgeOffset>
 </LanguageData>

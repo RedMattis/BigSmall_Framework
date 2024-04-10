@@ -98,16 +98,20 @@ namespace BigAndSmall
         {
             if (thing.IsApparel && FastAcccess.GetCache(pawn) is BSCache cache)
             {
+                if (!thing.apparel.countsAsClothingForNudity)
+                {
+                    return __result;
+                }
                 if (!cache.canWearApparel)
                 {
                     cantreason = "BS_CannotWearApparel".Translate();
                     return false;
                 }
-                bool itemIsArmor = thing.apparel.tags?.Contains("Armor") == true ||
+                bool itemIsArmor = thing.apparel.tags?.Any(x=>x.ToLower().Contains("armor")) == true ||
                         // or it thing categories has ApparelArmor.
                         thing.thingCategories?.Contains(ThingCategoryDefOf.ApparelArmor) == true ||
                         // or trade tags
-                        thing.tradeTags?.Contains("Armor") == true;
+                        thing.tradeTags?.Any(x=>x.ToLower().Contains("armor")) == true;
 
                 if (!cache.canWearArmor && itemIsArmor)
                 {
@@ -139,11 +143,16 @@ namespace BigAndSmall
             {
                 return;
             }
+            if (!__instance.countsAsClothingForNudity)
+            {
+                return;
+            }
             if (pawn?.needs != null)
             {
                 var cache = HumanoidPawnScaler.GetBSDict(pawn);
                 if (cache != null)
                 {
+                    
                     if (!cache.canWearApparel)
                     {
                         __result = false;

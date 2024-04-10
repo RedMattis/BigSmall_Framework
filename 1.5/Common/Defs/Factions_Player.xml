@@ -79,7 +79,7 @@
 
   <FactionDef ParentName="BS_PlayerFactionBaseXenoPlus">
     <defName>BS_PlayerColonyXenoPlus</defName>
-    <label>New Arrivals</label>
+    <label>New Xeno Arrivals</label>
     <description>A colony of recently-arrived off-worlders. Who have found themselves on a world with a great variety of xenotypes.</description>
     <isPlayer>true</isPlayer>
     <basicMemberKind>Colonist</basicMemberKind>

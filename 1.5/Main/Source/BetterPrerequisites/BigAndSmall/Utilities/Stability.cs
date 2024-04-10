@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace BigAndSmall
 {
-
     /// <summary>
     /// Avoid having scale calculations be done while needs are being added since this can cause an exception.
     /// </summary>

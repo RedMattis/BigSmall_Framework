@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RimWorld.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,44 @@ using Verse;
 using Verse.AI;
 using static RimWorld.ColonistBar;
 
+//BigAndSmall.Verb_CastAbilityJumpON
+
 namespace BigAndSmall
 {
-    public class CompProperties_AbilityEngluf : CompProperties_AbilityEffect
+    public class Verb_CastAbilityJumpON : Verb_CastAbilityJump
+    {
+        public override void OrderForceTarget(LocalTargetInfo target)
+        {
+            DoJump(CasterPawn, target, this, EffectiveRange);
+        }
+
+        public static void DoJump(Pawn pawn, LocalTargetInfo target, Verb verb, float range)
+        {
+            Map map = pawn.Map;
+            IntVec3 intVec = target.Cell;
+            Job job = JobMaker.MakeJob(JobDefOf.CastJump, target);
+            job.verbToUse = verb;
+            if (pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc))
+            {
+                FleckMaker.Static(intVec, map, FleckDefOf.FeedbackGoto);
+            }
+        }
+
+        public override bool ValidateTarget(LocalTargetInfo target, bool showMessages = true)
+        {
+            for (int i = 0; i < ability.EffectComps.Count; i++)
+            {
+                if (!ability.EffectComps[i].Valid(target, showMessages))
+                {
+                    return false;
+                }
+            }
+            
+            return base.ValidateTarget(target, showMessages);
+        }
+    }
+
+    public abstract class CompProperties_AbilityEngluf_Abstract : CompProperties_AbilityEffect
     {
         public float relativeSizeThreshold = 0.8f;
         public float? max = null;
@@ -26,29 +62,66 @@ namespace BigAndSmall
         public bool healsScars = false;
         public bool canHealBrain = false;
         public float bodyPartsRegeneratedPerDay = 0;
+    }
+    public class CompProperties_AbilityEnglufJump : CompProperties_AbilityEngluf_Abstract
+    {
+        public CompProperties_AbilityEnglufJump()
+        {
+            compClass = typeof(CompAbilityEffect_SlimeEnglufJump);
+        }
+    }
 
+    public class CompProperties_AbilityEngluf : CompProperties_AbilityEngluf_Abstract
+    {
         public CompProperties_AbilityEngluf()
         {
             compClass = typeof(CompAbilityEffect_SlimeEngluf);
         }
     }
 
-    public class CompAbilityEffect_SlimeEngluf : CompAbilityEffect
+    public class CompAbilityEffect_SlimeEnglufJump : CompAbilityEffect_SlimeEngluf_Abstract, ICompAbilityEffectOnJumpCompleted
     {
-        public new CompProperties_AbilityEngluf Props => (CompProperties_AbilityEngluf)props;
+        public override CompProperties_AbilityEngluf_Abstract Props => (CompProperties_AbilityEnglufJump)props;
 
+        public void OnJumpCompleted(IntVec3 origin, LocalTargetInfo target)
+        {
+            Pawn tPawn = target.Pawn;
+            if (tPawn != null)
+            {
+                DoEngulf(parent.pawn, tPawn);
+            }
+        }
+    }
 
+    public class CompAbilityEffect_SlimeEngluf : CompAbilityEffect_SlimeEngluf_Abstract
+    {
+        public override CompProperties_AbilityEngluf_Abstract Props => (CompProperties_AbilityEnglufJump)props;
+        
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             base.Apply(target, dest);
-            Pawn pawn = target.Pawn;
-            if (pawn != null)
+            Pawn tPawn = target.Pawn;
+            if (tPawn != null)
             {
-                DoEngulf(parent.pawn, pawn);
+                DoEngulf(parent.pawn, tPawn);
             }
         }
 
-        public override bool CanApplyOn(LocalTargetInfo target, LocalTargetInfo dest)
+        public override bool CanApplyOn(LocalTargetInfo origin, LocalTargetInfo target)
+        {
+            Log.Message($"CanApplyOn: {target} {Valid(target)}");
+            // Print Stacktrace
+            Log.Message(Environment.StackTrace);
+
+            return Valid(target);
+        }
+    }
+
+    public abstract class CompAbilityEffect_SlimeEngluf_Abstract : CompAbilityEffect
+    {
+        public abstract new CompProperties_AbilityEngluf_Abstract Props { get; }
+
+        public override bool AICanTargetNow(LocalTargetInfo target)
         {
             return Valid(target);
         }

@@ -98,6 +98,7 @@
     <Compile Include="Genes\CanEquip.cs" />
     <Compile Include="Genes\Diet\DietGenes.cs" />
     <Compile Include="Genes\ForcedUnarmed.cs" />
+    <Compile Include="Genes\GeneStealing\GeneEater.cs" />
     <Compile Include="Genes\GeneStealing\IncorporateAbillity.cs" />
     <Compile Include="Genes\Gender and Reproduction\Pregnancy.cs" />
     <Compile Include="Genes\GeneStealing\MimicAbility.cs" />
@@ -119,6 +120,8 @@
     <Compile Include="Hediffs\SuccubusBondVictim.cs" />
     <Compile Include="Hediffs\TemperatureGenerator.cs" />
     <Compile Include="ModsCompat\NalsAnim\DisableNalFacialFeatures.cs" />
+    <Compile Include="RenderNodes\Fur.cs" />
+    <Compile Include="RenderNodes\Offsets.cs" />
     <Compile Include="Traits\Gentle.cs" />
     <Compile Include="Traits\GiantTrait.cs" />
     <Compile Include="BigAndSmall\Balancing\MechanicalChanges.cs" />

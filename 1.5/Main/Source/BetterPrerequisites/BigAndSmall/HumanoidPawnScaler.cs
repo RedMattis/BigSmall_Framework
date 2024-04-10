@@ -192,6 +192,8 @@ namespace BigAndSmall
 
         public bool preventDisfigurement = false;
 
+        public bool renderCacheOff = false;
+
         public FoodKind diet = FoodKind.Any;
 
         public List<ApparelCache> apparelCaches = new List<ApparelCache>();
@@ -248,6 +250,7 @@ namespace BigAndSmall
             Scribe_Values.Look(ref diet, "BS_Diet", FoodKind.Any);
             Scribe_Collections.Look(ref apparelCaches, "BS_ApparelCaches", LookMode.Deep);
             Scribe_Values.Look(ref preventDisfigurement, "BS_PreventDisfigurement", false);
+            Scribe_Values.Look(ref renderCacheOff, "BS_RenderCacheOff", false);
         }
 
         // Used for the Scribe.
@@ -276,12 +279,14 @@ namespace BigAndSmall
                     .Where(x => x?.def?.modExtensions != null && x.def.modExtensions.Any(y => y.GetType() == typeof(GeneExtension)))
                     .Select(x => x.def.GetModExtension<GeneExtension>()).ToList();
 
+                float offsetFromSizeByAge = geneExts.Where(x => x.sizeByAge != null).Sum(x => x.GetSizeFromSizeByAge(pawn?.ageTracker?.AgeBiologicalYearsFloat));
+
                 var dStage = pawn.DevelopmentalStage;
                 float sizeFromAge = pawn.ageTracker.CurLifeStage.bodySizeFactor;
                 float baseSize = pawn.RaceProps.baseBodySize;
                 float previousTotalSize = sizeFromAge * baseSize;
 
-                float sizeOffset = pawn.GetStatValue(BSDefs.SM_BodySizeOffset);
+                float sizeOffset = pawn.GetStatValue(BSDefs.SM_BodySizeOffset) + offsetFromSizeByAge;
                 float cosmeticSizeOffset = pawn.GetStatValue(BSDefs.SM_Cosmetic_BodySizeOffset);
                 float sizeMultiplier = pawn.GetStatValue(BSDefs.SM_BodySizeMultiplier);
 
@@ -290,7 +295,7 @@ namespace BigAndSmall
                 //float cosmeticSizeMultiplier = 1f; // Not currently implemented.
 
                 float bodySizeOffset = ((baseSize + sizeOffset) * sizeMultiplier * sizeFromAge) - previousTotalSize;
-                float offsetFromSizeByAge = geneExts.Where(x => x.sizeByAge != null).Sum(x => x.sizeByAge.GetSize(pawn?.ageTracker?.AgeBiologicalYearsFloat));
+                
 
                 float bodySizeCosmeticOffset = ((baseSize + cosmeticSizeOffset) * sizeMultiplier * sizeFromAge) - previousTotalSize;
 
@@ -446,7 +451,7 @@ namespace BigAndSmall
                 int currentTick = Find.TickManager.TicksGame;
 
                 // Get all armour
-                if (selfRepairingApparel || indestructibleApparel)
+                if (pawn?.apparel?.WornApparel?.Count > 0 &&  (selfRepairingApparel || indestructibleApparel))
                 {
                     var wornApparel = pawn.apparel.WornApparel;
                     foreach (var apparel in wornApparel)
@@ -516,6 +521,7 @@ namespace BigAndSmall
                 this.fastPregnancy = fastPregnancy;
                 this.everFertile = everFertile;
                 this.animalFriend = animalFriend;
+                renderCacheOff = genesWithExtension.Any(x => x.renderCacheOff);
 
                 this.bodyPosOffset = bodyPosOffset;
                 this.headPosMultiplier = 1 + headPosMultiplier;

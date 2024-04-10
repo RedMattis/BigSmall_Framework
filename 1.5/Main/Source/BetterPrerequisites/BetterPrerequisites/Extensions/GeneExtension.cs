@@ -25,6 +25,7 @@ namespace BetterPrerequisites
         //public HediffDef applyBodyHediff;
         public List<ConditionalStatAffecter> conditionals;
         public bool? invert;
+        public bool renderCacheOff = false;
 
         public List<HediffToBody> applyBodyHediff;
         public List<HediffToBodyparts> applyPartHediff;
@@ -37,7 +38,7 @@ namespace BetterPrerequisites
         public List<GeneDef> hiddenGenes = new List<GeneDef>();
 
         public TransformationGene transformGene = null;
-        public SizeByAge sizeByAge = null;
+        public SimpleCurve sizeByAge = null;
 
         public float bodyPosOffset = 0f;
         public float headPosMultiplier = 0f;
@@ -45,6 +46,13 @@ namespace BetterPrerequisites
 
         public Shader geneShader = null;
         public FacialAnimDisabler facialDisabler = null;
+
+        public float GetSizeFromSizeByAge(float? age)
+        {
+            if (sizeByAge == null || age == null) return 1f;
+            if (age == null) return 0;
+            return sizeByAge.Evaluate(age.Value);
+        }
 
         public StringBuilder GetAllEffectorDescriptions()
         {
@@ -196,22 +204,6 @@ namespace BetterPrerequisites
                 }
             }
             return true;
-        }
-    }
-
-    public class SizeByAge
-    {
-        // Size of the pawn at the bottom of the range.
-        public float minOffset = 0;
-        // Size of the pawn at the top of the range.
-        public float maxOffset = 0;
-        // The float range
-        public FloatRange range = new FloatRange(0, 0);
-
-        public float GetSize(float? age)
-        {
-            if (age == null) return 0;
-            return Mathf.Lerp(minOffset, maxOffset, range.InverseLerpThroughRange(age.Value));
         }
     }
 }

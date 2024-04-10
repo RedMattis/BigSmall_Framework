@@ -75,10 +75,10 @@ namespace BigAndSmall
             {
                 if (FastAcccess.GetCache(___pawn) is BSCache cache)
                 {
-                    if (cache.sizeOffset > 0 || cache.scaleMultiplier.linear > 1)
+                    if (cache.sizeOffset > 0 || cache.scaleMultiplier.linear > 1 || cache.renderCacheOff)
                     {
                         //if (VFECore_PawnDataCache_Patch.VFE_Loaded)
-                        //{
+                        //{<
                         //    __instance.EnsureGraphicsInitialized();
                         //}
                         disableCache = true;

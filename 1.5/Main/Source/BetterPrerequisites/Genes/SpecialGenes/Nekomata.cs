@@ -64,8 +64,15 @@ namespace BigAndSmall
             }
             try
             {
-                Hediff returnedHediff = HediffMaker.MakeHediff(HediffDef.Named("BS_ReturnedReanimation"), pawn);
-                pawn.health.AddHediff(returnedHediff);
+                if (Rand.Chance(0.75f))
+                {
+                    Hediff returnedHediff = HediffMaker.MakeHediff(HediffDef.Named("BS_ReturnedReanimation"), pawn);
+                    pawn.health.AddHediff(returnedHediff);
+                }
+                else
+                {
+                    GameUtils.UnhealingRessurection(pawn);
+                }
             }
             catch (Exception ex)
             {

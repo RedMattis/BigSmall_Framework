@@ -67,24 +67,24 @@ namespace BigAndSmall
             }
         }
 
-        [HarmonyPatch(typeof(PawnRenderNodeWorker), nameof(PawnRenderNodeWorker.OffsetFor))]
-        public static class DrawData_OffsetForRot_Patch
-        {
-            [HarmonyPostfix]
-            public static void MultiplyOffset(ref Vector3 __result, PawnRenderNodeWorker __instance, PawnRenderNode node, PawnDrawParms parms, Vector3 pivot)
-            {
-                var pawn = node?.tree?.pawn;
-                if (__result.magnitude > 0 && HumanoidPawnScaler.GetBSDict(pawn) is BSCache sizeCache)
-                {
-                    // Commented out because we're using PawnRenderNodeWorker.ScaleFor at the moment.
-                    //__result.x *= sizeCache.bodyRenderSize;
-                    //__result.z *= sizeCache.bodyRenderSize;
+        //[HarmonyPatch(typeof(PawnRenderNodeWorker), nameof(PawnRenderNodeWorker.OffsetFor))]
+        //public static class DrawData_OffsetForRot_Patch
+        //{
+        //    [HarmonyPostfix]
+        //    public static void MultiplyOffset(ref Vector3 __result, PawnRenderNodeWorker __instance, PawnRenderNode node, PawnDrawParms parms, Vector3 pivot)
+        //    {
+        //        var pawn = node?.tree?.pawn;
+        //        if (__result.magnitude > 0 && HumanoidPawnScaler.GetBSDict(pawn) is BSCache sizeCache)
+        //        {
+        //            // Commented out because we're using PawnRenderNodeWorker.ScaleFor at the moment.
+        //            //__result.x *= sizeCache.bodyRenderSize;
+        //            //__result.z *= sizeCache.bodyRenderSize;
 
-                    __result.x *= pawn?.story?.bodyType?.bodyGraphicScale.x ?? 1;
-                    __result.z *= pawn?.story?.bodyType?.bodyGraphicScale.y ?? 1;
-                }
-            }
-        }
+        //            __result.x *= pawn?.story?.bodyType?.bodyGraphicScale.x ?? 1;
+        //            __result.z *= pawn?.story?.bodyType?.bodyGraphicScale.y ?? 1;
+        //        }
+        //    }
+        //}
 
         //[HarmonyPatch(typeof(DrawData), nameof(DrawData.OffsetForRot))]
         //public static class DrawData_OffsetForRot_Patch

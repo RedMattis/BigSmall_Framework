@@ -61,11 +61,62 @@ namespace BetterPrerequisites
                         PGene.supressPostfix = false;
                     }
                 }
+                UpdatePawnHairAndHeads(__instance);
             }
             if (__instance != null)
             {
                 HumanoidPawnScaler.GetBSDict(__instance, forceRefresh: true);
             }
+
+        }
+
+        public static void UpdatePawnHairAndHeads(Pawn pawn)
+        {
+            try
+            {
+                // Get all active genes
+                var genes = Helpers.GetAllActiveGenes(pawn);
+                if (genes.Count == 0) return;
+
+                // Get style whitelist for hair
+                List<string> hairStyleWhitelist = genes.Where(x => x.def.hairTagFilter != null).Select(x => x.def.hairTagFilter.tags).SelectMany(x => x).ToList();
+
+                if (hairStyleWhitelist.Count > 0)
+                {
+                    // Check if the current hairstyle has a matching tag
+                    if (pawn?.story?.hairDef?.styleTags.Any(x => hairStyleWhitelist.Contains(x)) == false)
+                    {
+                        // Get all hairdefs that match the whitelist
+                        var hairDefs = DefDatabase<HairDef>.AllDefs.Where(x => x.styleTags.Any(st => hairStyleWhitelist.Contains(st))).ToList();
+                        if (hairDefs.Count > 0)
+                        {
+                            // Get a random hairdef from the whitelist
+                            var newHair = hairDefs.RandomElement();
+                            pawn.story.hairDef = newHair;
+
+                            //Log.Message(pawn.Name.ToStringShort + " has a new hairdef: " + newHair.defName);
+                        }
+                        else
+                        {
+                            //Log.Message(pawn.Name.ToStringShort + " has no valid hairs");
+                        }
+                    }
+                    else
+                    {
+                        //Log.Message(pawn.Name.ToStringShort + $" has a valid hair ({pawn?.story?.hairDef}, with tags {string.Join(", ", pawn?.story?.hairDef?.styleTags?.ToArray())})");
+                    }
+                }
+                else
+                {
+                }
+            }
+            catch
+            {
+
+            }
+
+            // Get head whitelist
+            // TODO...
         }
     }
 
@@ -87,6 +138,7 @@ namespace BetterPrerequisites
             if (__instance?.pawn != null)
             {
                 HumanoidPawnScaler.GetBSDict(__instance.pawn, forceRefresh: true);
+                Pawn_PostMapInit.UpdatePawnHairAndHeads(__instance.pawn);
 
                 if (__instance?.pawn?.Drawer?.renderer != null && __instance.pawn.Spawned)
                     __instance.pawn.Drawer.renderer.SetAllGraphicsDirty();
@@ -857,6 +909,12 @@ namespace BetterPrerequisites
                     {
                         stringBuilder.AppendLine(" - " + conditional.Label);
                     }
+                }
+                if (geneExt.sizeByAge != null)
+                {
+                    stringBuilder.AppendLine();
+                    stringBuilder.AppendLineTagged(("SizeOffsetByAge".Translate().CapitalizeFirst() + ":").Colorize(ColoredText.TipSectionTitleColor));
+                    stringBuilder.AppendLine(geneExt.sizeByAge.Select((CurvePoint pt) => "PeriodYears".Translate(pt.x).ToString() + ": +" + pt.y.ToString()).ToLineList("  - ", capitalizeItems: true));
                 }
 
                 var effectorB = geneExt.GetAllEffectorDescriptions();

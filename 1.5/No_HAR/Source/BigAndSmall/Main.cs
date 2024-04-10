@@ -22,7 +22,7 @@ namespace BigAndSmall
 
         static BigSmallLegacy()
         {
-            Log.Message($"Big and Small: HAR not found in active mod-list. Big and Small is taking control of humanoid pawn scaling.");
+            //Log.Message($"Big and Small: HAR not found in active mod-list. Big and Small is taking control of humanoid pawn scaling.");
 
             VEFActive = ModsConfig.IsActive("OskarPotocki.VanillaFactionsExpanded.Core");
 

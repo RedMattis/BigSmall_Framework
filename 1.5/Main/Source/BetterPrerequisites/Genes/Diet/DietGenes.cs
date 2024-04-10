@@ -36,6 +36,10 @@ namespace BigAndSmall
                 {
                     return true;
                 }
+                if (p?.DevelopmentalStage == DevelopmentalStage.Baby)
+                {
+                    return true;
+                }
                 var cache = HumanoidPawnScaler.GetBSDict(p);
                 if (cache != null)
                 {
@@ -66,6 +70,16 @@ namespace BigAndSmall
                 if (cache != null)
                 {
                     bool ateInedible = false;
+                    if (__instance?.def?.defName?.Contains("NutrientPaste") == true)
+                    {
+                        return;
+                    }
+                    if (ingester?.DevelopmentalStage == DevelopmentalStage.Baby)
+                    {
+                        return;
+                    }
+
+
                     if (cache.diet == FoodKind.NonMeat && !RimWorld.FoodUtility.AcceptableVegetarian(__instance))
                     {
                         ateInedible = true;

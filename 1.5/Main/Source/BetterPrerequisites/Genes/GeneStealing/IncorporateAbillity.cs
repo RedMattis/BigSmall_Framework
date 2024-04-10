@@ -38,28 +38,61 @@ namespace BigAndSmall
 
         }
 
-        public static void IncorporateGenes(Pawn pawn, Corpse corpse, int genePickCount=4, bool stealTraits=true)
+        public static void IncorporateGenes(Pawn pawn, object target, int genePickCount=4, bool stealTraits=true, bool userPicks=true, int randomPickCount=4)
         {
-            var genesOnCorpse = corpse.InnerPawn?.genes.GenesListForReading;
+            Pawn targetPawn = target as Pawn;
+            if (targetPawn == null)
+            {
+                var corpse = target as Corpse;
+                targetPawn = corpse?.InnerPawn;
+            }
+            if (targetPawn == null)
+            {
+                Log.Warning($"Target {target} is not a pawn");
+                return;
+            }
+
+            var genesOnCorpse = targetPawn.genes.GenesListForReading;
 
             var genesToPick = new List<GeneDef>();
+            
             if (genesOnCorpse == null)
                 return;
 
-            if (stealTraits && corpse.InnerPawn != null)
+            if (stealTraits && targetPawn != null)
             {
-                GetGenesFromTraits(corpse.InnerPawn, genesToPick);
+                GetGenesFromTraits(targetPawn, genesToPick);
             }
             genePickCount += genesToPick.Count();
-            List<Gene> unpickedGenes = genesOnCorpse.ToList();
+            List<GeneDef> unpickedGenes = genesOnCorpse.Select(x=>x.def).ToList();
+
+            bool isBaseliner = genesOnCorpse.Sum(x => x.def.biostatCpx) == 0;
+            // Try adding all the baseliner genes.
+            if (isBaseliner)
+            {
+                var humanGeneList = new List<string>
+                {
+                    "Hands_Human",
+                    "Headbone_Human",
+                    "Ears_Human",
+                    "Nose_Human",
+                    "Jaw_Baseline",
+                    "Voice_Human"
+                };
+                var baseLinerGenes = DefDatabase<GeneDef>.AllDefsListForReading
+                    .Where(x => x.defName.StartsWith("GET_") || humanGeneList.Contains(x.defName)).ToList();
+                unpickedGenes.AddRange(baseLinerGenes);
+            }
             while (unpickedGenes.Count > 0 && genesToPick.Count < genePickCount)
             {
                 var gene = unpickedGenes.RandomElement();
                 unpickedGenes.Remove(gene);
-                if (pawn.genes.GenesListForReading.Any(x => x.def.defName == gene.def.defName) == false
-                    && genesToPick.Contains(gene.def) == false)
+                if (pawn.genes.GenesListForReading.Any(x => x.def.defName == gene.defName) == false
+                    && genesToPick.Contains(gene) == false)
                 {
-                    genesToPick.Add(gene.def);
+                    if (pawn.genes.GenesListForReading.Any(x => x.def.defName == gene.defName))
+                        continue;
+                    genesToPick.Add(gene);
                 }
             }
 
@@ -72,12 +105,33 @@ namespace BigAndSmall
             }
             catch { }
             
+            // Remove genes the pawn already has in their xenogene list.
+            genesToPick.RemoveAll(x => pawn.genes.Xenogenes.Select(g=>g.def).Contains(x));
 
             if (genesToPick.Any())
             {
-                // Reverse so traits (etc.) are at the bottom.
-                genesToPick.Reverse();
-                Find.WindowStack.Add(new Dialog_PickGenes(pawn, genesToPick));
+                if (userPicks)
+                {
+                    // Reverse so traits (etc.) are at the bottom.
+                    genesToPick.Reverse();
+                    Find.WindowStack.Add(new Dialog_PickGenes(pawn, genesToPick));
+                }
+                else
+                {
+                    var genesToAdd = new List<GeneDef>();
+                    while (randomPickCount > 0 && genesToPick.Count > 0)
+                    {
+                        var gene = genesToPick.RandomElement();
+                        genesToPick.Remove(gene);
+                        genesToAdd.Add(gene);
+                        randomPickCount--;
+                    }
+
+                    foreach (var gene in genesToAdd)
+                    {
+                        pawn.genes.AddGene(gene, xenogene: true);
+                    }
+                }
             }
         }
 
