@@ -37,6 +37,18 @@ namespace BigAndSmall
     {
         public override float InitialResourceMax => 1f;
         public override float MinLevelForAlert => 0.15f;
+
+        public override IEnumerable<Gizmo> GetGizmos()
+        {
+            if (!Active)
+            {
+                yield break;
+            }
+            foreach (Gizmo gizmo in base.GetGizmos())
+            {
+                yield return gizmo;
+            }
+        }
     }
 
     public abstract class CompProperties_PoolCost : CompProperties_AbilityEffect

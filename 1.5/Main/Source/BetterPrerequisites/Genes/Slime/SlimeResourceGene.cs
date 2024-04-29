@@ -13,9 +13,9 @@ namespace BigAndSmall
 {
 
     [StaticConstructorOnStartup]
-    public class GeneGizmo_ResourceSlime : GeneGizmo_ResourceHemogen
+    public class GeneGizmo_ResourceSlime : GeneGizmo_Resource
     {
-        private List<Pair<IGeneResourceDrain, float>> tmpDrainGenes = new List<Pair<IGeneResourceDrain, float>>();
+        private List<Pair<IGeneResourceDrain, float>> tmpDrainGenes = new List<Pair<IGeneResourceDrain, float>>(); // Unused.
 
         public GeneGizmo_ResourceSlime(Gene_Resource gene, List<IGeneResourceDrain> drainGenes, Color barColor, Color barhighlightColor)
             : base(gene, drainGenes, barColor, barhighlightColor)
@@ -36,6 +36,11 @@ namespace BigAndSmall
                 text = text + "\n\n" + gene.def.resourceDescription.Formatted(gene.pawn.Named("PAWN")).Resolve();
             }
             return text;
+        }
+
+        public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
+        {
+            return base.GizmoOnGUI(topLeft, maxWidth, parms);
         }
     }
 
@@ -89,7 +94,21 @@ namespace BigAndSmall
 
         public string DisplayLabel => Label + " (" + "Gene".Translate() + ")";
 
-        
+        public override IEnumerable<Gizmo> GetGizmos()
+        {
+            if (!Active)
+            {
+                yield break;
+            }
+            foreach (Gizmo gizmo in base.GetGizmos())
+            {
+                yield return gizmo;
+            }
+            foreach (Gizmo resourceDrainGizmo in GeneResourceDrainUtility.GetResourceDrainGizmos(this))
+            {
+                yield return resourceDrainGizmo;
+            }
+        }
 
         public override void Tick()
         {
@@ -175,7 +194,7 @@ namespace BigAndSmall
 
         private void RecalculateMax(bool setup = false)
         {
-            float previousEffectiveTargetValue = targetValue * max; 
+            float previousEffectiveTargetValue = targetValue * max * 0.9f; 
             max = InitialResourceMax;
             float currentBonus = 0;
 
