@@ -28,4 +28,17 @@ namespace BigAndSmall
         }
     }
 
+    [HarmonyPatch(typeof(Pawn_AgeTracker), "GrowthPointsPerDayAtLearningLevel")] //"LearnRateFactor"
+    public static class GrowthPointPerDayAtLearningLevel_Patch
+    {
+        public static void Postfix(ref float __result, Pawn ___pawn)
+        {
+            var sizeCache = HumanoidPawnScaler.GetBSDict(___pawn);
+            if (HumanoidPawnScaler.GetBSDict(___pawn) is BSCache cache)
+            {
+                __result *= cache.growthPointGain;
+            }
+        }
+    }
+
 }

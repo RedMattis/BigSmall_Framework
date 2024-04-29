@@ -22,6 +22,8 @@ namespace BigAndSmall
         public static StatDef SM_Food_Need_Capacity;
         public static StatDef SM_AttackSpeed;
         public static StatDef SM_UnarmedAttackSpeed;
+        public static StatDef SM_GrowthPointAccumulation;
+
         // Traits
         public static TraitDef BS_Gentle;
         public static TraitDef Cannibal;

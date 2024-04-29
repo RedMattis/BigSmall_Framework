@@ -160,8 +160,7 @@ namespace BigAndSmall
         {
             if (target.Thing is Pawn pawn && __result < 0.99f && HumanoidPawnScaler.GetBSDict(pawn) is BSCache sizeCache)
             {
-                if (sizeCache != null)
-                    __result /= sizeCache.scaleMultiplier.linear;
+                __result /= sizeCache.scaleMultiplier.linear;
                 if (__result >= 0.96)
                     __result = 0.96f;
             }

@@ -14,8 +14,7 @@ namespace BigAndSmall
     {
         public static void Postfix(ref float __result, Pawn __instance)
         {
-            if (!BSCache.regenerationInProgress
-                && HumanoidPawnScaler.GetBSDict(__instance) is BSCache sizeCache)
+            if (HumanoidPawnScaler.GetBSDict(__instance) is BSCache sizeCache)
             {
                 __result += sizeCache.sizeOffset;
                 if (__result < 0.05f)

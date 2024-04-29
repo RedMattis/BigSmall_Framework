@@ -93,6 +93,16 @@
     </StatDef>
 
     <StatDef>
+        <defName>SM_GrowthPointAccumulation</defName>
+        <label>growth point gain</label>
+        <description>This modifies how fast children accumulate growth points.</description>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <toStringStyle>FloatTwo</toStringStyle>
+        <defaultBaseValue>1</defaultBaseValue>
+    </StatDef>
+
+    <StatDef>
         <defName>SM_Food_Need_Capacity</defName>
         <description>How much food the pawn can save up. Let's them eat more rarely.</description>
         <label>Food Capacity Multiplier</label>
@@ -102,6 +112,7 @@
         <toStringStyle>FloatOne</toStringStyle>
         <defaultBaseValue>1.0</defaultBaseValue>
     </StatDef>
+    
 
     <StatDef>
         <defName>SM_AttackSpeed</defName>

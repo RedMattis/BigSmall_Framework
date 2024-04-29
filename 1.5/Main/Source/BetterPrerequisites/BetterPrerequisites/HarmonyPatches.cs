@@ -18,24 +18,28 @@ using System.IO;
 
 namespace BetterPrerequisites
 {
-    [HarmonyPatch(typeof(Hediff), nameof(Hediff.PostMake))]
-    public static class Hediff_PostMake
+    [HarmonyPatch(typeof(Hediff), nameof(Hediff.PostAdd))]
+    public static class Hediff_PostAdd
     {
         public static void Postfix(Hediff __instance)
         {
             if (__instance.pawn != null)
             {
+                bool changeMade = false;
                 try
                 {
                     PGene.supressPostfix = true;
-                    GeneSuppressorManager.TryAddSuppressor(__instance, __instance.pawn);
+                    changeMade = GeneSuppressorManager.TryAddSuppressor(__instance, __instance.pawn);
                 }
                 finally
                 {
                     PGene.supressPostfix = false;
                 }
                 if (__instance.pawn.Drawer?.renderer != null && __instance.pawn.Spawned)
+                {
                     __instance.pawn.Drawer.renderer.SetAllGraphicsDirty();
+                    HumanoidPawnScaler.GetBSDict(__instance.pawn, forceRefresh: true);
+                }
             }
         }
     }
@@ -67,7 +71,6 @@ namespace BetterPrerequisites
             {
                 HumanoidPawnScaler.GetBSDict(__instance, forceRefresh: true);
             }
-
         }
 
         public static void UpdatePawnHairAndHeads(Pawn pawn)

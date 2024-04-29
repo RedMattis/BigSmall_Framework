@@ -207,7 +207,7 @@ namespace BigAndSmall
         public override void PostAdd()
         {
             base.PostAdd();
-            targetValue = 1;
+            targetValue = InitialResourceMax;
 
             RecalculateMax(setup:true);
             SlimeHediff.Severity = Mathf.Clamp(Value, 0.05f, 9999);

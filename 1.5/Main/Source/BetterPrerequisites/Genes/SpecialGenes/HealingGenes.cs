@@ -17,7 +17,7 @@ namespace BigAndSmall
             for (int i = 0; i < hediffs.Count; i++)
             {
                 Hediff_Injury hediff_Injury2 = hediffs[i] as Hediff_Injury;
-                if (hediff_Injury2 != null && hediff_Injury2.Visible && hediff_Injury2.def.everCurableByItem && (hediff_Injury == null || hediff_Injury2.Severity > hediff_Injury.Severity))
+                if (hediff_Injury2?.def?.isBad == true && hediff_Injury2.Visible && hediff_Injury2.def.everCurableByItem && (hediff_Injury == null || hediff_Injury2.Severity > hediff_Injury.Severity))
                 {
                     hediff_Injury = hediff_Injury2;
                 }
@@ -44,6 +44,16 @@ namespace BigAndSmall
                 pawn.health.RestorePart(bodyPartRecord);
                 return;
             }
+
+            if (bodyPartRecord == null)
+            {
+                var anyCurableHediff = pawn.health.hediffSet.hediffs.Where(x => x?.def?.isBad == true && x.def.everCurableByItem);
+                if (anyCurableHediff.Any())
+                {
+                    HealthUtility.Cure(anyCurableHediff.RandomElement());
+                    return;
+                }
+            }
         }
     }
     public class Gene_FastHealing : Gene_Healing
@@ -51,7 +61,7 @@ namespace BigAndSmall
         public override void Tick()
         {
             base.Tick();
-            if (Find.TickManager.TicksGame % 10000 == 0 && Verse.Rand.Chance(0.33f))
+            if (Find.TickManager.TicksGame % 30000 == 0 && Rand.Chance(0.33f))
             { 
                 Helpers.CureWorstInjury(pawn);
             }
@@ -60,28 +70,13 @@ namespace BigAndSmall
 
     public class Gene_SelfRestoration : Gene_Healing
     {
-        private int ticksToHeal = 100;
-
-        private static readonly IntRange HealingIntervalTicksRange = new IntRange(2500, 30000);
-
         public override void Tick()
         {
             base.Tick();
-            if (Find.TickManager.TicksGame % 10000 == 0 && Verse.Rand.Chance(0.33f))
+            if (Find.TickManager.TicksGame % 20000 == 0 && Verse.Rand.Chance(0.33f))
             { 
                 HealthUtility.FixWorstHealthCondition(pawn);
             }
-        }
-
-        private void ResetInterval()
-        {
-            ticksToHeal = HealingIntervalTicksRange.RandomInRange;
-        }
-
-        public override void ExposeData()
-        {
-            Scribe_Values.Look(ref ticksToHeal, "ticksToHeal");
-            base.ExposeData();
         }
     }
 }

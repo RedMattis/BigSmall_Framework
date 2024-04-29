@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +21,7 @@ namespace BigAndSmall
     /// <typeparam name="V">A class whcih implements the ICachable Interface</typeparam>
     public abstract class DictCache<T, V> where V : ICacheable
     {
-        public static Dictionary<T, V> Cache { get; set; } = new Dictionary<T, V>();
+        public static ConcurrentDictionary<T, V> Cache { get; set; } = new ConcurrentDictionary<T, V>();
 
         /// <summary>
         /// 

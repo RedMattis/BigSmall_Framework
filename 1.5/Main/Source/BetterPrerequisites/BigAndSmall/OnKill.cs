@@ -126,7 +126,7 @@ namespace BigAndSmall
             if (sendMessage)
             {
                 Messages.Message("BS_ZombieApocalypse".Translate(), MessageTypeDefOf.ThreatSmall);
-                Find.LetterStack.ReceiveLetter(label: "BS_ZombieApocalypse".Translate(), text: "BS_ZombieApocalypse".Translate(), textLetterDef: LetterDefOf.NeutralEvent);
+                //Find.LetterStack.ReceiveLetter(label: "BS_ZombieApocalypse".Translate(), text: "BS_ZombieApocalypse".Translate(), textLetterDef: LetterDefOf.NeutralEvent);
             }
 
             if (targetMap?.listerThings == null)

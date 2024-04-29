@@ -176,9 +176,13 @@ namespace BetterPrerequisites
                         .Where(x => x != this && x is PGene && (x as PGene).geneExt != null && (x as PGene).geneExt.thingDefSwap != null)
                         .Select(x=>(PGene)x).ToList();
 
+                    //var pos = pawn.Position;
+                    var map = pawn.Map;
+
                     // Check if the ThingDef we CURRENTLY are is among the genesWithThingDefSwaps
                     var geneWithThingDef = genesWithThingDefSwaps.Where(x => x.geneExt.thingDefSwap.defName == pawn.def.defName);
-
+                    bool didSwap = false;
+                    bool wasRemovedFromLister = false;
                     bool forceSwap = geneExt.forceThingDefSwap;
                     // if all geneWithThingDef are inactive, we can swap.
                     if ( geneWithThingDef.All(x => x.Overridden))
@@ -199,6 +203,12 @@ namespace BetterPrerequisites
                     try
                     {
                         RegionListersUpdater.DeregisterInRegions(pawn, pawn.Map);
+                        if (map.listerThings.Contains(pawn))
+                        {
+                            map.listerThings.Remove(pawn);
+                            wasRemovedFromLister = true;
+                        }
+                        
                     }
                     catch { }
                     // Check if the pawn is a human or we're forcing the swap.
@@ -211,6 +221,7 @@ namespace BetterPrerequisites
                             CacheAndRemoveHediffs(geneExt.thingDefSwap);
                             pawn.def = geneExt.thingDefSwap;
                             RestoreMatchingHediffs(geneExt.thingDefSwap);
+                            didSwap = true;
                         }
                     }
                     // Check if we're turning off this ThingDef and would want to swap to another.
@@ -222,11 +233,23 @@ namespace BetterPrerequisites
 
                         CacheAndRemoveHediffs(target);
                         // Change the pawn's thingDef to a baseliner.
-                        pawn.def = target;
                         RestoreMatchingHediffs(target);
+                        didSwap = true;
                     }
                     try
                     {
+                        if (wasRemovedFromLister || pawn.Spawned)
+                        {
+                            if (!map.listerThings.Contains(pawn))
+                            {
+                                map.listerThings.Add(pawn);
+                            }
+                        }
+                        //if (pawn.Spawned)
+                        //{
+                        //    pawn.DeSpawn();
+                        //    GenPlace.TryPlaceThing(pawn, pos, map, ThingPlaceMode.Direct);
+                        //}
                         RegionListersUpdater.RegisterInRegions(pawn, pawn.Map);
                     }
                     catch { }
@@ -344,7 +367,8 @@ namespace BetterPrerequisites
         readonly float updateFrequenceRealTime = 2.0f; //1.5f;
         public bool TryGetGeneActiveCache(bool result)
         {
-            if (pawn != null && !PawnGenerator.IsBeingGenerated(pawn))
+            // Skip dead pawns and non-spawned pawns.
+            if (pawn != null && !PawnGenerator.IsBeingGenerated(pawn) && !pawn.Dead && pawn.Spawned)
             {
                 if (result || ForceRun)
                 {
@@ -420,8 +444,6 @@ namespace BetterPrerequisites
             // Outside of the loop so it can supress genes which supresses other genes.
             bool isSupressedByHediff = GeneSuppressorManager.IsSupressedByHediff(def.defName, pawn);
             result = prerequisitesValid && conditionalsValid && !isSupressedByGene && !isSupressedByHediff;
-
-            
 
             if (!supressPostfix && !supressPostfix2)
             {

@@ -33,9 +33,9 @@ namespace BigAndSmall
 
         public static bool CanEquipThing(bool __result, ThingDef thing, Pawn pawn, ref string cantReason)
         {
-            if (__result == false)
+            if (__result == false || thing == null || pawn == null)
             {
-                return false;
+                return __result;
             }
             Pawn_GeneTracker genes = pawn.genes;
 

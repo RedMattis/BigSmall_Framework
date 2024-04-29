@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BigAndSmall;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,13 +18,15 @@ namespace BetterPrerequisites
 
         public static Dictionary<string, (long time, bool state)> cache = new Dictionary<string, (long time, bool state)>();
         
-        public static void TryAddSuppressor(Hediff supresserHediff, Pawn pawn)
+        public static bool TryAddSuppressor(Hediff supresserHediff, Pawn pawn)
         {
+            bool didAddSupressor = false;
             try
             {
                 HediffDef supresserdef = supresserHediff.def;
                 if (supresserdef.HasModExtension<GeneSuppressor_Hediff>())
                 {
+                    
                     var geneExtension = supresserdef.GetModExtension<GeneSuppressor_Hediff>();
                     if (!supressedGenesPerPawn_Hediff.ContainsKey(pawn))
                     {
@@ -42,13 +45,14 @@ namespace BetterPrerequisites
                             supressedGenes[supressedGene].Add(supresserdef.defName);
                         }
                     }
-
+                    didAddSupressor = true;
                 }
             }
             catch (Exception e)
             {
                 Log.Error("Error in PrerequisiteValidator: " + e.Message);
             }
+            return didAddSupressor;
         }
 
         public static bool IsSupressedByHediff(string geneDefName, Pawn pawn)

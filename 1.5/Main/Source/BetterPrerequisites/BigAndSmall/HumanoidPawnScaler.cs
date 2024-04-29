@@ -1,6 +1,7 @@
 ﻿using BetterPrerequisites;
 using RimWorld;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -154,6 +155,7 @@ namespace BigAndSmall
         public PercentChange cosmeticScaleMultiplier = new PercentChange(1, 1, 1);
         public float sizeOffset = 0;
         public float minimumLearning = 0;
+        public float growthPointGain = 1;
         public float foodNeedCapacityMult = 1;
         public float? previousFoodCapacity = null;
         public float headSizeMultiplier = 1;
@@ -282,8 +284,9 @@ namespace BigAndSmall
                 float offsetFromSizeByAge = geneExts.Where(x => x.sizeByAge != null).Sum(x => x.GetSizeFromSizeByAge(pawn?.ageTracker?.AgeBiologicalYearsFloat));
 
                 var dStage = pawn.DevelopmentalStage;
-                float sizeFromAge = pawn.ageTracker.CurLifeStage.bodySizeFactor;
-                float baseSize = pawn.RaceProps.baseBodySize;
+                float sizeFromAge = pawn?.ageTracker?.CurLifeStage?.bodySizeFactor ?? 1;
+
+                float baseSize = pawn?.RaceProps?.baseBodySize ?? 1;
                 float previousTotalSize = sizeFromAge * baseSize;
 
                 float sizeOffset = pawn.GetStatValue(BSDefs.SM_BodySizeOffset) + offsetFromSizeByAge;
@@ -495,6 +498,7 @@ namespace BigAndSmall
                 this.scaleMultiplier = scaleMultiplier;
                 this.cosmeticScaleMultiplier = cosmeticScaleMultiplier;
                 this.minimumLearning = minimumLearning;
+                this.growthPointGain = pawn.GetStatValue(BSDefs.SM_GrowthPointAccumulation);
                 this.foodNeedCapacityMult = foodNeedCapacityMult;
                 headSizeMultiplier = headSize;
                 isBloodFeeder = IsBloodfeederPatch.IsBloodfeeder(pawn) || bleedState == BSCache.BleedRateState.NoBleeding;
@@ -539,7 +543,7 @@ namespace BigAndSmall
                 {
                     Log.Warning($"Issue reloading cache of {pawn} ({id}). Removing entire cache so it can be regenerated.");
                     // Reassigning instead of clearing in case it is null for some reason.
-                    HumanoidPawnScaler.Cache = new Dictionary<Pawn, BSCache>();
+                    HumanoidPawnScaler.Cache = new ConcurrentDictionary<Pawn, BSCache>();
                     BigAndSmallCache.scribedCache = new HashSet<BSCache>();
                     BigAndSmallCache.regenerationAttempted = true;
                 }
