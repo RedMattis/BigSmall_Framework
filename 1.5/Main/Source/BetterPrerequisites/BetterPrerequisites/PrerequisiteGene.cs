@@ -30,9 +30,7 @@ namespace BetterPrerequisites
         public float lastUpdate = 0f;
         public bool triggerNalFaceDisable = false;
 
-
-        [Unsaved(false)]
-        private bool setupvars = false;
+        private bool initialized = false;
         
         public bool hasExtension = false;
         
@@ -41,6 +39,7 @@ namespace BetterPrerequisites
         public override bool Active => TryGetGeneActiveCache(base.Active);
 
         public bool ForceRun { get; set; } = false;
+        public CacheTimer Timer { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public bool postPostAddDone = false;
 
@@ -48,6 +47,7 @@ namespace BetterPrerequisites
         {
             SetupVars();
             base.PostAdd();
+            BigAndSmallCache.pGenes.Add(this);
 
             if (geneExt != null)
             {
@@ -94,6 +94,7 @@ namespace BetterPrerequisites
 
         public override void PostRemove()
         {
+            BigAndSmallCache.pGenes.Remove(this);
             base.PostRemove();
             if (geneExt != null)
             {
@@ -218,9 +219,9 @@ namespace BetterPrerequisites
                         if (pawn.def.defName != geneExt.thingDefSwap.defName)
                         {
                             // Change the pawn's thingDef to the one specified in the GeneExtension.
-                            CacheAndRemoveHediffs(geneExt.thingDefSwap);
+                            CacheAndRemoveHediffs();
                             pawn.def = geneExt.thingDefSwap;
-                            RestoreMatchingHediffs(geneExt.thingDefSwap);
+                            RestoreMatchingHediffs(pawn.def);
                             didSwap = true;
                         }
                     }
@@ -231,9 +232,10 @@ namespace BetterPrerequisites
                         ThingDef target = ThingDefOf.Human;
                         if (genesWithThingDefSwaps.Count > 0) { target = genesWithThingDefSwaps.RandomElement().geneExt.thingDefSwap; }
 
-                        CacheAndRemoveHediffs(target);
+                        CacheAndRemoveHediffs();
                         // Change the pawn's thingDef to a baseliner.
-                        RestoreMatchingHediffs(target);
+                        pawn.def = ThingDefOf.Human;
+                        RestoreMatchingHediffs(pawn.def);
                         didSwap = true;
                     }
                     try
@@ -264,7 +266,7 @@ namespace BetterPrerequisites
             }
         }
 
-        public void CacheAndRemoveHediffs(ThingDef targetThingDef)
+        public void CacheAndRemoveHediffs()
         {
             var allHediffs = pawn.health.hediffSet.hediffs.ToList();
             hediffsToReapply[pawn] = allHediffs.ToList();
@@ -303,9 +305,24 @@ namespace BetterPrerequisites
                         }
                         else
                         {
-                            BodyPartRecord partMatchingHediff = currentParts.FirstOrDefault(x => x.def.defName == hediff.Part.def.defName && x.customLabel == hediff.Part.customLabel);
+                            BodyPartRecord matchingCustomLabel = currentParts.FirstOrDefault(x => x.def.defName == hediff.Part.def.defName && x.customLabel == hediff.Part.customLabel);
+                            BodyPartRecord matchingLabel = currentParts.FirstOrDefault(x => x.def.defName == hediff.Part.def.defName && x.Label == hediff.Part.Label);
+                            BodyPartRecord matchingDef = currentParts.FirstOrDefault(x => x.def.defName == hediff.Part.def.defName);
 
-                            pawn.health.AddHediff(hediff.def, part: partMatchingHediff);
+                            // Prefer customLabel, then Label, then just the def.
+                            BodyPartRecord partMatchingHediff = matchingCustomLabel ?? matchingLabel ?? matchingDef;
+
+                            if (partMatchingHediff != null)
+                            {
+                                try
+                                {
+                                    pawn.health.AddHediff(hediff.def, part: partMatchingHediff);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Log.Warning($"Failed to add transfer {hediff.def.defName} to {pawn.Name} on {partMatchingHediff.def.defName}.\n{ex.Message}");
+                                }
+                            }
                         }
                         
                         // remove hediff from savedHediffs
@@ -340,15 +357,41 @@ namespace BetterPrerequisites
 
             chemGene.lastIngestedTick = lastIngestedTick;
         }
+        
+        readonly float updateFrequence = 125; //1.5f;
+        readonly float updateFrequenceRealTime = 2.0f; //1.5f;
+        public static object locker = new object();
+
+        public bool TryGetGeneActiveCache(bool result)
+        {
+            // Skip dead pawns and non-spawned pawns.
+            if (pawn != null && !PawnGenerator.IsBeingGenerated(pawn) && !pawn.Dead && pawn.Spawned)
+            {
+                if (result || ForceRun)
+                {
+                    bool useCache = initialized;
+                    SetupVars();
+                    if (!useCache || ForceRun)
+                    {
+                        ForceRun = false;
+                        RegenerateState();
+                    }
+                    bool newResult = previouslyActive != false;
+                    result = newResult && result;
+                }
+            }
+
+            return result;
+        }
 
         /// <summary>
         /// Mostly because PostAdd doesn't run on save load and stuff like that. But I don't think trying to fetch the ModExtension every time is a good idea.
         /// </summary>
         public void SetupVars()
         {
-            if (!setupvars)
+            if (!initialized)
             {
-                setupvars = true;
+                initialized = true;
                 if (def.HasModExtension<GeneSuppressor_Gene>())
                 {
                     ForceRun = true;
@@ -361,48 +404,6 @@ namespace BetterPrerequisites
             }
         }
 
-        
-
-        readonly float updateFrequence = 125; //1.5f;
-        readonly float updateFrequenceRealTime = 2.0f; //1.5f;
-        public bool TryGetGeneActiveCache(bool result)
-        {
-            // Skip dead pawns and non-spawned pawns.
-            if (pawn != null && !PawnGenerator.IsBeingGenerated(pawn) && !pawn.Dead && pawn.Spawned)
-            {
-                if (result || ForceRun)
-                {
-                    bool newResult = result;
-                    bool useCache = false;
-                    if (BigSmallMod.settings.realTimeUpdates)
-                    {
-                        if (Time.realtimeSinceStartup - lastUpdate < updateFrequenceRealTime)
-                        {
-                            newResult = previouslyActive == true;
-                            useCache = true;
-                        }
-                    }
-                    else
-                    {
-                        if (Find.TickManager.TicksGame - lastUpdateTicks < updateFrequence)
-                        {
-                            newResult = previouslyActive == true;
-                            useCache = true;
-                        }
-                    }
-                    
-                    if (!useCache || ForceRun)
-                    {
-                        SetupVars();
-                        newResult = GetGeneActive(pawn);
-                    }
-                    result = newResult && result;
-                }
-            }
-
-            return result;
-        }
-
         // Last run state vars:
         #region Previous
         private bool prerequisitesValid = false;
@@ -411,14 +412,13 @@ namespace BetterPrerequisites
         private bool isSupressedByHediff = false;
         private bool conditionalsWasValid = false;
         #endregion
-        private bool GetGeneActive(Pawn pawn, bool forceUpdate=false)
+        public bool RegenerateState()
         {
             bool result;
             bool prerequisitesValid = true;
             bool conditionalsValid = true;
             bool isSupressedByGene = Overridden;
             bool refreshGraphics = false;
-
 
             // To stop infinite recursion.
             if (!supressPostfix)
@@ -454,7 +454,7 @@ namespace BetterPrerequisites
                 this.isSupressedByHediff = isSupressedByHediff;
 
 
-                if (result != previouslyActive || forceUpdate)
+                if (result != previouslyActive)
                 {
                     UpdateOverridenGenes(def, pawn.genes);
                     GeneEffectManager.GainOrRemovePassion(!result, this);
@@ -575,6 +575,15 @@ namespace BetterPrerequisites
             }
         }
 
-
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.Look(ref initialized, "PGeneInit", false);
+            Scribe_Values.Look(ref previouslyActive, "PGeneActive", true);
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                BigAndSmallCache.pGenes.Add(this);
+            }
+        }
     }
 }

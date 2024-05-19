@@ -27,40 +27,43 @@ namespace BetterPrerequisites
             instance = this;
         }
 
-        public override void GameComponentTick()
-        {
-            base.GameComponentTick();
-            if (Find.TickManager.TicksGame % 50 == 1)
-            {
-                if (pawnsQueueForRendering.Count > 0)
-                {
-                    try
-                    {
-                        // For loop instead of while loop to prevent infinite loop if something goes horribly wrong.
-                        for (int i = 0; i < 100; i++)
-                        {
-                            if (pawnsQueueForRendering.Count == 0)
-                            {
-                                break;
-                            }
-                            var pawn = pawnsQueueForRendering.RandomElement();
-                            if (pawn?.Drawer?.renderer != null)
-                            {
-
-                                pawn.Drawer.renderer.SetAllGraphicsDirty();
-                            }
-                            pawnsQueueForRendering.Remove(pawn);
-                        }
-                    }
-                    catch
-                    {
-                        Log.Error($"Error when setting graphics dirty. Actual error below.");
-                        pawnsQueueForRendering.Clear();
-                        throw;
-                    }
-                }
-            }
-        }
+        //public override void GameComponentTick()
+        //{
+        //    base.GameComponentTick();
+        //    if (Find.TickManager.TicksGame % 50 == 1)
+        //    {
+        //        if (pawnsQueueForRendering.Count > 0)
+        //        {
+        //            try
+        //            {
+        //                // For loop instead of while loop to prevent infinite loop if something goes horribly wrong.
+        //                for (int i = 0; i < 10; i++)
+        //                {
+        //                    if (pawnsQueueForRendering.Count == 0)
+        //                    {
+        //                        break;
+        //                    }
+        //                    var pawn = pawnsQueueForRendering.RandomElement();
+        //                    if (pawn?.Drawer?.renderer != null)
+        //                    {
+        //                        pawn.Drawer.renderer.SetAllGraphicsDirty();
+        //                    }
+        //                    pawnsQueueForRendering.Remove(pawn);
+        //                }
+        //            }
+        //            catch
+        //            {
+        //                Log.Error($"Error when setting graphics dirty. Actual error below.");
+        //                pawnsQueueForRendering.Clear();
+        //                throw;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            pawnsQueueForRendering.AddRange(renderingCacheDict.Keys);
+        //        }
+        //    }
+        //}
 
         public PawnRenderingCache GetCache(Pawn pawn)
         {

@@ -40,8 +40,10 @@ namespace BetterPrerequisites
                     var stat = StatRequest.For(gene.pawn);
                     if (!statEffector.Applies(stat))
                     {
+                        //Log.Message($"DEBUG: Stat {statEffector.Label} does not apply to {gene.pawn.Name}");
                         return false;
                     }
+                    //Log.Message($"DEBUG: Stat {statEffector.Label} applies to {gene.pawn.Name}");
                 }
             return true;
         }

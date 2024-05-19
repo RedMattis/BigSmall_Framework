@@ -17,7 +17,7 @@ namespace BigAndSmall
             for (int i = 0; i < hediffs.Count; i++)
             {
                 Hediff_Injury hediff_Injury2 = hediffs[i] as Hediff_Injury;
-                if (hediff_Injury2?.def?.isBad == true && hediff_Injury2.Visible && hediff_Injury2.def.everCurableByItem && (hediff_Injury == null || hediff_Injury2.Severity > hediff_Injury.Severity))
+                if (hediff_Injury2?.def?.isBad == true && hediff_Injury2.Visible && hediff_Injury2.IsPermanent() && hediff_Injury2.def.everCurableByItem && (hediff_Injury == null || hediff_Injury2.Severity > hediff_Injury.Severity))
                 {
                     hediff_Injury = hediff_Injury2;
                 }

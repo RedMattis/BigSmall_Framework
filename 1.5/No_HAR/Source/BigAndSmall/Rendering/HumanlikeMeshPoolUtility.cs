@@ -28,7 +28,7 @@ namespace BigAndSmall
                 //    factorFromVEF *= VEPawnData.bodyRenderSize;
                 //}
 
-                if (HumanoidPawnScaler.GetBSDict(pawn) is BSCache sizeCache)
+                if (HumanoidPawnScaler.GetBSDict(pawn, canRegenerate: false) is BSCache sizeCache)
                 {
                     var bodySize = sizeCache.bodyRenderSize;
                     var headSize = sizeCache.headRenderSize * factorFromVEF;
@@ -57,8 +57,6 @@ namespace BigAndSmall
         }
     }
 
-    
-
 
     //[HarmonyPatch(typeof(Pawn_DrawTracker), nameof(Pawn_DrawTracker.DrawPos), MethodType.Getter)]
     [HarmonyPatch(typeof(PawnRenderer), "ParallelGetPreRenderResults")]
@@ -77,27 +75,7 @@ namespace BigAndSmall
                 {
                     if (cache.sizeOffset > 0 || cache.scaleMultiplier.linear > 1 || cache.renderCacheOff)
                     {
-                        //if (VFECore_PawnDataCache_Patch.VFE_Loaded)
-                        //{<
-                        //    __instance.EnsureGraphicsInitialized();
-                        //}
                         disableCache = true;
-                        //var renderTree = __instance.renderTree;
-                        //Traverse nodeQueueField = GetNodeQueueField(renderTree);
-                        //var ___nodeQueue = nodeQueueField.GetValue<Queue<PawnRenderNode>>();
-
-                        //// Iterrate the ___nodeQueue and check so none of them are null.
-                        //bool allNodesNotNull = ___nodeQueue != null && ___nodeQueue.All(n => n != null);
-                        //if (allNodesNotNull)
-                        //{
-                        //    // If all nodes are not null, then we can safely disable the cache.
-                        //    disableCache = true;
-                        //}
-                        //else
-                        //{
-                        //    // Log the issue.
-                        //    Log.Warning($"BigAndSmall: Found null nodes in the render tree for {___pawn}. Disabling cache for this pawn.");
-                        //}
                     }
                 }
             }
@@ -115,19 +93,10 @@ namespace BigAndSmall
                 }
             }
         }
-        //static Traverse nodeQueueFieldInfo = null;
-        //private static Traverse GetNodeQueueField(PawnRenderTree renderTree)
-        //{
-        //    if (nodeQueueFieldInfo == null)
-        //    {
-        //        nodeQueueFieldInfo = Traverse.Create(renderTree).Field("nodeQueue");
-        //    }
-        //    return nodeQueueFieldInfo;
-        //}
 
         public static float GetOffset(Pawn ___pawn)
         {
-            var cache = HumanoidPawnScaler.GetBSDict(___pawn);
+            var cache = HumanoidPawnScaler.GetBSDict(___pawn, canRegenerate: false);
             var factor = cache.bodyRenderSize;
             var originalFactor = factor;
             if (factor < 1) { factor = 1; }
@@ -281,21 +250,28 @@ namespace BigAndSmall
         public static void ScaleForPatch(ref Vector3 __result, PawnRenderNode node, PawnDrawParms parms)
         {
             var pawn = parms.pawn;
-            if (HumanoidPawnScaler.GetBSDict(pawn) is BSCache cache)
+            if (HumanoidPawnScaler.GetBSDict(pawn, canRegenerate: false) is BSCache cache)
             {
-                if (node is PawnRenderNode_Body)
+                if (pawn?.RaceProps?.Humanlike == true)
+                {
+                    if (node is PawnRenderNode_Body)
+                    {
+                        __result *= cache.bodyRenderSize;
+                    }
+                    else if (node is PawnRenderNode_Head)
+                    {
+                        __result *= cache.headRenderSize;
+                    }
+                }
+                else
                 {
                     __result *= cache.bodyRenderSize;
                 }
-                else if (node is PawnRenderNode_Head)
-                {
-                    __result *= cache.headRenderSize;
-                }
 
-                if (node.gene != null)
-                {
-                    //__result *= pawn?.story?.bodyType?.bodyGraphicScale.x ?? 1;
-                }
+                //if (node.gene != null)
+                //{
+                //    //__result *= pawn?.story?.bodyType?.bodyGraphicScale.x ?? 1;
+                //}
             }
         }
     }

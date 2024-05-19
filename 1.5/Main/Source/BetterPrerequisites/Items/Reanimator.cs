@@ -120,7 +120,7 @@ namespace BigAndSmall
                 if (xeno != null)
                 {
                     //Log.Message($"Reanimating as Returned {innerPawn.genes.xenotypeName}");
-                    GameUtils.AddAllXenotypeGenes(innerPawn, xeno, name: "Returned " + innerPawn.genes.xenotypeName);
+                    GameUtils.AddAllXenotypeGenes(innerPawn, xeno, name: "Returned " + innerPawn.genes.XenotypeLabel);
                 }
                 else
                 {

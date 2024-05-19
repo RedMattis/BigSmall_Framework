@@ -122,7 +122,7 @@ namespace BigAndSmall
                 if (timeOfDeath + ticksToReanimate < Find.TickManager.TicksGame)
                 {
                     EjectCorpse();
-                    // Check for faction of def BS_ZombieFaction. If it exists, set the pawn to that faction.
+                    // Check for faction of def BS_ZombieFaction. If it exists, we may want to set the pawn to that faction.
                     Faction zombieFaction = Find.FactionManager.AllFactions.FirstOrDefault(x => x.def.defName == "BS_ZombieFaction");
 
                     if (pawn.RaceProps.Humanlike)
@@ -130,13 +130,14 @@ namespace BigAndSmall
                         // Remove the Dracul Vampirism Hediff
                         pawn.health.RemoveHediff(this);
 
-                        // Apply Dracul Xenotype
+                        // Apply Xenotype
                         string targetXenotype = "VU_Returned";
 
                         foreach (var def in DefDatabase<XenotypeDef>.AllDefsListForReading.Where(x => x.defName == targetXenotype))
                         {
+
                             // Set pawn xenotype to the target xenotype
-                            GameUtils.AddAllXenotypeGenes(pawn, def, name: "Returned " + pawn.genes.xenotypeName);
+                            GameUtils.AddAllXenotypeGenes(pawn, def, name: "Returned " + pawn.genes.XenotypeLabel);
                             break;
                         }
                     }

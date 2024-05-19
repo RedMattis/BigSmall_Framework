@@ -19,7 +19,7 @@ namespace BigAndSmall
         public float internalBaseDamage = 10f;
         public float selfDamageMultiplier = 0.2f;
         public Hediff enchumberanceHediff = null;
-        public float baseCapacity = 1f; // As multiplied by bodySize
+        public float baseCapacity = 1f; // Multiplied by bodySize
         public DamageDef damageDef = null;
         public const float globalDamageMultiplier = 0.70f;
         public float bodyPartsRegeneratedPerDay = 0;
@@ -35,16 +35,17 @@ namespace BigAndSmall
         // For the "Lamia?" special behavior.
         //public List<string> tags = new List<string>();
 
+        public static float PowScale(float bodySize) => Mathf.Pow(bodySize, 1.4f);
 
-        public float MaxCapacity { get => baseCapacity * pawn.BodySize; }
-        public float Fullness => TotalMass / pawn.BodySize;
+        public float MaxCapacity { get => baseCapacity * PowScale(pawn.BodySize); }
+        public float Fullness => TotalMass / PowScale(pawn.BodySize);
 
         public bool HealsInner => healPerDay > -0.5 || regularHealingMultiplier > -0.5f;
 
 
         public float TotalMass =>
-            innerContainer.Where(x => x is Pawn).Sum(x => ((Pawn)x).BodySize) +
-            innerContainer.Where(x => x is Corpse).Sum(x => ((Corpse)x).InnerPawn.BodySize);
+            innerContainer.Where(x => x is Pawn).Sum(x => PowScale(((Pawn)x).BodySize)) +
+            innerContainer.Where(x => x is Corpse).Sum(x => PowScale(((Corpse)x).InnerPawn.BodySize));
 
         public Hediff EnchumberanceHediff
         {
@@ -86,6 +87,11 @@ namespace BigAndSmall
         {
             thing.DeSpawnOrDeselect();
             bool flag;
+
+            if (thing is Pawn engulfedPawn && engulfedPawn.IsColonist)
+            {
+                Messages.Message("BS_EngulfedColonist".Translate(pawn.LabelShort, engulfedPawn.LabelShort), pawn, MessageTypeDefOf.NegativeHealthEvent);
+            }
             if (thing.holdingOwner != null)
             {
                 thing.holdingOwner.TryTransferToContainer(thing, innerContainer, thing.stackCount);

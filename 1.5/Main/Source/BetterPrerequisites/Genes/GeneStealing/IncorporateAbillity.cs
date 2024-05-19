@@ -38,7 +38,8 @@ namespace BigAndSmall
 
         }
 
-        public static void IncorporateGenes(Pawn pawn, object target, int genePickCount=4, bool stealTraits=true, bool userPicks=true, int randomPickCount=4)
+        public static void IncorporateGenes(Pawn pawn, object target, int genePickCount=4, bool stealTraits=true,
+            bool userPicks=true, int randomPickCount=4, bool excludeBodySwap=false)
         {
             Pawn targetPawn = target as Pawn;
             if (targetPawn == null)
@@ -82,6 +83,12 @@ namespace BigAndSmall
                 var baseLinerGenes = DefDatabase<GeneDef>.AllDefsListForReading
                     .Where(x => x.defName.StartsWith("GET_") || humanGeneList.Contains(x.defName)).ToList();
                 unpickedGenes.AddRange(baseLinerGenes);
+            }
+
+            // If the pawn already has a body-type gene, don't swap it. It is a bit too extreme of a change since it can remove bionics and such.
+            if (excludeBodySwap && pawn.genes.GenesListForReading.Any(x=>x.def.exclusionTags?.Contains("ThingDefSwap") == true))
+            {
+                unpickedGenes = unpickedGenes.Where(x => x.exclusionTags?.Contains("ThingDefSwap") == false).ToList();
             }
             while (unpickedGenes.Count > 0 && genesToPick.Count < genePickCount)
             {

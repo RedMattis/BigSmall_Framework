@@ -63,8 +63,8 @@ namespace BigAndSmall
             Widgets.BeginScrollView(rect3, ref scrollPosition, rect4);
 
             listStd.Begin(rect4.AtZero());
-            listStd.TextFieldNumericLabeled("BS_CacheUpdateTickRate".Translate(), ref settings.cacheUpdateFrequency, ref cacheTickTxt, 250, 10000);
-            listStd.CheckboxLabeled("BS_RealtimeUpdate".Translate(), ref settings.realTimeUpdates, 1);
+            //listStd.TextFieldNumericLabeled("BS_CacheUpdateTickRate".Translate(), ref settings.cacheUpdateFrequency, ref cacheTickTxt, 250, 10000);
+            //listStd.CheckboxLabeled("BS_RealtimeUpdate".Translate(), ref settings.realTimeUpdates, 1);
             listStd.Label("BS_GameMechanics".Translate());
             listStd.Label("BS_ScaleAnimals".Translate());
             listStd.CheckboxLabeled("", ref settings.scaleAnimals, 0);
@@ -112,8 +112,6 @@ namespace BigAndSmall
 
     public class BSRettings : ModSettings
     {
-        private static readonly float defaultCacheUpdateFrequency = 250f;
-        public float cacheUpdateFrequency = defaultCacheUpdateFrequency;
 
         private static readonly float defaultVisualLargerMult = 1f;
         public float visualLargerMult = defaultVisualLargerMult;
@@ -156,7 +154,6 @@ namespace BigAndSmall
 
         public override void ExposeData()
         {
-            Scribe_Values.Look(ref cacheUpdateFrequency, "cacheUpdateFrequency", defaultCacheUpdateFrequency);
             Scribe_Values.Look(ref visualLargerMult, "visualLargerMult", defaultVisualLargerMult);
             Scribe_Values.Look(ref visualSmallerMult, "visualSmallerMult", defaultVisualSmallerMult);
             Scribe_Values.Look(ref headPowLarge, "headPowLarge", defaultHeadPowLarge);

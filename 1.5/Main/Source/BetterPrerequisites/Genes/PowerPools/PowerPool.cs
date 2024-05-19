@@ -36,7 +36,7 @@ namespace BigAndSmall
     public abstract class BS_GenericResource : Gene_Resource
     {
         public override float InitialResourceMax => 1f;
-        public override float MinLevelForAlert => 0.15f;
+        public override float MinLevelForAlert => 0f;
 
         public override IEnumerable<Gizmo> GetGizmos()
         {

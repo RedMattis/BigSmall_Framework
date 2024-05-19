@@ -33,7 +33,7 @@ namespace BigAndSmall
 
         public static bool CanEquipThing(bool __result, ThingDef thing, Pawn pawn, ref string cantReason)
         {
-            if (__result == false || thing == null || pawn == null)
+            if (__result == false || thing == null || pawn == null || pawn?.RaceProps?.Humanlike == false)
             {
                 return __result;
             }
@@ -98,20 +98,36 @@ namespace BigAndSmall
         {
             if (thing.IsApparel && FastAcccess.GetCache(pawn) is BSCache cache)
             {
-                if (!thing.apparel.countsAsClothingForNudity)
+                // Skip nudity-permitted clothes unless it is headgear. E.g. permit Yttakin Bandoliers, but not power armor helmets.
+                if (!thing.apparel?.countsAsClothingForNudity == true)
                 {
-                    return __result;
+                    if (thing?.thingCategories?.Any(x => x.defName == "Headgear") == false)
+                    {
+                        return __result;
+                    }
                 }
                 if (!cache.canWearApparel)
                 {
                     cantreason = "BS_CannotWearApparel".Translate();
                     return false;
                 }
-                bool itemIsArmor = thing.apparel.tags?.Any(x=>x.ToLower().Contains("armor")) == true ||
+                bool itemIsArmor = thing.apparel.tags?.Any(x => x.ToLower().Contains("armor")) == true ||
                         // or it thing categories has ApparelArmor.
                         thing.thingCategories?.Contains(ThingCategoryDefOf.ApparelArmor) == true ||
                         // or trade tags
-                        thing.tradeTags?.Any(x=>x.ToLower().Contains("armor")) == true;
+                        thing.tradeTags?.Any(x => x.ToLower().Contains("armor")) == true ||
+                        thing.defName.ToLower().Contains("armor") ||
+                        thing.defName.ToLower().Contains("helmet") ||
+                        thing.defName.ToLower().Contains("armour");
+                if (thing.defName == "Apparel_VisageMask" ||
+                    thing.defName == "Apparel_Tailcap" ||
+                    thing.defName == "Apparel_Sash" ||
+                    thing.defName == "Apparel_Bandolier"
+
+                    )
+                {
+                    itemIsArmor = false;
+                }
 
                 if (!cache.canWearArmor && itemIsArmor)
                 {

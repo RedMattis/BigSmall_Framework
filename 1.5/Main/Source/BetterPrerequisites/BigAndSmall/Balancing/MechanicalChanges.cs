@@ -31,7 +31,7 @@ namespace BigAndSmall
                         // Check time since loading scene. We don't want to rescale injuries when loading a save.
                         // This is because the injuries are already scaled when loading a save, and rescaling them
                         // again will cause them to get heal small pawns everytime the save is loaded.
-                        if (Time.timeSinceLevelLoad < BigSmallMod.settings.cacheUpdateFrequency * 3f)
+                        if (Time.timeSinceLevelLoad < 2250)
                         {
                             sizeCache.injuriesRescaled = true;
                             sizeCache.previousScaleMultiplier = sizeCache.scaleMultiplier;

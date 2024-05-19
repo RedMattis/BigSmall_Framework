@@ -416,6 +416,9 @@
           <InjuryHealingFactor>0.9</InjuryHealingFactor>
           <SM_BulletDmgMult>0.80</SM_BulletDmgMult>
         </statFactors>
+        <statOffsets>
+          <ToxicResistance>2</ToxicResistance>
+        </statOffsets>
       </li>
     </stages>
     <comps>
@@ -451,7 +454,11 @@
           <RestFallRateFactor>1.5</RestFallRateFactor>
           <InjuryHealingFactor>0.35</InjuryHealingFactor>
           <SM_BulletDmgMult>0.35</SM_BulletDmgMult>
+          <Fertility>0</Fertility>
         </statFactors>
+        <statOffsets>
+          <ToxicResistance>2</ToxicResistance>
+        </statOffsets>
       </li>
     </stages>
     <comps>

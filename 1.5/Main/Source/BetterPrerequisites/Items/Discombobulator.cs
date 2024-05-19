@@ -122,7 +122,7 @@ namespace BigAndSmall
             var endoGenes = pawn.genes.Endogenes.ToList();
 
             // Keep 2/3 of the genes, chosen randomly.
-            var genesToTransfer = endoGenes.Where(x => Rand.Chance(0.66f)).ToList();
+            var genesToTransfer = endoGenes.Where(x => Rand.Chance(0.66f) && x.Active).ToList();
 
             // Add the genesToTransfer to the xenogenes if the aren't already there.
             foreach (var gene in genesToTransfer)

@@ -28,9 +28,9 @@ namespace BigAndSmall
         /// </summary>
         /// <param name="key"></param>
         /// <param name="forceRefresh"></param>
-        /// <param name="forceDefault">The Cache will not be regenerated, it will simply return default values.</param>
+        /// <param name="canRegenerate">The Cache will not be regenerated, if one does not exist it will simply return default values.</param>
         /// <returns></returns>
-        public static V GetCache(T key, out bool newEntry, bool forceRefresh=false, bool forceDefault=false, bool regenerateIfTimer=false)
+        public static V GetCache(T key, out bool newEntry, bool forceRefresh=false, bool canRegenerate=true, bool regenerateIfTimer=false)
         {
             newEntry = false;
             if (key == null)
@@ -53,7 +53,7 @@ namespace BigAndSmall
             {
                 newEntry = true;
                 V newData = (V)Activator.CreateInstance(typeof(V), key);
-                if (!forceDefault)
+                if (canRegenerate)
                 {
                     newData.RegenerateCache();
                 }

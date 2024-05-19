@@ -25,6 +25,8 @@ namespace BigAndSmall
                 Notify_GenesChanged_MethodInfo = typeof(Pawn_GeneTracker).GetMethod("Notify_GenesChanged", BindingFlags.NonPublic | BindingFlags.Instance);
             }
             Notify_GenesChanged_MethodInfo.Invoke(pawn.genes, new object[] { geneDef });
+
+            //Log.Message($"Notified genes updated for {pawn.Name} with gene {geneDef.defName}.");
         }
 
         public static FieldInfo xenoTypeField = null;

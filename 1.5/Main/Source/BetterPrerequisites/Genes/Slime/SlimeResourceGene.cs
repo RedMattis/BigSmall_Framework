@@ -110,15 +110,19 @@ namespace BigAndSmall
             }
         }
 
+        
+
         public override void Tick()
         {
             base.Tick();
 
 
-            // Every 1500 ticks, adjust the resource updwards or downwards based on the target value and whether the pawn is starved or not.
-            if (Find.TickManager.TicksGame % 2500 == 0)
+            // Every 1000 ticks, adjust the resource updwards or downwards based on the target value and whether the pawn is starved or not.
+            if (Find.TickManager.TicksGame % 1000 == 0)
             {
-                const float maxValueChange = 0.125f;
+                RecalculateMax();
+
+                float maxValueChange = 0.125f;
 
                 SlimeHediff.Severity = Mathf.Clamp(Value, 0.05f, 9999);
 
@@ -128,7 +132,7 @@ namespace BigAndSmall
                 {
                     moveTowards = 0f;
                 }
-                else if (pawn?.needs?.food?.CurLevelPercentage > 0.49f)
+                else if (pawn?.needs?.food?.CurLevelPercentage > 0.29f)
                 {
                     // If so, set the target to 0.5
                     moveTowards = targetValue;
@@ -141,13 +145,11 @@ namespace BigAndSmall
                 {
                     return;
                 }
-                if (Mathf.Abs(moveTowards - Value) < 0.01f)
-                {
-                    return;
-                }
                 
                 float valueChange;
-                // If rougly equal to current value, do nothing. (epsilon)
+
+                maxValueChange = Mathf.Min(maxValueChange, Mathf.Abs(moveTowards - cur));
+
                 if (moveTowards > cur)
                 {
                     valueChange = maxValueChange;
@@ -168,12 +170,16 @@ namespace BigAndSmall
                     newValue = moveTowards;
                 }
 
-                // If value change was negative, fill the hunger bar by 50%
-                if (newValue+0.01 < Value)
+                // If value change was negative, fill the hunger bar somewhat.
+                if (Mathf.Abs(newValue - Value) < 0.05f)
                 {
-                    pawn.needs.food.CurLevelPercentage += 0.25f;
+                    // Pass
                 }
-                else if (newValue-0.01 > Value)
+                else if (newValue < Value)
+                {
+                    pawn.needs.food.CurLevelPercentage += 0.20f;
+                }
+                else if (newValue > Value)
                 {
                     // If value change was positive, drain the hunger by 75%, leaving at least 10%
                     pawn.needs.food.CurLevelPercentage = Mathf.Max(0.10f, pawn.needs.food.CurLevelPercentage - 0.50f);
@@ -182,54 +188,85 @@ namespace BigAndSmall
                 Value = newValue;
                 SlimeHediff.Severity = Mathf.Clamp(Value, 0.05f, 9999);
 
-                RecalculateMax();
+                RefreshCache();
             }
+        }
+
+        private void RefreshCache()
+        {
+            HumanoidPawnScaler.GetBSDict(pawn, forceRefresh: true);
         }
 
         public override void Reset()
         {
-            base.Reset();
+            cur = Mathf.Max(cur, 0.8f);
+            targetValue = 0.8f;
             RecalculateMax();
+            RefreshCache();
         }
 
         private void RecalculateMax(bool setup = false)
         {
-            float previousEffectiveTargetValue = targetValue * max * 0.9f; 
-            max = InitialResourceMax;
-            float currentBonus = 0;
-
             // for each active gene with the mod extension BS_GeneSlimeProps, add the resourceMaxOffset to the max value
+            float maxIncrease = GetMaxOffset();
+            float startBonus = GetStartingOffset();
+
+            var newMax = InitialResourceMax + maxIncrease;
+            // If roughly equal, do nothing. (epsilon)
+            if (Mathf.Abs(newMax - max) < 0.03f)
+            {
+                return;
+            }
+
+            float changePercent = newMax / max;
+
+            max = InitialResourceMax + maxIncrease;
+            cur = Mathf.Clamp(cur, 0f, max);
+
+
+            if (setup)
+            {
+                Value += startBonus;
+                if (changePercent>1)
+                    targetValue *= changePercent;
+            }
+            SlimeHediff.Severity = Mathf.Clamp(Value, 0.05f, 9999);
+        }
+
+        private float GetStartingOffset()
+        {
+            float currentBonus = 0;
             foreach (Gene curGene in Helpers.GetAllActiveGenes(pawn))
             {
                 if (curGene.def.HasModExtension<BS_GeneSlimeProps>())
                 {
-                    max += curGene.def.GetModExtension<BS_GeneSlimeProps>().resourceMaxOffset;
                     currentBonus += curGene.def.GetModExtension<BS_GeneSlimeProps>().resourceStartOffset;
                 }
             }
 
-            // Adjust the target value to keep the current value the same.
-            targetValue = previousEffectiveTargetValue / max;
-            cur = Mathf.Clamp(cur, 0f, max);
-            SlimeHediff.Severity = Mathf.Clamp(Value, 0.05f, 9999);
+            return currentBonus;
+        }
 
-            if (setup)
+        private float GetMaxOffset()
+        {
+            float increase = 0;
+            foreach (Gene curGene in Helpers.GetAllActiveGenes(pawn))
             {
-                cur += currentBonus;
-                targetValue += currentBonus;
+                if (curGene.def.HasModExtension<BS_GeneSlimeProps>())
+                {
+                    increase += curGene.def.GetModExtension<BS_GeneSlimeProps>().resourceMaxOffset;
+                }
             }
 
-            // Refresh Cache
-            HumanoidPawnScaler.GetBSDict(pawn, forceRefresh: true);
+            return increase;
         }
 
         public override void PostAdd()
         {
+            cur = 1;
             base.PostAdd();
-            targetValue = InitialResourceMax;
-
             RecalculateMax(setup:true);
-            SlimeHediff.Severity = Mathf.Clamp(Value, 0.05f, 9999);
+            RefreshCache();
         }
 
         private Hediff AddOrGetHediff()

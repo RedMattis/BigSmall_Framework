@@ -14,6 +14,8 @@ namespace BigAndSmall
 {
     public class BigAndSmallCache : GameComponent
     {
+        public static HashSet<PGene> pGenes = new HashSet<PGene>();
+
         public static HashSet<BSCache> scribedCache = new HashSet<BSCache>();
         public static bool regenerationAttempted = false;
         public Game game;
@@ -69,6 +71,20 @@ namespace BigAndSmall
                     HumanoidPawnScaler.GetBSDict(cachedPawn, forceRefresh: true);
                 }
             }
+
+            // Regenerate all pGene caches every 100 ticks.
+            // This is done on a component to save the performance cost of having them check a timer every time
+            // they are called.
+            pGenes = new HashSet<PGene>(pGenes.Where(x => x != null && x.pawn != null));
+            foreach (var pGene in pGenes)
+            {
+                bool active = pGene.previouslyActive == true;
+                bool newState = pGene.RegenerateState();
+                if (active != newState)
+                {
+                    Helpers.NotifyGenesUpdated(pGene.pawn, pGene.def);
+                }
+            }
         }
     }
 
@@ -79,7 +95,7 @@ namespace BigAndSmall
         /// null-check everything that calls this method.
         /// </summary>
         /// <returns></returns>
-        public static BSCache GetBSDict(Pawn pawn, bool forceRefresh = false, bool regenerateIfTimer = false)
+        public static BSCache GetBSDict(Pawn pawn, bool forceRefresh = false, bool regenerateIfTimer = false, bool canRegenerate=true)
         {
             if (pawn == null)
             {
@@ -88,14 +104,14 @@ namespace BigAndSmall
 
             bool newEntry;
             BSCache result;
-            if (RunNormalCalculations(pawn))
+            if (canRegenerate && RunNormalCalculations(pawn))
             {
                 result = GetCache(pawn, out newEntry, forceRefresh: forceRefresh, regenerateIfTimer: regenerateIfTimer);
             }
             else
             {
                 // Unless values have already been set, this will just be a cache with default values.
-                result = GetCache(pawn, out newEntry, forceRefresh, forceDefault: true);
+                result = GetCache(pawn, out newEntry, forceRefresh, canRegenerate: false);
             }
             if (newEntry)
             {
@@ -271,7 +287,6 @@ namespace BigAndSmall
         public bool RegenerateCache()
         {
             if (pawn == null) { throw new Exception("Big & Small: Cannot regenerate Pawn Cache because the Pawn is null."); }
-
             if (regenerationInProgress) { return false; }
             regenerationInProgress = true;
             try
@@ -298,7 +313,7 @@ namespace BigAndSmall
                 //float cosmeticSizeMultiplier = 1f; // Not currently implemented.
 
                 float bodySizeOffset = ((baseSize + sizeOffset) * sizeMultiplier * sizeFromAge) - previousTotalSize;
-                
+
 
                 float bodySizeCosmeticOffset = ((baseSize + cosmeticSizeOffset) * sizeMultiplier * sizeFromAge) - previousTotalSize;
 
@@ -454,7 +469,7 @@ namespace BigAndSmall
                 int currentTick = Find.TickManager.TicksGame;
 
                 // Get all armour
-                if (pawn?.apparel?.WornApparel?.Count > 0 &&  (selfRepairingApparel || indestructibleApparel))
+                if (pawn?.apparel?.WornApparel?.Count > 0 && (selfRepairingApparel || indestructibleApparel))
                 {
                     var wornApparel = pawn.apparel.WornApparel;
                     foreach (var apparel in wornApparel)
@@ -515,7 +530,13 @@ namespace BigAndSmall
                 canWearApparel = !cannotWearApparel;
 
                 injuriesRescaled = false;
-                isUnliving = undeadGenes.Count > 0 || animalUndead;
+
+                // Check if they are a shambler
+                var isShambler = pawn?.mutant?.Def?.defName?.ToLower().Contains("shambler") == true;
+                // Check if it has the "ShamblerCorpse" hediff
+                isShambler = isShambler || pawn.health.hediffSet.HasHediff(HediffDefOf.ShamblerCorpse);
+
+                isUnliving = undeadGenes.Count > 0 || animalUndead || isShambler;
                 willBeUndead = willBecomeUndead;
                 bleedRate = bleedState;
                 this.deathlike = deathlike;
@@ -553,6 +574,7 @@ namespace BigAndSmall
             {
                 regenerationInProgress = false;
             }
+
             return true;
         }
 
@@ -734,7 +756,7 @@ namespace BigAndSmall
 
 
     }
-    
+
     public class ApparelCache : IExposable
     {
         public string apparelID;
@@ -755,11 +777,15 @@ namespace BigAndSmall
 
         public void RepairDurability(Apparel apparel, int currentTick, float fractionPerDay)
         {
+            // In case the durability has been increased by outside factors.
+            highestSeenDurability = Mathf.Max(highestSeenDurability, apparel.HitPoints);
+
+
             int ticksPerDay = 60000;
             int ticksSinceLastSeen = currentTick - lastSeenTick;
             // The apparel should repair by <fraction> per day, calculated from the last time we saw it.
             float repairRate = ticksSinceLastSeen / (float)ticksPerDay * fractionPerDay;
-            
+
             // Restore hp
             int apparelMaxHp = apparel.MaxHitPoints;
             int apparelHp = apparel.HitPoints;
@@ -780,6 +806,7 @@ namespace BigAndSmall
 
         public void RepairAllDurability(Apparel apparel)
         {
+            highestSeenDurability = Mathf.Max(highestSeenDurability, apparel.HitPoints);
             apparel.HitPoints = highestSeenDurability;
         }
 

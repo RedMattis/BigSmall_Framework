@@ -85,10 +85,18 @@ namespace BigAndSmall
 
         public void OnJumpCompleted(IntVec3 origin, LocalTargetInfo target)
         {
-            Pawn tPawn = target.Pawn;
-            if (tPawn != null)
+            try
             {
-                DoEngulf(parent.pawn, tPawn);
+                Pawn tPawn = target.Pawn;
+                if (tPawn != null)
+                {
+                    DoEngulf(parent.pawn, tPawn);
+                }
+            }
+            catch (Exception e)
+            {
+                // Capture the error if any, because otherwise the pawn will fail to spawn back in which is bad.
+                Log.Error($"Error in OnJumpCompleted (target {target.Pawn}, user: {parent?.pawn}) : {e.Message}");
             }
         }
     }
@@ -133,7 +141,7 @@ namespace BigAndSmall
             {
                 return false;
             }
-            if (enemy.BodySize > parent.pawn.BodySize * Props.relativeSizeThreshold)
+            if (EngulfHediff.PowScale(enemy.BodySize) > EngulfHediff.PowScale(parent.pawn.BodySize) * Props.relativeSizeThreshold)
             {
                 if (throwMessages)
                 {
@@ -156,7 +164,7 @@ namespace BigAndSmall
             if (hediff != null)
             {
                 var engulfHediff = (EngulfHediff)hediff;
-                if (engulfHediff.TotalMass + enemy.BodySize > engulfHediff.MaxCapacity)
+                if (engulfHediff.TotalMass + EngulfHediff.PowScale(enemy.BodySize) > engulfHediff.MaxCapacity)
                 {
                     if (throwMessages)
                     {

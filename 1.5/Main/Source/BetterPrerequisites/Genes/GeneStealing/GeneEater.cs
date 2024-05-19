@@ -47,7 +47,7 @@ namespace BigAndSmall
                     numGenes = 99;
                 }
 
-                CompProperties_IncorporateEffect.IncorporateGenes(pawn, ingestedPawn, genePickCount: numGenes*2, stealTraits: false, userPicks: false, randomPickCount: numGenes);
+                CompProperties_IncorporateEffect.IncorporateGenes(pawn, ingestedPawn, genePickCount: numGenes*2, stealTraits: false, userPicks: false, randomPickCount: numGenes, excludeBodySwap:true);
 
                 // Remove the Herbivore Gene if it exists
                 var herbivoreGenes = pawn.genes.GenesListForReading.Where(x => x.def.defName.Contains("BS_Diet_Herbivore"));

@@ -58,6 +58,8 @@ namespace BigAndSmall
                 deadRisingChance = 0;
             }
 
+            var map = __instance.Map ?? corpse.Map;
+
             // Check if victim is humanlike
             if (__instance.RaceProps.Humanlike || VUReturning.zombieApocalypseMode)
             {
@@ -68,7 +70,7 @@ namespace BigAndSmall
                     {
                         VUReturning.lastCheckTick = Find.TickManager.TicksGame + ticksPerDay * 2;
                         VUReturning.zombieApocalypseMode = true;
-                        TriggerZombieApocalypse(__instance?.Map);
+                        TriggerZombieApocalypse(map);
                     }
                     else if (Rand.Chance(deadRisingChance))
                     {
@@ -89,8 +91,10 @@ namespace BigAndSmall
                 {
                     return;
                 }
+
+                var validFleshType = __instance.RaceProps.FleshType == FleshTypeDefOf.Normal || __instance.RaceProps.FleshType == FleshTypeDefOf.Insectoid;
                 // Check if the pawn is a robot.
-                if(__instance.RaceProps.FleshType != FleshTypeDefOf.Normal || __instance.RaceProps.FleshType != FleshTypeDefOf.Insectoid)
+                if(!validFleshType)
                 {
                     return;
                 }
