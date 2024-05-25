@@ -33,4 +33,16 @@
       </value>
     </match>
   </Operation>
+
+  <Operation Class="PatchOperationFindMod">
+    <mods>
+      <li>Vanilla Nutrient Paste Expanded</li>
+    </mods>
+    <match Class="PatchOperationReplace">
+      <xpath>Defs/ThingDef[defName="VNPE_NutrientPasteFeeder"]/comps/li[@Class="PipeSystem.CompProperties_ConvertResourceToThing"]/maxOutputStackSize</xpath>
+      <value>
+        <maxOutputStackSize>50</maxOutputStackSize>
+      </value>
+    </match>
+  </Operation>
 </Patch>

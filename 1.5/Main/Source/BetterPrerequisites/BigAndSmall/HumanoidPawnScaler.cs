@@ -21,6 +21,7 @@ namespace BigAndSmall
         public Game game;
 
         public Queue<Pawn> refreshQueue = new Queue<Pawn>();
+
         public BigAndSmallCache(Game game)
         {
             this.game = game;
@@ -49,10 +50,8 @@ namespace BigAndSmall
         {
             base.GameComponentTick();
 
-            if (Find.TickManager.TicksGame % 100 != 0)
-            {
-                return;
-            }
+            
+
             // If the queue is empty, enqueue the HumanoidPawnScaler.Cache.
             if (refreshQueue.Count == 0)
             {

@@ -39,7 +39,7 @@ namespace BigAndSmall
 
             // Check the DeathrestCapacity of the pawn found on the Gene_Deathrest
             var deathrestGene = Helpers.GetAllActiveGenes(pawn).Where(x => x is Gene_Deathrest);
-            int deathRestCap = 1;
+            int deathRestCap = 0;
             if (deathrestGene.Count() > 0)
             {
                 var drGene = (Gene_Deathrest)deathrestGene.First();
@@ -47,10 +47,30 @@ namespace BigAndSmall
             }
 
 
-
             // Check Dracul Stage of the Dracul Gene
             (int stage, _) = DraculStageExtension.TryGetDraculStage(pawn);
             //var draculGene = pawn.genes.GenesListForReading.Where(x => x.def.HasModExtension<DraculStageExtension>());
+
+            var hemogenAmount = pawn.genes?.GetFirstGeneOfType<Gene_Hemogen>()?.Value;
+
+
+            if (pawn.IsPrisoner || pawn.IsSlave || SanguophageUtility.ShouldBeDeathrestingOrInComaInsteadOfDead(pawn) || hemogenAmount < 0.75)
+            {
+                var draculStageProgression = (DraculStageProgression)HediffMaker.MakeHediff(BSDefs.VU_DraculAge, pawn);
+                int ticksPerDay = 60000;
+                int durationTicks = 1 * ticksPerDay;
+
+                // Get the comps in the hediff and set the HediffCompProperties_Disappears disappars to the duration
+                foreach (var comp in draculStageProgression.comps)
+                {
+                    if (comp is HediffComp_Disappears disappears)
+                    {
+                        disappears.ticksToDisappear = durationTicks;
+                    }
+                }
+                pawn.health.AddHediff(draculStageProgression);
+                return;
+            }
 
             string targetXenoType = "VU_Dracul";
             switch (stage + 1)

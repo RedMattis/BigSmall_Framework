@@ -120,6 +120,13 @@ namespace BigAndSmall
             // Every 1000 ticks, adjust the resource updwards or downwards based on the target value and whether the pawn is starved or not.
             if (Find.TickManager.TicksGame % 1000 == 0)
             {
+                // Check if player-controlled
+                bool playerControlled = pawn.IsColonist || pawn.IsPrisonerOfColony;
+                if (!playerControlled)
+                {
+                    targetValue = max > 2 ? max * 0.5f : 1.0f;
+                }
+
                 RecalculateMax();
 
                 float maxValueChange = 0.125f;

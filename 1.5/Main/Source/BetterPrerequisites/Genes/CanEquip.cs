@@ -56,6 +56,12 @@ namespace BigAndSmall
                     cantReason = "BS_GenePreventsEquipping".Translate();
                     return false;
                 }
+                bool isGiant = pawn.story.traits.allTraits.Any(x => x.def.defName.ToLower().Contains("bs_giant")) || pawn.BodySize > 1.99;
+                if (thing.apparel.tags.Any(x => x.ToLower() == "giantonly") && !isGiant)
+                {
+                    cantReason = "BS_PawnIsNotAGiant".Translate();
+                    return false;
+                }
             }
 
             List<WeaponClassDef> weaponClasses = thing.weaponClasses;
@@ -172,6 +178,14 @@ namespace BigAndSmall
                     if (!cache.canWearApparel)
                     {
                         __result = false;
+                    }
+                    else
+                    {
+                        bool isGiant = pawn.story.traits.allTraits.Any(x => x.def.defName.ToLower().Contains("bs_giant")) || pawn.BodySize > 1.99;
+                        if (__instance.tags.Any(x => x.ToLower() == "giantonly") && !isGiant)
+                        {
+                            __result = false;
+                        }
                     }
                     // Skip these two, since they can't check all the requipred tags...
                     //else if (!cache.canWearClothing && !__instance.tags.Contains("Armor"))

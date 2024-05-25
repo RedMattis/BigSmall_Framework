@@ -135,21 +135,48 @@ namespace BigAndSmall
             DoMimic(pawn, corpse, genesToRetain:Props.genesToRetain);
         }
 
-        public static void DoMimic(Pawn pawn, Corpse corpse, List<GeneDef> genesToRetain)
+        public static void DoMimic(Pawn pawn, Corpse corpse, List<GeneDef> genesToRetain, bool spawnGibblets=true, bool addCorpseGenes=true)
         {
             CompProperticesMimicOffEffect.EndMimicry(pawn, genesToRetain);
 
-            // Add all active genes from the corpse
-            var activeGenes = Helpers.GetAllActiveGenes(corpse?.InnerPawn);
-            var genesToPick = activeGenes.Select(gene => gene.def).ToList();
-
-            // Remove all xenogenes except those in genesToRetain
-            pawn.genes.Xenogenes.RemoveAll(gene => !genesToRetain.Contains(gene.def));
-
-            // Add all genes from the corpse
-            foreach (var geneDef in genesToPick)
+            if (addCorpseGenes)
             {
-                pawn.genes.AddGene(geneDef, xenogene:true);
+                // Add all active genes from the corpse
+                var activeGenes = Helpers.GetAllActiveGenes(corpse?.InnerPawn);
+                var genesToPick = activeGenes.Select(gene => gene.def).ToList();
+
+                // Remove all xenogenes except those in genesToRetain
+                pawn.genes.Xenogenes.RemoveAll(gene => !genesToRetain.Contains(gene.def));
+
+                // Add all genes from the corpse
+                foreach (var geneDef in genesToPick)
+                {
+                    pawn.genes.AddGene(geneDef, xenogene: true);
+                }
+
+                try
+                {
+                    // Remove the size traits from the pawn
+                    var sizeTraitDefNames = new List<string> { "Gigantism", "Large", "Small", "Dwarfism" };
+                    var traitsToRemove = pawn.story.traits.allTraits.Where(trait => sizeTraitDefNames.Contains(trait.def.defName)).ToList();
+                    for (int idx = traitsToRemove.Count - 1; idx >= 0; idx--)
+                    {
+                        Trait trait = traitsToRemove[idx];
+                        pawn.story.traits.RemoveTrait(trait);
+                    }
+
+                    // Check if the corpse has any size traits
+                    var sizeTrait = corpse.InnerPawn.story.traits.allTraits.Where(trait => sizeTraitDefNames.Contains(trait.def.defName));
+                    // Add them to the pawn.
+                    foreach (var trait in sizeTrait)
+                    {
+                        pawn.story.traits.GainTrait(trait);
+                    }
+                }
+                catch
+                {
+                    Log.Error($"Failed to transfer size traits for {pawn}");
+                }
             }
 
             // Get/Set body-type and gender of corpse
@@ -164,8 +191,11 @@ namespace BigAndSmall
             // Remove all the apparel on the corpse
             corpse.InnerPawn.apparel.DropAll(pawn.Position, forbid: true);
 
-            // Spread blood everywhere.
-            Gibblets.SpawnGibblets(corpse.InnerPawn, pawn.Position, pawn.Map);
+            if (spawnGibblets)
+            {
+                // Spread blood everywhere.
+                Gibblets.SpawnGibblets(corpse.InnerPawn, pawn.Position, pawn.Map);
+            }
         }
 
         public override void PostApplied(List<LocalTargetInfo> targets, Map map)

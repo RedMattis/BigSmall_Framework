@@ -41,4 +41,12 @@
 
   <SizeOffsetByAge>Size Offset by Age</SizeOffsetByAge>
   <SizeByAgeOffset>Size Offset at age</SizeByAgeOffset>
+
+  <BS_ReturningSoul_FireTitle>{0} was killed by fire.</BS_ReturningSoul_FireTitle>
+  <BS_ReturningSoul_Fire>{0} was prevented from ressurecting due to being killed by fire. This time it might be permanent.</BS_ReturningSoul_Fire>
+  <BS_ReturningSoul_Failed>{0} failed to find a suitable non-dessicated vessel to return to the world. Each failure increases the risk of disappearing forever.</BS_ReturningSoul_Failed>
+  <BS_ReturningSoul_FailedPermanent>{0} failed to find a suitable vessel and has likely either decided to return in a faraway place or departed the world for good.</BS_ReturningSoul_FailedPermanent>
+
+  <BS_ReturningSoul_Success>{0} has returned from the void.</BS_ReturningSoul_Success>
+  <BS_ReturningSoulCorpse_Success>{0} has returned from the void by possessing the dead body of {1}</BS_ReturningSoulCorpse_Success>
 </LanguageData>

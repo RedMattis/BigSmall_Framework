@@ -85,6 +85,16 @@ namespace BigAndSmall
         public static void GeneratePawnsPatch(PawnGroupMakerParms parms, bool warnOnZeroResults, ref IEnumerable<Pawn> __result)
         {
             bool changed = false;
+            //foreach(var pawn in __result)
+            //{
+            //    if (pawn.kindDef.defName == "BS_SatanGreat" || pawn.kindDef.defName == "BS_Metatron")
+            //    {
+            //        // Add BS_Immortal gene to the pawns.
+            //        pawn.genes.AddGene(BSDefs.BS_Immortal, xenogene:false);
+            //    }
+            //}
+            
+
             var modifiedPawn = __result.ToList();
             foreach (var member in modifiedPawn)
             {

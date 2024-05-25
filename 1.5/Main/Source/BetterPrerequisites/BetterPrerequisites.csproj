@@ -110,7 +110,9 @@
     <Compile Include="Genes\Slime\SlimeResourceGene.cs" />
     <Compile Include="Genes\SpecialGenes\HealingGenes.cs" />
     <Compile Include="Genes\SpecialGenes\Nekomata.cs" />
+    <Compile Include="Genes\SpecialGenes\TrulyAgeless.cs" />
     <Compile Include="Genes\SuccubusCutBond.cs" />
+    <Compile Include="Genes\Unliving\Deathless.cs" />
     <Compile Include="Genes\Werewolves\WerewolfInfect.cs" />
     <Compile Include="GeneWealth.cs" />
     <Compile Include="Hediffs\AcidBuildUp.cs" />

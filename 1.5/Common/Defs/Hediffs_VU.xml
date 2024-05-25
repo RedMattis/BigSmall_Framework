@@ -372,7 +372,7 @@
   <HediffDef>
     <defName>VU_DraculAge</defName>
     <label>Dracul Maturity</label>
-    <description>How close this person is to reaching the next stage of Dracul vampirism.</description>
+    <description>How close this person is to reaching the next stage of Dracul vampirism.\n\nSlaves, prisoners will be unable to increase stage nor will colonists in involuntary deathrest.\n\nA minimum of 75% Hemogen is also needed.</description>
     <isBad>false</isBad>
     <everCurableByItem>false</everCurableByItem>
     <hediffClass>BigAndSmall.DraculStageProgression</hediffClass>

@@ -32,6 +32,7 @@ namespace BigAndSmall
             bool isCrush = dinfo.Def == DamageDefOf.Crush;
             bool isExplosion = dinfo.Def == DamageDefOf.Bomb || dinfo.Def == bombSuper;
             bool isPoison = dinfo.Def == DamageDefOf.ToxGas || dinfo.Def.defName.ToLower().Contains("poison") || dinfo.Def.defName.ToLower().Contains("tox") || dinfo.Def.defName.ToLower().Contains("venom");
+            bool isBurn = dinfo.Def == DamageDefOf.Flame || dinfo.Def.defName == "Burn" || dinfo.Def.defName == "Fire";
 
             // For Acid resistance
             bool isAcid = dinfo.Def.defName.ToLower().Contains("acid") || dinfo.Def.defName.ToLower().Contains("corrode");
@@ -97,7 +98,28 @@ namespace BigAndSmall
                     dinfo.SetAmount(dinfo.Amount * acidDmgMult);
                 }
             }
-            
+
+            if (isBurn)
+            {
+                // Get Flame Damage Factor to check if the pawn is fire-immune.
+                float fireDamageMult = pawn.genes?.FactorForDamage(dinfo) ?? 1;
+                fireDamageMult *= pawn.health.FactorForDamage(dinfo);
+
+                if (fireDamageMult > 0)
+                {
+                    // Check if they have the "BS_ReturningSoul" gene.
+                    var validGenes = Helpers.GetActiveGenesByName(pawn, "BS_ReturningSoul");
+                    if (validGenes.Count() > 0)
+                    {
+                        // Add the BS_BurnReturnDenial hediff if they don't already have it.
+                        if (pawn.health.hediffSet.GetFirstHediffOfDef(BSDefs.BS_BurnReturnDenial) == null)
+                        {
+                            pawn.health.AddHediff(BSDefs.BS_BurnReturnDenial);
+                        }
+                    }
+                }
+            }
+
         }
     }
 

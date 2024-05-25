@@ -117,18 +117,19 @@ namespace BetterPrerequisites
                 if (ModsConfig.IsActive("nals.facialanimation") && geneExt.facialDisabler != null)
                 {
                     // Check if any other genes have facialDisabler
-                    bool otherFacialDisabler = pawn.genes.GenesListForReading.Any(x => x.def.HasModExtension<GeneExtension>() && x.def.GetModExtension<GeneExtension>().facialDisabler != null);
-                    if (!otherFacialDisabler)
-                    {
-                        try
-                        {
-                            //NalFaceExt.DisableFacialAnimations(pawn, geneExt.facialDisabler, revert:true);
-                        }
-                        catch (Exception e)
-                        {
-                            Log.Message($"Error in PostRemove: {e.Message}");
-                        }
-                    }
+
+                    //bool otherFacialDisabler = pawn.genes.GenesListForReading.Any(x => x.def.HasModExtension<GeneExtension>() && x.def.GetModExtension<GeneExtension>().facialDisabler != null);
+                    //if (!otherFacialDisabler)
+                    //{
+                    //    try
+                    //    {
+                    //        NalFaceExt.DisableFacialAnimations(pawn, geneExt.facialDisabler, revert:true);
+                    //    }
+                    //    catch (Exception e)
+                    //    {
+                    //        Log.Message($"Error in PostRemove: {e.Message}");
+                    //    }
+                    //}
                 }
             }
         }

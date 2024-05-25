@@ -36,6 +36,10 @@ namespace BigAndSmall
         public static GeneDef Body_Androgynous;
         public static GeneDef Body_MaleOnly;
         public static GeneDef Body_FemaleOnly;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef BS_ReturningSoul;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef BS_Immortal;
 
         // Hediffs
         public static HediffDef VU_SuccubusBond;
@@ -47,6 +51,10 @@ namespace BigAndSmall
         public static HediffDef VU_DraculAge;
         public static HediffDef VU_AnimalReturned;
         public static HediffDef VU_DraculAnimalVampirism;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static HediffDef BS_LesserDeathless_Death;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static HediffDef BS_BurnReturnDenial;
 
         // Weapons
         public static WeaponClassDef BS_GiantWeapon;
