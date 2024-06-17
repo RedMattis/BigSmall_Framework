@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BetterPrerequisites;
+using HarmonyLib;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using Verse.AI;
+using static RimWorld.ColonistBar;
 
 namespace BigAndSmall
 {
@@ -28,6 +30,30 @@ namespace BigAndSmall
             {
                 ReturnedReanimation(__instance, ticksPerDay);
             }
+
+            if (dinfo?.Instigator is Pawn instigator && __instance is Pawn victim)
+            {
+                Corpse corpse = MakeCorpse_Patch.corpse != null && MakeCorpse_Patch.corpse.InnerPawn == victim ? MakeCorpse_Patch.corpse : null;
+
+                // Check if distnace is less than 2 cells.
+                var position = corpse?.Position ?? instigator?.Position;
+
+                if (position == null)
+                {
+                    return;
+                }
+
+                bool targetFar = (corpse?.Spawned == true || victim?.Spawned == true) && (instigator.Position.DistanceTo(position.Value) > 2);
+
+                var genExt = Helpers.GetAllActiveGenes(instigator).Select(x => x.def.GetModExtension<GeneExtension>()).Where(x => x != null).ToList();
+                if (!targetFar && genExt.Any(x=>x.consumeSoulOnHit != null))
+                {
+                    var consumeSoulOnHit = genExt.First(x => x.consumeSoulOnHit != null).consumeSoulOnHit;
+                    var scHediff = CompAbilityEffect_ConsumeSoul.MakeGetSoulCollectorHediff(instigator);
+                    scHediff.AddPawnSoul(__instance, true, consumeSoulOnHit.gainMultiplier, consumeSoulOnHit.exponentialFalloff, consumeSoulOnHit.gainSkillMultiplier);
+                    CompAbilityEffect_ConsumeSoul.ApplySoulless(victim);
+                }
+            }
         }
 
         private static void ReturnedReanimation(Pawn __instance, int ticksPerDay)
@@ -47,6 +73,13 @@ namespace BigAndSmall
             {
                 return;
             }
+
+            var soullessHediff = DefDatabase<HediffDef>.GetNamedSilentFail("BS_Soulless");
+            if (__instance?.health?.hediffSet?.TryGetHediff(soullessHediff, out Hediff hediff) == true && soullessHediff != null)
+            {
+                return; // Don't trigger on death of soulless pawns.
+            }
+
             float zombieApocChance = VUReturning.ZombieApocalypseChance;
             float deadRisingChance = VUReturning.DeadRisingChance;
 

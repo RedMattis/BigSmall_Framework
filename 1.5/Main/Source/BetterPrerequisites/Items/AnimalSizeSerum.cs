@@ -19,6 +19,9 @@ namespace BigAndSmall
         public bool animalsOnly = false;
         public bool humanoidsOnly = false;
         public bool canTargetNonColonists = true;
+
+        public float factor = 1.0f;
+        public float falloff = 2.5f;
         
 
         public CompProperties_TargetEffectApplySerum()
@@ -133,6 +136,25 @@ namespace BigAndSmall
                     else if (props.specialEffect == "CreateArchiteXenogerm" && Pawn?.RaceProps?.Humanlike == true)
                     {
                         Discombobulator.CreateXenogerm(Pawn, archite:true);
+                    }
+                    else if (props.specialEffect == "AddSoulPower")
+                    {
+                        var scHediff = CompAbilityEffect_ConsumeSoul.MakeGetSoulCollectorHediff(Pawn);
+                        scHediff.AddSoulPowerDirect(props.factor, props.falloff);
+
+                        // Spread blood filith around the area.
+                        if (Pawn?.Map != null)
+                        {
+                            var bloodFilth = ThingDefOf.Filth_Blood;
+                            for (int i = 0; i < 2; i++)
+                            {
+                                IntVec3 randomCell = Pawn.Position + GenRadial.RadialPattern[i];
+                                if (randomCell.InBounds(Pawn.Map))
+                                {
+                                    FilthMaker.TryMakeFilth(randomCell, Pawn.Map, bloodFilth, 1);
+                                }
+                            }
+                        }
                     }
                 }
                 

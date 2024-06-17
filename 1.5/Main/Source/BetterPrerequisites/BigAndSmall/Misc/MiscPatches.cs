@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BetterPrerequisites;
+using HarmonyLib;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,99 @@ using Verse;
 
 namespace BigAndSmall
 {
+    //GetTerrorThoughts
+    [HarmonyPatch(typeof(TerrorUtility), nameof(TerrorUtility.GetTerrorLevel), new Type[]
+    {
+        typeof(Pawn),
+    })]
+    public static class GetTerrorLevel_Patch
+    {
+        public static bool Prefix(ref float __result, Pawn pawn)
+        {
+            if (pawn?.needs?.mood == null)
+            {
+                __result = 0f;
+                return false; //Abort further patches.
+            }
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(TerrorUtility), nameof(TerrorUtility.GetTerrorThoughts), new Type[]
+    {
+        typeof(Pawn),
+    })]
+    public static class GetTerrorThoughts_Patch
+    {
+        public static bool Prefix(ref IEnumerable<Thought_MemoryObservationTerror> __result, Pawn pawn)
+        {
+            if (pawn?.needs?.mood == null)
+            {
+                __result = new List<Thought_MemoryObservationTerror>();
+                return false; //Abort further patches.
+            }
+            return true;
+        }
+    }
+
+
+    [HarmonyPatch(typeof(Pawn), nameof(Pawn.MakeCorpse), new Type[] { typeof(Building_Grave), typeof(bool), typeof(float) })]
+    public static class MakeCorpse_Patch
+    {
+        public static Corpse corpse = null;
+        public static void Postfix(ref Corpse __result, Pawn __instance)
+        {
+            corpse = __result;
+        }
+    }
+
+    // Patch Genepack Initialize to remove "BS_DO_NOT" tagged genes.
+    [HarmonyPatch(typeof(Genepack), nameof(Genepack.Initialize))]
+    public static class Genepack_Initialize_Patch
+    {
+        public static void Prefix(ref List<GeneDef> genes)
+        {
+            int initialCount = genes.Count;
+            var genesToReplace = genes.Where(g => g.displayCategory.defName.Contains("BS_DO_NOT")).ToList();
+
+            // Print all the names of genes to replace.
+            foreach (var gene in genesToReplace)
+            {
+                Log.Message($"Replacing: {gene.defName} in genepack, due to being set to be filtered.");
+            }
+
+            bool didSomething = false;
+            if (genesToReplace.Count != genes.Count)
+            {
+                // Remove all genes from genesToReplace from genes
+                foreach (var gene in genesToReplace)
+                {
+                    genes.Remove(gene);
+                    didSomething = true;
+                }
+            }
+            else if (genesToReplace.Count == genes.Count)
+            {
+                // Replace the genes with something random
+                var newGeneList = new List<GeneDef>();
+                for (int idx=0; idx < initialCount; idx++)
+                {
+                    // Pick a random non-AG gene. Filtering the BS & AG genes from the randomization list for this case mostly to try to get vanilla
+                    // genes.
+                    var newGene = DefDatabase<GeneDef>.AllDefsListForReading.Where(g => !g.displayCategory.defName.Contains("BS_DO_NOT") &&
+                    g.biostatArc == 0 && g.selectionWeight > 0 && g.canGenerateInGeneSet && !g.defName.StartsWith("AG_") && !g.defName.StartsWith("BS_")).RandomElement();
+                    newGeneList.Add(newGene);
+                }
+                genes = newGeneList;
+
+                
+                didSomething = true;
+            }
+
+        }
+    }
+
+
     // Patch Beauty and Ugly thoughts
     [HarmonyPatch(typeof(ThoughtWorker_Pretty), "CurrentSocialStateInternal", new Type[]
     {

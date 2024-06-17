@@ -117,6 +117,14 @@ namespace BigAndSmall
                     return false;
                 }
 
+
+                var soullessHediff = DefDatabase<HediffDef>.GetNamedSilentFail("BS_Soulless");
+                if (pawn.health.hediffSet.TryGetHediff(soullessHediff, out Hediff hediff) && soullessHediff != null)
+                {
+                    pawn.health.RemoveHediff(this);
+                    return false; // Don't reanimate soulless pawns
+                }
+
                 TrySetReanimateTime();
                 // Check if the time of death + the ticks to reanimate is less than the current tick
                 if (timeOfDeath + ticksToReanimate < Find.TickManager.TicksGame)

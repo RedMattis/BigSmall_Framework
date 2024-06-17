@@ -43,6 +43,9 @@ namespace BetterPrerequisites
         public float bodyPosOffset = 0f;
         public float headPosMultiplier = 0f;
         public bool preventDisfigurement = false;
+        public bool unarmedOnly = false;
+
+        public ConsumeSoul consumeSoulOnHit = null;
 
         public Shader geneShader = null;
         public FacialAnimDisabler facialDisabler = null;
@@ -94,6 +97,13 @@ namespace BetterPrerequisites
 
             return stringBuilder;
         }
+    }
+
+    public class ConsumeSoul
+    {
+        public float gainMultiplier = 1;
+        public float? gainSkillMultiplier = null;
+        public float exponentialFalloff = 2.5f;
     }
 
     public class HediffToBody

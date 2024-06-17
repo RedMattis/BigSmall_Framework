@@ -70,13 +70,22 @@ namespace BigAndSmall
             }
 
             bool hasBurnDenial = pawn.health.hediffSet.HasHediff(BSDefs.BS_BurnReturnDenial);
+
+            var pawnNameString = pawn.Name.ToString();
             // Check if dInfo is fire damage.
             if (hasBurnDenial || dinfo.HasValue == true && (dinfo?.Def == DamageDefOf.Flame || dinfo?.Def?.defName == "Burn"))
             {
-                var pawnNameString = pawn.Name.ToString();
                 Find.LetterStack.ReceiveLetter("BS_ReturningSoul_FireTitle".Translate(pawnNameString), "BS_ReturningSoul_Fire".Translate(pawnNameString), LetterDefOf.NegativeEvent, pawn);
                 return;
             }
+
+            var soullessHediff = DefDatabase<HediffDef>.GetNamedSilentFail("BS_Soulless");
+            if (pawn?.health?.hediffSet?.TryGetHediff(soullessHediff, out Hediff hediff) == true && soullessHediff != null)
+            {
+                Find.LetterStack.ReceiveLetter("BS_WasKilled_Title".Translate(pawnNameString), "BS_WasKilledSoulless".Translate(pawnNameString), LetterDefOf.NegativeEvent, pawn);
+                return;
+            }
+
 
             // Scatter filth on death.
             if (ModLister.CheckAnomaly("Returning soul"))
@@ -350,7 +359,7 @@ namespace BigAndSmall
         {
             base.PostAdd();
 
-            bool isColonistOrPrisoner = pawn.Faction == Faction.OfPlayer || pawn.HostFaction == Faction.OfPlayer;
+            bool isColonistOrPrisoner = pawn.Faction == Faction.OfPlayerSilentFail || pawn.HostFaction == Faction.OfPlayerSilentFail;
 
             // Check if colonist or prisoner
             if (!isColonistOrPrisoner && ModLister.CheckAnomaly("Death refusal") && !pawn.Dead)

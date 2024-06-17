@@ -31,7 +31,7 @@ namespace BetterPrerequisites
             {
                 tickNow = Find.TickManager.TicksGame % 100 == 0;
             }
-            if (ModsConfig.BiotechActive && tickNow && pawn.needs != null)
+            if (ModsConfig.BiotechActive && tickNow && pawn.needs != null && Active)
             {
                 lockedNeed = lockedNeed ?? def.GetModExtension<LockedNeed>();
                 if (lockedNeed != null)

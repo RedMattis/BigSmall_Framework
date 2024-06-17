@@ -110,7 +110,7 @@ namespace BigAndSmall
             }
         }
 
-        
+
 
         public override void Tick()
         {
@@ -118,7 +118,7 @@ namespace BigAndSmall
 
 
             // Every 1000 ticks, adjust the resource updwards or downwards based on the target value and whether the pawn is starved or not.
-            if (Find.TickManager.TicksGame % 1000 == 0)
+            if (Find.TickManager.TicksGame % 500 == 0)
             {
                 // Check if player-controlled
                 bool playerControlled = pawn.IsColonist || pawn.IsPrisonerOfColony;
@@ -152,7 +152,7 @@ namespace BigAndSmall
                 {
                     return;
                 }
-                
+
                 float valueChange;
 
                 maxValueChange = Mathf.Min(maxValueChange, Mathf.Abs(moveTowards - cur));
@@ -195,8 +195,12 @@ namespace BigAndSmall
                 Value = newValue;
                 SlimeHediff.Severity = Mathf.Clamp(Value, 0.05f, 9999);
 
-                RefreshCache();
+                
             }
+            //if (Find.TickManager.TicksGame % 10000 == 0)
+            //{
+            //    RefreshCache();
+            //}
         }
 
         private void RefreshCache()

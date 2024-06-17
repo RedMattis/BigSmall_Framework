@@ -5,6 +5,7 @@
     <description>This person has a parasitic psychic bond with another person based on the psychic bonding gene.</description>
     <isBad>false</isBad>
     <everCurableByItem>false</everCurableByItem>
+    <blocksSocialInteraction>true</blocksSocialInteraction>
     <stages>
       <li>
         <capMods>
@@ -13,6 +14,9 @@
             <offset>0.20</offset>
           </li>
         </capMods>
+        <statOffsets>
+          <BS_SoulPower>0.35</BS_SoulPower>
+        </statOffsets>
       </li>
     </stages>
   </HediffDef>
@@ -30,11 +34,12 @@
         <capMods>
           <li>
             <capacity>Consciousness</capacity>
-            <setMax>0.8</setMax>
+            <setMax>0.85</setMax>
           </li>
         </capMods>
         <statOffsets>
-          <RestFallRateFactor>0.35</RestFallRateFactor>
+          <RestFallRateFactor>0.5</RestFallRateFactor>
+          <BS_SoulPower>-0.4</BS_SoulPower>
         </statOffsets>
       </li>
       <li>
@@ -215,6 +220,7 @@
           <MoveSpeed>1.10</MoveSpeed>
           <WorkSpeedGlobal>1.35</WorkSpeedGlobal>
           <MeleeDamageFactor>1.15</MeleeDamageFactor>
+          <SlaveSuppressionFallRate MayRequire="Ludeon.RimWorld.Ideology">0</SlaveSuppressionFallRate>
           <!-- <RestFallRateFactor>0.5</RestFallRateFactor> -->
         </statFactors>
         <statOffsets>

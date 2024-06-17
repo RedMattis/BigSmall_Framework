@@ -14,7 +14,7 @@ namespace BigAndSmall
 {
     public class BigAndSmallCache : GameComponent
     {
-        public static HashSet<PGene> pGenes = new HashSet<PGene>();
+        public static HashSet<PGene> pGenesThatReevaluate = new HashSet<PGene>();
 
         public static HashSet<BSCache> scribedCache = new HashSet<BSCache>();
         public static bool regenerationAttempted = false;
@@ -48,9 +48,10 @@ namespace BigAndSmall
 
         public override void GameComponentTick()
         {
-            base.GameComponentTick();
-
-            
+            if (Find.TickManager.TicksGame % 100 != 0)
+            {
+                return;
+            }
 
             // If the queue is empty, enqueue the HumanoidPawnScaler.Cache.
             if (refreshQueue.Count == 0)
@@ -65,17 +66,22 @@ namespace BigAndSmall
             {
                 // If the queue is not empty, dequeue the first cache and refresh it.
                 var cachedPawn = refreshQueue.Dequeue();
-                if (cachedPawn != null)
+                if (cachedPawn != null && cachedPawn.Spawned)
                 {
                     HumanoidPawnScaler.GetBSDict(cachedPawn, forceRefresh: true);
                 }
             }
 
+
+            //if (Find.TickManager.TicksGame % 500 != 0)
+            //{
+            //    return;
+            //}
             // Regenerate all pGene caches every 100 ticks.
             // This is done on a component to save the performance cost of having them check a timer every time
             // they are called.
-            pGenes = new HashSet<PGene>(pGenes.Where(x => x != null && x.pawn != null));
-            foreach (var pGene in pGenes)
+            pGenesThatReevaluate = new HashSet<PGene>(pGenesThatReevaluate.Where(x => x != null && x.pawn != null && !x.pawn.Discarded));
+            foreach (var pGene in pGenesThatReevaluate)
             {
                 bool active = pGene.previouslyActive == true;
                 bool newState = pGene.RegenerateState();
@@ -123,6 +129,14 @@ namespace BigAndSmall
                 else
                 {
                     BigAndSmallCache.scribedCache.Add(result);
+                }
+            }
+            if (forceRefresh)
+            {
+                // Refresh graphics
+                if (pawn.Spawned)
+                {
+                    pawn.Drawer.renderer.SetAllGraphicsDirty();
                 }
             }
 
@@ -215,6 +229,15 @@ namespace BigAndSmall
 
         public List<ApparelCache> apparelCaches = new List<ApparelCache>();
 
+        // Color and Fur Transform cache
+        public Color? savedSkinColor = null;
+        public Color? savedHairColor = null;
+        public string savedFurSkin = null;
+        public string savedBodyDef = null;
+
+        public int? randomPickSkinColor = null;
+        public int? randomPickHairColor = null;
+
         public string id = "BS_DefaultID";
 
         // Default Comparer function
@@ -268,6 +291,13 @@ namespace BigAndSmall
             Scribe_Collections.Look(ref apparelCaches, "BS_ApparelCaches", LookMode.Deep);
             Scribe_Values.Look(ref preventDisfigurement, "BS_PreventDisfigurement", false);
             Scribe_Values.Look(ref renderCacheOff, "BS_RenderCacheOff", false);
+            Scribe_Values.Look(ref savedSkinColor, "BS_SavedSkinColor", null);
+            Scribe_Values.Look(ref savedHairColor, "BS_SavedHairColor", null);
+            Scribe_Values.Look(ref randomPickSkinColor, "BS_RandomPickSkinColor", null);
+            Scribe_Values.Look(ref randomPickHairColor, "BS_RandomPickHairColor", null);
+            Scribe_Values.Look(ref savedFurSkin, "BS_SavedFurskinName");
+            Scribe_Values.Look(ref savedBodyDef, "BS_SavedBodyDefName");
+
         }
 
         // Used for the Scribe.
@@ -407,6 +437,21 @@ namespace BigAndSmall
                     }
 
                 }
+                if (BSDefs.BS_SoulPower != null)
+                {
+                    var soulPower = pawn.GetStatValue(BSDefs.BS_SoulPower);
+                    if (soulPower > 0)
+                    {
+                        // Check if the pawn has the Soul Power Hediff
+                        if (!hediffs.Any(x => x.def.defName == "BS_SoulPower"))
+                        {
+                            pawn.health.AddHediff(BSDefs.BS_SoulPowerHediff);
+                        }
+                    }
+                }
+
+                // Get all genes with the GeneExtension
+                List<GeneExtension> genesWithExtension = Helpers.GetAllActiveGenes(pawn).Select(x => x.def.GetModExtension<GeneExtension>()).Where(x => x != null).ToList();
 
                 // Gene Caching
                 var undeadGenes = Helpers.GetActiveGenesByNames(pawn, new List<string>
@@ -433,6 +478,7 @@ namespace BigAndSmall
                 // Has Deathlike gene or VU_AnimalReturned Hediff.
                 bool deathlike = activeGenes.Any(x => x.def.defName == "BS_Deathlike") || animalUndead;
                 bool unarmedOnly = activeGenes.Any(x => new List<string> { "BS_UnarmedOnly", "BS_NoEquip", "BS_UnarmedOnly_Android" }.Contains(x.def.defName));
+                bool unamredOnly = unarmedOnly || genesWithExtension.Any(x => x.unarmedOnly);
                 bool succubusUnbonded = false;
                 if (activeGenes.Any(x => x.def.defName == "VU_LethalLover"))
                 {
@@ -451,8 +497,7 @@ namespace BigAndSmall
                 bool cannotWearArmor = activeGenes.Any(x => x.def.defName == "BS_CannotWearArmor");
                 bool cannotWearApparel = activeGenes.Any(x => x.def.defName == "BS_CannotWearClothingOrArmor");
 
-                // Get all genes with the GeneExtension
-                List<GeneExtension> genesWithExtension = Helpers.GetAllActiveGenes(pawn).Select(x => x.def.GetModExtension<GeneExtension>()).Where(x => x != null).ToList();
+                
 
                 // Add together bodyPosOffset from GeneExtension.
                 float bodyPosOffset = genesWithExtension.Sum(x => x.bodyPosOffset);
@@ -483,8 +528,8 @@ namespace BigAndSmall
                             }
                             else if (selfRepairingApparel)
                             {
-                                // Repair 10% of the durability every day.
-                                apparelCache.RepairDurability(apparel, currentTick, 0.06f);
+                                // Repair 24% of the durability every day.
+                                apparelCache.RepairDurability(apparel, currentTick, 0.24f);
                             }
                         }
                         if (!found)
@@ -785,21 +830,30 @@ namespace BigAndSmall
             // The apparel should repair by <fraction> per day, calculated from the last time we saw it.
             float repairRate = ticksSinceLastSeen / (float)ticksPerDay * fractionPerDay;
 
+            // Apparel maxHP
+            float hpScale = Mathf.Max(apparel.MaxHitPoints, 50) / 50.0f;
+
             // Restore hp
             int apparelMaxHp = apparel.MaxHitPoints;
             int apparelHp = apparel.HitPoints;
-            float hpToAdd = repairRate * (apparelMaxHp - apparelHp);
+            float hpToAdd = Mathf.Abs(repairRate * (apparelMaxHp - apparelHp) * hpScale);
             // Since the value is likely less than 1 we accumulate it until it's enough to repair a whole point.
             accumulatedHp += hpToAdd;
 
             if (accumulatedHp > 1)
             {
+                //int oldhp = apparel.HitPoints;
+
                 int newHp = apparelHp + (int)accumulatedHp;
                 newHp = Math.Min(apparelMaxHp, newHp);
                 newHp = Math.Min(newHp, highestSeenDurability);
                 apparel.HitPoints = newHp;
+
+                //Log.Message($"DEBUG: Repairing {apparel.Label} by {accumulatedHp} hp, to {apparel.HitPoints}/{highestSeenDurability}. Was {oldhp}.");
                 accumulatedHp = 0;
+                
             }
+
             lastSeenTick = currentTick;
         }
 

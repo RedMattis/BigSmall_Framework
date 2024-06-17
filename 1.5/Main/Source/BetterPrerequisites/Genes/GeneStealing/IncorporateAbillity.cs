@@ -197,15 +197,18 @@ namespace BigAndSmall
                         genesToPick.Add(allGeneDefs.Where(x => x.defName == "MoveSpeed_Slow").First());
                 }
             }
-
-            if (target?.gender == Gender.Male)
+            try
             {
-                genesToPick.Add(allGeneDefs.Where(x => x.defName == "Body_MaleOnly").First());
+                if (target?.gender == Gender.Male)
+                {
+                    genesToPick.Add(allGeneDefs.Where(x => x.defName == "Body_MaleOnly").First());
+                }
+                else if (target?.gender == Gender.Female)
+                {
+                    genesToPick.Add(allGeneDefs.Where(x => x.defName == "Body_FemaleOnly").First());
+                }
             }
-            else if (target?.gender == Gender.Female)
-            {
-                genesToPick.Add(allGeneDefs.Where(x => x.defName == "Body_FemaleOnly").First());
-            }
+            catch { Log.Warning($"Gender genes not found. Skipping."); }
 
             if (target?.story.bodyType == BodyTypeDefOf.Male)
             {

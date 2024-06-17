@@ -4,6 +4,7 @@
         <defName>SM_Stats</defName>
         <label>Big and Small</label>
         <displayOrder>9999</displayOrder>
+        <displayAllByDefault>true</displayAllByDefault>
     </StatCategoryDef>
 
     <StatDef>
@@ -13,8 +14,9 @@
         <category>BasicsPawn</category>
         <alwaysHide>false</alwaysHide>
         <minValue>-99</minValue>
-        <toStringStyle>FloatOne</toStringStyle>
+        <toStringStyle>FloatTwo</toStringStyle>
         <defaultBaseValue>0.0</defaultBaseValue>
+        <hideAtValue>0</hideAtValue>
     </StatDef>
 
     <StatDef>
@@ -23,7 +25,7 @@
         <category>SM_Stats</category>
         <alwaysHide>true</alwaysHide>
         <minValue>-99</minValue>
-        <toStringStyle>FloatOne</toStringStyle>
+        <toStringStyle>FloatTwo</toStringStyle>
         <defaultBaseValue>0.0</defaultBaseValue>
     </StatDef>
 
@@ -36,6 +38,7 @@
         <minValue>0.05</minValue>
         <toStringStyle>PercentZero</toStringStyle>
         <defaultBaseValue>1.0</defaultBaseValue>
+        <hideAtValue>1</hideAtValue>
     </StatDef>
 
     <StatDef>
@@ -47,6 +50,7 @@
         <minValue>0.05</minValue>
         <toStringStyle>PercentZero</toStringStyle>
         <defaultBaseValue>1.0</defaultBaseValue>
+        <hideAtValue>1</hideAtValue>
     </StatDef>
 
     <StatDef>
@@ -58,6 +62,7 @@
         <minValue>-99999</minValue>
         <toStringStyle>Money</toStringStyle>
         <defaultBaseValue>0</defaultBaseValue>
+        <hideAtValue>0</hideAtValue>
     </StatDef>
 
     <StatDef>
@@ -80,16 +85,18 @@
         <defaultBaseValue>0</defaultBaseValue>
     </StatDef>
 
-    <!-- <StatDef>
-        <defName>SM_SouPower</defName>
-        <label>Soul Power</label>
-        <description>A strange force or power usually gifted or stolen from dark archotechs.</description>
+    <!--  -->
+    <StatDef>
+        <defName>BS_SoulPower</defName>
+        <label>Anomalous Power</label>
+        <description>Anomalous power usually gifted or stolen from dark archotechs.</description>
         <alwaysHide>false</alwaysHide>
         <category>SM_Stats</category>
         <minValue>0</minValue>
         <toStringStyle>PercentZero</toStringStyle>
         <defaultBaseValue>0</defaultBaseValue>
-    </StatDef> -->
+        <hideAtValue>0</hideAtValue>
+      </StatDef>
 
     <!-- Will not lower skill learning speed below the default. -->
     <StatDef>
@@ -101,6 +108,7 @@
         <minValue>0.35</minValue>
         <toStringStyle>FloatTwo</toStringStyle>
         <defaultBaseValue>0.35</defaultBaseValue>
+        <hideAtValue>0.35</hideAtValue>
     </StatDef>
 
     <StatDef>
@@ -111,19 +119,19 @@
         <category>BasicsPawn</category>
         <toStringStyle>FloatTwo</toStringStyle>
         <defaultBaseValue>1</defaultBaseValue>
+        <hideAtValue>1</hideAtValue>
     </StatDef>
 
     <StatDef>
-        <defName>SM_Food_Need_Capacity</defName>
+        <defName>SM_Food_Need_Capacity</defName> <!--LEGACY! Use MaxNutrition instead-->
         <description>How much food the pawn can save up. Let's them eat more rarely.</description>
         <label>Food Capacity Multiplier</label>
-        <alwaysHide>false</alwaysHide>
+        <alwaysHide>true</alwaysHide>
         <category>BasicsPawn</category>
         <minValue>0.01</minValue>
         <toStringStyle>FloatOne</toStringStyle>
         <defaultBaseValue>1.0</defaultBaseValue>
     </StatDef>
-    
 
     <StatDef>
         <defName>SM_AttackSpeed</defName>
@@ -159,6 +167,7 @@
         <toStringStyle>FloatTwo</toStringStyle>
         <!-- <defaultBaseValue>1.0</defaultBaseValue> -->
         <defaultBaseValue>1.0</defaultBaseValue>
+        <hideAtValue>1</hideAtValue>
     </StatDef>
 
     <StatDef>
@@ -171,6 +180,7 @@
         <toStringStyle>FloatTwo</toStringStyle>
         <!-- <defaultBaseValue>1.0</defaultBaseValue> -->
         <defaultBaseValue>1.0</defaultBaseValue>
+        <hideAtValue>1</hideAtValue>
     </StatDef>
 
     <StatDef>
@@ -183,6 +193,7 @@
         <toStringStyle>FloatTwo</toStringStyle>
         <!-- <defaultBaseValue>1.0</defaultBaseValue> -->
         <defaultBaseValue>1.0</defaultBaseValue>
+        <hideAtValue>1</hideAtValue>
     </StatDef>
 
     <StatDef>
@@ -195,6 +206,7 @@
         <toStringStyle>FloatOne</toStringStyle>
         <!-- <defaultBaseValue>1.0</defaultBaseValue> -->
         <defaultBaseValue>1.0</defaultBaseValue>
+        <hideAtValue>1</hideAtValue>
     </StatDef>
-    
+
 </Defs>

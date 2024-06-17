@@ -23,6 +23,8 @@ namespace BigAndSmall
         public static StatDef SM_AttackSpeed;
         public static StatDef SM_UnarmedAttackSpeed;
         public static StatDef SM_GrowthPointAccumulation;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static StatDef BS_SoulPower;
 
         // Traits
         public static TraitDef BS_Gentle;
@@ -55,6 +57,8 @@ namespace BigAndSmall
         public static HediffDef BS_LesserDeathless_Death;
         [MayRequire("RedMattis.BigSmall.Core")]
         public static HediffDef BS_BurnReturnDenial;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static HediffDef BS_SoulPowerHediff;
 
         // Weapons
         public static WeaponClassDef BS_GiantWeapon;

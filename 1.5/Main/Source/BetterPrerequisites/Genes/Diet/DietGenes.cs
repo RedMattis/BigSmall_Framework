@@ -23,11 +23,16 @@ namespace BigAndSmall
             typeof(bool),
             typeof(bool)
         })]
-        [HarmonyPostfix]
-        public static bool WillEat_Postfix(bool __result, Pawn p, Thing food, Pawn getter, bool careIfNotAcceptableForTitle, bool allowVenerated)
+        [HarmonyPrefix]
+        [HarmonyPriority(Priority.Low)]
+        public static bool WillEat_Prefix(ref bool __result, Pawn p, Thing food, Pawn getter, bool careIfNotAcceptableForTitle, bool allowVenerated)
         {
-            if (__result == false) return false;
+            __result = WillEat(__result, p, food);
+            return __result;
+        }
 
+        private static bool WillEat(bool __result, Pawn p, Thing food)
+        {
             if (p.RaceProps.Humanlike && p.genes != null)
             {
                 // Allow nutrient paste. It is too much of a hassle to check if it is acceptable. Er. I mean the nutrient paste is so
@@ -40,20 +45,36 @@ namespace BigAndSmall
                 {
                     return true;
                 }
-                var cache = HumanoidPawnScaler.GetBSDict(p);
-                if (cache != null)
+                if (HumanoidPawnScaler.GetBSDict(p) is BSCache cache)
                 {
                     if (cache.diet == FoodKind.Any)
                         return true;
                     if (cache.diet == FoodKind.NonMeat && !FoodUtility.AcceptableVegetarian(food))
+                    {
                         return false;
-
+                    }
                     if (cache.diet == FoodKind.Meat && !FoodUtility.AcceptableCarnivore(food))
+                    {
                         return false;
+                    }
                 }
             }
             return true;
         }
+        //[HarmonyPatch(typeof(FoodUtility), nameof(FoodUtility.WillEat), new Type[]
+        //{
+        //    typeof(Pawn),
+        //    typeof(ThingDef),
+        //    typeof(Pawn),
+        //    typeof(bool),
+        //    typeof(bool)
+        //})]
+        //[HarmonyPrefix]
+        //public static bool WillEat_Postfix2(ref bool __result, Pawn p, ThingDef food, Pawn getter, bool careIfNotAcceptableForTitle, bool allowVenerated)
+        //{
+        //    __result = WillEat(__result, p, food);
+        //    return __result;
+        //}
 
 
         [HarmonyPatch(typeof(Thing), nameof(Thing.Ingested), new Type[]
@@ -64,7 +85,10 @@ namespace BigAndSmall
         [HarmonyPostfix]
         public static void Ingested_Postfix(Thing __instance, ref float __result, Pawn ingester, float nutritionWanted)
         {
-            if (ingester?.RaceProps?.Humanlike == true && ingester.genes != null)
+            // Literally we're skipping the postfix if the character isn't spawned. Why you might ask? Because caravans don't check the food item's
+            // Thing, only the ThingDef. This means we can't easily check if the item contains meat/vegtables. So we just skip it for everyone's sanity's sake.
+
+            if (ingester?.Spawned == true && ingester?.RaceProps?.Humanlike == true && ingester.genes != null)
             {
                 var cache = HumanoidPawnScaler.GetBSDict(ingester);
                 if (cache != null)
@@ -98,7 +122,17 @@ namespace BigAndSmall
 
                         __result = 0;
                         // Vomit
-                        ingester.jobs.StartJob(JobMaker.MakeJob(JobDefOf.Vomit), JobCondition.InterruptForced, null, resumeCurJobAfterwards: true);
+
+                        Log.Warning($"[BigAndSmall] {ingester.Name} ate {__instance.def.defName} which their gene-diet requirements does not permit" +
+                            $"\nIf this was not due to the player forcing them to then something went wrong.");
+                        if (ingester.Spawned)
+                        {
+                            ingester.jobs.StartJob(JobMaker.MakeJob(JobDefOf.Vomit), JobCondition.InterruptForced, null, resumeCurJobAfterwards: true);
+                        }
+                        else
+                        {
+                            ingester.needs.food.CurLevel = -0.25f;
+                        }
                     }
                 }
             }

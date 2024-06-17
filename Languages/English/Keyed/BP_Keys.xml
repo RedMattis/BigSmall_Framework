@@ -47,6 +47,12 @@
   <BS_ReturningSoul_Failed>{0} failed to find a suitable non-dessicated vessel to return to the world. Each failure increases the risk of disappearing forever.</BS_ReturningSoul_Failed>
   <BS_ReturningSoul_FailedPermanent>{0} failed to find a suitable vessel and has likely either decided to return in a faraway place or departed the world for good.</BS_ReturningSoul_FailedPermanent>
 
+  <BS_WasKilled_Title>{0} was killed.</BS_WasKilled_Title>
+  <BS_WasKilledSoulless>{0} was killed. Due to being soulless they will not be able to return.</BS_WasKilledSoulless>
+  
   <BS_ReturningSoul_Success>{0} has returned from the void.</BS_ReturningSoul_Success>
   <BS_ReturningSoulCorpse_Success>{0} has returned from the void by possessing the dead body of {1}</BS_ReturningSoulCorpse_Success>
+  <BS_CannotUseOnSoulless>Cannot use on pawn without soul.</BS_CannotUseOnSoulless>
+  <BS_StoleSkillAmount>{0}'s ability stole {1} xp in {2} from {3}</BS_StoleSkillAmount>
+  <BS_StoleSkillAmount_Attack>{0}'s attack stole {1} xp in {2} from {3}</BS_StoleSkillAmount_Attack>
 </LanguageData>

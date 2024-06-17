@@ -42,7 +42,6 @@ namespace BigAndSmall
 
         public bool HealsInner => healPerDay > -0.5 || regularHealingMultiplier > -0.5f;
 
-
         public float TotalMass =>
             innerContainer.Where(x => x is Pawn).Sum(x => PowScale(((Pawn)x).BodySize)) +
             innerContainer.Where(x => x is Corpse).Sum(x => PowScale(((Corpse)x).InnerPawn.BodySize));
@@ -85,6 +84,11 @@ namespace BigAndSmall
 
         public bool Engulf(Thing thing)
         {
+            if (thing.Spawned == false)
+            {
+                return false;
+            }
+
             thing.DeSpawnOrDeselect();
             bool flag;
 
@@ -184,7 +188,14 @@ namespace BigAndSmall
             get
             {
                 // Return pawn BodySize / BodySize of contents to percent.
-                return Fullness.ToStringPercent();
+                try
+                {
+                    return Fullness.ToStringPercent();
+                }
+                catch
+                {
+                    return "FULLNESS CALCULATION FAILED";
+                }
             }
         }
         // Deal damage to the contents of the container every X ticks
@@ -282,6 +293,15 @@ namespace BigAndSmall
                 {
                     if (thing is Pawn innerPawn)
                     {
+                        if (SanguophageUtility.ShouldBeDeathrestingOrInComaInsteadOfDead(innerPawn))
+                        {
+                            innerPawn.Kill(new DamageInfo(damageDef, 999 * digestionEffiency, armorPenetration: 100, instigator: pawn, intendedTarget: thing, spawnFilth: false));
+                        }
+                        else if (!innerPawn.IsColonist && innerPawn.health.summaryHealth.SummaryHealthPercent < 0.1f)
+                        {
+                            innerPawn.Kill(new DamageInfo(damageDef, 999 * digestionEffiency, armorPenetration: 100, instigator: pawn, intendedTarget: thing, spawnFilth: false));
+                        }
+
                         if (dealsDamage)
                         {
                             AttackInnerThing(digestionEffiency, stomachIntact, thing);
@@ -292,7 +312,7 @@ namespace BigAndSmall
                         }
 
                         // If innerPawn is not downed.
-                        if (!innerPawn.health.Downed)
+                        if (!innerPawn.health.Downed && !innerPawn.health.ShouldBeDead() && !innerPawn.health.ShouldBeDowned())
                         {
                             try
                             {
@@ -548,8 +568,8 @@ namespace BigAndSmall
             bool canInterruptJobs = damageType.canInterruptJobs;
             bool makesBlood = damageType.makesBlood;
 
-            // If damage is less than 1/40 of the part health when adjusted for incomming damage multiplier, abort.
-            if (damage < targetPart.def.GetMaxHealth(pawn) * pawn.GetStatValue(StatDefOf.IncomingDamageFactor) / 40)
+            // If damage is less than 1/16 of the part health when adjusted for incomming damage multiplier, abort.
+            if (damage < targetPart.def.GetMaxHealth(pawn) / pawn.GetStatValue(StatDefOf.IncomingDamageFactor) / 16)
             {
                 return;
             }
@@ -579,10 +599,9 @@ namespace BigAndSmall
                 Log.Warning("Error adding through after destroying corpse: " + e);
             }
 
-            var killThirds = attacker.needs?.TryGetNeed<Need_KillThirst>();
-            if (killThirds != null)
+            if (pawn.needs?.TryGetNeed<Need_KillThirst>() is Need_KillThirst killThirst)
             {
-                killThirds.CurLevelPercentage = 1;
+                killThirst.CurLevelPercentage = 1;
             }
         }
 

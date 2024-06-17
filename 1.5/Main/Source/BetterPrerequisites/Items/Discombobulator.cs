@@ -82,7 +82,7 @@ namespace BigAndSmall
         private static List<GeneDef> GetValidGenes(Pawn pawn, List<string> invalidTags, List<string> exclusionTags)
         {
             var allValidGenes = DefDatabase<GeneDef>.AllDefsListForReading.Where(x => !invalidTags.Any(y => x.defName.StartsWith(y))).ToList();
-            allValidGenes = allValidGenes.Where(x => !exclusionTags.Any(y => x.exclusionTags.Contains(y))).ToList();
+            allValidGenes = allValidGenes.Where(x => !exclusionTags.Any(y => x.exclusionTags?.Contains(y) == true)).ToList();
             allValidGenes = allValidGenes.Where(x => x.canGenerateInGeneSet).ToList();
 
             // Remove all eye genes. It is boring to get a dozen eye genes, and they can render badly depending on modlist.

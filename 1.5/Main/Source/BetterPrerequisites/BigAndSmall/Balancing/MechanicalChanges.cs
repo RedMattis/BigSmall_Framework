@@ -18,7 +18,8 @@ namespace BigAndSmall
     {
         public static void Postfix(ref float __result, Pawn __instance)
         {
-
+            //try
+            //{
             var sizeCache = HumanoidPawnScaler.GetBSDict(__instance);
             if (sizeCache != null)
             {
@@ -62,6 +63,13 @@ namespace BigAndSmall
                 }
                 __result = newScale;
             }
+            //}
+            //catch (Exception e)
+            //{
+            //    Log.Error($"Error in HealthScale Postfix: {e}\n\nThe error was captured." +
+            //        $"If this happened during world-generation it is probably okay. Some doomstacks of mods sometimes error here during world gen." +
+            //        $"\nProgramState is {Current.ProgramState}");
+            //}
 
         }
 

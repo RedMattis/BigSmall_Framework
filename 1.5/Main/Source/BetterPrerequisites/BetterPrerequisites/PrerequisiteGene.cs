@@ -47,7 +47,8 @@ namespace BetterPrerequisites
         {
             SetupVars();
             base.PostAdd();
-            BigAndSmallCache.pGenes.Add(this);
+
+            bool needsReevaluation = false;
 
             if (geneExt != null)
             {
@@ -76,7 +77,26 @@ namespace BetterPrerequisites
                 {
                     Log.Message($"Error in PostAdd: {e.Message}");
                 }
+
+                if (geneExt.conditionals != null)
+                {
+                    needsReevaluation = true;
+                }
                 
+            }
+
+            if (def.GetModExtension<GenePrerequisites>() is GenePrerequisites gPrerequisites)
+            {
+                needsReevaluation = true;
+            }
+            if (def.GetModExtension<GeneSuppressor_Gene>() is GeneSuppressor_Gene gSuppressor)
+            {
+                needsReevaluation = true;
+            }
+
+            if (needsReevaluation)
+            {
+                BigAndSmallCache.pGenesThatReevaluate.Add(this);
             }
         }
 
@@ -94,7 +114,7 @@ namespace BetterPrerequisites
 
         public override void PostRemove()
         {
-            BigAndSmallCache.pGenes.Remove(this);
+            BigAndSmallCache.pGenesThatReevaluate.Remove(this);
             base.PostRemove();
             if (geneExt != null)
             {
@@ -583,7 +603,7 @@ namespace BetterPrerequisites
             Scribe_Values.Look(ref previouslyActive, "PGeneActive", true);
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
-                BigAndSmallCache.pGenes.Add(this);
+                BigAndSmallCache.pGenesThatReevaluate.Add(this);
             }
         }
     }

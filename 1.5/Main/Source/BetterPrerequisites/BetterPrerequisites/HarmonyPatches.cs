@@ -21,21 +21,24 @@ namespace BetterPrerequisites
     [HarmonyPatch(typeof(Hediff), nameof(Hediff.PostAdd))]
     public static class Hediff_PostAdd
     {
-        public static void Postfix(Hediff __instance)
+        public static void Postfix(Hediff __instance, DamageInfo? dinfo)
         {
-            if (__instance.pawn != null)
+            var genes = __instance?.pawn?.genes;
+            if (genes == null) return;
+            var geneList = genes.GenesListForReading;
+            if (genes != null && geneList.Count > 0)
             {
-                bool changeMade = false;
+                //bool changeMade = false;
                 try
                 {
                     PGene.supressPostfix = true;
-                    changeMade = GeneSuppressorManager.TryAddSuppressor(__instance, __instance.pawn);
+                    GeneSuppressorManager.TryAddSuppressor(__instance, __instance.pawn);
                 }
                 finally
                 {
                     PGene.supressPostfix = false;
                 }
-                if (__instance.pawn.Drawer?.renderer != null && __instance.pawn.Spawned)
+                if (__instance?.pawn?.Drawer?.renderer != null && __instance.pawn.Spawned)
                 {
                     __instance.pawn.Drawer.renderer.SetAllGraphicsDirty();
                     HumanoidPawnScaler.GetBSDict(__instance.pawn, forceRefresh: true);
@@ -69,6 +72,10 @@ namespace BetterPrerequisites
             }
             if (__instance != null)
             {
+                foreach(var gene in Helpers.GetAllActiveGenes(__instance))
+                {
+                    GeneEffectManager.RefreshGeneEffects(gene, activate: true);
+                }
                 HumanoidPawnScaler.GetBSDict(__instance, forceRefresh: true);
             }
         }
@@ -202,26 +209,6 @@ namespace BetterPrerequisites
 
                 GeneEffectManager.ApplyForcedTraits(overriden, gene);
 
-                try
-                {
-                    // Check if pawnmorpher is active, if so skip all this since it seems to cause issues.
-                    // Edit: Didn't help. No idea what code Pawnmorpher is having issues with.
-                    //if (ModsConfig.IsActive("tachyonite.pawnmorpherpublic") == false)
-                    //{
-                    //}
-
-                    //bool change = GeneEffectManager.ToggleFurSkinVisibility(overriden, gene);
-                    //if (change)
-                    //{
-                    //    PawnRendering.pawnsQueueForRendering.Add(gene.pawn);
-                    //}
-
-
-                }
-                catch (Exception e)
-                {
-                    Log.Warning($"{e.Message}\n{e.StackTrace}");
-                }
 
                 if (gene?.pawn != null)
                 {
@@ -230,69 +217,6 @@ namespace BetterPrerequisites
             }
         }
     }
-
-    //[HarmonyPatch(typeof(Pawn_GeneTracker), "Notify_GenesChanged")]
-    //public static class NotifyGenesChanges_Patch
-    //{
-    //    public static void Postfix(GeneDef addedOrRemovedGene, Pawn_GeneTracker __instance)
-    //    {
-    //        if (__instance?.pawn.genes != null && __instance.pawn?.story != null)
-    //        {
-    //            var pawn = __instance.pawn;
-
-    //            var cache = RenderingCacheGC.instance.GetCache(pawn);
-    //            if (cache != null && cache.hasFur == false)
-    //            {
-    //                Color? skinColorOverride = pawn.story.SkinColorBase;
-    //                List<Gene> genesListForReading = __instance.GenesListForReading;
-    //                for (int i = 0; i < genesListForReading.Count; i++)
-    //                {
-    //                    Gene gene = genesListForReading[i];
-    //                    if (!gene.Overridden && gene.Active)
-    //                    {
-    //                        if (gene.def.skinColorOverride.HasValue)
-    //                        {
-    //                            skinColorOverride = gene.def.skinColorOverride;
-    //                        }
-    //                    }
-    //                }
-    //                pawn.story.skinColorOverride = skinColorOverride;
-    //            }
-    //        }
-    //    }
-    //}
-
-    //[HarmonyPatch(typeof(Pawn_GeneTracker), "EnsureCorrectSkinColorOverride")]
-    //public static class NotifyGenesChanges_Patch
-    //{
-    //    public static void Postfix(Pawn_GeneTracker __instance)
-    //    {
-    //        if (__instance?.pawn.genes != null && __instance.pawn?.story != null)
-    //        {
-    //            var pawn = __instance.pawn;
-
-    //            var cache = RenderingCacheGC.instance.GetCache(pawn);
-    //            if (cache != null && cache.hasFur == false)
-    //            {
-    //                Color? skinColorOverride = pawn.story.SkinColorBase;
-    //                List<Gene> genesListForReading = __instance.GenesListForReading;
-    //                for (int i = 0; i < genesListForReading.Count; i++)
-    //                {
-    //                    Gene gene = genesListForReading[i];
-    //                    if (!gene.Overridden && gene.Active)
-    //                    {
-    //                        if (gene.def.skinColorOverride.HasValue)
-    //                        {
-    //                            skinColorOverride = gene.def.skinColorOverride;
-    //                        }
-    //                    }
-    //                }
-    //                pawn.story.skinColorOverride = skinColorOverride;
-    //            }
-    //        }
-    //    }
-    //}
-
 
 
     [HarmonyPatch(typeof(Gene), "PostRemove")]
@@ -313,13 +237,19 @@ namespace BetterPrerequisites
         [HarmonyPostfix]
         public static void Postfix(Gene __instance)
         {
-            if (__instance.pawn != null)
+            if (__instance?.pawn?.genes != null)
             {
+                Pawn pawn = __instance.pawn;
                 // Get all other genes
                 var genes = Helpers.GetAllActiveGenes(__instance.pawn);
 
                 // Check if active. This will trigger the checker for prerequisites.
                 genes.Where(g => g is PGene pGene).Cast<PGene>().ToList().ForEach(pg=>pg.ForceRun = true);
+
+                foreach (var gene in genes)
+                {
+                    GeneEffectManager.RefreshGeneEffects(gene, activate: true);
+                }
             }
         }
     }
@@ -423,200 +353,6 @@ namespace BetterPrerequisites
             }
         }
 
-        //public static bool ToggleFurSkinVisibility(bool disabled, Gene gene)
-        //{
-        //    if (PawnRendering.instance == null) return false;
-        //    var pawn = gene?.pawn;
-        //    if (pawn == null) return false;
-        //    bool change = false;
-        //    if (gene?.pawn?.Spawned != true) return false;
-
-        //    bool debug = false;
-        //    // Disable Fur
-        //    if (gene.def?.graphicData?.fur != null && pawn.story?.headType != null && gene.pawn.Drawer?.renderer?.graphics != null && PawnRendering.instance != null)
-        //    {
-        //        var allHeads = DefDatabase<HeadTypeDef>.AllDefs;
-        //        var cache = PawnRendering.instance.GetCache(pawn);
-        //        bool headFound = false;
-
-        //        cache.AddHeadDefName(pawn.story.headType.defName); // Add the current head in case it is not there yet.
-
-        //        if (disabled)
-        //        {
-        //            cache.hasFur = false;
-        //            // If pawn's furskin is this one, remove their fur.
-        //            if (pawn.story.furDef == gene.def.graphicData.fur)
-        //            {
-        //                HeadTypeDef newHead = null;
-        //                var validHeadDefs = allHeads.Where(x => cache.HeadDefNames.Contains(x.defName));
-        //                if (cache.HeadDefNames != null && validHeadDefs != null && SetHead(validHeadDefs, ref newHead))
-        //                {
-        //                    pawn.story.headType = newHead;
-        //                    headFound = true;
-        //                    if (debug)
-        //                        Log.Message($"Swapping to cached {newHead.defName} ({newHead.graphicPath} for {pawn.Name}");
-        //                }
-        //                if (!headFound)
-        //                {
-        //                    // Get a random head that does not require any genes.
-        //                    if (SetHead(GetRandomHeads(), ref newHead))
-        //                    {
-        //                        pawn.story.headType = newHead;
-        //                        cache.HeadDefNames.Add(pawn.story.headType.defName);
-        //                        headFound = true;
-        //                        if (debug)
-        //                            Log.Message($"Swapping to new head def {newHead.defName} ({newHead.graphicPath} for {pawn.Name}");
-        //                    }
-        //                }
-        //                if (!headFound)
-        //                {
-        //                    Log.Warning($"No head found for {pawn.Name}");
-        //                }
-        //                // Disable skin from hair color
-
-        //                pawn.story.furDef = null;
-        //                change = true;
-        //            }
-        //        }
-        //        // Enable Fur
-        //        else
-        //        {
-        //            cache.hasFur = true;
-        //            // If the gene has fur...
-        //            if (gene.def.graphicData?.fur != null && gene.def.forcedHeadTypes != null)
-        //            {
-        //                if (pawn.story.furDef == null || pawn.story.furDef != gene.def.graphicData.fur)
-        //                {
-        //                    var validCachedHeads = allHeads.Where(x => cache.HeadDefNames.Contains(x.defName) && gene.def.forcedHeadTypes.Contains(x)).ToList(); ;
-        //                    if (cache.HeadDefNames != null && validCachedHeads.Count > 0 && SetHead(validCachedHeads, ref pawn.story.headType))
-        //                    {
-        //                        headFound = true;
-        //                        if (debug)
-        //                            Log.Message($"Swapping to cached fur {pawn.story.headType.defName} ({pawn.story.headType.graphicPath} for {pawn.Name}");
-        //                    }
-
-        //                    if (!headFound)
-        //                    {
-        //                        if (!headFound)
-        //                        {
-        //                            HeadTypeDef newHead = null;
-        //                            // Get a random head that does not require any genes.
-        //                            if (SetHead(gene.def.forcedHeadTypes, ref newHead))
-        //                            {
-        //                                pawn.story.headType = newHead;
-        //                                cache.AddHeadDefName(pawn.story.headType.defName);
-        //                                headFound = true;
-        //                                if (debug)
-        //                                    Log.Message($"Swapping to new fur {newHead.defName} ({newHead.graphicPath} for {pawn.Name}");
-        //                            }
-        //                        }
-        //                        if (!headFound)
-        //                        {
-        //                            Log.Warning($"No headdefs found for {pawn.Name}");
-        //                        }
-        //                    }
-
-        //                    pawn.story.furDef = gene.def.graphicData.fur;
-
-        //                    change = true;
-
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    //try
-        //    //{
-        //    //    if (gene?.pawn?.story != null)
-        //    //    {
-        //    //        //bool removeFurHair = pawn.story.furDef == null && pawn.story.skinColorOverride == pawn.story.HairColor;
-
-        //    //        // Call "EnsureCorrectSkinColorOverride" in pawn.genes using reflection.
-        //    //        var ensureCorrectSkinColorOverride = typeof(Pawn_GeneTracker).GetMethod("EnsureCorrectSkinColorOverride", BindingFlags.NonPublic | BindingFlags.Instance);
-        //    //        ensureCorrectSkinColorOverride.Invoke(gene.pawn.genes, null);
-        //    //        //EnsureCorrectSkinColorOverride()
-
-        //    //        //if(removeFurHair)
-        //    //        //{
-        //    //        //    pawn.story.skinColorOverride = pawn.story.SkinColorBase;
-        //    //        //}
-        //    //    }
-        //    //}
-        //    //catch (Exception e)
-        //    //{
-        //    //    Log.Error($"Error in ToggleFurSkinVisibility: {e.Message}\n {e.StackTrace}");
-        //    //}
-        //    return change;
-        //    List<HeadTypeDef> GetRandomHeads()
-        //    {
-        //        return DefDatabase<HeadTypeDef>.AllDefs.Where((HeadTypeDef x) => x.randomChosen).ToList(); ;
-        //    }
-        //    bool SetHead(IEnumerable<HeadTypeDef> options, ref HeadTypeDef headType)
-        //    {
-        //        Rand.PushState(pawn.thingIDNumber);
-        //        HeadTypeDef newHead = null;
-        //        options.Where((HeadTypeDef h) => CanUseHeadType(h)).TryRandomElementByWeight((HeadTypeDef x) => x.selectionWeight, out newHead);
-        //        if (newHead != null)
-        //        {
-        //            headType = newHead;
-        //        }
-        //        bool result = headType != null;
-        //        Rand.PopState();
-        //        return headType != null;
-        //    }
-        //    bool CanUseHeadType(HeadTypeDef head)
-        //    {
-        //        if (!head.requiredGenes.NullOrEmpty())
-        //        {
-        //            if (pawn.genes == null)
-        //            {
-        //                return false;
-        //            }
-
-        //            foreach (GeneDef requiredGene in head.requiredGenes)
-        //            {
-        //                var validGenes = Helpers.GetActiveGenesByName(pawn, requiredGene.defName);
-        //                if (validGenes.Count() == 0)
-        //                {
-        //                    return false;
-        //                }
-        //            }
-        //        }
-        //        // Check is path is empty, null, or points at a directory rather than a file. If so, return false.
-        //        var graphicPath = head.graphicPath;
-        //        if (string.IsNullOrEmpty(graphicPath) || graphicPath.EndsWith(Path.DirectorySeparatorChar.ToString()))
-        //        {
-        //            Log.Warning($"Found a Headdef with an empty graphicPath: {head.defName}: {head.graphicPath}");
-        //            return false;
-        //        }
-
-        //        if (harActive == null)
-        //        {
-        //            harActive = ModsConfig.IsActive("erdelf.HumanoidAlienRaces");
-        //        }
-        //        if (harActive == true && head.requiredGenes.NullOrEmpty())
-        //        {
-        //            return HarRaceCompatible(head);
-        //        }
-
-        //        if (head.gender != 0)
-        //        {
-        //            return head.gender == pawn.gender;
-        //        }
-
-        //        return true;
-        //    }
-        //    bool HarRaceCompatible(HeadTypeDef headTypeDef)
-        //    {
-        //        if (headTypeFilterMethod == null)
-        //        {
-        //            Type alienRaceHarmonyPatches = AccessTools.TypeByName("AlienRace.HarmonyPatches");
-        //            headTypeFilterMethod = AccessTools.Method(alienRaceHarmonyPatches, "HeadTypeFilter");
-        //        }
-        //        IEnumerable<HeadTypeDef> usableHeadTypes = (IEnumerable<HeadTypeDef>)headTypeFilterMethod.Invoke(obj: null, new object[2] { new List<HeadTypeDef> { headTypeDef }, pawn });
-        //        return usableHeadTypes.Count() > 0;
-        //    }
-        //}
         private static bool? harActive = null;
         private static MethodInfo headTypeFilterMethod = null;
 

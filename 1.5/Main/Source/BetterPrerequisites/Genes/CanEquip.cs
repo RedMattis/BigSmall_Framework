@@ -40,7 +40,7 @@ namespace BigAndSmall
             Pawn_GeneTracker genes = pawn.genes;
 
             // Check if the thing is a weapon or equipment
-            if (thing.IsWeapon)
+            if (thing.IsWeapon && genes != null)
             {
                 bool hasGenePreventingEquippingAnything = genes.GenesListForReading.Any(x => x.def.defName.Contains("BS_NoEquip"));
                 if (hasGenePreventingEquippingAnything)
@@ -56,7 +56,7 @@ namespace BigAndSmall
                     cantReason = "BS_GenePreventsEquipping".Translate();
                     return false;
                 }
-                bool isGiant = pawn.story.traits.allTraits.Any(x => x.def.defName.ToLower().Contains("bs_giant")) || pawn.BodySize > 1.99;
+                bool isGiant = pawn?.story?.traits?.allTraits?.Any(x => x.def.defName.ToLower().Contains("bs_giant")) == true || pawn.BodySize > 1.99;
                 if (thing.apparel.tags.Any(x => x.ToLower() == "giantonly") && !isGiant)
                 {
                     cantReason = "BS_PawnIsNotAGiant".Translate();
