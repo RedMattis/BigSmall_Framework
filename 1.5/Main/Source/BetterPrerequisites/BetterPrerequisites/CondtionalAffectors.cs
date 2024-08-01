@@ -15,6 +15,7 @@ namespace BetterPrerequisites
         /// </summary>
         public static bool TestConditionals(Gene gene)
         {
+            if (gene == null || gene.def == null) return false;
             var geneDef = gene.def;
             if (geneDef.HasModExtension<GeneExtension>())
             {

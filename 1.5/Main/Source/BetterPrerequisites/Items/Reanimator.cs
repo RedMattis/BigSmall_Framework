@@ -15,6 +15,7 @@ namespace BigAndSmall
     public class CompProperties_TargetEffectReanimate : CompProperties
     {
         public ThingDef moteDef;
+        public XenotypeDef xenoTypeDef;
         public CompProperties_TargetEffectReanimate()
         {
             compClass = typeof(CompTargetEffect_Reanimate);
@@ -24,6 +25,7 @@ namespace BigAndSmall
     public class CompTargetEffect_Reanimate : CompTargetEffect
     {
         public CompProperties_TargetEffectReanimate Props => (CompProperties_TargetEffectReanimate)props;
+        public static CompProperties_TargetEffectReanimate currentProps = null; // Extremely ugly hack to pass the properties to the JobDriver
 
         public override void DoEffectOn(Pawn user, Thing target)
         {
@@ -40,6 +42,7 @@ namespace BigAndSmall
 
             if (jobDef != null && user.CanReserveAndReach(target, PathEndMode.Touch, Danger.Deadly))
             {
+                currentProps = Props;
                 Job job = JobMaker.MakeJob(jobDef, target, parent);
                 job.count = 1;
                 user.jobs.TryTakeOrderedJob(job, JobTag.Misc);
@@ -94,8 +97,10 @@ namespace BigAndSmall
 
         private void ReanimateToil()
         {
+            var props = CompTargetEffect_Reanimate.currentProps;
+
             Pawn innerPawn = Corpse.InnerPawn;
-            ReanimatePawn(innerPawn);
+            ReanimatePawn(innerPawn, props.xenoTypeDef);
             //ResurrectionUtility.ResurrectWithSideEffects(innerPawn);
             SoundDefOf.MechSerumUsed.PlayOneShot(SoundInfo.InMap(innerPawn));
             Messages.Message("MessagePawnResurrected".Translate(innerPawn), innerPawn, MessageTypeDefOf.PositiveEvent);
@@ -107,7 +112,7 @@ namespace BigAndSmall
             Item.SplitOff(1).Destroy();
         }
 
-        public static void ReanimatePawn(Pawn innerPawn)
+        public static void ReanimatePawn(Pawn innerPawn, XenotypeDef xenotype)
         {
             if (innerPawn?.RaceProps?.Animal == true)
             {
@@ -116,16 +121,7 @@ namespace BigAndSmall
             }
             else if (innerPawn.genes != null)
             {
-                var xeno = DefDatabase<XenotypeDef>.AllDefsListForReading.Find(x => x.defName == "VU_Returned");
-                if (xeno != null)
-                {
-                    //Log.Message($"Reanimating as Returned {innerPawn.genes.xenotypeName}");
-                    GameUtils.AddAllXenotypeGenes(innerPawn, xeno, name: "Returned " + innerPawn.genes.XenotypeLabel);
-                }
-                else
-                {
-                    Log.Error("Could not find XenotypeDef VU_Returned");
-                }
+                GameUtils.AddAllXenotypeGenes(innerPawn, xenotype, name: "Returned " + innerPawn.genes.XenotypeLabel);
             }
             GameUtils.UnhealingRessurection(innerPawn);
         }

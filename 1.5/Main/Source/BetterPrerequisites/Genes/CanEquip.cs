@@ -161,7 +161,7 @@ namespace BigAndSmall
         [HarmonyPostfix]
         public static void PawnCanWear(ApparelProperties __instance, ref bool __result, Pawn pawn)
         {
-            if (pawn == null)
+            if (pawn == null || pawn?.RaceProps?.Humanlike != true )
             {
                 return;
             }
@@ -181,7 +181,7 @@ namespace BigAndSmall
                     }
                     else
                     {
-                        bool isGiant = pawn.story.traits.allTraits.Any(x => x.def.defName.ToLower().Contains("bs_giant")) || pawn.BodySize > 1.99;
+                        bool isGiant = pawn.story?.traits?.HasTrait(BSDefs.BS_Giant) == true || pawn.BodySize > 1.99;
                         if (__instance.tags.Any(x => x.ToLower() == "giantonly") && !isGiant)
                         {
                             __result = false;

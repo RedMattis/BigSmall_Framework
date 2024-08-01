@@ -27,6 +27,8 @@ namespace BigAndSmall
         public static StatDef BS_SoulPower;
 
         // Traits
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static TraitDef BS_Giant;
         public static TraitDef BS_Gentle;
         public static TraitDef Cannibal;
         public static TraitDef Beauty;
@@ -59,6 +61,8 @@ namespace BigAndSmall
         public static HediffDef BS_BurnReturnDenial;
         [MayRequire("RedMattis.BigSmall.Core")]
         public static HediffDef BS_SoulPowerHediff;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static HediffDef BS_IndestructibelApparel;
 
         // Weapons
         public static WeaponClassDef BS_GiantWeapon;

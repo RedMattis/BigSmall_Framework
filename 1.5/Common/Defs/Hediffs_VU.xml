@@ -5,7 +5,7 @@
     <description>This person has a parasitic psychic bond with another person based on the psychic bonding gene.</description>
     <isBad>false</isBad>
     <everCurableByItem>false</everCurableByItem>
-    <blocksSocialInteraction>true</blocksSocialInteraction>
+    <initialSeverity>1</initialSeverity>
     <stages>
       <li>
         <capMods>

@@ -355,6 +355,7 @@ namespace BetterPrerequisites
 
         private static bool? harActive = null;
         private static MethodInfo headTypeFilterMethod = null;
+        public static bool canRefreshGeneEffects = false;
 
         public static bool RefreshGeneEffects(Gene __instance, bool activate, GeneExtension geneExt = null)
         {
@@ -362,6 +363,19 @@ namespace BetterPrerequisites
             //{
             //    return false;
             //}
+
+            if (canRefreshGeneEffects == true && __instance is PGene pGene && __instance?.pawn != null)
+            {
+                canRefreshGeneEffects = false;
+                bool conditionalsValid = ConditionalManager.TestConditionals(pGene);
+                bool prerequisitesValid = PrerequisiteValidator.Validate(pGene.def, __instance.pawn);
+                if (!conditionalsValid || !prerequisitesValid)
+                {
+                    activate = false;
+                }
+                canRefreshGeneEffects = true;
+            }
+
 
             bool changeMade = false;
 
@@ -428,7 +442,9 @@ namespace BetterPrerequisites
                         if (gene.pawn.health.hediffSet.GetFirstHediffOfDefName(item.hediff.defName) != null)
                         {
                             bool found = false;
-                            foreach (var otherGene in Helpers.GetAllActiveGenes(gene.pawn).Where(x => x != gene).Select(x => x.def.GetModExtension<GeneExtension>()).Where(x => x != null))
+                            var otherGenes = Helpers.GetAllActiveGenes(gene.pawn).Where(x => x != gene);
+                            if (otherGenes.Count() == 0) continue;
+                            foreach (var otherGene in otherGenes.Select(x => x.def.GetModExtension<GeneExtension>()).Where(x => x != null))
                             {
                                 if (otherGene.applyPartHediff != null)
                                 {

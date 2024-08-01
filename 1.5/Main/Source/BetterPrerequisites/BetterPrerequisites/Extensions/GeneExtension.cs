@@ -119,7 +119,7 @@ namespace BetterPrerequisites
 
         public List<ConditionalStatAffecter> conditionals;
 
-        public List<BodyPartDef> bodyparts;
+        public List<BodyPartDef> bodyparts = new List<BodyPartDef>();
     }
 
     public class GraphicPathPerBodyType

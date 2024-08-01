@@ -357,12 +357,19 @@ namespace BigAndSmall
                     ////////////////////////////////// 
                     // Clamp Total Size
 
-                    // Prevent babies from getting too large for cribs, or too smol in general.
+                    // Prevent babies from getting too large for even the giant cribs, or too smol in general.
                     if (dStage < DevelopmentalStage.Child)
                     {
-                        totalSize = Mathf.Clamp(totalSize, 0.05f, 0.24f);
+                        totalSize = Mathf.Clamp(totalSize, 0.05f, 0.40f);
+                        // Clamp the offset too.
+                        bodySizeOffset = Mathf.Clamp(bodySizeOffset, 0.05f - previousTotalSize, 0.40f - previousTotalSize);
+
                     }
-                    else if (totalSize < 0.10) totalSize = 0.10f;
+                    else if (totalSize < 0.10)
+                    {
+                        totalSize = 0.10f;
+                        bodySizeOffset = 0.10f - previousTotalSize;
+                    }
 
 
                     ////////////////////////////////// 
@@ -372,9 +379,9 @@ namespace BigAndSmall
                         bodySizeOffset = -(previousTotalSize - 0.05f);
                     }
                     // Don't permit babies too large to fit in cribs (0.25)
-                    else if (totalSize > 0.24f && dStage < DevelopmentalStage.Child && pawn.RaceProps.Humanlike)
+                    else if (totalSize > 0.40f && dStage < DevelopmentalStage.Child && pawn.RaceProps.Humanlike)
                     {
-                        bodySizeOffset = -(previousTotalSize - 0.24f);
+                        bodySizeOffset = -(previousTotalSize - 0.40f);
                     }
                     else if (totalSize < 0.10f && dStage == DevelopmentalStage.Child)
                     {
@@ -403,12 +410,15 @@ namespace BigAndSmall
                 PercentChange scaleMultiplier = GetPercentChange(bodySizeOffset, pawn);
                 PercentChange cosmeticScaleMultiplier = GetPercentChange(bodySizeCosmeticOffset, pawn);
 
-                if (!pawn.RaceProps.Humanlike && cosmeticScaleMultiplier.linear > 1.5f)
+                if (!pawn.RaceProps.Humanlike) //&& cosmeticScaleMultiplier.linear > 1.5f)
                 {
                     // Never let animals render huge, it just looks silly.
-                    float maxSize = 3;
-                    if (hasSizeAffliction) maxSize = 6;
-                    cosmeticScaleMultiplier.linear = Mathf.Min(Mathf.Lerp(cosmeticScaleMultiplier.linear, 1.5f, 0.65f), maxSize);
+                    //float maxSize = 3;
+                    //if (hasSizeAffliction) maxSize = 6;
+                    //cosmeticScaleMultiplier.linear = Mathf.Min(Mathf.Lerp(cosmeticScaleMultiplier.linear, 1.5f, 0.65f), maxSize);
+
+                    // Animal scaling logic gets run twice, so we run a Sqrt to compensate.
+                    cosmeticScaleMultiplier.linear = Mathf.Sqrt(cosmeticScaleMultiplier.linear);
                 }
 
                 float minimumLearning = pawn.GetStatValue(BSDefs.SM_Minimum_Learning_Speed);
@@ -440,12 +450,13 @@ namespace BigAndSmall
                 if (BSDefs.BS_SoulPower != null)
                 {
                     var soulPower = pawn.GetStatValue(BSDefs.BS_SoulPower);
-                    if (soulPower > 0)
+                    if (soulPower > 0.1 && !pawn.Dead)
                     {
                         // Check if the pawn has the Soul Power Hediff
-                        if (!hediffs.Any(x => x.def.defName == "BS_SoulPower"))
+                        if (!hediffs.Any(x => x.def == BSDefs.BS_SoulPowerHediff))
                         {
                             pawn.health.AddHediff(BSDefs.BS_SoulPowerHediff);
+                            Log.Message($"[BigAndSmall] Added Soul Power Hediff to {pawn.Name}");
                         }
                     }
                 }
@@ -509,6 +520,7 @@ namespace BigAndSmall
 
                 bool selfRepairingApparel = activeGenes.Any(x => x.def.defName == "BS_SelfRepairingApparel");
                 bool indestructibleApparel = activeGenes.Any(x => x.def.defName == "BS_IndestructibleApparel");
+                indestructibleApparel |= pawn.health.hediffSet.HasHediff(BSDefs.BS_IndestructibelApparel);
 
                 int currentTick = Find.TickManager.TicksGame;
 

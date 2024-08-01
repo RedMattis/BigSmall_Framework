@@ -194,6 +194,8 @@ namespace BetterPrerequisites
             {
                 if (geneExt != null && geneExt.thingDefSwap != null)
                 {
+                    bool wasDead = pawn.health.Dead;
+
                     var genesWithThingDefSwaps = pawn.genes.GenesListForReading
                         .Where(x => x != this && x is PGene && (x as PGene).geneExt != null && (x as PGene).geneExt.thingDefSwap != null)
                         .Select(x=>(PGene)x).ToList();
@@ -276,6 +278,11 @@ namespace BetterPrerequisites
                         RegionListersUpdater.RegisterInRegions(pawn, pawn.Map);
                     }
                     catch { }
+
+                    if (pawn.health.Dead && !wasDead && didSwap)
+                    {
+                        ResurrectionUtility.TryResurrect(pawn);
+                    }
 
                     pawn.VerbTracker.InitVerbsFromZero();
 

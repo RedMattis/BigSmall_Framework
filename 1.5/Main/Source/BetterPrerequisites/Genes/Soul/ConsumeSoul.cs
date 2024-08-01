@@ -191,6 +191,8 @@ namespace BigAndSmall
 
             float postCap = gainPS;
 
+            if (target?.RaceProps?.Animal == true) { gainPS /= 5; }
+
             int? architeGeneCount = target.genes?.GenesListForReading.Sum(x=>x.def.biostatArc);
 
             switch (architeGeneCount)
@@ -214,11 +216,11 @@ namespace BigAndSmall
 
             float preFalloffTotalGain = gainPS + gainFromSoulPower;
             float actualGain = 0;
-            const int itrr = 10;
+            const int itrrCount = 10;
             // This is really just and ugly-looking way to make sure the falloff gets applied reasonably if adding a huge amount at the same time.
-            for (int i = 0; i < itrr; i++)
+            for (int i = 0; i < itrrCount; i++)
             {
-                float itrrGain = gainPS / itrr;
+                float itrrGain = gainPS / itrrCount;
                 if (Severity > 1) { itrrGain /= (Mathf.Pow(Severity + actualGain, exponentialFalloff)); }
                 actualGain += itrrGain;
             }
@@ -267,6 +269,8 @@ namespace BigAndSmall
                     }
                 }
             }
+
+            if (Severity > 6) { Severity = 6; }
 
             if (target.Spawned)
             {

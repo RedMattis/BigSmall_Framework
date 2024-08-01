@@ -22,6 +22,8 @@ namespace BigAndSmall
             public List<HediffDef> hediffsToRemove = new List<HediffDef>();
             public XenotypeDef xenoTypeToAdd = null;
             public XenotypeDef xenoTypeToReplace = null;
+            public bool resurrect = false;
+            public bool perfectResurrect = false; // Fixes missing parts too.
         }
 
         public class ConditionalTrigger
@@ -75,7 +77,7 @@ namespace BigAndSmall
             var hAdded = properties.onHediffAdded;
             if (properties.onHediffAdded != null)
             {
-                AddAndRemoveGenes(hAdded);
+                DoEffects(hAdded);
             }
 
         }
@@ -110,7 +112,7 @@ namespace BigAndSmall
             var hRemoved = properties.onHediffRemoved;
             if (properties.onHediffAdded != null)
             {
-                AddAndRemoveGenes(hRemoved);
+                DoEffects(hRemoved);
             }
         }
 
@@ -129,7 +131,7 @@ namespace BigAndSmall
                         SeverityTrigger severityDef = SeverityTriggers[i];
                         if (Severity >= severityDef.severity)
                         {
-                            AddAndRemoveGenes(severityDef.trigger);
+                            DoEffects(severityDef.trigger);
                             SeverityTriggers.Remove(severityDef);
                         }
                     }
@@ -143,11 +145,11 @@ namespace BigAndSmall
                 // Make sure they only trigger when switching, not continiously as long as the condition is true.
                 if (properties.onStat != null && statWasActive != true)
                 {
-                    if (onStat == true) AddAndRemoveGenes(properties.onStat.trigger);
+                    if (onStat == true) DoEffects(properties.onStat.trigger);
                 }
                 if (properties.onStatRemoved != null && statWasActive != false)
                 {
-                    if (onStat == false) AddAndRemoveGenes(properties.onStat.trigger);
+                    if (onStat == false) DoEffects(properties.onStat.trigger);
                 }
                 statWasActive = onStat;
                 //TestConditionals
@@ -158,8 +160,23 @@ namespace BigAndSmall
             }
         }
 
-        private void AddAndRemoveGenes(TransitioningHediffProps.Trigger trigger)
+        private void DoEffects(TransitioningHediffProps.Trigger trigger)
         {
+            if(trigger.perfectResurrect)
+            {
+                ResurrectionUtility.TryResurrect(pawn, new ResurrectionParams
+                {
+                    restoreMissingParts = true,
+                });
+            }
+            else if (trigger.resurrect)
+            {
+                ResurrectionUtility.TryResurrect(pawn, new ResurrectionParams
+                {
+                    restoreMissingParts = false,
+                });
+            }
+            else
             if (trigger.xenoTypeToAdd != null)
             {
                 GameUtils.AddAllXenotypeGenes(pawn, trigger.xenoTypeToAdd, trigger.xenoTypeToAdd.label, xenogene:trigger.xenogene);

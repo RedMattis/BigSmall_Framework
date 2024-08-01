@@ -35,8 +35,8 @@ namespace BigAndSmall
         {
             if (p.RaceProps.Humanlike && p.genes != null)
             {
-                // Allow nutrient paste. It is too much of a hassle to check if it is acceptable. Er. I mean the nutrient paste is so
-                // nutritionally perfected that it is acceptable. Ofc.
+                // Allow nutrient paste. It is too much of a hassle to make people have seperate meat/veg networks.
+                // Er. I mean the nutrient paste is so nutritionally perfected that it is acceptable. Ofc.
                 if (food?.def?.defName?.Contains("NutrientPaste") == true)
                 {
                     return true;

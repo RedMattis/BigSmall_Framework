@@ -65,7 +65,7 @@ namespace BigAndSmall
             }
         }
     }
-    // Postfix BontTo to add a Hediff to the bonded pawn
+    // Postfix BondTo to add a Hediff to the bonded pawn
     [HarmonyPatch(typeof(Gene_PsychicBonding), nameof(Gene_PsychicBonding.BondTo))]
     public static class Gene_PsychicBonding_BondTo
     {
