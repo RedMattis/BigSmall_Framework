@@ -17,6 +17,8 @@ namespace BetterPrerequisites
         public FurDef furskinOverride = null;
         public bool skinIsHairColor = false;
         public BodyTypeDef bodyDefOverride = null;
+        public HeadTypeDef headDefOverride = null;
+        public bool disableFacialAnims = false;
 
         public CompProperties_ColorAndFur()
         {
@@ -42,6 +44,7 @@ namespace BetterPrerequisites
                     cache.savedHairColor = pawn.story?.HairColor;
                     cache.savedFurSkin = pawn.story?.furDef?.defName;
                     cache.savedBodyDef = pawn.story?.bodyType?.defName;
+                    cache.savedHeadDef = pawn.story?.headType?.defName;
                 }
                 if (Props.hairColorOverride != null)
                 {
@@ -67,11 +70,19 @@ namespace BetterPrerequisites
                 {
                     pawn.story.bodyType = Props.bodyDefOverride;
                 }
+                if (Props.headDefOverride != null)
+                {
+                    pawn.story.headType = Props.headDefOverride;
+                }
                 
                 if (Props.furskinOverride != null)
                 {
                     pawn.story.furDef = Props.furskinOverride;
                     //pawn.Drawer.renderer.SetAllGraphicsDirty();
+                }
+                if (Props.disableFacialAnims)
+                {
+                    cache.facialAnimationDisabled_Transform = true;
                 }
             }
         }
@@ -100,6 +111,14 @@ namespace BetterPrerequisites
                     if (cache.savedBodyDef != null && DefDatabase<BodyTypeDef>.GetNamed(cache.savedBodyDef) is BodyTypeDef bodyDef)
                     {
                         pawn.story.bodyType = bodyDef;
+                    }
+                    if (cache.savedHeadDef != null && DefDatabase<HeadTypeDef>.GetNamed(cache.savedHeadDef) is HeadTypeDef headDef)
+                    {
+                        pawn.story.headType = headDef;
+                    }
+                    if (Props.disableFacialAnims)
+                    {
+                        cache.facialAnimationDisabled_Transform = false;
                     }
                 }
             }

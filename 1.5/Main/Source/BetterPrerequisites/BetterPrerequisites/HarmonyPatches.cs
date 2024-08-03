@@ -23,6 +23,10 @@ namespace BetterPrerequisites
     {
         public static void Postfix(Hediff __instance, DamageInfo? dinfo)
         {
+            if (__instance?.pawn?.RaceProps?.Animal == true)
+            {
+                return;
+            }
             var genes = __instance?.pawn?.genes;
             if (genes == null) return;
             var geneList = genes.GenesListForReading;

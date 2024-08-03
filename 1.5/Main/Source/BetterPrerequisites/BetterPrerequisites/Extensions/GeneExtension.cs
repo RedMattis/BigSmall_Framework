@@ -50,6 +50,8 @@ namespace BetterPrerequisites
         public Shader geneShader = null;
         public FacialAnimDisabler facialDisabler = null;
 
+        public bool disableFacialAnimations = false;
+
         public float GetSizeFromSizeByAge(float? age)
         {
             if (sizeByAge == null || age == null) return 1f;

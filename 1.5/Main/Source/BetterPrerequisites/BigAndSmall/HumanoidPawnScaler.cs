@@ -234,9 +234,14 @@ namespace BigAndSmall
         public Color? savedHairColor = null;
         public string savedFurSkin = null;
         public string savedBodyDef = null;
+        public string savedHeadDef = null;
+        
 
         public int? randomPickSkinColor = null;
         public int? randomPickHairColor = null;
+
+        public bool facialAnimationDisabled = false;
+        public bool facialAnimationDisabled_Transform = false; // Used for the ColorAndFur Hediff.
 
         public string id = "BS_DefaultID";
 
@@ -295,8 +300,10 @@ namespace BigAndSmall
             Scribe_Values.Look(ref savedHairColor, "BS_SavedHairColor", null);
             Scribe_Values.Look(ref randomPickSkinColor, "BS_RandomPickSkinColor", null);
             Scribe_Values.Look(ref randomPickHairColor, "BS_RandomPickHairColor", null);
+            Scribe_Values.Look(ref facialAnimationDisabled, "BS_FacialAnimationDisabled", false);
             Scribe_Values.Look(ref savedFurSkin, "BS_SavedFurskinName");
             Scribe_Values.Look(ref savedBodyDef, "BS_SavedBodyDefName");
+            Scribe_Values.Look(ref savedHeadDef, "BS_SavedHeadDefName");
 
         }
 
@@ -508,7 +515,9 @@ namespace BigAndSmall
                 bool cannotWearArmor = activeGenes.Any(x => x.def.defName == "BS_CannotWearArmor");
                 bool cannotWearApparel = activeGenes.Any(x => x.def.defName == "BS_CannotWearClothingOrArmor");
 
-                
+                //facialAnimationDisabled = activeGenes.Any(x => x.def == BSDefs.BS_FacialAnimDisabled);
+                facialAnimationDisabled = genesWithExtension.Any(x => x.disableFacialAnimations || x.facialDisabler != null)
+                    || facialAnimationDisabled_Transform;
 
                 // Add together bodyPosOffset from GeneExtension.
                 float bodyPosOffset = genesWithExtension.Sum(x => x.bodyPosOffset);

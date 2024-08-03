@@ -16,23 +16,37 @@ namespace BigAndSmall
 
         public static void DisableFacialAnimations(Pawn pawn, FacialAnimDisabler options, bool revert)
         {
-            var drawFaceGC = pawn.AllComps.FirstOrDefault(x => x.GetType().Name == "DrawFaceGraphicsComp");
+            // This is disabled for now. Nal updated the mod and the structure is completely different.
+            // So this needs to be reworked a ton.
+            return;
+
+            var facialAnimCC = pawn.AllComps.FirstOrDefault(x => x.GetType().Name.Contains("FacialAnimationControllerComp"));
 
             //var drawFaceGC = NalFacialLinks.TryGetValue(pawn, out object value) ? value : null;
-            if (drawFaceGC == null)
+            if (facialAnimCC == null)
             {
                 return;
             }
+
+            var animationFrameMapper = AccessTools.Field(facialAnimCC.GetType(), "animationFrameMapper").GetValue(facialAnimCC);
+            var afm = animationFrameMapper;
+
+            if (afm == null)
+            {
+                Log.Error("NalsAnim: Could not find animationFrameMapper for " + pawn.Name);
+                return;
+            }
+
             // This code needs to be changed to only run if the pawn has code which disables the facial features, for obvious reasons.
 
             // Get HeadControllerComp value
-            var headController = AccessTools.Field(drawFaceGC.GetType(), "headController").GetValue(drawFaceGC);
-            var skinController = AccessTools.Field(drawFaceGC.GetType(), "skinController").GetValue(drawFaceGC);
-            var llidController = AccessTools.Field(drawFaceGC.GetType(), "lidController").GetValue(drawFaceGC);
-            var lidOptionController = AccessTools.Field(drawFaceGC.GetType(), "lidOptionController").GetValue(drawFaceGC);
-            var eyeballController = AccessTools.Field(drawFaceGC.GetType(), "eyeballController").GetValue(drawFaceGC);
-            var mouthController = AccessTools.Field(drawFaceGC.GetType(), "mouthController").GetValue(drawFaceGC);
-            var browController = AccessTools.Field(drawFaceGC.GetType(), "browController").GetValue(drawFaceGC);
+            var headController = AccessTools.Field(afm.GetType(), "headController").GetValue(afm);
+            var skinController = AccessTools.Field(afm.GetType(), "skinController").GetValue(afm);
+            var llidController = AccessTools.Field(afm.GetType(), "lidController").GetValue(afm);
+            var lidOptionController = AccessTools.Field(afm.GetType(), "lidOptionController").GetValue(afm);
+            var eyeballController = AccessTools.Field(afm.GetType(), "eyeballController").GetValue(afm);
+            var mouthController = AccessTools.Field(afm.GetType(), "mouthController").GetValue(afm);
+            var browController = AccessTools.Field(afm.GetType(), "browController").GetValue(afm);
             //var emotionController = AccessTools.Field(__instance.GetType(), "emotionController").GetValue(__instance);
 
             if (headController != null) ChangeControllers(pawn, revert, headController, options.headName);
@@ -107,68 +121,59 @@ namespace BigAndSmall
         }
     }
 
-    // This stuff could probably be ported into a gene's startup code and it should work fine.
+    internal class FactialAnimHarmonyPatches
+    {
+        [HarmonyPatch]
+        public static class FA_DisableFeatures
+        {
+            private static readonly string[] fa_methods = new string[]
+            {
+                "FacialAnimation.FacialAnimationModSettings:ShouldDrawRaceXenoType",
+            };
 
-    //internal class FactialAnimHarmonyPatches
-    //{
-    //    [HarmonyPatch]
-    //    public static class FA_DisableFeatures
-    //    {
-    //        private static readonly string[] fa_methods = new string[]
-    //        {
-    //            "FacialAnimation.DrawFaceGraphicsComp:SetDirty",
-    //        };
+            public static bool Prepare()
+            {
+                string[] vlfa_methods = fa_methods;
+                for (int i = 0; i < vlfa_methods.Length; i++)
+                {
+                    if (!(AccessTools.Method(vlfa_methods[i]) == null)) return true;
+                }
+                return false;
+            }
 
-    //        public static bool Prepare()
-    //        {
-    //            string[] vlfa_methods = fa_methods;
-    //            for (int i = 0; i < vlfa_methods.Length; i++)
-    //            {
-    //                if (!(AccessTools.Method(vlfa_methods[i]) == null)) return true;
-    //            }
-    //            return false;
-    //        }
+            public static IEnumerable<MethodBase> TargetMethods()
+            {
+                string[] vlfa_methods = fa_methods;
+                for (int i = 0; i < vlfa_methods.Length; i++)
+                {
+                    MethodInfo methodInfo = AccessTools.Method(vlfa_methods[i]);
+                    if (!(methodInfo == null))
+                        yield return methodInfo;
+                }
+            }
+            //public static FieldInfo pawnField = null;
+            public static bool pawnInitialized = true;
 
-    //        public static IEnumerable<MethodBase> TargetMethods()
-    //        {
-    //            string[] vlfa_methods = fa_methods;
-    //            for (int i = 0; i < vlfa_methods.Length; i++)
-    //            {
-    //                MethodInfo methodInfo = AccessTools.Method(vlfa_methods[i]);
-    //                if (!(methodInfo == null))
-    //                    yield return methodInfo;
-    //            }
-    //        }
-    //        public static FieldInfo pawnField = null;
-    //        public static bool pawnInitialized = true;
-    //        public static void Prefix(object __instance)
-    //        {
-    //            FieldInfo pawnField = GetPawnField(__instance);
-    //            Pawn pawn = pawnField.GetValue(__instance) as Pawn;
+            public static bool Prefix(object __instance, Pawn pawn)
+            {
+                //FieldInfo pawnField = GetPawnField(__instance);
+                //Pawn pawn = pawnField.GetValue(__instance) as Pawn;
+                if (FastAcccess.GetCache(pawn) is BSCache cache && cache.facialAnimationDisabled)
+                {
+                    return false;
+                }
+                return true;
+            }
 
-    //            pawnInitialized = pawn != null;
-    //        }
+            //private static FieldInfo GetPawnField(object __instance)
+            //{
+            //    if (pawnField == null)
+            //    {
+            //        pawnField = AccessTools.Field(__instance.GetType(), "pawn");
+            //    }
 
-    //        public static void Postfix(object __instance)
-    //        {
-    //            if (pawnInitialized) { return; }
-
-    //            FieldInfo pawnField = GetPawnField(__instance);
-    //            Pawn pawn = pawnField.GetValue(__instance) as Pawn;
-
-
-    //            NalFaceExt.NalFacialLinks[pawn] = __instance;
-    //        }
-
-    //        private static FieldInfo GetPawnField(object __instance)
-    //        {
-    //            if (pawnField == null)
-    //            {
-    //                pawnField = AccessTools.Field(__instance.GetType(), "pawn");
-    //            }
-
-    //            return pawnField;
-    //        }
-    //    }
-    //}
+            //    return pawnField;
+            //}
+        }
+    }
 }
