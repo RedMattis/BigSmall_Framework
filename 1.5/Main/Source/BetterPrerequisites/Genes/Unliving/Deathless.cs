@@ -75,14 +75,21 @@ namespace BigAndSmall
             // Check if dInfo is fire damage.
             if (hasBurnDenial || dinfo.HasValue == true && (dinfo?.Def == DamageDefOf.Flame || dinfo?.Def?.defName == "Burn"))
             {
-                Find.LetterStack.ReceiveLetter("BS_ReturningSoul_FireTitle".Translate(pawnNameString), "BS_ReturningSoul_Fire".Translate(pawnNameString), LetterDefOf.NegativeEvent, pawn);
+                if (pawn.Faction == Faction.OfPlayerSilentFail)
+                {
+                    Find.LetterStack.ReceiveLetter("BS_ReturningSoul_FireTitle".Translate(pawnNameString), "BS_ReturningSoul_Fire".Translate(pawnNameString), LetterDefOf.NegativeEvent, pawn);
+                }
+                
                 return;
             }
 
             var soullessHediff = DefDatabase<HediffDef>.GetNamedSilentFail("BS_Soulless");
             if (pawn?.health?.hediffSet?.TryGetHediff(soullessHediff, out Hediff hediff) == true && soullessHediff != null)
             {
-                Find.LetterStack.ReceiveLetter("BS_WasKilled_Title".Translate(pawnNameString), "BS_WasKilledSoulless".Translate(pawnNameString), LetterDefOf.NegativeEvent, pawn);
+                if (pawn.Faction == Faction.OfPlayerSilentFail)
+                {
+                    Find.LetterStack.ReceiveLetter("BS_WasKilled_Title".Translate(pawnNameString), "BS_WasKilledSoulless".Translate(pawnNameString), LetterDefOf.NegativeEvent, pawn);
+                }
                 return;
             }
 

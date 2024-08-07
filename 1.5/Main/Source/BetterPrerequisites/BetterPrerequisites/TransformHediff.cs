@@ -19,6 +19,7 @@ namespace BetterPrerequisites
         public BodyTypeDef bodyDefOverride = null;
         public HeadTypeDef headDefOverride = null;
         public bool disableFacialAnims = false;
+        public bool disableBeards = false;
 
         public CompProperties_ColorAndFur()
         {
@@ -45,6 +46,7 @@ namespace BetterPrerequisites
                     cache.savedFurSkin = pawn.story?.furDef?.defName;
                     cache.savedBodyDef = pawn.story?.bodyType?.defName;
                     cache.savedHeadDef = pawn.story?.headType?.defName;
+                    cache.savedBeardDef = pawn.style?.beardDef?.defName;
                 }
                 if (Props.hairColorOverride != null)
                 {
@@ -56,6 +58,13 @@ namespace BetterPrerequisites
                 }
                 if (Props.skinIsHairColor)
                 {
+                    if (pawn.story.HairColor.a < 0.05f)
+                    {
+                        // Just set it to brown
+                        pawn.story.HairColor = new Color(0.3f, 0.2f, 0.1f, 1f);
+                    }
+                    var hairColor = pawn.story.HairColor;
+                    hairColor.a = 1f;
                     pawn.story.skinColorOverride = pawn.story.HairColor;
                 }
                 else if (Props.skinColorOverride != null)
@@ -84,6 +93,10 @@ namespace BetterPrerequisites
                 {
                     cache.facialAnimationDisabled_Transform = true;
                 }
+                if (Props.disableBeards)
+                {
+                    pawn.style.beardDef = null;
+                }
             }
         }
 
@@ -95,11 +108,11 @@ namespace BetterPrerequisites
             {
                 if (pawn.story != null)
                 {
-                    if (cache.savedSkinColor != null)
+                    if (cache.savedSkinColor != null && cache.savedSkinColor.Value.a > 0.05)
                     {
                         pawn.story.skinColorOverride = cache.savedSkinColor.Value;
                     }
-                    if (cache.savedHairColor != null)
+                    if (cache.savedHairColor != null && cache.savedHairColor.Value.a > 0.05)
                     {
                         pawn.story.HairColor = cache.savedHairColor.Value;
                     }
@@ -119,6 +132,15 @@ namespace BetterPrerequisites
                     if (Props.disableFacialAnims)
                     {
                         cache.facialAnimationDisabled_Transform = false;
+                    }
+                    if (Props.disableBeards)
+                    {
+                        if (cache.savedBeardDef != null && DefDatabase<BeardDef>.GetNamed(cache.savedBeardDef) is BeardDef beardDef)
+                            pawn.style.beardDef = beardDef;
+                        else
+                        {
+                            pawn.style.beardDef = null;
+                        }
                     }
                 }
             }

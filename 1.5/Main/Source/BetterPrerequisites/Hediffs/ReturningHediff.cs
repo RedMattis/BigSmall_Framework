@@ -140,12 +140,21 @@ namespace BigAndSmall
 
                         // Apply Xenotype
                         string targetXenotype = "VU_Returned";
+                        string targetPrefix = "Returned ";
+
+                        float chanceOfRevenant = (pawn.Faction == Faction.OfPlayerSilentFail) ? 0.2f : 0.02f;
+                        if (Rand.Chance(chanceOfRevenant))
+                        {
+                            targetXenotype = "VU_Revenant";
+                            targetPrefix = "Revenant ";
+                        }
+
 
                         foreach (var def in DefDatabase<XenotypeDef>.AllDefsListForReading.Where(x => x.defName == targetXenotype))
                         {
 
                             // Set pawn xenotype to the target xenotype
-                            GameUtils.AddAllXenotypeGenes(pawn, def, name: "Returned " + pawn.genes.XenotypeLabel);
+                            GameUtils.AddAllXenotypeGenes(pawn, def, name: targetPrefix + pawn.genes.XenotypeLabel);
                             break;
                         }
                     }

@@ -235,6 +235,8 @@ namespace BigAndSmall
         public string savedFurSkin = null;
         public string savedBodyDef = null;
         public string savedHeadDef = null;
+        //public bool disableBeards = false;
+        public string savedBeardDef = null;
         
 
         public int? randomPickSkinColor = null;
@@ -298,6 +300,8 @@ namespace BigAndSmall
             Scribe_Values.Look(ref renderCacheOff, "BS_RenderCacheOff", false);
             Scribe_Values.Look(ref savedSkinColor, "BS_SavedSkinColor", null);
             Scribe_Values.Look(ref savedHairColor, "BS_SavedHairColor", null);
+            //Scribe_Values.Look(ref disableBeards, "BS_DisableBeards", false);
+            Scribe_Values.Look(ref savedBeardDef, "BS_SavedBeardDef", null);
             Scribe_Values.Look(ref randomPickSkinColor, "BS_RandomPickSkinColor", null);
             Scribe_Values.Look(ref randomPickHairColor, "BS_RandomPickHairColor", null);
             Scribe_Values.Look(ref facialAnimationDisabled, "BS_FacialAnimationDisabled", false);
@@ -329,7 +333,7 @@ namespace BigAndSmall
             {
                 var activeGenes = Helpers.GetAllActiveGenes(pawn);
                 List<GeneExtension> geneExts = activeGenes
-                    .Where(x => x?.def?.modExtensions != null && x.def.modExtensions.Any(y => y.GetType() == typeof(GeneExtension)))
+                    .Where(x => x?.def?.modExtensions != null && x.def.modExtensions.Any(y => y.GetType() == typeof(GeneExtension)))?
                     .Select(x => x.def.GetModExtension<GeneExtension>()).ToList();
 
                 float offsetFromSizeByAge = geneExts.Where(x => x.sizeByAge != null).Sum(x => x.GetSizeFromSizeByAge(pawn?.ageTracker?.AgeBiologicalYearsFloat));
@@ -469,8 +473,6 @@ namespace BigAndSmall
                 }
 
                 // Get all genes with the GeneExtension
-                List<GeneExtension> genesWithExtension = Helpers.GetAllActiveGenes(pawn).Select(x => x.def.GetModExtension<GeneExtension>()).Where(x => x != null).ToList();
-
                 // Gene Caching
                 var undeadGenes = Helpers.GetActiveGenesByNames(pawn, new List<string>
                 {
@@ -496,7 +498,7 @@ namespace BigAndSmall
                 // Has Deathlike gene or VU_AnimalReturned Hediff.
                 bool deathlike = activeGenes.Any(x => x.def.defName == "BS_Deathlike") || animalUndead;
                 bool unarmedOnly = activeGenes.Any(x => new List<string> { "BS_UnarmedOnly", "BS_NoEquip", "BS_UnarmedOnly_Android" }.Contains(x.def.defName));
-                bool unamredOnly = unarmedOnly || genesWithExtension.Any(x => x.unarmedOnly);
+                bool unamredOnly = unarmedOnly || geneExts.Any(x => x.unarmedOnly);
                 bool succubusUnbonded = false;
                 if (activeGenes.Any(x => x.def.defName == "VU_LethalLover"))
                 {
@@ -516,13 +518,13 @@ namespace BigAndSmall
                 bool cannotWearApparel = activeGenes.Any(x => x.def.defName == "BS_CannotWearClothingOrArmor");
 
                 //facialAnimationDisabled = activeGenes.Any(x => x.def == BSDefs.BS_FacialAnimDisabled);
-                facialAnimationDisabled = genesWithExtension.Any(x => x.disableFacialAnimations || x.facialDisabler != null)
+                facialAnimationDisabled = geneExts.Any(x => x.disableFacialAnimations || x.facialDisabler != null)
                     || facialAnimationDisabled_Transform;
 
                 // Add together bodyPosOffset from GeneExtension.
-                float bodyPosOffset = genesWithExtension.Sum(x => x.bodyPosOffset);
-                float headPosMultiplier = genesWithExtension.Sum(x => x.headPosMultiplier);
-                bool preventDisfigurement = genesWithExtension.Any(x => x.preventDisfigurement);
+                float bodyPosOffset = geneExts.Sum(x => x.bodyPosOffset);
+                float headPosMultiplier = geneExts.Sum(x => x.headPosMultiplier);
+                bool preventDisfigurement = geneExts.Any(x => x.preventDisfigurement);
 
                 var alcoholHediff = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.AlcoholHigh);
                 float alcoholLevel = alcoholHediff?.Severity ?? 0;
@@ -611,7 +613,7 @@ namespace BigAndSmall
                 this.fastPregnancy = fastPregnancy;
                 this.everFertile = everFertile;
                 this.animalFriend = animalFriend;
-                renderCacheOff = genesWithExtension.Any(x => x.renderCacheOff);
+                renderCacheOff = geneExts.Any(x => x.renderCacheOff);
 
                 this.bodyPosOffset = bodyPosOffset;
                 this.headPosMultiplier = 1 + headPosMultiplier;
