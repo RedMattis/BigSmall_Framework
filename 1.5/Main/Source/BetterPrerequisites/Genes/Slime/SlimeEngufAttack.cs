@@ -586,7 +586,7 @@ namespace BigAndSmall
 
         protected virtual void ProcessCorpseDestruction(Pawn attacker, Pawn innerPawn)
         {
-            if (attacker.needs?.food != null)
+            if (attacker.needs?.food != null && innerPawn?.BodySize != null)
             {
                 attacker.needs.food.CurLevel += 6 * innerPawn.BodySize;
             }
@@ -599,7 +599,7 @@ namespace BigAndSmall
                 Log.Warning("Error adding through after destroying corpse: " + e);
             }
 
-            if (pawn.needs?.TryGetNeed<Need_KillThirst>() is Need_KillThirst killThirst)
+            if (attacker.needs?.TryGetNeed<Need_KillThirst>() is Need_KillThirst killThirst)
             {
                 killThirst.CurLevelPercentage = 1;
             }

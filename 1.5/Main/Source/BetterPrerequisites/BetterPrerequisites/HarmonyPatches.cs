@@ -51,12 +51,25 @@ namespace BetterPrerequisites
         }
     }
 
+    [HarmonyPatch(typeof(Pawn), nameof(Pawn.SpawnSetup))]
+    public static class Pawn_SpawnSetup
+    {
+        public static void Postfix(Pawn __instance)
+        {
+            Pawn_PostMapInit.RefreshPawnPGenes(__instance);
+        }
+    }
 
     // When the game is loaded, go through all hedifs in the pawns health tab and try to add supressors
     [HarmonyPatch(typeof(Pawn), nameof(Pawn.PostMapInit))]
     public static class Pawn_PostMapInit
     {
         public static void Postfix(Pawn __instance)
+        {
+            RefreshPawnPGenes(__instance);
+        }
+
+        public static void RefreshPawnPGenes(Pawn __instance)
         {
             if (__instance != null)
             {
@@ -73,14 +86,16 @@ namespace BetterPrerequisites
                     }
                 }
                 UpdatePawnHairAndHeads(__instance);
-            }
-            if (__instance != null)
-            {
-                foreach(var gene in Helpers.GetAllActiveGenes(__instance))
+
+                foreach (var gene in Helpers.GetAllActiveGenes(__instance))
                 {
                     GeneEffectManager.RefreshGeneEffects(gene, activate: true);
                 }
                 HumanoidPawnScaler.GetBSDict(__instance, forceRefresh: true);
+            }
+            else
+            {
+                Log.Error("BetterPrerequisites: Someone just called PostMapInit called with null pawn. Probably someone did a whoopsie!");
             }
         }
 
@@ -535,6 +550,8 @@ namespace BetterPrerequisites
                                     continue;
                                 }
                                 RemoveHediffByName(gene.pawn, item.hediff.defName);
+
+                                //Log.Message($"DEBUG: Removed {item.hediff.defName} from {gene.pawn.Name}");
                                 changeMade = true;
                             }
                         }

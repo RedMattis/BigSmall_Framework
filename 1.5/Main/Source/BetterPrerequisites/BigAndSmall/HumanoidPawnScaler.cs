@@ -81,7 +81,7 @@ namespace BigAndSmall
             // This is done on a component to save the performance cost of having them check a timer every time
             // they are called.
             pGenesThatReevaluate = new HashSet<PGene>(pGenesThatReevaluate.Where(x => x != null && x.pawn != null && !x.pawn.Discarded));
-            foreach (var pGene in pGenesThatReevaluate)
+            foreach (var pGene in pGenesThatReevaluate.Where(x=>x.pawn.Spawned))
             {
                 bool active = pGene.previouslyActive == true;
                 bool newState = pGene.RegenerateState();
