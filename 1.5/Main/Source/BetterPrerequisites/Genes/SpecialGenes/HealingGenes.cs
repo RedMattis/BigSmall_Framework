@@ -8,7 +8,7 @@ using Verse;
 
 namespace BigAndSmall
 {
-    public static partial class Helpers
+    public static partial class GeneHelpers
     {
         public static void CureWorstInjury(Pawn pawn)
         {
@@ -63,7 +63,7 @@ namespace BigAndSmall
             base.Tick();
             if (Find.TickManager.TicksGame % 30000 == 0 && Rand.Chance(0.33f))
             { 
-                Helpers.CureWorstInjury(pawn);
+                GeneHelpers.CureWorstInjury(pawn);
             }
         }
     }

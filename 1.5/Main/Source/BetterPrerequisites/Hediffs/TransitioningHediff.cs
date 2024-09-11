@@ -179,7 +179,7 @@ namespace BigAndSmall
             else
             if (trigger.xenoTypeToAdd != null)
             {
-                GameUtils.AddAllXenotypeGenes(pawn, trigger.xenoTypeToAdd, trigger.xenoTypeToAdd.label, xenogene:trigger.xenogene);
+                GeneHelpers.AddAllXenotypeGenes(pawn, trigger.xenoTypeToAdd, trigger.xenoTypeToAdd.label, xenogene:trigger.xenogene);
 
             }
             else if (trigger.xenoTypeToReplace!= null)

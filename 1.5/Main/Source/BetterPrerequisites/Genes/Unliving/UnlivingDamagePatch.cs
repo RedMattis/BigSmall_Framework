@@ -108,7 +108,7 @@ namespace BigAndSmall
                 if (fireDamageMult > 0)
                 {
                     // Check if they have the "BS_ReturningSoul" gene.
-                    var validGenes = Helpers.GetActiveGenesByName(pawn, "BS_ReturningSoul");
+                    var validGenes = GeneHelpers.GetActiveGenesByName(pawn, "BS_ReturningSoul");
                     if (validGenes.Count() > 0)
                     {
                         // Add the BS_BurnReturnDenial hediff if they don't already have it.
@@ -211,7 +211,7 @@ namespace BigAndSmall
                 var sizeCache = HumanoidPawnScaler.GetBSDict(pawn);
                 if (sizeCache != null)
                 {
-                    var validGenes = Helpers.GetActiveGenesByName(pawn, "BS_NoXenogerms");
+                    var validGenes = GeneHelpers.GetActiveGenesByName(pawn, "BS_NoXenogerms");
                     if (validGenes.Count() > 0)
                     {
                         __result = true;
@@ -242,7 +242,7 @@ namespace BigAndSmall
             if (pawn.RaceProps.Humanlike && (pawn.needs != null || pawn.Dead) && pawn.genes != null)
             {
                 var matchingGenes = new List<string>() { "VU_NoBlood", "VU_WhiteRoseBite", "VU_DraculBite", "VU_SuccubusBloodFeeder" };
-                var validGenes = Helpers.GetActiveGenesByNames(pawn, matchingGenes);
+                var validGenes = GeneHelpers.GetActiveGenesByNames(pawn, matchingGenes);
                 if (validGenes.Count() > 0)
                 {
                     return true;

@@ -21,11 +21,8 @@ namespace BigAndSmall
                 if (acidDmgDef == null)
                 {
                     acidDmgDef = DefDatabase<DamageDef>.GetNamed("BS_AcidDmgDirect");
-                    if (acidDmgDef == null)
-                    {
-                        // Fallback to the vanilla AcidBurn if for whatever reason the def is missing.
-                        acidDmgDef = DefDatabase<DamageDef>.GetNamed("AcidBurn");
-                    }
+                    // Fallback to the vanilla AcidBurn if for whatever reason the def is missing.
+                    acidDmgDef ??= DefDatabase<DamageDef>.GetNamed("AcidBurn");
                 }
                 
                 return acidDmgDef;

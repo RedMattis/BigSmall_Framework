@@ -43,7 +43,7 @@ namespace BigAndSmall
             }
 
             // Check if the other pawn has the SlimeProliferation Gene
-            if (Helpers.GetActiveGenesByName(otherPawn, "BS_SlimeProliferation").Count() == 0)
+            if (GeneHelpers.GetActiveGenesByName(otherPawn, "BS_SlimeProliferation").Count() == 0)
             {
                 if (throwMessages)
                 {
@@ -57,8 +57,8 @@ namespace BigAndSmall
 
         public static void DoProliferate(Pawn parentA, Pawn parentB)
         {
-            var geneSetA = Helpers.GetAllActiveGenes(parentA).Select(x=>x.def).ToList();
-            var geneSetB = Helpers.GetAllActiveGenes(parentB).Select(x => x.def).ToList();
+            var geneSetA = GeneHelpers.GetAllActiveGenes(parentA).Select(x=>x.def).ToList();
+            var geneSetB = GeneHelpers.GetAllActiveGenes(parentB).Select(x => x.def).ToList();
 
             var sharedGenes = geneSetA.Intersect(geneSetB).ToList();
 
@@ -79,7 +79,7 @@ namespace BigAndSmall
             {
                 babyPawn.genes.AddGene(gene, false);
             }
-            int endoMet = Helpers.GetAllActiveEndoGenes(babyPawn).Sum(x => x.def.biostatMet);
+            int endoMet = GeneHelpers.GetAllActiveEndoGenes(babyPawn).Sum(x => x.def.biostatMet);
 
             // If the baby has any gene not from the mother delete it. It is probably a hair or skin gene that the 
             // game pulled out of a magic hat.
@@ -111,7 +111,7 @@ namespace BigAndSmall
                     babyPawn.genes.AddGene(gene, true);
                 }
 
-                Helpers.GetAllActiveGenes(babyPawn).Sum(x => x.def.biostatMet);
+                GeneHelpers.GetAllActiveGenes(babyPawn).Sum(x => x.def.biostatMet);
 
                 var finalXegenes = babyPawn.genes.Xenogenes.Select(x=>x.def).ToList();
 
@@ -130,8 +130,8 @@ namespace BigAndSmall
                     babyPawn.genes.RemoveGene(gene);
                 }
 
-                Helpers.RemoveRandomToMetabolism(0, babyPawn.genes, minMet: -5, exclusionList: sharedGenes);
-                Helpers.RemoveRandomToMetabolism(0, babyPawn.genes, minMet: -5);
+                GeneHelpers.RemoveRandomToMetabolism(0, babyPawn.genes, minMet: -5, exclusionList: sharedGenes);
+                GeneHelpers.RemoveRandomToMetabolism(0, babyPawn.genes, minMet: -5);
 
                 // Integrate all the Xenogenes, turning them into Endogenes.
                 Discombobulator.IntegrateGenes(babyPawn);

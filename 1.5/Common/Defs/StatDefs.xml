@@ -95,7 +95,7 @@
         <minValue>0.0</minValue>
         <toStringStyle>PercentZero</toStringStyle>
         <defaultBaseValue>0</defaultBaseValue>
-        <hideAtValue>0</hideAtValue>
+        <hideAtValue>0.05</hideAtValue>
       </StatDef>
 
     <!-- Will not lower skill learning speed below the default. -->

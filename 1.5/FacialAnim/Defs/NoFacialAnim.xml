@@ -24,11 +24,6 @@
       <li Class="BetterPrerequisites.GeneExtension">
         <disableFacialAnimations>true</disableFacialAnimations>
       </li>
-      <li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="VanillaGenesExpanded.GeneExtension">
-				<backgroundPathEndogenes>GeneIcons/BS_BackEndogene</backgroundPathEndogenes>
-				<backgroundPathXenogenes>GeneIcons/BS_BackXenogene</backgroundPathXenogenes>
-        <backgroundPathArchite>GeneIcons/BS_BackArchite_1</backgroundPathArchite>
-			</li>
     </modExtensions>
   </GeneDef>
 
@@ -45,11 +40,7 @@
           <browName>retain</browName>
         </facialDisabler>
       </li>
-      <li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="VanillaGenesExpanded.GeneExtension">
-				<backgroundPathEndogenes>GeneIcons/BS_BackEndogene</backgroundPathEndogenes>
-				<backgroundPathXenogenes>GeneIcons/BS_BackXenogene</backgroundPathXenogenes>
-        <backgroundPathArchite>GeneIcons/BS_BackArchite_1</backgroundPathArchite>
-			</li>
+      
     </modExtensions>
   </GeneDef>
 
@@ -65,11 +56,7 @@
           <lidName>retain</lidName>
         </facialDisabler>
       </li>
-      <li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="VanillaGenesExpanded.GeneExtension">
-				<backgroundPathEndogenes>GeneIcons/BS_BackEndogene</backgroundPathEndogenes>
-				<backgroundPathXenogenes>GeneIcons/BS_BackXenogene</backgroundPathXenogenes>
-        <backgroundPathArchite>GeneIcons/BS_BackArchite_1</backgroundPathArchite>
-			</li>
+      
     </modExtensions>
   </GeneDef>
 
@@ -87,11 +74,7 @@
           <eyeballName>retain</eyeballName>
         </facialDisabler>
       </li>
-      <li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="VanillaGenesExpanded.GeneExtension">
-				<backgroundPathEndogenes>GeneIcons/BS_BackEndogene</backgroundPathEndogenes>
-				<backgroundPathXenogenes>GeneIcons/BS_BackXenogene</backgroundPathXenogenes>
-        <backgroundPathArchite>GeneIcons/BS_BackArchite_1</backgroundPathArchite>
-			</li>
+      
     </modExtensions>
   </GeneDef>
 
@@ -109,11 +92,7 @@
           <browName>retain</browName>
         </facialDisabler>
       </li>
-      <li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="VanillaGenesExpanded.GeneExtension">
-				<backgroundPathEndogenes>GeneIcons/BS_BackEndogene</backgroundPathEndogenes>
-				<backgroundPathXenogenes>GeneIcons/BS_BackXenogene</backgroundPathXenogenes>
-        <backgroundPathArchite>GeneIcons/BS_BackArchite_1</backgroundPathArchite>
-			</li>
+      
     </modExtensions>
   </GeneDef> -->
 

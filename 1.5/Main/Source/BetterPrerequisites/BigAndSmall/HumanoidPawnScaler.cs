@@ -14,13 +14,17 @@ namespace BigAndSmall
 {
     public class BigAndSmallCache : GameComponent
     {
-        public static HashSet<PGene> pGenesThatReevaluate = new HashSet<PGene>();
+        public static HashSet<PGene> pGenesThatReevaluate = new();
 
-        public static HashSet<BSCache> scribedCache = new HashSet<BSCache>();
+        public static HashSet<BSCache> scribedCache = new();
         public static bool regenerationAttempted = false;
         public Game game;
 
-        public Queue<Pawn> refreshQueue = new Queue<Pawn>();
+        public Queue<Pawn> refreshQueue = new();
+
+        public static Queue<Action> queuedJobs = new();
+
+        public static Dictionary<int, List<BSCache>> schedule = new();
 
         public BigAndSmallCache(Game game)
         {
@@ -48,7 +52,24 @@ namespace BigAndSmall
 
         public override void GameComponentTick()
         {
-            if (Find.TickManager.TicksGame % 100 != 0)
+            if (queuedJobs.Count > 0)
+            {
+                var job = queuedJobs.Dequeue();
+                job();
+            }
+
+            int currentTick = Find.TickManager.TicksGame;
+
+            if (schedule.ContainsKey(currentTick))
+            {
+                foreach (var job in schedule[currentTick])
+                {
+                    job?.DelayedUpdate();
+                }
+                schedule.Remove(currentTick);
+            }
+
+            if (currentTick % 100 != 0)
             {
                 return;
             }
@@ -87,7 +108,7 @@ namespace BigAndSmall
                 bool newState = pGene.RegenerateState();
                 if (active != newState)
                 {
-                    Helpers.NotifyGenesUpdated(pGene.pawn, pGene.def);
+                    GeneHelpers.NotifyGenesUpdated(pGene.pawn, pGene.def);
                 }
             }
         }
@@ -245,6 +266,8 @@ namespace BigAndSmall
         public bool facialAnimationDisabled = false;
         public bool facialAnimationDisabled_Transform = false; // Used for the ColorAndFur Hediff.
 
+        public bool isDrone = false;
+
         public string id = "BS_DefaultID";
 
         // Default Comparer function
@@ -308,6 +331,7 @@ namespace BigAndSmall
             Scribe_Values.Look(ref savedFurSkin, "BS_SavedFurskinName");
             Scribe_Values.Look(ref savedBodyDef, "BS_SavedBodyDefName");
             Scribe_Values.Look(ref savedHeadDef, "BS_SavedHeadDefName");
+            Scribe_Values.Look(ref isDrone, "BS_IsDrone", false);
 
         }
 
@@ -331,14 +355,27 @@ namespace BigAndSmall
             regenerationInProgress = true;
             try
             {
-                var activeGenes = Helpers.GetAllActiveGenes(pawn);
+                var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
                 List<GeneExtension> geneExts = activeGenes
                     .Where(x => x?.def?.modExtensions != null && x.def.modExtensions.Any(y => y.GetType() == typeof(GeneExtension)))?
                     .Select(x => x.def.GetModExtension<GeneExtension>()).ToList();
 
                 float offsetFromSizeByAge = geneExts.Where(x => x.sizeByAge != null).Sum(x => x.GetSizeFromSizeByAge(pawn?.ageTracker?.AgeBiologicalYearsFloat));
 
-                var dStage = pawn.DevelopmentalStage;
+                // Multiply each value together.
+                float multiplierFromSizeMultiplierByAge = geneExts.Where(x => x.sizeByAgeMult != null).Aggregate(1f, (acc, x) => acc * x.GetSizeMultiplierFromSizeByAge(pawn?.ageTracker?.AgeBiologicalYearsFloat));
+
+                DevelopmentalStage dStage;
+                try
+                {
+                    dStage = pawn.DevelopmentalStage;
+                }
+                catch
+                {
+                    Log.Warning($"[BigAndSmall] caught an exception when fetching Developmental Stage for {pawn.Name} Aborting generation of pawn cache.\n" +
+                        $"This likely means the pawn lacks \"lifeStageAges\" or another requirement for fetching the age.");
+                    return false;
+                }
                 float sizeFromAge = pawn?.ageTracker?.CurLifeStage?.bodySizeFactor ?? 1;
 
                 float baseSize = pawn?.RaceProps?.baseBodySize ?? 1;
@@ -346,7 +383,7 @@ namespace BigAndSmall
 
                 float sizeOffset = pawn.GetStatValue(BSDefs.SM_BodySizeOffset) + offsetFromSizeByAge;
                 float cosmeticSizeOffset = pawn.GetStatValue(BSDefs.SM_Cosmetic_BodySizeOffset);
-                float sizeMultiplier = pawn.GetStatValue(BSDefs.SM_BodySizeMultiplier);
+                float sizeMultiplier = pawn.GetStatValue(BSDefs.SM_BodySizeMultiplier) * multiplierFromSizeMultiplierByAge;
 
                 cosmeticSizeOffset += sizeOffset;
 
@@ -442,39 +479,10 @@ namespace BigAndSmall
                 var hediffs = pawn.health?.hediffSet.hediffs;
                 bool willBecomeUndead = hediffs.Any(x => x.def.defName == "VU_DraculVampirism" || x.def.defName == "BS_ReturnedReanimation") == true;
 
-                if (traits != null)
-                {
-                    try
-                    {
-                        if (pawn.needs != null && traits.Any(x => !x.Suppressed && x.def.defName == "BS_AlcoholAddict") && !hediffs.Any(x => x.def.defName == "AlcoholAddiction"))
-                        {
-                            // Add Alcohol Addiction.
-                            pawn.health.AddHediff(HediffDef.Named("AlcoholAddiction"));
-                        }
-                    }
-                    catch
-                    {
-                        // Do nothing, just catch the error. This isn't important enough to send an error if it fails.
-                    }
-
-                }
-                if (BSDefs.BS_SoulPower != null)
-                {
-                    var soulPower = pawn.GetStatValue(BSDefs.BS_SoulPower);
-                    if (soulPower > 0.1 && !pawn.Dead)
-                    {
-                        // Check if the pawn has the Soul Power Hediff
-                        if (!hediffs.Any(x => x.def == BSDefs.BS_SoulPowerHediff))
-                        {
-                            pawn.health.AddHediff(BSDefs.BS_SoulPowerHediff);
-                            Log.Message($"[BigAndSmall] Added Soul Power Hediff to {pawn.Name}");
-                        }
-                    }
-                }
 
                 // Get all genes with the GeneExtension
                 // Gene Caching
-                var undeadGenes = Helpers.GetActiveGenesByNames(pawn, new List<string>
+                var undeadGenes = GeneHelpers.GetActiveGenesByNames(pawn, new List<string>
                 {
                     "VU_Unliving", "VU_Lesser_Unliving_Resilience", "VU_Unliving_Resilience", "BS_RoboticResilienceLesser", "BS_RoboticResilience", "BS_IsUnliving"
                 });
@@ -528,48 +536,9 @@ namespace BigAndSmall
 
                 var alcoholHediff = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.AlcoholHigh);
                 float alcoholLevel = alcoholHediff?.Severity ?? 0;
-
-                bool selfRepairingApparel = activeGenes.Any(x => x.def.defName == "BS_SelfRepairingApparel");
-                bool indestructibleApparel = activeGenes.Any(x => x.def.defName == "BS_IndestructibleApparel");
-                indestructibleApparel |= pawn.health.hediffSet.HasHediff(BSDefs.BS_IndestructibelApparel);
+                alcoholmAmount = alcoholLevel;
 
                 int currentTick = Find.TickManager.TicksGame;
-
-                // Get all armour
-                if (pawn?.apparel?.WornApparel?.Count > 0 && (selfRepairingApparel || indestructibleApparel))
-                {
-                    var wornApparel = pawn.apparel.WornApparel;
-                    foreach (var apparel in wornApparel)
-                    {
-                        bool found = false;
-                        foreach (var apparelCache in apparelCaches.Where(x => x.apparelID == apparel.ThingID))
-                        {
-                            found = true;
-                            if (indestructibleApparel)
-                            {
-                                apparelCache.RepairAllDurability(apparel);
-                            }
-                            else if (selfRepairingApparel)
-                            {
-                                // Repair 24% of the durability every day.
-                                apparelCache.RepairDurability(apparel, currentTick, 0.24f);
-                            }
-                        }
-                        if (!found)
-                        {
-                            apparelCaches.Add(new ApparelCache(apparel));
-                        }
-                    }
-                    // Check if any apparel has been removed, and remove it from the cache if so.
-                    for (int idx = apparelCaches.Count - 1; idx >= 0; idx--)
-                    {
-                        ApparelCache apparelCache = apparelCaches[idx];
-                        if (!wornApparel.Any(x => x.ThingID == apparelCache.apparelID))
-                        {
-                            apparelCaches.RemoveAt(idx);
-                        }
-                    }
-                }
 
 
                 // Set Cache Values
@@ -589,12 +558,14 @@ namespace BigAndSmall
                 attackSpeedUnarmedMultiplier = pawn.GetStatValue(BSDefs.SM_UnarmedAttackSpeed);
 
                 psychicSensitivity = pawn.GetStatValue(StatDefOf.PsychicSensitivity);
-                alcoholmAmount = alcoholLevel;
+                
 
 
                 canWearClothing = !(cannotWearClothing || cannotWearApparel);
                 canWearArmor = !(cannotWearArmor || cannotWearApparel);
                 canWearApparel = !cannotWearApparel;
+
+                isDrone = geneExts.Any(x => x.isDrone);
 
                 injuriesRescaled = false;
 
@@ -623,6 +594,9 @@ namespace BigAndSmall
 
                 bodyRenderSize = GetBodyRenderSize();
                 headRenderSize = GetHeadRenderSize();
+
+                // More stuff should probably be moved here.
+                ScheduleUpdate(1);
             }
             catch
             {
@@ -645,6 +619,111 @@ namespace BigAndSmall
             return true;
         }
 
+        public void ScheduleUpdate(int delayTicks)
+        {
+            int targetTick = Find.TickManager.TicksGame + delayTicks;
+            if (BigAndSmallCache.schedule.ContainsKey(targetTick) == false)
+            {
+                BigAndSmallCache.schedule[targetTick] = new List<BSCache>();
+            }
+
+            BigAndSmallCache.schedule[targetTick].Add(this);
+        }
+
+        /// <summary>
+        /// Stuff that should be run a bit later. Typically 1 tick. This also has the benefit that it will never run more than once per tick.
+        /// 
+        /// Anything that we don't need to figure out RIGHT NOW. Can go here.
+        /// 
+        /// More stuff should probably be moved here. Delaying stuff helps dealing with issues like genes being appended on-by-one.
+        /// </summary>
+        public void DelayedUpdate()
+        {
+            if (pawn == null || pawn.Dead) { return; }
+
+            var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
+            List<GeneExtension> geneExts = activeGenes
+                .Where(x => x?.def?.modExtensions != null && x.def.modExtensions.Any(y => y.GetType() == typeof(GeneExtension)))?
+                .Select(x => x.def.GetModExtension<GeneExtension>()).ToList();
+
+
+            // Traits on pawn
+            var traits = pawn.story?.traits?.allTraits;
+
+            // Hediff Caching
+            var hediffs = pawn.health?.hediffSet.hediffs;
+            if (traits != null)
+            {
+                try
+                {
+                    if (pawn.needs != null && traits.Any(x => !x.Suppressed && x.def.defName == "BS_AlcoholAddict") && !hediffs.Any(x => x.def.defName == "AlcoholAddiction"))
+                    {
+                        // Add Alcohol Addiction.
+                        pawn.health.AddHediff(HediffDef.Named("AlcoholAddiction"));
+                    }
+                }
+                catch
+                {
+                    // Do nothing, just catch the error. This isn't important enough to send an error if it fails.
+                }
+            }
+            if (BSDefs.BS_SoulPower != null)
+            {
+                var soulPower = pawn.GetStatValue(BSDefs.BS_SoulPower);
+                if (soulPower > 0.1 && !pawn.Dead)
+                {
+                    // Check if the pawn has the Soul Power Hediff
+                    if (!hediffs.Any(x => x.def == BSDefs.BS_SoulPowerHediff))
+                    {
+                        pawn.health.AddHediff(BSDefs.BS_SoulPowerHediff);
+                    }
+                }
+            }
+
+            bool selfRepairingApparel = activeGenes.Any(x => x.def.defName == "BS_SelfRepairingApparel");
+            bool indestructibleApparel = activeGenes.Any(x => x.def.defName == "BS_IndestructibleApparel");
+            indestructibleApparel |= pawn.health.hediffSet.HasHediff(BSDefs.BS_IndestructibelApparel);
+
+            int currentTick = Find.TickManager.TicksGame;
+
+            // Get all armour
+            if (pawn?.apparel?.WornApparel?.Count > 0 && (selfRepairingApparel || indestructibleApparel))
+            {
+                var wornApparel = pawn.apparel.WornApparel;
+                foreach (var apparel in wornApparel)
+                {
+                    bool found = false;
+                    foreach (var apparelCache in apparelCaches.Where(x => x.apparelID == apparel.ThingID))
+                    {
+                        found = true;
+                        if (indestructibleApparel)
+                        {
+                            apparelCache.RepairAllDurability(apparel);
+                        }
+                        else if (selfRepairingApparel)
+                        {
+                            // Repair 24% of the durability every day.
+                            apparelCache.RepairDurability(apparel, currentTick, 0.24f);
+                        }
+                    }
+                    if (!found)
+                    {
+                        apparelCaches.Add(new ApparelCache(apparel));
+                    }
+                }
+                // Check if any apparel has been removed, and remove it from the cache if so.
+                for (int idx = apparelCaches.Count - 1; idx >= 0; idx--)
+                {
+                    ApparelCache apparelCache = apparelCaches[idx];
+                    if (!wornApparel.Any(x => x.ThingID == apparelCache.apparelID))
+                    {
+                        apparelCaches.RemoveAt(idx);
+                    }
+                }
+            }
+
+            Metamorphosis.HandleMetamorph(pawn, geneExts);
+        }
 
         public class PercentChange : IExposable
         {

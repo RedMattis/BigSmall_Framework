@@ -82,7 +82,7 @@ namespace BigAndSmall
             //pawn?.genes?.Xenogenes.RemoveAll(gene => !genesToRetain.Contains(gene.def));
 
             // Check for a skin-color gene
-            var activeGenes = Helpers.GetAllActiveGenes(pawn);
+            var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
             var skinColorGenes = activeGenes.Where(gene => gene.def.skinColorBase != null).Select(x => x.def.skinColorBase);
             var skinColorOverrides = activeGenes.Where(gene => gene.def.skinColorOverride != null).Select(x => x.def.skinColorOverride);
 
@@ -102,7 +102,7 @@ namespace BigAndSmall
             foreach (var gene in genesToRemove)
             {
                 // Run method on each gene
-                Helpers.NotifyGenesUpdated(pawn, gene.def);
+                GeneHelpers.NotifyGenesUpdated(pawn, gene.def);
             }
 
             // Get cache
@@ -142,7 +142,7 @@ namespace BigAndSmall
             if (addCorpseGenes)
             {
                 // Add all active genes from the corpse
-                var activeGenes = Helpers.GetAllActiveGenes(corpse?.InnerPawn);
+                var activeGenes = GeneHelpers.GetAllActiveGenes(corpse?.InnerPawn);
                 var genesToPick = activeGenes.Select(gene => gene.def).ToList();
 
                 // Remove all xenogenes except those in genesToRetain

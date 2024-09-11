@@ -28,7 +28,7 @@ namespace BigAndSmall
 
         public BigSmallMod(ModContentPack content) : base(content)
         {
-            settings = GetSettings<BSRettings>();
+            settings ??= GetSettings<BSRettings>();
 
             //// Check if pawnmorhper (tachyonite.pawnmorpherpublic) is active
             //if (ModLister.HasActiveModWithName("Pawnmorpher"))
@@ -65,7 +65,12 @@ namespace BigAndSmall
             listStd.Begin(rect4.AtZero());
             //listStd.TextFieldNumericLabeled("BS_CacheUpdateTickRate".Translate(), ref settings.cacheUpdateFrequency, ref cacheTickTxt, 250, 10000);
             //listStd.CheckboxLabeled("BS_RealtimeUpdate".Translate(), ref settings.realTimeUpdates, 1);
-            listStd.Label("BS_GameMechanics".Translate());
+            listStd.Label("BS_GenesSpecific".Translate().AsTipTitle());
+            listStd.Label("BS_DoDefGeneration".Translate());
+            listStd.CheckboxLabeled("", ref settings.generateDefs, 0);
+            listStd.GapLine();
+
+            listStd.Label("BS_GameMechanics".Translate().AsTipTitle());
             listStd.Label("BS_ScaleAnimals".Translate());
             listStd.CheckboxLabeled("", ref settings.scaleAnimals, 0);
             listStd.GapLine();
@@ -78,11 +83,12 @@ namespace BigAndSmall
             listStd.Label("BS_NutritionBurnExplain".Translate());
             listStd.TextFieldNumericLabeled("BS_HungerMultiplierField".Translate(), ref settings.hungerRate, ref hungerScaleTxt, min: 0.0f, max: 1f);
             listStd.GapLine();
-            listStd.Label("BS_MiscGameMechanics".Translate());
+
+            listStd.Label("BS_MiscGameMechanics".Translate().AsTipTitle());
             listStd.CheckboxLabeled("BS_PatchPlayerFactions", ref settings.patchPlayerFactions, 1);
             listStd.GapLine();
 
-            listStd.Label("BS_Rendering".Translate());
+            listStd.Label("BS_Rendering".Translate().AsTipTitle());
             listStd.CheckboxLabeled("Size offsets pawn", ref settings.offsetBodyPos, 0);
             listStd.CheckboxLabeled("BS_DisabeVFCachine".Translate(), ref settings.disableTextureCaching, 1);
             listStd.Label("BS_ScalePawnDefault".Translate());
@@ -112,6 +118,8 @@ namespace BigAndSmall
 
     public class BSRettings : ModSettings
     {
+        private static readonly bool defaultGenerateDefs = true;
+        public bool generateDefs = defaultGenerateDefs;
 
         private static readonly float defaultVisualLargerMult = 1f;
         public float visualLargerMult = defaultVisualLargerMult;
@@ -154,6 +162,7 @@ namespace BigAndSmall
 
         public override void ExposeData()
         {
+            Scribe_Values.Look(ref generateDefs, "generateDefs", defaultGenerateDefs);
             Scribe_Values.Look(ref visualLargerMult, "visualLargerMult", defaultVisualLargerMult);
             Scribe_Values.Look(ref visualSmallerMult, "visualSmallerMult", defaultVisualSmallerMult);
             Scribe_Values.Look(ref headPowLarge, "headPowLarge", defaultHeadPowLarge);

@@ -154,7 +154,7 @@ namespace BigAndSmall
                         {
 
                             // Set pawn xenotype to the target xenotype
-                            GameUtils.AddAllXenotypeGenes(pawn, def, name: targetPrefix + pawn.genes.XenotypeLabel);
+                            GeneHelpers.AddAllXenotypeGenes(pawn, def, name: targetPrefix + pawn.genes.XenotypeLabel);
                             break;
                         }
                     }

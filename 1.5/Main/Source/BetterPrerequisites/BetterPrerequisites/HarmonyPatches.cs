@@ -3,27 +3,39 @@ using HarmonyLib;
 using RimWorld;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Remoting.Messaging;
-using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using UnityEngine;
 using Verse;
-using Verse.Noise;
-using System.IO;
 
 namespace BetterPrerequisites
 {
+    [HarmonyPatch]
+    public static class BSVanillaPatches
+    {
+        [HarmonyPatch(typeof(LifeStageWorker), nameof(LifeStageWorker.Notify_LifeStageStarted))]
+
+        public static void Post_Notify_LifeStageStarted(Pawn pawn)
+        {
+            if (pawn.genes != null)
+            {
+                List<Gene> genes = pawn.genes.GenesListForReading;
+                foreach (Gene gene in genes.Where(x => x.Active))
+                {
+                    GeneEffectManager.RefreshGeneEffects(gene, true);
+                }
+            }
+            FastAcccess.GetCache(pawn, force: true);
+        }
+    }
+
     [HarmonyPatch(typeof(Hediff), nameof(Hediff.PostAdd))]
     public static class Hediff_PostAdd
     {
         public static void Postfix(Hediff __instance, DamageInfo? dinfo)
         {
-            if (__instance?.pawn?.RaceProps?.Animal == true)
+            var raceProps = __instance?.pawn?.RaceProps;
+            if (raceProps == null || __instance?.pawn?.RaceProps?.Animal == true)
             {
                 return;
             }
@@ -56,7 +68,7 @@ namespace BetterPrerequisites
     {
         public static void Postfix(Pawn __instance)
         {
-            Pawn_PostMapInit.RefreshPawnPGenes(__instance);
+            Pawn_PostMapInit.RefreshPawnGenes(__instance);
         }
     }
 
@@ -66,10 +78,10 @@ namespace BetterPrerequisites
     {
         public static void Postfix(Pawn __instance)
         {
-            RefreshPawnPGenes(__instance);
+            RefreshPawnGenes(__instance);
         }
 
-        public static void RefreshPawnPGenes(Pawn __instance)
+        public static void RefreshPawnGenes(Pawn __instance)
         {
             if (__instance != null)
             {
@@ -87,7 +99,7 @@ namespace BetterPrerequisites
                 }
                 UpdatePawnHairAndHeads(__instance);
 
-                foreach (var gene in Helpers.GetAllActiveGenes(__instance))
+                foreach (var gene in GeneHelpers.GetAllActiveGenes(__instance))
                 {
                     GeneEffectManager.RefreshGeneEffects(gene, activate: true);
                 }
@@ -104,11 +116,11 @@ namespace BetterPrerequisites
             try
             {
                 // Get all active genes
-                var genes = Helpers.GetAllActiveGenes(pawn);
+                var genes = GeneHelpers.GetAllActiveGenes(pawn);
                 if (genes.Count == 0) return;
 
                 // Get style whitelist for hair
-                List<string> hairStyleWhitelist = genes.Where(x => x.def.hairTagFilter != null).Select(x => x.def.hairTagFilter.tags).SelectMany(x => x).ToList();
+                List<string> hairStyleWhitelist = genes.Where(x => x.def.hairTagFilter != null && x.def.hairTagFilter.whitelist).Select(x => x.def.hairTagFilter.tags).SelectMany(x => x).ToList();
 
                 if (hairStyleWhitelist.Count > 0)
                 {
@@ -117,6 +129,13 @@ namespace BetterPrerequisites
                     {
                         // Get all hairdefs that match the whitelist
                         var hairDefs = DefDatabase<HairDef>.AllDefs.Where(x => x.styleTags.Any(st => hairStyleWhitelist.Contains(st))).ToList();
+
+                        // And gene whitelist
+                        hairDefs = hairDefs.Where(x => x.requiredGene == null || genes.Any(g => g.def == x.requiredGene)).ToList();
+
+                        // And required mutants
+                        hairDefs = hairDefs.Where(x => x.requiredMutant == null || pawn?.mutant?.Def == x.requiredMutant).ToList();
+
                         if (hairDefs.Count > 0)
                         {
                             // Get a random hairdef from the whitelist
@@ -174,7 +193,6 @@ namespace BetterPrerequisites
             }
         }
     }
-
 
     [HarmonyPatch(typeof(Hediff), nameof(Hediff.PostRemoved))]
     public static class Hediff_PostRemove
@@ -250,6 +268,8 @@ namespace BetterPrerequisites
         }
     }
 
+
+
     [HarmonyPatch(typeof(Gene), nameof(Gene.PostAdd))]
     public static class Gene_PostAddPatch
     {
@@ -260,7 +280,7 @@ namespace BetterPrerequisites
             {
                 Pawn pawn = __instance.pawn;
                 // Get all other genes
-                var genes = Helpers.GetAllActiveGenes(__instance.pawn);
+                var genes = GeneHelpers.GetAllActiveGenes(__instance.pawn);
 
                 // Check if active. This will trigger the checker for prerequisites.
                 genes.Where(g => g is PGene pGene).Cast<PGene>().ToList().ForEach(pg=>pg.ForceRun = true);
@@ -315,7 +335,7 @@ namespace BetterPrerequisites
                         {
                             // Check so no enabled gene grants the abillity.
                             bool enabled = false;
-                            foreach (var gene2 in Helpers.GetAllActiveGenes(gene.pawn).Where(x => x != gene))
+                            foreach (var gene2 in GeneHelpers.GetAllActiveGenes(gene.pawn).Where(x => x != gene))
                             {
                                 if (gene2 != gene && gene2?.def?.abilities != null && gene2.def.abilities.Contains(abillity))
                                 {
@@ -461,7 +481,7 @@ namespace BetterPrerequisites
                         if (gene.pawn.health.hediffSet.GetFirstHediffOfDefName(item.hediff.defName) != null)
                         {
                             bool found = false;
-                            var otherGenes = Helpers.GetAllActiveGenes(gene.pawn).Where(x => x != gene);
+                            var otherGenes = GeneHelpers.GetAllActiveGenes(gene.pawn).Where(x => x != gene);
                             if (otherGenes.Count() == 0) continue;
                             foreach (var otherGene in otherGenes.Select(x => x.def.GetModExtension<GeneExtension>()).Where(x => x != null))
                             {
@@ -531,7 +551,7 @@ namespace BetterPrerequisites
                             {
                                 // Check all other genes to see if they have the same hediff. If not, remove it.
                                 bool found = false;
-                                foreach (var otherGene in Helpers.GetAllActiveGenes(gene.pawn).Where(x => x != gene).Select(x => x.def.GetModExtension<GeneExtension>()).Where(x => x != null))
+                                foreach (var otherGene in GeneHelpers.GetAllActiveGenes(gene.pawn).Where(x => x != gene).Select(x => x.def.GetModExtension<GeneExtension>()).Where(x => x != null))
                                 {
                                     if (otherGene.applyBodyHediff != null)
                                     {
@@ -602,11 +622,11 @@ namespace BetterPrerequisites
             if (__instance.HasModExtension<ProductionGeneSettings>())
             {
                 var geneExtension = __instance.GetModExtension<ProductionGeneSettings>();
-                StringBuilder stringBuilder = new StringBuilder();
+                StringBuilder stringBuilder = new();
 
                 stringBuilder.AppendLine(__result);
                 stringBuilder.AppendLine();
-                stringBuilder.AppendLine($"An average-sized carrier produces {geneExtension.product.LabelCap} every {geneExtension.frequencyInDays} days.");
+                stringBuilder.AppendLine("BS_ProductionTooltip".Translate(geneExtension.baseAmount, geneExtension.product.LabelCap.AsTipTitle(), geneExtension.frequencyInDays));
 
                 __result = stringBuilder.ToString();
             }
@@ -650,7 +670,7 @@ namespace BetterPrerequisites
                 var suppressExtension = __instance.GetModExtension<GeneSuppressor_Gene>();
                 if (suppressExtension.supressedGenes != null)
                 {
-                    StringBuilder stringBuilder = new StringBuilder();
+                    StringBuilder stringBuilder = new();
                     stringBuilder.AppendLine(__result);
                     stringBuilder.AppendLine();
                     stringBuilder.AppendLine(("BP_GenesSuppressed".Translate() + ":").Colorize(ColoredText.TipSectionTitleColor));
@@ -674,7 +694,7 @@ namespace BetterPrerequisites
             {
                 var geneExt = __instance.GetModExtension<GeneExtension>();
 
-                StringBuilder stringBuilder = new StringBuilder();
+                StringBuilder stringBuilder = new();
                 stringBuilder.AppendLine(__result);
 
                 if (geneExt.conditionals != null)

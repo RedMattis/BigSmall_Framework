@@ -23,4 +23,6 @@
   <BS_HeadExponentSmallExplain>Change head size of small pawns. Smaller Values = Larger Head.</BS_HeadExponentSmallExplain>
   <BS_HeadExponentSmalleField>Head Exponent Smaller (default 0.65) </BS_HeadExponentSmalleField>
   <BS_NormalizeBodyType>Normalize bodytype scale for Hulka and Fat (Recommended).</BS_NormalizeBodyType>
+  <BS_GenesSpecific>Big and Small Genes Settings</BS_GenesSpecific>
+  <BS_DoDefGeneration>Permit generated GeneDefs (Recommended, requires restart)</BS_DoDefGeneration>
 </LanguageData>

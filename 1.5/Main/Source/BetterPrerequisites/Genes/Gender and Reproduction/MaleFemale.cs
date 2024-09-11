@@ -36,6 +36,7 @@ namespace BigAndSmall.SpecialGenes.Gender
         public static void Postfix(ref Pawn ___pawn, GeneDef addedOrRemovedGene)
         {
             bool flag = false;
+            bool forceFemaleShape = ___pawn.genes?.GenesListForReading?.Any(x => x.def == BSDefs.Body_Androgynous) == true;
             if (addedOrRemovedGene == BSDefs.Body_FemaleOnly && ___pawn.gender != Gender.Female)
             {
                 ___pawn.gender = Gender.Female;
@@ -48,7 +49,7 @@ namespace BigAndSmall.SpecialGenes.Gender
             else if (addedOrRemovedGene == BSDefs.Body_MaleOnly && ___pawn.gender != Gender.Male)
             {
                 ___pawn.gender = Gender.Male;
-                if (___pawn.story.bodyType == BodyTypeDefOf.Female)
+                if (___pawn.story.bodyType == BodyTypeDefOf.Female && !forceFemaleShape)
                 {
                     ___pawn.story.bodyType = BodyTypeDefOf.Male;
                 }
@@ -56,7 +57,12 @@ namespace BigAndSmall.SpecialGenes.Gender
             }
             if (flag)
             {
-                if (___pawn.story.headType.gender != 0 && ___pawn.story.headType.gender != ___pawn.gender && !___pawn.story.TryGetRandomHeadFromSet(DefDatabase<HeadTypeDef>.AllDefs.Where((HeadTypeDef x) => x.randomChosen))) //.Where((HeadTypeDef x) => x.randomChosen)
+                Gender gender = ___pawn.gender;
+                if (gender != Gender.Female && forceFemaleShape)
+                {
+                    gender = Gender.Female;
+                }
+                if (___pawn.story.headType.gender != 0 && ___pawn.story.headType.gender != gender && !___pawn.story.TryGetRandomHeadFromSet(DefDatabase<HeadTypeDef>.AllDefs.Where((HeadTypeDef x) => x.randomChosen))) //.Where((HeadTypeDef x) => x.randomChosen)
                 {
                     Log.Warning("Couldn't find an appropriate head after changing pawn gender.");
                 }

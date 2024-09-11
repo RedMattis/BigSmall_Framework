@@ -28,7 +28,7 @@ namespace BetterPrerequisites
         public bool? previouslyActive = null;
         public float lastUpdateTicks = 0f;
         public float lastUpdate = 0f;
-        public bool triggerNalFaceDisable = false;
+        //public bool triggerNalFaceDisable = false;
 
         private bool initialized = false;
         
@@ -66,17 +66,17 @@ namespace BetterPrerequisites
                     pawn.genes.AddGene(geneDef, xenoGene);
                 }
                 // Disable facial animations from Nal's Facial Animation mod
-                try
-                {
-                    if (ModsConfig.IsActive("nals.facialanimation") && geneExt.facialDisabler != null)
-                    {
-                        triggerNalFaceDisable = true;
-                    }
-                }
-                catch (Exception e)
-                {
-                    Log.Message($"Error in PostAdd: {e.Message}");
-                }
+                //try
+                //{
+                //    if (ModsConfig.IsActive("nals.facialanimation") && geneExt.facialDisabler != null)
+                //    {
+                //        triggerNalFaceDisable = true;
+                //    }
+                //}
+                //catch (Exception e)
+                //{
+                //    Log.Message($"Error in PostAdd: {e.Message}");
+                //}
 
                 if (geneExt.conditionals != null)
                 {
@@ -157,8 +157,9 @@ namespace BetterPrerequisites
         public override void Tick()
         {
             base.Tick();
+            int currentTick = Find.TickManager.TicksGame;
             // Every 5000 ticks
-            if (Find.TickManager.TicksGame % 5000 == 0)
+            if (currentTick % 5000 == 0)
             {
                 // Clear saved Hediffs. It is only to be used for the instant when a swap occurs.
                 hediffsToReapply.Clear();
@@ -166,25 +167,44 @@ namespace BetterPrerequisites
                 // Try triggering transform genes if it exists.
                 geneExt?.transformGene?.TryTransform(pawn, this);
             }
-            if (Find.TickManager.TicksGame % 5000 == 5)
+            if (currentTick % 5000 == 5)
             {
                 PostPostAdd();
             }
-            if (Find.TickManager.TicksGame % 100 == 0 && triggerNalFaceDisable)
+
+            if (currentTick % 100 == 0 && pawn.needs != null && Active)
             {
-                try
+                if (geneExt != null && geneExt.lockedNeeds != null)
                 {
-                    if (ModsConfig.IsActive("nals.facialanimation") && geneExt != null && geneExt.facialDisabler != null)
+                    foreach (var lockedNeed in geneExt.lockedNeeds.Where(x=>x.need != null))
                     {
-                        triggerNalFaceDisable = false;
-                        NalFaceExt.DisableFacialAnimations(pawn, geneExt.facialDisabler, revert: false);
+                        float value = lockedNeed.value;
+                        NeedDef needDef = lockedNeed.need;
+
+                        var need = pawn.needs.TryGetNeed(needDef);
+
+                        if (need != null)
+                        {
+                            need.CurLevel = need.MaxLevel * value;
+                        }
                     }
                 }
-                catch (Exception e)
-                {
-                    Log.Message($"Error in Tick: {e.Message}");
-                }
             }
+            //if (Find.TickManager.TicksGame % 100 == 0 && triggerNalFaceDisable)
+            //{
+            //    try
+            //    {
+            //        if (ModsConfig.IsActive("nals.facialanimation") && geneExt != null && geneExt.facialDisabler != null)
+            //        {
+            //            triggerNalFaceDisable = false;
+            //            NalFaceExt.DisableFacialAnimations(pawn, geneExt.facialDisabler, revert: false);
+            //        }
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        Log.Message($"Error in Tick: {e.Message}");
+            //    }
+            //}
         }
 
         public static Dictionary<Pawn, List<Hediff>> hediffsToReapply = new Dictionary<Pawn, List<Hediff>>();
@@ -358,11 +378,11 @@ namespace BetterPrerequisites
                     }
                 }
                 // Find all active genes of type Gene_ChemicalDependency
-                foreach(var chemGene in Helpers.GetAllActiveEndoGenes(pawn).Where(x=>x is Gene_ChemicalDependency).Select(x=> (Gene_ChemicalDependency)x).ToList())
+                foreach(var chemGene in GeneHelpers.GetAllActiveEndoGenes(pawn).Where(x=>x is Gene_ChemicalDependency).Select(x=> (Gene_ChemicalDependency)x).ToList())
                 {
                     RestoreDependencies(chemGene, xenoGene:false);
                 }
-                foreach (var chemGene in Helpers.GetAllActiveXenoGenes(pawn).Where(x => x is Gene_ChemicalDependency).Select(x => (Gene_ChemicalDependency)x).ToList())
+                foreach (var chemGene in GeneHelpers.GetAllActiveXenoGenes(pawn).Where(x => x is Gene_ChemicalDependency).Select(x => (Gene_ChemicalDependency)x).ToList())
                 {
                     RestoreDependencies(chemGene, xenoGene: true);
                 }

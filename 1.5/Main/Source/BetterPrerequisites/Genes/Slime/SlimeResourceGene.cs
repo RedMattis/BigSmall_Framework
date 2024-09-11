@@ -247,7 +247,7 @@ namespace BigAndSmall
         private float GetStartingOffset()
         {
             float currentBonus = 0;
-            foreach (Gene curGene in Helpers.GetAllActiveGenes(pawn))
+            foreach (Gene curGene in GeneHelpers.GetAllActiveGenes(pawn))
             {
                 if (curGene.def.HasModExtension<BS_GeneSlimeProps>())
                 {
@@ -261,7 +261,7 @@ namespace BigAndSmall
         private float GetMaxOffset()
         {
             float increase = 0;
-            foreach (Gene curGene in Helpers.GetAllActiveGenes(pawn))
+            foreach (Gene curGene in GeneHelpers.GetAllActiveGenes(pawn))
             {
                 if (curGene.def.HasModExtension<BS_GeneSlimeProps>())
                 {

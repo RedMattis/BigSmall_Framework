@@ -38,7 +38,7 @@ namespace BigAndSmall
             }
 
             // Check the DeathrestCapacity of the pawn found on the Gene_Deathrest
-            var deathrestGene = Helpers.GetAllActiveGenes(pawn).Where(x => x is Gene_Deathrest);
+            var deathrestGene = GeneHelpers.GetAllActiveGenes(pawn).Where(x => x is Gene_Deathrest);
             int deathRestCap = 0;
             if (deathrestGene.Count() > 0)
             {
@@ -101,7 +101,7 @@ namespace BigAndSmall
             }
 
             // Check the DeathrestCapacity of the pawn found on the Gene_Deathrest
-            deathrestGene = Helpers.GetAllActiveGenes(pawn).Where(x => x is Gene_Deathrest);
+            deathrestGene = GeneHelpers.GetAllActiveGenes(pawn).Where(x => x is Gene_Deathrest);
             if (deathrestGene.Count() > 0)
             {
                 var drGene = (Gene_Deathrest)deathrestGene.First();
@@ -164,7 +164,7 @@ namespace BigAndSmall
                 foreach (var def in DefDatabase<XenotypeDef>.AllDefsListForReading.Where(x => x.defName == "VU_Dracul_HalfVampire"))
                 {
                     // Get all the genes from the xenohuman defs
-                    GameUtils.AddAllXenotypeGenes(pawn, def, "Half-Vampire");
+                    GeneHelpers.AddAllXenotypeGenes(pawn, def, "Half-Vampire");
                     // Set the name of the pawns xenotype to "Half Vampire"
                 }
             }

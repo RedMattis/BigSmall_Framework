@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-
+using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -28,7 +28,7 @@ namespace BigAndSmall
             geneCount = geneCount < 3 ? 3 : geneCount;
 
             // Get Metabolic Efficiency
-            int met = Helpers.GetAllActiveEndoGenes(pawn).Sum(x => x.def.biostatMet);
+            int met = GeneHelpers.GetAllActiveEndoGenes(pawn).Sum(x => x.def.biostatMet);
 
             if (met > 0)
             {
@@ -61,7 +61,7 @@ namespace BigAndSmall
                 }
             }
 
-            Helpers.RemoveRandomToMetabolism(met, newGenes.ToList());
+            GeneHelpers.RemoveRandomToMetabolism(met, newGenes.ToList());
 
             // Remove the previous xenogenes from the pawn
             foreach (var gene in previousGenes)
@@ -96,10 +96,10 @@ namespace BigAndSmall
         public static void IntegrateGenes(Pawn pawn, bool removeOverriden=true)
         {
             var xenogenes = pawn.genes.Xenogenes.ToList();
-
+            xenogenes.RemoveAll(x => AccessTools.Property(x.GetType(), "IsMutation") != null || AccessTools.Property(x.GetType(), "IsEvolution") != null);
             if (removeOverriden)
             {
-                var inactiveGenes = Helpers.GetAllInactiveGenes(pawn);
+                var inactiveGenes = GeneHelpers.GetAllInactiveGenes(pawn);
                 foreach (var gene in inactiveGenes)
                 {
                     pawn.genes.RemoveGene(gene);

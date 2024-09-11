@@ -121,7 +121,7 @@ namespace BigAndSmall
             }
             else if (innerPawn.genes != null)
             {
-                GameUtils.AddAllXenotypeGenes(innerPawn, xenotype, name: "Returned " + innerPawn.genes.XenotypeLabel);
+                GeneHelpers.AddAllXenotypeGenes(innerPawn, xenotype, name: "Returned " + innerPawn.genes.XenotypeLabel);
             }
             GameUtils.UnhealingRessurection(innerPawn);
         }

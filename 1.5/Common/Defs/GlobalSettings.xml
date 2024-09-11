@@ -1,0 +1,51 @@
+<Defs>
+  <BigAndSmall.GeneAutoPatcherSettings>
+    <defName>BS_ProductionGenes</defName>
+    <targetModID>RedMattis.</targetModID>
+    <targetGeneType>Verse.GeneDef</targetGeneType>
+    <targetModExtension>BigAndSmall.ProductionGeneSettings</targetModExtension>
+    <backgroundPathEndogenes>GeneIcons/BS_BackEndogene_Production</backgroundPathEndogenes>
+    <backgroundPathXenogenes>GeneIcons/BS_BackXenogene_Production</backgroundPathXenogenes>
+    <backgroundPathArchite>GeneIcons/BS_BackArchite_1</backgroundPathArchite>
+  </BigAndSmall.GeneAutoPatcherSettings>
+
+  <BigAndSmall.GeneAutoPatcherSettings>
+    <defName>BS_StandardGenes</defName>
+    <targetModID>RedMattis.</targetModID>
+    <targetGeneType>Verse.GeneDef</targetGeneType>
+    <backgroundPathEndogenes>GeneIcons/BS_BackEndogene</backgroundPathEndogenes>
+    <backgroundPathXenogenes>GeneIcons/BS_BackXenogene</backgroundPathXenogenes>
+    <backgroundPathArchite>GeneIcons/BS_BackArchite_1</backgroundPathArchite>
+  </BigAndSmall.GeneAutoPatcherSettings>
+
+  <BigAndSmall.GeneAutoPatcherSettings>
+    <defName>BS_AndroidGenes</defName>
+    <targetModID>RedMattis.</targetModID>
+    <targetGeneType>VREAndroids.AndroidGeneDef</targetGeneType>
+    <backgroundPathXenogenes>GeneIcons/BS_BackAndroidChip</backgroundPathXenogenes>
+    <backgroundPathEndogenes>GeneIcons/BS_BackAndroidChip</backgroundPathEndogenes>
+  </BigAndSmall.GeneAutoPatcherSettings>
+
+  <BigAndSmall.GlobalSettings>
+    <defName>BS_GlobalSettings</defName>
+
+    <alienGeneGroups>
+      <li> <!--Bug Heads-->
+        <li>Exoskin</li>
+        <li>Insectoid_body</li>
+        <li>BP_BeeHead</li>
+      </li>
+      <li>
+        <li>LoS_MarlithBody</li>
+        <li>LoS_Snake_Tail</li>
+        <li>LoS_Snake_Tail_HairClr</li>
+      </li>
+      <li>
+        <li>BS_SpiderBody_Synthread</li>
+        <li>BS_SpiderBody_Devil</li>
+        <li>BP_Spiderlegs</li>
+      </li>
+    </alienGeneGroups>
+
+  </BigAndSmall.GlobalSettings>
+</Defs>

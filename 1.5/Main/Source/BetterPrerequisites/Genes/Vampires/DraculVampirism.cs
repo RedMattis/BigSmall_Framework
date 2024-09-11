@@ -18,7 +18,7 @@ namespace BigAndSmall
         
         public static (int stage, Gene draculGene) TryGetDraculStage(Pawn pawn)
         {
-            var draculGene = Helpers.GetAllActiveGenes(pawn).Where(x => x.def.HasModExtension<DraculStageExtension>());
+            var draculGene = GeneHelpers.GetAllActiveGenes(pawn).Where(x => x.def.HasModExtension<DraculStageExtension>());
             if (draculGene.Count() == 1)
             {
                 try

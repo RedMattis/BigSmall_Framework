@@ -76,24 +76,9 @@ namespace BigAndSmall
             //}
         }
 
-        public static void AddAllXenotypeGenes(Pawn pawn, XenotypeDef def, string name=null, bool xenogene=false)
-        {
-            foreach (var xenotypeGene in def.genes)
-            {
-                // Check if the pawn has the gene already
-                if (pawn.genes.GenesListForReading.Any(x => x.def.defName == xenotypeGene.defName) == false)
-                {
-                    // If not, add the gene to the pawn
-                    pawn.genes.AddGene(xenotypeGene, xenogene: xenogene);
-                }
-                if (name != null)
-                    pawn.genes.xenotypeName = name;
-            }
-        }
-
         public static FoodKind GetDiet(Pawn pawn)
         {
-            var dietGenes = Helpers.GetActiveGenesByNames(pawn, new List<string> { "BS_Diet_Carnivore", "BS_Diet_Herbivore" });
+            var dietGenes = GeneHelpers.GetActiveGenesByNames(pawn, new List<string> { "BS_Diet_Carnivore", "BS_Diet_Herbivore" });
 
             foreach (var gene in dietGenes)
             {
@@ -106,7 +91,7 @@ namespace BigAndSmall
         }
     }
 
-    public static partial class Helpers
+    public static partial class GeneHelpers
     {
         public static bool ApproximatelyEquals(this float f1, float f2, float tolerance = 0.01f)
         {

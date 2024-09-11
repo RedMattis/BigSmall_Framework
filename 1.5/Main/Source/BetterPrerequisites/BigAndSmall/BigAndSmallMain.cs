@@ -34,7 +34,16 @@ namespace BigAndSmall
 
         public static Dictionary<Pawn, BSCache> BSCache = null;
 
-        public static bool BSGenesActive = false;
+        private static bool? _BSGenesActive = null;
+        public static bool BSGenesActive
+        {
+            get
+            {
+                // This is the prefered way to check, because otherwise we might fail simply because the mod hasn't loaded yet.
+                _BSGenesActive ??= ModsConfig.ActiveModsInLoadOrder.Any(x => x.PackageIdPlayerFacing == "RedMattis.BigSmall.Core");
+                return _BSGenesActive.Value;
+            }
+        }
 
         /// <summary>
         /// So we can query the BodySize from before our changes. You'll get infinite recursion without this btw. :3
@@ -51,8 +60,6 @@ namespace BigAndSmall
             CachedMeshes = new Dictionary<float, Mesh>();
             CachedInvertedMeshes = new Dictionary<float, Mesh>();
             BSCache = new Dictionary<Pawn, BSCache>();
-
-            BSGenesActive = ModLister.HasActiveModWithName("RedMattis.BigSmall.Core");
         }
 
         public static Mesh GetPawnMesh(float size, bool inverted)

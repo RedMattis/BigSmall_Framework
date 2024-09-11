@@ -623,7 +623,7 @@ namespace BigAndSmall
                 {
                     attacker.needs.mood.thoughts.memories.TryGainMemory(thought_Memory);
                 }
-                foreach(var gene in Helpers.GetAllActiveGenes(attacker))
+                foreach(var gene in GeneHelpers.GetAllActiveGenes(attacker))
                 {
                     gene.Notify_IngestedThing(target, 1);
                 }

@@ -16,7 +16,7 @@ namespace BigAndSmall
     {
         public static void Postfix(Pawn biter, Pawn victim, float targetHemogenGain, float nutritionGain, float targetBloodLoss, float victimResistanceGain, IntRange bloodFilthToSpawnRange, ThoughtDef thoughtDefToGiveTarget = null, ThoughtDef opinionThoughtToGiveTarget = null)
         {
-            var biterGenes = Helpers.GetAllActiveEndoGenes(biter);
+            var biterGenes = GeneHelpers.GetAllActiveEndoGenes(biter);
 
             // Check if biters has white rose bite
             var whiteRoseBite = biterGenes.Any(x => x.def.defName == "VU_WhiteRoseBite");

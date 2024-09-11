@@ -252,7 +252,7 @@ namespace BigAndSmall
             // Sum up the metabolism cost of the new genes
             while (pawn.genes.GenesListForReading.Where(x => !x.Overridden).Sum(x => x.def.biostatMet) < limit || idx > 100)
             {
-                if (xGenes.Count == 1)
+                if (xGenes.Count == 0)
                     break;
                 // Pick a random gene from the newGenes with a negative metabolism cost and remove it.
                 var geneToRemove = xGenes.Where(x => x.def.biostatMet <= 1).RandomElement();
@@ -267,6 +267,11 @@ namespace BigAndSmall
                 }
                 idx++;  // Ensure we don't get stuck in an infinite loop no matter what.
             }
+            if (removed)
+            {
+                Messages.Message($"BS_GenesRemovedByOverLimit".Translate(pawn.Name.ToStringShort, idx, limit), pawn, MessageTypeDefOf.NegativeHealthEvent);
+            }
+            
             return removed;
         }
     }

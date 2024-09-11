@@ -27,6 +27,30 @@ namespace BigAndSmall
     }
 
     /// <summary>
+    /// Used to make Rimworld's attack picker think the attack deals 50% more damage than it actually does.
+    /// </summary>
+    public class DamageWorker_TwoThirdsDamage : DamageWorker_AddInjury
+    {
+        public override DamageResult Apply(DamageInfo dinfo, Thing thing)
+        {
+            dinfo.SetAmount(dinfo.Amount * 0.66f);
+            return base.Apply(dinfo, thing);
+        }
+    }
+
+    /// <summary>
+    /// Used to make Rimworld's attack picker think the attack deals 100% more damage than it actually does.
+    /// </summary>
+    public class DamageWorker_HalfDamage : DamageWorker_AddInjury
+    {
+        public override DamageResult Apply(DamageInfo dinfo, Thing thing)
+        {
+            dinfo.SetAmount(dinfo.Amount * 0.5f);
+            return base.Apply(dinfo, thing);
+        }
+    }
+
+    /// <summary>
     /// Basically this Damageworker deals only half as much damage and attacks only the outer body parts.
     /// </summary>
     public class DamageWorker_OuterAndHalfDamage : DamageWorker_AddInjury

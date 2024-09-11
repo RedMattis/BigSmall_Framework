@@ -105,6 +105,7 @@
 			<value>
 				<li>BS_PlayerTribeXenoPlus</li>
 				<li>BS_PlayerColonyXenoPlus</li>
+				<li MayRequire="RedMattis.BigSmall.Bugs">BS_XenoInsectoidHiveStart</li>
 			</value>
 		</match>
 	</Operation>

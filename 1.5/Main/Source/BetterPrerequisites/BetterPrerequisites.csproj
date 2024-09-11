@@ -2,6 +2,18 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <!--<LangVersion>preview</LangVersion>-->
+    <!--<LangVersion>7.3</LangVersion>-->
+  </PropertyGroup>
+  <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{F0272DF1-D703-495D-8F95-48D6BAB3A0B9}</ProjectGuid>
@@ -63,47 +75,53 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abillities\MeleeAttackAbility.cs" />
+    <Compile Include="BetterPrerequisites\ModExtensions\XenotypeExtension.cs" />
     <Compile Include="BetterPrerequisites\GeneGraphics.cs" />
     <Compile Include="BetterPrerequisites\PawnRenderingCache.cs" />
     <Compile Include="BetterPrerequisites\TransformHediff.cs" />
-    <Compile Include="BigAndSmall\AI\AICombat.cs" />
-    <Compile Include="BigAndSmall\AI\Lovin.cs" />
-    <Compile Include="BigAndSmall\AI\Romance.cs" />
-    <Compile Include="BigAndSmall\Balancing\AttackCooldown.cs" />
-    <Compile Include="BigAndSmall\Balancing\BiotechExpansion_Patches\PawnProduction.cs" />
-    <Compile Include="BigAndSmall\Balancing\DamageScaling.cs" />
-    <Compile Include="BigAndSmall\Balancing\Factions.cs" />
-    <Compile Include="BigAndSmall\Balancing\FoodNeedPatch.cs" />
-    <Compile Include="BigAndSmall\Buildings\Beds.cs" />
+    <Compile Include="AI\AICombat.cs" />
+    <Compile Include="Social\AlienApperance.cs" />
+    <Compile Include="Social\Death.cs" />
+    <Compile Include="Social\Lovin.cs" />
+    <Compile Include="Social\Romance.cs" />
+    <Compile Include="Balancing\AttackCooldown.cs" />
+    <Compile Include="ModPatches\BiotechExpansion_Patches\PawnProduction.cs" />
+    <Compile Include="Balancing\DamageScaling.cs" />
+    <Compile Include="Balancing\Factions.cs" />
+    <Compile Include="Balancing\FoodNeedPatch.cs" />
     <Compile Include="BigAndSmall\Cache.cs" />
-    <Compile Include="BigAndSmall\Compatibility\Zombieland.cs" />
-    <Compile Include="BigAndSmall\CompRemover.cs" />
-    <Compile Include="BigAndSmall\ConditionalStatAffecters\ConditionalStatAffectors.cs" />
+    <Compile Include="Compatibility\Zombieland.cs" />
+    <Compile Include="Misc\CompRemover.cs" />
+    <Compile Include="ConditionalStatAffecters\ConditionalStatAffectors.cs" />
     <Compile Include="BigAndSmall\FastAcccess.cs" />
-    <Compile Include="BigAndSmall\GeneHelpers.cs" />
+    <Compile Include="Genes\GeneDefPatcher.cs" />
+    <Compile Include="Genes\GeneHelpers.cs" />
     <Compile Include="BigAndSmall\HumanoidPawnScaler.cs" />
-    <Compile Include="BigAndSmall\Misc\Gibblets.cs" />
-    <Compile Include="BigAndSmall\OnKill.cs" />
-    <Compile Include="BigAndSmall\PawnGeneration\PawnGroupMaker.cs" />
-    <Compile Include="BigAndSmall\PlayerFactionPatcher.cs" />
-    <Compile Include="BigAndSmall\Quests\QuestPawnGenerator.cs" />
-    <Compile Include="BigAndSmall\Quests\Raid.cs" />
-    <Compile Include="BigAndSmall\Rendering\RenderHats.cs" />
+    <Compile Include="Misc\Gibblets.cs" />
+    <Compile Include="Misc\OnKill.cs" />
+    <Compile Include="PawnGeneration\PawnGroupMaker.cs" />
+    <Compile Include="Factions\PlayerFactionPatcher.cs" />
+    <Compile Include="Quests\QuestPawnGenerator.cs" />
+    <Compile Include="Quests\Raid.cs" />
+    <Compile Include="BigAndSmall\Rendering\GraphicsFor.cs" />
     <Compile Include="BigAndSmall\Rendering\TextureCaching.cs" />
-    <Compile Include="BigAndSmall\Tattoos\TattooGenePatch.cs" />
     <Compile Include="Damage Workers\DevourerAttack.cs" />
     <Compile Include="Damage Workers\ReducedDamageAttack.cs" />
-    <Compile Include="Defs.cs" />
+    <Compile Include="DefOfs.cs" />
     <Compile Include="Genes\AnimalFriendGene.cs" />
     <Compile Include="Abillities\SprayLiquid.cs" />
     <Compile Include="Genes\CanEquip.cs" />
     <Compile Include="Genes\Diet\DietGenes.cs" />
     <Compile Include="Genes\ForcedUnarmed.cs" />
+    <Compile Include="Genes\Gender and Reproduction\Birth.cs" />
     <Compile Include="Genes\GeneStealing\GeneEater.cs" />
     <Compile Include="Genes\GeneStealing\IncorporateAbillity.cs" />
     <Compile Include="Genes\Gender and Reproduction\Pregnancy.cs" />
     <Compile Include="Genes\GeneStealing\MimicAbility.cs" />
+    <Compile Include="Genes\GeneTemplate.cs" />
+    <Compile Include="Genes\GeneUIMethods.cs" />
     <Compile Include="Genes\Lamia\PetrifiedPawn.cs" />
+    <Compile Include="Genes\Metamorphosis\Metamorphosis.cs" />
     <Compile Include="Genes\Production\ProductionGene.cs" />
     <Compile Include="Genes\Slime\SlimeEngufAttack.cs" />
     <Compile Include="Genes\Slime\SlimeEngulfComp.cs" />
@@ -123,19 +141,20 @@
     <Compile Include="Hediffs\ReturningHediff.cs" />
     <Compile Include="Hediffs\SuccubusBondVictim.cs" />
     <Compile Include="Hediffs\TemperatureGenerator.cs" />
-    <Compile Include="ModsCompat\NalsAnim\DisableNalFacialFeatures.cs" />
+    <Compile Include="ModPatches\NalsAnim\DisableNalFacialFeatures.cs" />
+    <Compile Include="ModPatches\VanillaExpanded\VEModExtension.cs" />
     <Compile Include="RenderNodes\Fur.cs" />
     <Compile Include="RenderNodes\Offsets.cs" />
     <Compile Include="Traits\Gentle.cs" />
     <Compile Include="Traits\GiantTrait.cs" />
-    <Compile Include="BigAndSmall\Balancing\MechanicalChanges.cs" />
-    <Compile Include="BigAndSmall\Balancing\Pawn_BodySize.cs" />
-    <Compile Include="BigAndSmall\Balancing\skill_learning.cs" />
-    <Compile Include="BigAndSmall\Balancing\VEF_Patches\PawnProduction.cs" />
+    <Compile Include="Balancing\MechanicalChanges.cs" />
+    <Compile Include="Balancing\Pawn_BodySize.cs" />
+    <Compile Include="Balancing\skill_learning.cs" />
+    <Compile Include="ModPatches\VEF_Patches\PawnProduction.cs" />
     <Compile Include="BigAndSmall\BigAndSmallMain.cs" />
-    <Compile Include="BigAndSmall\Compatibility\RooMinotaur.cs" />
-    <Compile Include="BigAndSmall\Compatibility\SoS_Patches.cs" />
-    <Compile Include="BigAndSmall\Compatibility\Universum_Patches.cs" />
+    <Compile Include="Compatibility\RooMinotaur.cs" />
+    <Compile Include="Compatibility\SoS_Patches.cs" />
+    <Compile Include="Compatibility\Universum_Patches.cs" />
     <Compile Include="Hediffs\DraculVampirism.cs" />
     <Compile Include="Hediffs\TransitioningHediff.cs" />
     <Compile Include="Hediffs\SizeRays.cs" />
@@ -143,7 +162,7 @@
     <Compile Include="Items\Discombobulator.cs" />
     <Compile Include="Items\Reanimator.cs" />
     <Compile Include="Items\StatusBullet.cs" />
-    <Compile Include="BigAndSmall\Misc\MiscPatches.cs" />
+    <Compile Include="Misc\MiscPatches.cs" />
     <Compile Include="Genes\Gender and Reproduction\Androgynous.cs" />
     <Compile Include="Genes\Gender and Reproduction\Genderbender.cs" />
     <Compile Include="Genes\Gender and Reproduction\MaleFemale.cs" />
@@ -164,7 +183,7 @@
     <Compile Include="BetterPrerequisites\CondtionalAffectors.cs" />
     <Compile Include="Genes\SpecialGenes\LockedNeedGene.cs" />
     <Compile Include="BetterPrerequisites\PrerequisiteGene.cs" />
-    <Compile Include="BetterPrerequisites\Extensions\GeneExtension.cs" />
+    <Compile Include="BetterPrerequisites\ModExtensions\GeneExtension.cs" />
     <Compile Include="BetterPrerequisites\GeneSupresser.cs" />
     <Compile Include="BetterPrerequisites\HarmonyPatches.cs" />
     <Compile Include="BetterPrerequisites\GeneHelpers.cs" />
@@ -173,7 +192,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="BigAndSmall\Crafting\" />
+    <Folder Include="Buildings\" />
     <Folder Include="Genes\GeneSharing\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

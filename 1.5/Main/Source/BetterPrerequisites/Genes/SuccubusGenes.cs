@@ -16,7 +16,7 @@ namespace BigAndSmall
         public static void Prefix(Gene_PsychicBonding __instance, ref Pawn ___bondedPawn)
         {
             // add a print on every other line
-            if (Helpers.GetActiveGenesByName(__instance.pawn, "VU_LethalLover").Count > 0)
+            if (GeneHelpers.GetActiveGenesByName(__instance.pawn, "VU_LethalLover").Count > 0)
             {
                 //__instance.pawn.needs?.mood?.thoughts?.memories?.TryGainMemory(ThoughtDefOf.PsychicBondTorn, ___bondednPawn);
                 ___bondedPawn?.needs?.mood?.thoughts?.memories?.TryGainMemory(ThoughtDefOf.PsychicBondTorn, __instance.pawn);
@@ -71,7 +71,7 @@ namespace BigAndSmall
     {
         public static void Postfix(Gene_PsychicBonding __instance, ref Pawn ___bondedPawn)
         {
-            if (Helpers.GetActiveGenesByName(__instance.pawn, "VU_LethalLover").Count > 0)
+            if (GeneHelpers.GetActiveGenesByName(__instance.pawn, "VU_LethalLover").Count > 0)
             {
                 if (___bondedPawn != null)
                 {
@@ -92,7 +92,7 @@ namespace BigAndSmall
         public static void Postfix(Hediff __instance)
         {
             if (__instance?.def?.defName == "VRE_PsychicBondBloodlust" && __instance.pawn?.health != null
-                && Helpers.GetAllActiveGenes(__instance.pawn).Any(x=>x.def.defName == "VU_LethalLover"))
+                && GeneHelpers.GetAllActiveGenes(__instance.pawn).Any(x=>x.def.defName == "VU_LethalLover"))
             {
                 try
                 {
