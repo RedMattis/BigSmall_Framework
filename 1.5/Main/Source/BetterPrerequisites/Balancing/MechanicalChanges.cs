@@ -8,6 +8,8 @@ using Verse.Noise;
 using Verse;
 using RimWorld;
 using UnityEngine;
+using System.Reflection.Emit;
+using System.Reflection;
 
 namespace BigAndSmall
 {
@@ -18,15 +20,13 @@ namespace BigAndSmall
     {
         public static void Postfix(ref float __result, Pawn __instance)
         {
-            //try
-            //{
             var sizeCache = HumanoidPawnScaler.GetBSDict(__instance);
             if (sizeCache != null)
             {
-                float newScale = __result * CalculateHealthMultiplier(sizeCache.scaleMultiplier);
+                float newScale = __result * sizeCache.healthMultiplier;
                 if (sizeCache.previousScaleMultiplier != null)
                 {
-                    float oldscale = __result * CalculateHealthMultiplier(sizeCache.previousScaleMultiplier);
+                    float oldscale = __result * sizeCache.healthMultiplier_previous;
                     if (sizeCache.injuriesRescaled == false && newScale.ApproximatelyEquals(oldscale) == false)
                     {
                         // Check time since loading scene. We don't want to rescale injuries when loading a save.
@@ -63,13 +63,6 @@ namespace BigAndSmall
                 }
                 __result = newScale;
             }
-            //}
-            //catch (Exception e)
-            //{
-            //    Log.Error($"Error in HealthScale Postfix: {e}\n\nThe error was captured." +
-            //        $"If this happened during world-generation it is probably okay. Some doomstacks of mods sometimes error here during world gen." +
-            //        $"\nProgramState is {Current.ProgramState}");
-            //}
 
         }
 
@@ -78,17 +71,7 @@ namespace BigAndSmall
         /// </summary>
         /// <param name="scalMult"></param>
         /// <returns></returns>
-        private static float CalculateHealthMultiplier(BSCache.PercentChange scalMult)
-        {
-            float quad = scalMult.quadratic;
-            float roughylLinear = scalMult.linear;
-            if (roughylLinear > 1)
-            {
-                roughylLinear = (scalMult.linear - 1) * 0.8f + 1; // Nerf scaling a bit, large pawns are tanky enough already.
-            }
-            if (roughylLinear > quad) { quad = roughylLinear; } // Make sure small creatures don't get absolutely unreasonably low health.
-            return Mathf.Lerp(roughylLinear, quad, 0.55f);
-        }
+        
     }
 
     [HarmonyPatch(typeof(Need_Food), nameof(Need_Food.FoodFallPerTickAssumingCategory))]
@@ -115,50 +98,9 @@ namespace BigAndSmall
         public static void Postfix(ref float __result, Pawn ___pawn, float __state)
         {
             ___pawn.def.race.baseHungerRate = __state;
-
-            //if (BigSmall.performScaleCalculations
-            //    && ___pawn.needs != null
-            //    && BigSmall.humnoidScaler != null
-            //    && BigSmall.___pawn.DevelopmentalStage > DevelopmentalStage.Baby)
-            //{
-            //    var sizeCache = HumanoidPawnScaler.GetPawnBSDict(___pawn);
-            //    if (sizeCache != null)
-            //        __result *= Mathf.Max(sizeCache.scaleMultiplier.quadratic, sizeCache.scaleMultiplier.linear);
-            //}
-            //else
-            //{
-            //    Log.Warning($"No hunger calculations could be done for Pawn.");
-            //}
         }
     }
 
-    //[HarmonyPatch(typeof(RaceProperties), nameof(RaceProperties.NutritionEatenPerDayExplanation))]
-    //public static class RaceProperties_NutritionEatenPerDayExplanation
-    //{
-    //    public static void Prefix(ref Pawn p, out float __state)
-    //    {
-    //        __state = p.def.race.baseHungerRate;
-    //        if (
-    //            BigSmall.performScaleCalculations
-    //            && p.needs != null
-    //            && BigSmall.humnoidScaler != null
-    //            && p.DevelopmentalStage > DevelopmentalStage.Baby)
-    //        {
-    //            var sizeCache = HumanoidPawnScaler.GetPawnBSDict(p);
-    //            if (sizeCache != null)
-    //                p.def.race.baseHungerRate = __state * Mathf.Max(sizeCache.scaleMultiplier.linear, 0.2f);
-    //            else
-    //            {
-    //                Log.Warning("Failed to set NutritionEatenPerDayExplanation");
-    //            }
-    //        }
-    //    }
-
-    //    public static void Postfix(Pawn p, float __state)
-    //    {
-    //        p.def.race.baseHungerRate = __state;
-    //    }
-    //}
 
 
     [HarmonyPatch(typeof(Verb_MeleeAttack), "GetDodgeChance")]
@@ -174,45 +116,5 @@ namespace BigAndSmall
             }
         }
     }
-
-
-
-
-    //// AdjustedArmorPenetration
-
-    //[HarmonyPatch(typeof(VerbProperties), nameof(VerbProperties.AdjustedArmorPenetration), new Type[]
-    //    {
-    //    typeof(Tool),
-    //    typeof(Pawn),
-    //    typeof(HediffComp_VerbGiver)
-    //    })
-    //]
-    //public static class VerbProperties_AdjustedArmorPenetration_Patch
-    //{
-    //    public static void Postfix(ref float __result, Pawn attacker, VerbProperties __instance)
-    //    {
-    //        if (BigSmall.performScaleCalculations &&
-    //            __instance.IsMeleeAttack && attacker != null
-    //            && BigSmall.humnoidScaler != null)
-    //        {
-    //            float armorPenAdjustment = BigSmall.humnoidScaler.GetSizeChangeMultiplier(HumanoidPawnScaler.SizeChangeType.Linear, attacker) - 1;
-    //            float extraArmorPen = 20 * armorPenAdjustment;
-
-    //            if (extraArmorPen > 0)
-    //            {
-    //                // Make giants a bit less prone to instant-killing.
-    //                armorPenAdjustment = Mathf.Pow(armorPenAdjustment, 0.50f);
-    //                Log.Message($"DEBUG: Armor Pen is {armorPenAdjustment}");
-    //            }
-    //            else
-    //            {
-    //                armorPenAdjustment = 0;
-    //            };
-
-    //            // Mostly for balance reasons, too much instant-death otherwise.
-    //            __result += armorPenAdjustment;
-    //        }
-    //    }
-    //}
 
 }

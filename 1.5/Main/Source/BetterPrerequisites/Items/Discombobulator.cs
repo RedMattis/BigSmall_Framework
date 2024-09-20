@@ -30,13 +30,13 @@ namespace BigAndSmall
             // Get Metabolic Efficiency
             int met = GeneHelpers.GetAllActiveEndoGenes(pawn).Sum(x => x.def.biostatMet);
 
-            if (met > 0)
+            if (met >= 0)
             {
-                geneCount += Rand.Range(0, 4);
+                geneCount += Rand.Range(0, 5);
             }
             else
             {
-                geneCount += Rand.Range(-2, 4);
+                geneCount += Rand.Range(-2, 5);
             }
 
             // Pick a number of new genes equal to the count.
@@ -136,17 +136,32 @@ namespace BigAndSmall
             }
         }
 
-        public static void CreateXenogerm(Pawn pawn, bool archite=false)
+        public static void CreateXenogerm(Pawn pawn, bool archite=false, string type="xeno")
         {
             // spawn a xenogerm item containing a list of genes of thingClass Xenogerm
             Xenogerm xenogerm = (Xenogerm)ThingMaker.MakeThing(ThingDefOf.Xenogerm);
             xenogerm.Initialize(new List<Genepack>(), pawn.genes.xenotypeName, pawn.genes.iconDef);
 
             // Get pawn's xenogenes
-            var xenogenes = pawn.genes.Xenogenes.ToList();
+            List<Gene> targetGenes;
+            if (type == "endo")
+            {
+                targetGenes = pawn.genes.Endogenes.ToList();
+            }
+            else if (type == "all")
+            {
+                targetGenes = GeneHelpers.GetAllActiveGenes(pawn).ToList();
+
+                // Filter genes from "weird" sources, e.g. Insector.
+                targetGenes = targetGenes.Where(x => pawn.genes.Xenogenes.Contains(x) && !pawn.genes.Endogenes.Contains(x)).ToList();
+            }
+            else
+            {
+                targetGenes = pawn.genes.Xenogenes.ToList();
+            }
 
             // Add the xenogenes to the xenogerm
-            foreach (var gene in xenogenes)
+            foreach (var gene in targetGenes)
             {
 
                 if (!archite && gene.def.biostatArc > 0)
@@ -157,8 +172,12 @@ namespace BigAndSmall
                 xenogerm.GeneSet.AddGene(gene.def);
             }
 
-            //xenogerm.xenotypeName = pawn.genes.xenotypeName;
-            //xenogerm.iconDef = pawn.genes.iconDef;
+            try
+            {
+                xenogerm.GeneSet.SetNameDirect(pawn.genes.xenotypeName);
+            }
+            catch { } // This isn't important, so whatever if it fails.
+            
             GenPlace.TryPlaceThing(xenogerm, pawn.Position, pawn.Map, ThingPlaceMode.Near);
         }
     }

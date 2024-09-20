@@ -88,7 +88,7 @@ namespace BigAndSmall
             yield return Toils_Goto.GotoThing(TargetIndex.B, PathEndMode.Touch).FailOnDespawnedOrNull(TargetIndex.B).FailOnDespawnedOrNull(TargetIndex.A);
             yield return Toils_Haul.StartCarryThing(TargetIndex.B);
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch).FailOnDespawnedOrNull(TargetIndex.A);
-            Toil toil = Toils_General.Wait(600);
+            Toil toil = Toils_General.WaitWith(TargetIndex.A, 600, useProgressBar: true);
             toil.WithProgressBarToilDelay(TargetIndex.A);
             toil.FailOnDespawnedOrNull(TargetIndex.A);
             toil.FailOnCannotTouch(TargetIndex.A, PathEndMode.Touch);
@@ -133,9 +133,17 @@ namespace BigAndSmall
                     {
                         Discombobulator.CreateXenogerm(Pawn);
                     }
+                    else if (props.specialEffect == "CreateXenogermFromEndogenes" && Pawn?.RaceProps?.Humanlike == true)
+                    {
+                        Discombobulator.CreateXenogerm(Pawn, type:"endo");
+                    }
                     else if (props.specialEffect == "CreateArchiteXenogerm" && Pawn?.RaceProps?.Humanlike == true)
                     {
                         Discombobulator.CreateXenogerm(Pawn, archite:true);
+                    }
+                    else if (props.specialEffect == "CreateArchiteXenogermEndo" && Pawn?.RaceProps?.Humanlike == true)
+                    {
+                        Discombobulator.CreateXenogerm(Pawn, archite: true, type:"all");
                     }
                     else if (props.specialEffect == "AddSoulPower")
                     {

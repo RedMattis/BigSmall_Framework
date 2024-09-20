@@ -47,13 +47,17 @@ namespace BetterPrerequisites
         public float bodyPosOffset = 0f;
         public float headPosMultiplier = 0f;
         public bool preventDisfigurement = false;
-        public bool unarmedOnly = false;
         public bool canWalkOnCreep = false;
+
+        public float pregnancySpeedMultiplier = 1;
+
+        public bool forceUnarmed = false;
 
         public bool hideBody = false;
         public bool hideHead = false;
 
-        public bool hideInXenotypeUI = false;
+        public bool hideInGenePicker = false;
+        public bool hideInXenotypeUI = false; // Obsolete. Remove this later. Just here for a bit while I update the defs.
 
         public ConsumeSoul consumeSoulOnHit = null;
 
@@ -76,6 +80,10 @@ namespace BetterPrerequisites
         public FacialAnimDisabler facialDisabler = null;
 
         public bool disableFacialAnimations = false;
+
+        #region Obsolete
+        public bool unarmedOnly = false;    // Still plugged in, but the name was kind of bad. Use forceUnarmed instead.
+        #endregion
 
         public float GetSizeFromSizeByAge(float? age)
         {

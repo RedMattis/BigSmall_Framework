@@ -73,17 +73,20 @@ namespace BigAndSmall
             {
 
                 var femaleXenos = defs.Where(x => x.genes.Any(x => x == BSDefs.Body_FemaleOnly || x.defName == "AG_Female") ||
-                    (x.modExtensions?.Any(mx => mx is XenotypeExtension ex && ex.morphIgnoreGender)) == true);
+                    (x.modExtensions?.Any(mx => mx is XenotypeExtension ex && ex.morphIgnoreGender)) == true).ToList();
                 var maleXenos = defs.Where(x => x.genes.Any(x => x == BSDefs.Body_MaleOnly || x.defName == "AG_Male") ||
-                    (x.modExtensions?.Any(mx => mx is XenotypeExtension ex && ex.morphIgnoreGender)) == true);
+                    (x.modExtensions?.Any(mx => mx is XenotypeExtension ex && ex.morphIgnoreGender)) == true).ToList();
 
-                if (gender == Gender.Female && femaleXenos.Count() > 0)
+                var femaleLegal = defs.Except(maleXenos);
+                var maleLegal = defs.Except(femaleXenos);
+
+                if (gender == Gender.Female && femaleLegal.Count() > 0)
                 {
-                    return femaleXenos.ToList();
+                    return femaleLegal.ToList();
                 }
-                else if (gender == Gender.Male && maleXenos.Count() > 0)
+                else if (gender == Gender.Male && maleLegal.Count() > 0)
                 {
-                    return maleXenos.ToList();
+                    return maleLegal.ToList();
                 }
                 return defs;
             }

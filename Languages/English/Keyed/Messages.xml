@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <MessagerTargetTooBigToFeastOn>Target is too large to feast on.</MessagerTargetTooBigToFeastOn>
+  <MessageUserIsNotHungry>Not hungry.</MessageUserIsNotHungry>
+  <StatsReport_AtNight>At night</StatsReport_AtNight>
+  
+  <PsychicSensitivity_High>Psychic Sensitivity above 160%</PsychicSensitivity_High>
+  <PsychicSensitivity_VeryHigh>Psychic Sensitivity above 225%</PsychicSensitivity_VeryHigh>
+  <PsychicSensitivity_Normal>Psychic Sensitivity above 90%</PsychicSensitivity_Normal>
+
+  <BS_GenePreventsEquipping>Cannot equip weapons</BS_GenePreventsEquipping>
+  <BS_CannotWearApparel>Cannot wear apparel</BS_CannotWearApparel>
+  <BS_CannotWearClothing>Cannot wear clothing</BS_CannotWearClothing>
+  <BS_CannotWearArmor>Cannot wear dedicated armor</BS_CannotWearArmor>
+  <BS_CannotWearThisApparel>Cannot wear this type of apparel</BS_CannotWearThisApparel>
+  <BS_AccumulateSlimeUntil>Convert nutrition into slime until</BS_AccumulateSlimeUntil>
+  <AbilityPoolCost>Cost</AbilityPoolCost>
+
+  <!--Petrified Statue Keys-->
+  <BS_LifeSizeStatueOf>A life-size statue of</BS_LifeSizeStatueOf>
+  <BS_StatueSurprised> in a state of surprise.</BS_StatueSurprised>
+  <BS_StatueFrightened> with an expression of terror.</BS_StatueFrightened>
+  <BS_StatueAngry> in a furious rage.</BS_StatueAngry>
+  <BS_StatuePain> struggling with a pained expression.</BS_StatuePain>
+  <BS_StatueDisoriented> looking incredibly confused.</BS_StatueDisoriented>
+  <BS_StatueDespair> in a state of utter despair.</BS_StatueDespair>
+  <BS_StatueScreaming> screaming at something.</BS_StatueScreaming>
+  <BS_StatueOblivious>appearing somehow oblivious.</BS_StatueOblivious>
+  <BS_StatueStone>; hard as rock, baby.</BS_StatueStone>
+
+</LanguageData>

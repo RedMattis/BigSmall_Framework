@@ -23,7 +23,7 @@ namespace BetterPrerequisites
         
     public class LockedNeedGene : PGene
     {
-        private LockedNeed lockedNeed;
+        //private LockedNeed lockedNeed;
 
         public override void PostAdd()
         {

@@ -35,7 +35,7 @@ namespace BigAndSmall
             bool isBurn = dinfo.Def == DamageDefOf.Flame || dinfo.Def.defName == "Burn" || dinfo.Def.defName == "Fire";
 
             // For Acid resistance
-            bool isAcid = dinfo.Def.defName.ToLower().Contains("acid") || dinfo.Def.defName.ToLower().Contains("corrode");
+            bool isAcid = dinfo.Def.defName.ToLower().Contains("acid") || dinfo.Def.defName.ToLower().Contains("corro");
 
 
 

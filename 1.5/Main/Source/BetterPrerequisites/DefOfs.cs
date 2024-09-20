@@ -17,6 +17,7 @@ namespace BigAndSmall
         public static StatDef SM_BodySizeOffset;
         public static StatDef SM_Cosmetic_BodySizeOffset;
         public static StatDef SM_BodySizeMultiplier;
+        public static StatDef SM_Cosmetic_BodySizeMultiplier;
         public static StatDef SM_HeadSize_Cosmetic;
         public static StatDef SM_Minimum_Learning_Speed;
         public static StatDef SM_Food_Need_Capacity;

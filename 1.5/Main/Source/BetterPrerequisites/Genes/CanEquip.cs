@@ -40,27 +40,29 @@ namespace BigAndSmall
             Pawn_GeneTracker genes = pawn.genes;
 
             // Check if the thing is a weapon or equipment
-            if (thing.IsWeapon && genes != null)
+            if (genes != null)
             {
-                bool hasGenePreventingEquippingAnything = genes.GenesListForReading.Any(x => x.def.defName.Contains("BS_NoEquip"));
-                if (hasGenePreventingEquippingAnything)
+                if (thing.IsWeapon)
                 {
-                    cantReason = "BS_GenePreventsEquipping".Translate();
-                    return false;
+                    bool hasGenePreventingEquippingAnything = genes.GenesListForReading.Any(x => x.def.defName.Contains("BS_NoEquip"));
+                    if (hasGenePreventingEquippingAnything)
+                    {
+                        cantReason = "BS_GenePreventsEquipping".Translate();
+                        return false;
+                    }
                 }
-            }
-            else if (thing.IsApparel)
-            {
-                if (!CanWearClothing(__result, thing, ref cantReason, pawn))
+                if (thing.IsApparel)
                 {
-                    cantReason = "BS_GenePreventsEquipping".Translate();
-                    return false;
-                }
-                bool isGiant = pawn?.story?.traits?.allTraits?.Any(x => x.def.defName.ToLower().Contains("bs_giant")) == true || pawn.BodySize > 1.99;
-                if (thing.apparel.tags.Any(x => x.ToLower() == "giantonly") && !isGiant)
-                {
-                    cantReason = "BS_PawnIsNotAGiant".Translate();
-                    return false;
+                    if (!CanWearClothing(__result, thing, ref cantReason, pawn))
+                    {
+                        return false;
+                    }
+                    bool isGiant = pawn?.story?.traits?.allTraits?.Any(x => x.def.defName.ToLower().Contains("bs_giant")) == true || pawn.BodySize > 1.99;
+                    if (thing.apparel.tags.Any(x => x.ToLower() == "giantonly") && !isGiant)
+                    {
+                        cantReason = "BS_PawnIsNotAGiant".Translate();
+                        return false;
+                    }
                 }
             }
 
@@ -111,28 +113,34 @@ namespace BigAndSmall
                     {
                         return __result;
                     }
+                    return true;
                 }
                 if (!cache.canWearApparel)
                 {
                     cantreason = "BS_CannotWearApparel".Translate();
                     return false;
                 }
-                bool itemIsArmor = thing.apparel.tags?.Any(x => x.ToLower().Contains("armor")) == true ||
+                bool itemIsArmor = thing.apparel.tags?.Any(x => x.ToLower().Contains("armor") || x.ToLower().Contains("armour")) == true ||
                         // or it thing categories has ApparelArmor.
-                        thing.thingCategories?.Contains(ThingCategoryDefOf.ApparelArmor) == true ||
+                        thing.thingCategories?.Any(x => x.defName.ToLower().Contains("armor")) == true ||
                         // or trade tags
                         thing.tradeTags?.Any(x => x.ToLower().Contains("armor")) == true ||
                         thing.defName.ToLower().Contains("armor") ||
                         thing.defName.ToLower().Contains("helmet") ||
-                        thing.defName.ToLower().Contains("armour");
+                        thing.defName.ToLower().Contains("armour") ||
+                        // Or suspicious stuffing.
+                        thing.recipeMaker?.recipeUsers?.Any(x => x.defName.ToLower().Contains("smithy")) == true ||
+                        thing.stuffCategories?.Any(x => x.defName.ToLower().Contains("metallic")) == true;
                 if (thing.defName == "Apparel_VisageMask" ||
                     thing.defName == "Apparel_Tailcap" ||
                     thing.defName == "Apparel_Sash" ||
-                    thing.defName == "Apparel_Bandolier"
-
+                    thing.defName == "Apparel_Bandolier" ||
+                    thing.defName == "Apparel_Crown" ||
+                    thing.defName == "Apparel_CrownStellic"
                     )
                 {
-                    itemIsArmor = false;
+                    return true;
+                    //itemIsArmor = false;
                 }
 
                 if (!cache.canWearArmor && itemIsArmor)

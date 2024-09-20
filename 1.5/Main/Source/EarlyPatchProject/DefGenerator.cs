@@ -45,24 +45,47 @@ namespace BSXeno
             // Get the Metamorphosis GeneTemplate.
             var metTemplate = DefDatabase<GeneTemplate>.GetNamed("BS_MetamorphTemplate");
             var metDownTemplate = DefDatabase<GeneTemplate>.GetNamed("BS_RetromorphDownTemplate");
-
-            foreach (var xeno in allXenotypes)
+            if (metTemplate == null)
             {
-                var geneExt = new GeneExtension
+                Log.Warning("Big and Small DefGen: GenerateXenotypeGenes: Could not find the Metamorphosis Template. Metamorphosis genes will not be generated." +
+                    "\nIf using Big and Small Genes this likely means you need to resubscribe to the mod, or that you have a config that removes the required def.");
+            }
+            if (metDownTemplate == null)
+            {
+                Log.Warning("Big and Small DefGen: GenerateXenotypeGenes: Could not find the Metamorphosis Down Template. Retromorphosis genes will not be generated." +
+                    "\nIf using Big and Small Genes this likely means you need to resubscribe to the mod, or that you have a config that removes the required def.");
+            }
+
+            try
+            {
+                foreach (var xeno in allXenotypes)
                 {
-                    metamorphTarget = xeno,
-                    hideInXenotypeUI = true
-                };
+                    if (metTemplate != null)
+                    {
+                        var geneExt = new GeneExtension
+                        {
+                            metamorphTarget = xeno,
+                            hideInGenePicker = false
+                        };
 
-                result.Add(GenerateXenoTypeGene(xeno, metTemplate, geneExt, new List<string> { xeno.label }));
+                        result.Add(GenerateXenoTypeGene(xeno, metTemplate, geneExt, new List<string> { xeno.label }));
+                    }
 
-                var geneExtTarget = new GeneExtension
-                {
-                    retromorphTarget = xeno,
-                    hideInXenotypeUI = true
-                };
+                    if (metDownTemplate != null)
+                    {
+                        var geneExtTarget = new GeneExtension
+                        {
+                            retromorphTarget = xeno,
+                            hideInGenePicker = false
+                        };
 
-                result.Add(GenerateXenoTypeGene(xeno, metDownTemplate, geneExtTarget, new List<string> { xeno.label }));
+                        result.Add(GenerateXenoTypeGene(xeno, metDownTemplate, geneExtTarget, new List<string> { xeno.label }));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Exception duing Big and Small DefGen: GenerateXenotypeGenes: Exception caught: {e}\n\nGenerating the genes has been aborted.");
             }
 
             return result;
@@ -71,7 +94,13 @@ namespace BSXeno
         public static FieldInfo iconColor = null;
         public static GeneDef GenerateXenoTypeGene(XenotypeDef xenoDef, GeneTemplate template, DefModExtension extension, List<string> descriptionKeys)
         {
-            //const string prefix = "XM";
+            // Validate so nothing is null.
+            if (xenoDef == null || template == null || extension == null || descriptionKeys == null)
+            {
+                Log.Error($"Big and Small DefGen: GenerateXenoTypeGene: One of the parameters was null." +
+                    $"\nXenoDef: {xenoDef}, template: {template}, extension: {extension}, descriptionKeys: {descriptionKeys}");
+                return null;
+            }
 
             string defName = $"{xenoDef.defName}_{template.keyTag}";
 
@@ -80,6 +109,7 @@ namespace BSXeno
                 defName = defName,
                 label = $"{xenoDef.label} {template.label}",
                 description = template.description,
+                customEffectDescriptions = template.customEffectDescriptions,
                 iconPath = xenoDef.iconPath,
                 biostatCpx = 0,
                 biostatMet = 0,
@@ -91,7 +121,7 @@ namespace BSXeno
 
             for (int idx = 0; idx < descriptionKeys.Count; idx++)
             {
-                geneDef.description.Replace("{" + $"{idx}" + "}" , descriptionKeys[idx]);
+                geneDef.description = geneDef.description.Replace("{" + idx + "}", descriptionKeys[idx]);
             }
 
             if (iconColor == null)
@@ -113,10 +143,15 @@ namespace BSXeno
                 var vfeg = new VFEGeneExtensionWrapper(null);
                 if (vfeg != null)
                 {
-                    vfeg.BackgroundPathEndogenes = template.backgroundPathEndogenes ?? "GeneIcons/BS_BackEndogene";
-                    vfeg.BackgroundPathXenogenes = template.backgroundPathXenogenes ?? "GeneIcons/BS_BackXenogene";
-                    vfeg.BackgroundPathArchite = template.backgroundPathArchite ?? "GeneIcons/BS_BackArchite_1";
-                    vfeg.HideGene = true;
+
+
+                    string pathEndo = template.backgroundPathEndogenes ?? "GeneIcons/BS_BackEndogene";
+                    string pathXeno = template.backgroundPathXenogenes ?? "GeneIcons/BS_BackXenogene";
+                    string pathArchite = template.backgroundPathArchite ?? "GeneIcons/BS_BackArchite_1";
+
+                    vfeg.BackgroundPathEndogenes = pathEndo;
+                    vfeg.BackgroundPathXenogenes = pathXeno;
+                    vfeg.BackgroundPathArchite = pathArchite;
                     geneDef.modExtensions.Add(vfeg.ext);
                 }
             }

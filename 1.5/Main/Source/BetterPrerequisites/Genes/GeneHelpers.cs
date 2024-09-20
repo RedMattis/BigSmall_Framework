@@ -324,6 +324,15 @@ namespace BigAndSmall
             cachedGenes.Clear();
         }
 
+        public static List<GeneExtension> GetActiveGeneExtensions(Pawn pawn)
+        {
+            var activeGenes = GetAllActiveGenes(pawn);
+            if (activeGenes.NullOrEmpty()) return new List<GeneExtension>(); ;
+            return activeGenes
+                   .Where(x => x?.def?.modExtensions != null && x.def.modExtensions.Any(y => y.GetType() == typeof(GeneExtension)))?
+                   .Select(x => x.def.GetModExtension<GeneExtension>()).ToList();
+        }
+
         public static void ChangeXenotype(Pawn pawn, XenotypeDef targetXenottype)
         {
             bool sourceIsEndo = pawn.genes.Xenotype.inheritable;

@@ -203,6 +203,9 @@ namespace BigAndSmall
         public PercentChange scaleMultiplier = new PercentChange(1, 1, 1);
         public PercentChange previousScaleMultiplier = null;
         public PercentChange cosmeticScaleMultiplier = new PercentChange(1, 1, 1);
+        public float healthMultiplier = 1;
+        public float healthMultiplier_previous = 1;
+
         public float sizeOffset = 0;
         public float minimumLearning = 0;
         public float growthPointGain = 1;
@@ -232,7 +235,7 @@ namespace BigAndSmall
         public bool willBeUndead = false;
         public bool unarmedOnly = false;
         public bool succubusUnbonded = false;
-        public bool fastPregnancy = false;
+        public float pregnancySpeed = 1;
         public bool everFertile = false;
         public bool animalFriend = false;
 
@@ -310,7 +313,7 @@ namespace BigAndSmall
             Scribe_Values.Look(ref willBeUndead, "BS_WillBeUndead", false);
             Scribe_Values.Look(ref unarmedOnly, "BS_UnarmedOnly", false);
             Scribe_Values.Look(ref succubusUnbonded, "BS_SuccubusUnbonded", false);
-            Scribe_Values.Look(ref fastPregnancy, "BS_FastPregnancy", false);
+            Scribe_Values.Look(ref pregnancySpeed, "BS_FastPregnancy", 1f);
             Scribe_Values.Look(ref everFertile, "BS_EverFertile", false);
             Scribe_Values.Look(ref animalFriend, "BS_AnimalFriend", false);
             Scribe_Values.Look(ref raidWealthOffset, "BS_RaidWealthOffset", 0);
@@ -377,22 +380,21 @@ namespace BigAndSmall
                     return false;
                 }
                 float sizeFromAge = pawn?.ageTracker?.CurLifeStage?.bodySizeFactor ?? 1;
-
                 float baseSize = pawn?.RaceProps?.baseBodySize ?? 1;
                 float previousTotalSize = sizeFromAge * baseSize;
 
                 float sizeOffset = pawn.GetStatValue(BSDefs.SM_BodySizeOffset) + offsetFromSizeByAge;
                 float cosmeticSizeOffset = pawn.GetStatValue(BSDefs.SM_Cosmetic_BodySizeOffset);
                 float sizeMultiplier = pawn.GetStatValue(BSDefs.SM_BodySizeMultiplier) * multiplierFromSizeMultiplierByAge;
+                float cosmeticMultiplier = pawn.GetStatValue(BSDefs.SM_Cosmetic_BodySizeMultiplier);
 
                 cosmeticSizeOffset += sizeOffset;
 
-                //float cosmeticSizeMultiplier = 1f; // Not currently implemented.
+                float totalCosmeticMultiplier = sizeMultiplier + cosmeticMultiplier - 1;
 
                 float bodySizeOffset = ((baseSize + sizeOffset) * sizeMultiplier * sizeFromAge) - previousTotalSize;
 
-
-                float bodySizeCosmeticOffset = ((baseSize + cosmeticSizeOffset) * sizeMultiplier * sizeFromAge) - previousTotalSize;
+                float bodySizeCosmeticOffset = ((baseSize + cosmeticSizeOffset) * totalCosmeticMultiplier * sizeFromAge) - previousTotalSize;
 
                 // Get total size
                 float totalSize = bodySizeOffset + previousTotalSize;
@@ -449,23 +451,13 @@ namespace BigAndSmall
 
                 float headSize = pawn.GetStatValue(BSDefs.SM_HeadSize_Cosmetic);
 
-                // Less difference for animals, they seem to get double-dipped somewhere?
-                if (!pawn.RaceProps.Humanlike)
-                {
-                    bodySizeCosmeticOffset *= 0.5f;
-                }
-
                 PercentChange scaleMultiplier = GetPercentChange(bodySizeOffset, pawn);
                 PercentChange cosmeticScaleMultiplier = GetPercentChange(bodySizeCosmeticOffset, pawn);
 
                 if (!pawn.RaceProps.Humanlike) //&& cosmeticScaleMultiplier.linear > 1.5f)
                 {
-                    // Never let animals render huge, it just looks silly.
-                    //float maxSize = 3;
-                    //if (hasSizeAffliction) maxSize = 6;
-                    //cosmeticScaleMultiplier.linear = Mathf.Min(Mathf.Lerp(cosmeticScaleMultiplier.linear, 1.5f, 0.65f), maxSize);
-
-                    // Animal scaling logic gets run twice, so we run a Sqrt to compensate.
+                    // Because of how we scale animals in the ELSE-statement the scaling of animals/Mechs gets run twice.
+                    // Checking their node explicitly risks missing cases where someone uses another node.
                     cosmeticScaleMultiplier.linear = Mathf.Sqrt(cosmeticScaleMultiplier.linear);
                 }
 
@@ -506,7 +498,7 @@ namespace BigAndSmall
                 // Has Deathlike gene or VU_AnimalReturned Hediff.
                 bool deathlike = activeGenes.Any(x => x.def.defName == "BS_Deathlike") || animalUndead;
                 bool unarmedOnly = activeGenes.Any(x => new List<string> { "BS_UnarmedOnly", "BS_NoEquip", "BS_UnarmedOnly_Android" }.Contains(x.def.defName));
-                bool unamredOnly = unarmedOnly || geneExts.Any(x => x.unarmedOnly);
+                bool unamredOnly = unarmedOnly || geneExts.Any(x => x.unarmedOnly || x.forceUnarmed);
                 bool succubusUnbonded = false;
                 if (activeGenes.Any(x => x.def.defName == "VU_LethalLover"))
                 {
@@ -516,7 +508,6 @@ namespace BigAndSmall
                         succubusUnbonded = true;
                     }
                 }
-                bool fastPregnancy = activeGenes.Any(x => x.def.defName == "BS_ShortPregnancy");
                 bool everFertile = activeGenes.Any(x => x.def.defName == "BS_EverFertile");
                 bool animalFriend = pawn.story?.traits?.allTraits.Any(x => !x.Suppressed && x.def.defName == "BS_AnimalFriend") == true;
 
@@ -545,8 +536,15 @@ namespace BigAndSmall
                 this.totalSize = totalSize;
                 this.totalCosmeticSize = totalCosmeticSize;
                 this.sizeOffset = bodySizeOffset;
+
+                // The stored value (this)
                 previousScaleMultiplier = this.scaleMultiplier;
+                healthMultiplier_previous = CalculateHealthMultiplier(this.scaleMultiplier, pawn);
+
+                // The current value.
                 this.scaleMultiplier = scaleMultiplier;
+                healthMultiplier = CalculateHealthMultiplier(scaleMultiplier, pawn);
+
                 this.cosmeticScaleMultiplier = cosmeticScaleMultiplier;
                 this.minimumLearning = minimumLearning;
                 this.growthPointGain = pawn.GetStatValue(BSDefs.SM_GrowthPointAccumulation);
@@ -558,8 +556,6 @@ namespace BigAndSmall
                 attackSpeedUnarmedMultiplier = pawn.GetStatValue(BSDefs.SM_UnarmedAttackSpeed);
 
                 psychicSensitivity = pawn.GetStatValue(StatDefOf.PsychicSensitivity);
-                
-
 
                 canWearClothing = !(cannotWearClothing || cannotWearApparel);
                 canWearArmor = !(cannotWearArmor || cannotWearApparel);
@@ -581,7 +577,8 @@ namespace BigAndSmall
                 this.unarmedOnly = unarmedOnly;
                 diet = GameUtils.GetDiet(pawn);
                 this.succubusUnbonded = succubusUnbonded;
-                this.fastPregnancy = fastPregnancy;
+                // Multiply the prengnacy multipliers.
+                pregnancySpeed = geneExts.Aggregate(1f, (acc, x) => acc * x.pregnancySpeedMultiplier);
                 this.everFertile = everFertile;
                 this.animalFriend = animalFriend;
                 renderCacheOff = geneExts.Any(x => x.renderCacheOff);
@@ -725,6 +722,36 @@ namespace BigAndSmall
             Metamorphosis.HandleMetamorph(pawn, geneExts);
         }
 
+        private static float CalculateHealthMultiplier(BSCache.PercentChange scalMult, Pawn pawn)
+        {
+            if (scalMult.linear <= 1) return scalMult.linear;
+            float percentChange = scalMult.linear;
+
+            const float maxHealthScale = 4;  // A Thrumbo has x2. (8 / 4), then it falls off.
+            float lerpScaleFactor = maxHealthScale / 1;
+
+            float raceHealthBase = pawn.RaceProps?.baseHealthScale ?? 1;
+            float raceSize = pawn.RaceProps?.baseBodySize ?? 1;
+
+            float raceHealth = raceHealthBase / raceSize;
+            float targetRaceHScale = Mathf.Max(maxHealthScale, raceHealth);
+
+            float baseSize = raceSize * pawn?.ageTracker?.CurLifeStage?.bodySizeFactor ?? 1;
+            float newSize = percentChange * baseSize;
+            float sizeChange = newSize - baseSize;
+
+            // At a total offset of +3.0, the health scale will be 8 if not better, as with a Thrumbo
+            float n = Mathf.Clamp01(sizeChange/lerpScaleFactor);
+
+            float newScale = Mathf.SmoothStep(raceHealth, targetRaceHScale, n);
+            float newScale2 = Mathf.Lerp(raceHealth, targetRaceHScale, n);
+            newScale = Mathf.Lerp(newScale, newScale2, 0.5f);
+
+            float changeInRaceScale = newScale / raceHealth;
+
+            return percentChange * changeInRaceScale;
+        }
+
         public class PercentChange : IExposable
         {
             public float linear = 1;
@@ -757,8 +784,9 @@ namespace BigAndSmall
             if (pawn != null
                 && (pawn.needs != null || pawn.Dead))
             {
+                const float minimum = 0.2f;  // Let's not make humans sprites unreasonably small.
                 float sizeFromAge = pawn.ageTracker.CurLifeStage.bodySizeFactor;
-                float baseSize = pawn.RaceProps.baseBodySize;
+                float baseSize = pawn?.RaceProps?.baseBodySize ?? 1;
                 float prevBodySize = sizeFromAge * baseSize;
                 float postBodySize = prevBodySize + bodySizeOffset;
                 float percentChange = postBodySize / prevBodySize;
@@ -766,12 +794,11 @@ namespace BigAndSmall
                 float cubic = Mathf.Pow(postBodySize, 3) - Mathf.Pow(prevBodySize, 3);
 
                 // Ensure we don't get negative values.
-                percentChange = Mathf.Clamp(percentChange, 0.04f, 9999999);
-                quadratic = Mathf.Clamp(quadratic, 0.04f, 9999999);
-                cubic = Mathf.Clamp(cubic, 0.04f, 9999999);
+                percentChange = Mathf.Max(percentChange, 0.04f);
+                quadratic = Mathf.Max(quadratic, 0.04f);
+                cubic = Mathf.Max(cubic, 0.04f);
 
-                // Let's not make humans sprites unreasonably small.
-                if (percentChange < 0.2f) percentChange = 0.2f;
+                if (percentChange < minimum) percentChange = minimum;
                 return new PercentChange(percentChange, quadratic, cubic);
             }
             return new PercentChange(1, 1, 1);

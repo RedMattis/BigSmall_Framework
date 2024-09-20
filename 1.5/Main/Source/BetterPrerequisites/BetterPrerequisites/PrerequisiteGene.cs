@@ -33,8 +33,23 @@ namespace BetterPrerequisites
         private bool initialized = false;
         
         public bool hasExtension = false;
-        
+
+        private bool lookedForGeneExt = false;
         private GeneExtension geneExt = null;
+
+        private GeneExtension GeneExt
+        {
+            get
+            {
+                if (geneExt == null && !lookedForGeneExt)
+                {
+                    geneExt = def.GetModExtension<GeneExtension>();
+                    lookedForGeneExt = true;
+                }
+                return geneExt;
+            }
+            set => geneExt = value;
+        }
 
         public override bool Active => TryGetGeneActiveCache(base.Active);
 
@@ -50,7 +65,7 @@ namespace BetterPrerequisites
 
             bool needsReevaluation = false;
 
-            if (geneExt != null)
+            if (GeneExt != null)
             {
                 if (base.Active && Active)
                 {
@@ -60,7 +75,7 @@ namespace BetterPrerequisites
                 // Check if this is a xenogene.
                 bool xenoGene = pawn.genes.Xenogenes.Any(x => x == this);
 
-                foreach(var geneDef in geneExt.hiddenGenes)
+                foreach(var geneDef in GeneExt.hiddenGenes)
                 {
                     // Add hidden gene
                     pawn.genes.AddGene(geneDef, xenoGene);
@@ -78,7 +93,7 @@ namespace BetterPrerequisites
                 //    Log.Message($"Error in PostAdd: {e.Message}");
                 //}
 
-                if (geneExt.conditionals != null)
+                if (GeneExt.conditionals != null)
                 {
                     needsReevaluation = true;
                 }
@@ -104,7 +119,7 @@ namespace BetterPrerequisites
         {
             if (!postPostAddDone)
             {
-                if (geneExt != null)
+                if (GeneExt != null)
                 {
                     SwapThingDef(true);
                 }
@@ -116,7 +131,7 @@ namespace BetterPrerequisites
         {
             BigAndSmallCache.pGenesThatReevaluate.Remove(this);
             base.PostRemove();
-            if (geneExt != null)
+            if (GeneExt != null)
             {
                 SwapThingDef(false, force:true);
 
@@ -124,7 +139,7 @@ namespace BetterPrerequisites
                 bool lastActiveOfDef = !pawn.genes.GenesListForReading.Any(x => x.def == def && x != this);
                 if (lastActiveOfDef)
                 {
-                    foreach (var geneDef in geneExt.hiddenGenes)
+                    foreach (var geneDef in GeneExt.hiddenGenes)
                     {
                         // Remove all genes matching def
                         var matchingGenes = pawn.genes.GenesListForReading.Where(x => x.def == geneDef).ToList(); ;
@@ -134,7 +149,7 @@ namespace BetterPrerequisites
                         }
                     }
                 }
-                if (ModsConfig.IsActive("nals.facialanimation") && geneExt.facialDisabler != null)
+                if (ModsConfig.IsActive("nals.facialanimation") && GeneExt.facialDisabler != null)
                 {
                     // Check if any other genes have facialDisabler
 
@@ -165,7 +180,7 @@ namespace BetterPrerequisites
                 hediffsToReapply.Clear();
 
                 // Try triggering transform genes if it exists.
-                geneExt?.transformGene?.TryTransform(pawn, this);
+                GeneExt?.transformGene?.TryTransform(pawn, this);
             }
             if (currentTick % 5000 == 5)
             {
@@ -174,9 +189,9 @@ namespace BetterPrerequisites
 
             if (currentTick % 100 == 0 && pawn.needs != null && Active)
             {
-                if (geneExt != null && geneExt.lockedNeeds != null)
+                if (GeneExt != null && GeneExt.lockedNeeds != null)
                 {
-                    foreach (var lockedNeed in geneExt.lockedNeeds.Where(x=>x.need != null))
+                    foreach (var lockedNeed in GeneExt.lockedNeeds.Where(x=>x.need != null))
                     {
                         float value = lockedNeed.value;
                         NeedDef needDef = lockedNeed.need;
@@ -212,22 +227,22 @@ namespace BetterPrerequisites
         {
             try
             {
-                if (geneExt != null && geneExt.thingDefSwap != null)
+                if (GeneExt != null && GeneExt.thingDefSwap != null)
                 {
                     bool wasDead = pawn.health.Dead;
 
                     var genesWithThingDefSwaps = pawn.genes.GenesListForReading
-                        .Where(x => x != this && x is PGene && (x as PGene).geneExt != null && (x as PGene).geneExt.thingDefSwap != null)
+                        .Where(x => x != this && x is PGene && (x as PGene).GeneExt != null && (x as PGene).GeneExt.thingDefSwap != null)
                         .Select(x=>(PGene)x).ToList();
 
                     //var pos = pawn.Position;
                     var map = pawn.Map;
 
                     // Check if the ThingDef we CURRENTLY are is among the genesWithThingDefSwaps
-                    var geneWithThingDef = genesWithThingDefSwaps.Where(x => x.geneExt.thingDefSwap.defName == pawn.def.defName);
+                    var geneWithThingDef = genesWithThingDefSwaps.Where(x => x.GeneExt.thingDefSwap.defName == pawn.def.defName);
                     bool didSwap = false;
                     bool wasRemovedFromLister = false;
-                    bool forceSwap = geneExt.forceThingDefSwap;
+                    bool forceSwap = GeneExt.forceThingDefSwap;
                     // if all geneWithThingDef are inactive, we can swap.
                     if ( geneWithThingDef.All(x => x.Overridden))
                     {
@@ -237,7 +252,7 @@ namespace BetterPrerequisites
 
                     if (!force)
                     {
-                        if (state && geneExt.thingDefSwap.defName == pawn.def.defName)
+                        if (state && GeneExt.thingDefSwap.defName == pawn.def.defName)
                         {
                             return;
                         }
@@ -259,21 +274,21 @@ namespace BetterPrerequisites
                     if ((pawn.def == ThingDefOf.Human || forceSwap) && state)
                     {
                         // Don't swap to a thingDef that is already active.
-                        if (pawn.def.defName != geneExt.thingDefSwap.defName)
+                        if (pawn.def.defName != GeneExt.thingDefSwap.defName)
                         {
                             // Change the pawn's thingDef to the one specified in the GeneExtension.
                             CacheAndRemoveHediffs();
-                            pawn.def = geneExt.thingDefSwap;
+                            pawn.def = GeneExt.thingDefSwap;
                             RestoreMatchingHediffs(pawn.def);
                             didSwap = true;
                         }
                     }
                     // Check if we're turning off this ThingDef and would want to swap to another.
 
-                    else if (!state && pawn.def.defName == geneExt.thingDefSwap.defName)
+                    else if (!state && pawn.def.defName == GeneExt.thingDefSwap.defName)
                     {
                         ThingDef target = ThingDefOf.Human;
-                        if (genesWithThingDefSwaps.Count > 0) { target = genesWithThingDefSwaps.RandomElement().geneExt.thingDefSwap; }
+                        if (genesWithThingDefSwaps.Count > 0) { target = genesWithThingDefSwaps.RandomElement().GeneExt.thingDefSwap; }
 
                         CacheAndRemoveHediffs();
                         // Change the pawn's thingDef to a baseliner.
@@ -447,7 +462,7 @@ namespace BetterPrerequisites
                 if (def.HasModExtension<GeneExtension>())
                 {
                     ForceRun = true;
-                    geneExt = def.GetModExtension<GeneExtension>();
+                    GeneExt = def.GetModExtension<GeneExtension>();
                 }
             }
         }
@@ -531,7 +546,7 @@ namespace BetterPrerequisites
                     if (refreshGeneEffectsCountdown <= 0)
                     {
                         refreshGeneEffectsCountdown = 5;
-                        var change = GeneEffectManager.RefreshGeneEffects(this, result, geneExt: geneExt);
+                        var change = GeneEffectManager.RefreshGeneEffects(this, result, geneExt: GeneExt);
 
                         // Check if on main thread
                         if (change && Thread.CurrentThread == BigSmall.mainThread)

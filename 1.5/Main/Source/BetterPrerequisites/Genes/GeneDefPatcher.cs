@@ -106,7 +106,7 @@ namespace BigAndSmall
                     {
                         if (modExt is GeneExtension geneExt)
                         {
-                            if (geneExt.hideInXenotypeUI)
+                            if (geneExt.hideInGenePicker)
                             {
                                 Dialog_CreateXenotypePatches.hiddenGenes.Add(geneDef);
                             }

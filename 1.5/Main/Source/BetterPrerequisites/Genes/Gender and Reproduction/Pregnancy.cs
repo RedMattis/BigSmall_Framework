@@ -16,7 +16,11 @@ namespace BigAndSmall
         {
             if (pawn.needs != null)
             {
-                
+                var cache = HumanoidPawnScaler.GetBSDict(pawn);
+                if (cache != null)
+                {
+                    __result *= cache.pregnancySpeed;
+                }
             }
         }
     }

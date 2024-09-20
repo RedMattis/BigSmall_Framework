@@ -42,6 +42,17 @@
     </StatDef>
 
     <StatDef>
+		<defName>SM_Cosmetic_BodySizeMultiplier</defName>
+		<label>cosmetic body size multiplier</label>
+		<description>Increases the size of the pawn by a multiple of their current size</description>
+		<alwaysHide>true</alwaysHide>
+		<category>BasicsPawn</category>
+		<toStringStyle>PercentZero</toStringStyle>
+		<defaultBaseValue>1.0</defaultBaseValue>
+		<minValue>-99</minValue>
+	</StatDef>
+
+    <StatDef>
         <defName>SM_RaidWealthMultiplier</defName>
         <label>raid wealth multiplier</label>
         <description>Multiplier how valuable the pawn is considered for the purpose of raids.</description>
@@ -91,7 +102,7 @@
         <label>Anomalous Power</label>
         <description>Anomalous power usually gifted or stolen from dark archotechs.</description>
         <alwaysHide>false</alwaysHide>
-        <category>SM_Stats</category>
+        <category>BasicsPawn</category>
         <minValue>0.0</minValue>
         <toStringStyle>PercentZero</toStringStyle>
         <defaultBaseValue>0</defaultBaseValue>

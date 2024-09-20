@@ -19,5 +19,6 @@ namespace BigAndSmall
         public string backgroundPathXenogenes = null;
         public string backgroundPathArchite = null;
         public Color? iconColor = null;
+        public List<string> customEffectDescriptions = new();
     }
 }

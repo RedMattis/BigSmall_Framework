@@ -32,7 +32,7 @@ namespace BigAndSmall
                                 {
                                     continue;
                                 }
-                                if (victim.Faction == Faction.OfPlayer && victim.Faction == item.Faction && victim.HostFaction != item.Faction && !victim.IsQuestLodger() && !victim.IsMutant && !victim.IsSlave)
+                                if (victim.Faction == Faction.OfPlayerSilentFail && victim.HostFaction != item.Faction && !victim.IsQuestLodger() && !victim.IsMutant && !victim.IsSlave)
                                 {
                                     outIndividualThoughts.Add(new IndividualThoughtToAdd(BSDefs.BS_DroneDied, item, victim));
                                 }

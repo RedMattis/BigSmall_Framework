@@ -184,9 +184,14 @@ namespace BigAndSmall
             choiceLetter_BabyBirth.Start();
             Find.LetterStack.ReceiveLetter(choiceLetter_BabyBirth);
 
-            // Age baby up to 3 years
-            babyPawn.ageTracker.AgeBiologicalTicks = 3 * GenDate.TicksPerYear;
+            
 
+            // Check if the baby has the Early Maturity Gene.
+            int babyStartAge = GeneHelpers.GetActiveGeneExtensions(babyPawn).FirstOrDefault(x=>x.babyStartAge != null)?.babyStartAge ?? 3;
+
+
+            // Age baby up to 3 years
+            babyPawn.ageTracker.AgeBiologicalTicks = babyStartAge * GenDate.TicksPerYear;
             //Find.QuestManager.Notify_PawnBorn(babyPawn, parentA, parentA, parentB);
 
         }
