@@ -118,10 +118,6 @@ namespace BigAndSmall
 
         public override bool CanApplyOn(LocalTargetInfo origin, LocalTargetInfo target)
         {
-            Log.Message($"CanApplyOn: {target} {Valid(target)}");
-            // Print Stacktrace
-            Log.Message(Environment.StackTrace);
-
             return Valid(target);
         }
     }

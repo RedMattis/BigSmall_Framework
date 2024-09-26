@@ -48,11 +48,9 @@ namespace BigAndSmall
         }
         public static bool ApplyBirthOutcome_NewTemp_Prefix(RitualOutcomePossibility outcome, float quality, Precept_Ritual ritual, List<GeneDef> genes, Pawn geneticMother, Thing birtherThing, Pawn father, Pawn doctor, LordJob_Ritual lordJobRitual, RitualRoleAssignments assignments, bool preventLetter)
         {
-            Log.Message("[PregnancyPatches DEBUG] Running.");
             // Check if the pawn has genes. If not, just let the regular method run.
             if (disableBirthPatch || geneticMother?.genes == null)
             {
-                //Log.Message($"[PregnancyPatches DEBUG] No genes found, running regular method.\n\n{disableBirthPatch},\nGeneticMoether: {geneticMother}, {geneticMother?.genes}\nBirtherThing: {birtherThing},\nFather: {father},\nDoctor: {doctor},\nLordJobRitual: {lordJobRitual},\nAssignments: {assignments},\nPreventLetter: {preventLetter}");
                 return true;
             }
             // Get the gene mod extension
@@ -64,7 +62,6 @@ namespace BigAndSmall
             // If there are no gene extensions, just let the regular method run.
             if (geneExts == null || geneExts.Count == 0)
             {
-                Log.Message($"[PregnancyPatches DEBUG] No gene extensions found on {geneticMother}. They had {activeGenes.Count} active genes. Running regular method.");
                 return true;
             }
 
@@ -89,7 +86,6 @@ namespace BigAndSmall
                     newBabyGenes = (List<GeneDef>)AccessTools.Method("BGInheritance.BGI_HarmonyPatches:GetChildGenes").Invoke(null, new object[] { geneticMother, father });
                 }
                 PregnancyUtility.ApplyBirthOutcome_NewTemp(outcome, quality, ritual, genes, geneticMother, birtherThing, father, doctor, lordJobRitual, assignments, preventLetter);
-                Log.Message("[PregnancyPatches DEBUG] Giving birth to baby " + i);
                 newBabyGenes = null;
             }
             parents.Clear();

@@ -191,6 +191,8 @@ namespace BigAndSmall
 
         public Pawn pawn = null;
         public bool refreshQueued = false;
+        public int? lastUpdateTick = null;
+        public bool SameTick => lastUpdateTick == Find.TickManager.TicksGame;
         public CacheTimer Timer { get; set; } = new CacheTimer();
 
         public float bodyRenderSize = 1;
@@ -202,7 +204,7 @@ namespace BigAndSmall
         public float totalCosmeticSize = 1;
         public PercentChange scaleMultiplier = new PercentChange(1, 1, 1);
         public PercentChange previousScaleMultiplier = null;
-        public PercentChange cosmeticScaleMultiplier = new PercentChange(1, 1, 1);
+        public PercentChange cosmeticScaleMultiplier = new(1, 1, 1);
         public float healthMultiplier = 1;
         public float healthMultiplier_previous = 1;
 
@@ -210,7 +212,7 @@ namespace BigAndSmall
         public float minimumLearning = 0;
         public float growthPointGain = 1;
         public float foodNeedCapacityMult = 1;
-        public float? previousFoodCapacity = null;
+        public float previousFoodCapacity = 1;
         public float headSizeMultiplier = 1;
 
         /// <summary>
@@ -285,17 +287,21 @@ namespace BigAndSmall
             Scribe_Values.Look(ref id, "BS_CachePawnID", defaultValue: "BS_DefaultCahced");
 
             // Scribe Values
+            Scribe_Values.Look(ref healthMultiplier, "BS_HealthMultiplier", 1);
+            Scribe_Values.Look(ref healthMultiplier_previous, "BS_HealthMultiplier_Previous", 1);
+
+
             Scribe_Values.Look(ref bodyRenderSize, "BS_BodyRenderSize", 1);
             Scribe_Values.Look(ref headRenderSize, "BS_HeadRenderSize", 1);
             Scribe_Values.Look(ref totalSize, "BS_TotalSize", 1);
             Scribe_Values.Look(ref totalCosmeticSize, "BS_TotalCosmeticSize", 1);
             Scribe_Deep.Look(ref scaleMultiplier, "BS_ScaleMultiplier");
-            Scribe_Deep.Look(ref previousScaleMultiplier, "BS_PreviousScaleMultiplier", null);
+            Scribe_Deep.Look(ref previousScaleMultiplier, "BS_PreviousScaleMultiplier");
             Scribe_Deep.Look(ref cosmeticScaleMultiplier, "BS_CosmeticScaleMultiplier");
             Scribe_Values.Look(ref sizeOffset, "BS_SizeOffset", 0);
             Scribe_Values.Look(ref minimumLearning, "BS_MinimumLearning", 0);
             Scribe_Values.Look(ref foodNeedCapacityMult, "BS_FoodNeedCapacityMult", 1);
-            Scribe_Values.Look(ref previousFoodCapacity, "BS_PreviousFoodCapacity", null);
+            Scribe_Values.Look(ref previousFoodCapacity, "BS_PreviousFoodCapacity", 1);
             Scribe_Values.Look(ref headSizeMultiplier, "BS_HeadSizeMultiplier", 1);
             Scribe_Values.Look(ref isBloodFeeder, "BS_IsBloodFeeder", false);
             Scribe_Values.Look(ref hasSizeAffliction, "BS_HasSizeAffliction", false);
@@ -358,6 +364,7 @@ namespace BigAndSmall
             regenerationInProgress = true;
             try
             {
+                int tick = Find.TickManager.TicksGame;
                 var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
                 List<GeneExtension> geneExts = activeGenes
                     .Where(x => x?.def?.modExtensions != null && x.def.modExtensions.Any(y => y.GetType() == typeof(GeneExtension)))?
@@ -531,6 +538,14 @@ namespace BigAndSmall
 
                 int currentTick = Find.TickManager.TicksGame;
 
+                // Set "Previous" Values. This is meant to make sure the previous values don't get overwritten before they can be used.
+                if (lastUpdateTick == null || lastUpdateTick != currentTick)
+                {
+                    lastUpdateTick = currentTick;
+                    previousScaleMultiplier = this.scaleMultiplier;  // First time this runs on a pawn after loading this will be 1.
+                    healthMultiplier_previous = CalculateHealthMultiplier(this.scaleMultiplier, pawn);
+                    previousFoodCapacity = this.foodNeedCapacityMult;
+                }
 
                 // Set Cache Values
                 this.totalSize = totalSize;
@@ -538,8 +553,8 @@ namespace BigAndSmall
                 this.sizeOffset = bodySizeOffset;
 
                 // The stored value (this)
-                previousScaleMultiplier = this.scaleMultiplier;
-                healthMultiplier_previous = CalculateHealthMultiplier(this.scaleMultiplier, pawn);
+                
+                
 
                 // The current value.
                 this.scaleMultiplier = scaleMultiplier;
@@ -548,6 +563,7 @@ namespace BigAndSmall
                 this.cosmeticScaleMultiplier = cosmeticScaleMultiplier;
                 this.minimumLearning = minimumLearning;
                 this.growthPointGain = pawn.GetStatValue(BSDefs.SM_GrowthPointAccumulation);
+                this.previousFoodCapacity = this.foodNeedCapacityMult;
                 this.foodNeedCapacityMult = foodNeedCapacityMult;
                 headSizeMultiplier = headSize;
                 isBloodFeeder = IsBloodfeederPatch.IsBloodfeeder(pawn) || bleedState == BSCache.BleedRateState.NoBleeding;
@@ -563,7 +579,10 @@ namespace BigAndSmall
 
                 isDrone = geneExts.Any(x => x.isDrone);
 
-                injuriesRescaled = false;
+                if (!healthMultiplier_previous.ApproximatelyEquals(healthMultiplier))
+                {
+                    injuriesRescaled = false;
+                }
 
                 // Check if they are a shambler
                 var isShambler = pawn?.mutant?.Def?.defName?.ToLower().Contains("shambler") == true;

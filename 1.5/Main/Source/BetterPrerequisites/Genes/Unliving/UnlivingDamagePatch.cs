@@ -58,7 +58,6 @@ namespace BigAndSmall
 
                 if (bulletDmgMult != 1)
                 {
-                    //Log.Message($"Damage from bullet modified.\n{dinfo.Amount} * {bulletDmgMult} = {dinfo.Amount * bulletDmgMult}");
                     dinfo.SetAmount(dinfo.Amount * bulletDmgMult);
                 }
             }
@@ -76,7 +75,6 @@ namespace BigAndSmall
 
                 if (concDmgMult != 1)
                 {
-                    //Log.Message($"Damage from concussive damage was modified.\n{dinfo.Amount} * {concDmgMult} = {dinfo.Amount * concDmgMult}");
                     dinfo.SetAmount(dinfo.Amount * concDmgMult);
                 }
             }
@@ -94,7 +92,6 @@ namespace BigAndSmall
                 if (acidDmgMult != 1)
                 {
                     acidDmgMult = Mathf.Clamp(acidDmgMult, 0, 99);
-                    //Log.Message($"Damage from acid was modified.\n{dinfo.Amount} * {acidDmgMult} = {dinfo.Amount * acidDmgMult}");
                     dinfo.SetAmount(dinfo.Amount * acidDmgMult);
                 }
             }

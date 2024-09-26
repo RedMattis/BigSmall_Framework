@@ -18,49 +18,75 @@ namespace BigAndSmall
     [HarmonyPatch(typeof(Pawn), "HealthScale", MethodType.Getter)]
     public static class Pawn_HealthScale
     {
+        private readonly static Dictionary<Hediff_Injury, float> injuryRescaling = [];
+        private static int lastTick = 0;
+        static FieldInfo severityIntField = null;
+
+        public static void SetSeverityNoEvent(this Hediff injury, float value)
+        {
+            if (severityIntField == null)
+            {
+                severityIntField = typeof(Hediff).GetField("severityInt", BindingFlags.NonPublic | BindingFlags.Instance);
+            }
+            severityIntField.SetValue(injury, value);
+        }
         public static void Postfix(ref float __result, Pawn __instance)
         {
-            var sizeCache = HumanoidPawnScaler.GetBSDict(__instance);
-            if (sizeCache != null)
+            int thisTick = Find.TickManager.TicksGame;
+            if (FastAcccess.GetCache(__instance) is BSCache sizeCache)
             {
                 float newScale = __result * sizeCache.healthMultiplier;
-                if (sizeCache.previousScaleMultiplier != null)
+                if (!sizeCache.injuriesRescaled)
                 {
-                    float oldscale = __result * sizeCache.healthMultiplier_previous;
-                    if (sizeCache.injuriesRescaled == false && newScale.ApproximatelyEquals(oldscale) == false)
+                    if (thisTick != lastTick)
                     {
-                        // Check time since loading scene. We don't want to rescale injuries when loading a save.
-                        // This is because the injuries are already scaled when loading a save, and rescaling them
-                        // again will cause them to get heal small pawns everytime the save is loaded.
-                        if (Time.timeSinceLevelLoad < 2250)
+                        lastTick = thisTick;
+                        injuryRescaling.Clear();
+                    }
+                    else // Make sure multiple calls doesn't result in rescaling multiple times by simply restoring the old values.
+                    {
+                        var injuryCache = injuryRescaling.Keys.Where(x => x.pawn == __instance).ToList();
+                        for (int idx = injuryCache.Count - 1; idx >= 0; idx--)
                         {
-                            sizeCache.injuriesRescaled = true;
-                            sizeCache.previousScaleMultiplier = sizeCache.scaleMultiplier;
-                            //Log.Warning($"Supressed Injury Rescale due to save-file loading {Time.timeSinceLevelLoad}");
-                        }
-                        else
-                        {
-
-                            // Scale all injuries by the difference between the old and new health multipliers.
-                            // This is meant to make sure a pawns injuries don't get more severe if they shrink.
-                            // It shouldn't really be needed, but shrinking pawns seem to make their injuries get worse,
-                            // Which can result in Nisses dying after spawning with scars.
-                            float injuryScale = newScale / oldscale;
-                            injuryScale = Mathf.Min(1, injuryScale);
-                            var injuries = new List<Hediff_Injury>();
-                            __instance.health.hediffSet.GetHediffs(ref injuries);
-                            foreach (var injury in injuries)
+                            Hediff_Injury injury = injuryCache[idx];
+                            try
                             {
-                                injury.Severity *= injuryScale;
-                                if (injury.Severity < 0)
-                                {
-                                    injury.Severity = 0;
-                                }
+                                injury.SetSeverityNoEvent(injuryRescaling[injury]);
                             }
-                            sizeCache.injuriesRescaled = true;
+                            catch (Exception e)
+                            {
+                                Log.Error($"Error while restoring injuries: {e}");
+                            }
+                        }
+
+                    }
+
+                    float oldscale = __result * sizeCache.healthMultiplier_previous;
+                    // Scale all injuries by the difference between the old and new health multipliers.
+                    // This is meant to make sure a pawns injuries don't get more severe if they shrink.
+                    // It shouldn't really be needed, but shrinking pawns seem to make their injuries get worse,
+                    // Which can result in Nisses dying after spawning with scars.
+                    float injuryScale = newScale / oldscale;
+
+                    // Don't scale up injuries. Or at least test it carefully first. It can cause strange results.
+                    // I think the growth ray ticking down might also kill a pawn if we don't refresh at each Hediff stage
+                    // which would be a pain.
+                    //injuryScale = Mathf.Min(1, injuryScale);
+
+                    var injuries = new List<Hediff_Injury>();
+                    __instance.health.hediffSet.GetHediffs(ref injuries);
+                    foreach (var injury in injuries)
+                    {
+                        injuryRescaling[injury] = injury.Severity;
+                        injury.SetSeverityNoEvent(injury.Severity * injuryScale);
+                        if (injury.Severity < 0.05f) // Delete tiny injuries.
+                        {
+                            injury.SetSeverityNoEvent(0);
                         }
                     }
+                    sizeCache.injuriesRescaled = true;
                 }
+                lastTick = thisTick;
                 __result = newScale;
             }
 
@@ -80,18 +106,12 @@ namespace BigAndSmall
         public static void Prefix(ref Pawn ___pawn, out float __state)
         {
             __state = ___pawn.def.race.baseHungerRate;
-            if (___pawn != null
-                && ___pawn.needs != null
-                && ___pawn.DevelopmentalStage > DevelopmentalStage.Baby)
+            if (FastAcccess.GetCache(___pawn) is BSCache sizeCache && ___pawn.DevelopmentalStage > DevelopmentalStage.Baby)
             {
-                var sizeCache = HumanoidPawnScaler.GetBSDict(___pawn);
-                if (sizeCache != null)
-                {
-                    float hungerRate = __state * Mathf.Max(sizeCache.scaleMultiplier.linear, sizeCache.scaleMultiplier.DoubleMaxLinear);
-                    float finalHungerRate = Mathf.Lerp(__state, hungerRate, BigSmallMod.settings.hungerRate);
+                float hungerRate = __state * Mathf.Max(sizeCache.scaleMultiplier.linear, sizeCache.scaleMultiplier.DoubleMaxLinear);
+                float finalHungerRate = Mathf.Lerp(__state, hungerRate, BigSmallMod.settings.hungerRate);
 
-                    ___pawn.def.race.baseHungerRate = finalHungerRate;
-                }
+                ___pawn.def.race.baseHungerRate = finalHungerRate;
             }
         }
 

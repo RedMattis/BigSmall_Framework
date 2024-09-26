@@ -59,9 +59,7 @@ namespace BigAndSmall
                     bool ageCheck = morphDownRequiresAge == null || pawnAge < morphDownRequiresAge;
                     if (ageCheck)
                     {
-                        //Log.Message($"[DEBUG]: {pawn}: MorphChain: PRE-FilterMorphing down to {downstreamXenos} possible morphs ({downstreamXenos.Join(x => x.defName, ", ")}). Total Weight of {downstreamXenos.Sum(x => x.GetMorphWeight())}");
                         var pickList = TryFilterByGender(pawn?.gender, downstreamXenos);
-                        Log.Message($"[DEBUG]: {pawn}: MorphChain: Morphing down to {pickList.Count} possible morphs ({downstreamXenos.Join(x=>x.defName, ", ")}). Total Weight of {pickList.Sum(x => x.GetMorphWeight())}");
                         result = pickList.RandomElementByWeight(x => x.GetMorphWeight());
                         return result;
                     }

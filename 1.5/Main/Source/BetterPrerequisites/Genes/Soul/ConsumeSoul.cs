@@ -234,10 +234,6 @@ namespace BigAndSmall
             }
             target.psychicEntropy?.OffsetPsyfocusDirectly(0.6f);
 
-            //Log.Message("DEBUG: SoulPower: " + target.GetStatValue(BSDefs.BS_SoulPower) + " GainOffset: " + gainPS + " Total: " + (gainFromSoulPower + gainPS));
-            //Log.Message($"DEBUG: {originalAmount} -> {postCap} -> {gainFromSoulPower}");
-            //Log.Message($"DEBUG: {gainFromSoulPower} + {gainPS} -> {preFalloffTotalGain} -> {actualGain}");
-
             if (gainSkillMultiplier != null && target.skills != null)
             {
                 //foreach (var skill in pawn.skills.skills)

@@ -366,6 +366,7 @@ namespace BigAndSmall
             foreach (var gene in genesToRemove)
             {
                 pawn.genes.RemoveGene(gene);
+                pawn.story.traits.Notify_GeneRemoved(gene);
             }
         }
     }

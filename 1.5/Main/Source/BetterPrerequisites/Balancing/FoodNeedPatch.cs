@@ -24,23 +24,20 @@ namespace BigAndSmall
                     float newFoodCapacity = __result * cache.foodNeedCapacityMult * Mathf.Max(1, cache.scaleMultiplier.linear);
                     __result = newFoodCapacity;
 
-                    if (cache.previousFoodCapacity != null)
+                    // if newMaxlevel is not approximately equals to previous max level....
+                    if (!Mathf.Approximately(newFoodCapacity, cache.previousFoodCapacity))
                     {
-                        // if newMaxlevel is not approximately equals to previous max level....
-                        if (!Mathf.Approximately(newFoodCapacity, cache.previousFoodCapacity.Value))
-                        {
-                            float foodLevel = ___curLevelInt;
-                            float currentPercent = foodLevel / newFoodCapacity;
-                            float previousPercent = foodLevel / cache.previousFoodCapacity.Value;
+                        float foodLevel = ___curLevelInt;
+                        float currentPercent = foodLevel / newFoodCapacity;
+                        float previousPercent = foodLevel / cache.previousFoodCapacity;
 
-                            // Multiply the food level so we retain the same percentage of food.
-                            ___curLevelInt = foodLevel * (previousPercent / currentPercent);
-                            
-                            // Check if the value is valid, if not set it to 50%
-                            if (float.IsNaN(___curLevelInt) || float.IsInfinity(___curLevelInt))
-                            {
-                                ___curLevelInt = newFoodCapacity * 0.5f;
-                            }
+                        // Multiply the food level so we retain the same percentage of food.
+                        ___curLevelInt = foodLevel * (previousPercent / currentPercent);
+
+                        // Check if the value is valid, if not set it to 50%
+                        if (float.IsNaN(___curLevelInt) || float.IsInfinity(___curLevelInt))
+                        {
+                            ___curLevelInt = newFoodCapacity * 0.5f;
                         }
                     }
 

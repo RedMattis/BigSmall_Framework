@@ -18,7 +18,7 @@ namespace BigAndSmall
         [HarmonyPrefix]
         public static bool AppendThoughts_RelationsPrefix(Pawn victim, DamageInfo? dinfo, PawnDiedOrDownedThoughtsKind thoughtsKind, List<IndividualThoughtToAdd> outIndividualThoughts, List<ThoughtToAddToAll> outAllColonistsThoughts)
         {
-            if (victim != null)
+            if (victim != null && thoughtsKind == PawnDiedOrDownedThoughtsKind.Died)
             {
                 if (FastAcccess.GetCache(victim) is BSCache cache)
                 {

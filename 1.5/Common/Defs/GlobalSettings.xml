@@ -34,6 +34,16 @@
         <li>Exoskin</li>
         <li>Insectoid_body</li>
         <li>BP_BeeHead</li>
+        <li>BTEIst_MegaspiderTail</li>
+        <li>BTEIst_MegaspiderHead</li>
+        <li>BTEIst_MegaspiderSkin</li>
+        <li>BTEIst_InsectoidPresence</li>
+        <li>BTEIst_SpelopedeTail</li>
+        <li>BTEIst_SpelopedeHead</li>
+        <li>BTEIst_SpelopedeSkin</li>
+        <li>BTEIst_MegascarabTail</li>
+        <li>BTEIst_MegascarabHead</li>
+        <li>BTEIst_MegascarabSkin</li>
       </li>
       <li>
         <li>LoS_MarlithBody</li>

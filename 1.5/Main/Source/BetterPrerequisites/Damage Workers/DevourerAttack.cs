@@ -82,7 +82,6 @@ namespace BigAndSmall
                         {
                             rottable.RotProgress = rottable.PropsRot.TicksToDessicated + 10;
                         }
-                        Log.Message($"Set rottable to {rottable.RotProgress}");
                         nutritionAmount *= 5;
                         instigator.stances.stunner.StunFor(100, instigator);
                         Gibblets.SpawnGibblets(pawn, instigator.Position, instigator.Map, bloodMin: 7, bloodMax: 30, gibbletMin: 1, gibbletMax: 2, gibbletChance: 0.7f, randomOrganChance: 0.1f);

@@ -22,12 +22,12 @@ namespace BigAndSmall
                 return true;
             }
 
-            Log.Message("Signature match not found");
+            //Log.Message("Signature match not found");
             foreach (var obj in input)
             {
                 if (obj is MemberInfo memberObj)
                 {
-                    Log.Message($"\tValid entry:{memberObj}");
+                    //Log.Message($"\tValid entry:{memberObj}");
                 }
             }
 

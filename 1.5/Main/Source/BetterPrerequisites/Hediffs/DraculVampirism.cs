@@ -91,7 +91,7 @@ namespace BigAndSmall
                     Log.Warning($"Failed to set Dracul Stage. Defaulting to {targetXenoType}");
                     break;
             }
-            Log.Message($"Upgrading vampirism xenotype to ({targetXenoType})");
+
 
             
             var spawn = DefDatabase<XenotypeDef>.AllDefsListForReading.Where(x => x.defName == targetXenoType);
@@ -205,7 +205,6 @@ namespace BigAndSmall
                 {
                     factionOfMaster = enemyFaction;
                 }
-                Log.Message($"{pawn.Label}'s vampirism master was assigned to the {factionOfMaster}");
             }
         }
 
@@ -310,12 +309,8 @@ namespace BigAndSmall
 
                     return true;
                 }
-                //Log.Message("[DraculVampirism] " + pawn.Name.ToStringShort + " is dead, but not yet ready to reanimate.");
-
-
             }
             return false;
-            //Log.Message($"[DraculVampirism] {pawn.Name.ToStringShort} is not dead.");
         }
 
         private void EjectCorpse()

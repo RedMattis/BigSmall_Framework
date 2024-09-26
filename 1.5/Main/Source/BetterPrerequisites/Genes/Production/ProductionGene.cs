@@ -123,7 +123,6 @@ namespace BigAndSmall
                     // Reset progress.
                     fullness = 0;
                 }
-                //Log.Message($"Fullness for {ResourceDef.defName} is {fullness} for {pawn.Name}");
             }
 
             if (Active)

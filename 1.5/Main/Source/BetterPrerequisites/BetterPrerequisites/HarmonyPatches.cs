@@ -66,9 +66,12 @@ namespace BetterPrerequisites
     [HarmonyPatch(typeof(Pawn), nameof(Pawn.SpawnSetup))]
     public static class Pawn_SpawnSetup
     {
-        public static void Postfix(Pawn __instance)
+        public static void Postfix(Pawn __instance, bool respawningAfterLoad)
         {
-            Pawn_PostMapInit.RefreshPawnGenes(__instance);
+            if (!respawningAfterLoad)
+            {
+                Pawn_PostMapInit.RefreshPawnGenes(__instance, forceRefresh:false);
+            }
         }
     }
 
@@ -78,10 +81,10 @@ namespace BetterPrerequisites
     {
         public static void Postfix(Pawn __instance)
         {
-            RefreshPawnGenes(__instance);
+            RefreshPawnGenes(__instance, forceRefresh:true);
         }
 
-        public static void RefreshPawnGenes(Pawn __instance)
+        public static void RefreshPawnGenes(Pawn __instance, bool forceRefresh=true)
         {
             if (__instance != null)
             {
@@ -103,7 +106,10 @@ namespace BetterPrerequisites
                 {
                     GeneEffectManager.RefreshGeneEffects(gene, activate: true);
                 }
-                HumanoidPawnScaler.GetBSDict(__instance, forceRefresh: true);
+                if (forceRefresh)
+                {
+                    HumanoidPawnScaler.GetBSDict(__instance, forceRefresh: true);
+                }
             }
             else
             {
