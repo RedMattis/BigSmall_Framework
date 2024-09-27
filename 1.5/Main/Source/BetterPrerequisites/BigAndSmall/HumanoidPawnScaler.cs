@@ -212,7 +212,7 @@ namespace BigAndSmall
         public float minimumLearning = 0;
         public float growthPointGain = 1;
         public float foodNeedCapacityMult = 1;
-        public float previousFoodCapacity = 1;
+        public float? previousFoodCapacity = null;
         public float headSizeMultiplier = 1;
 
         /// <summary>
@@ -469,7 +469,6 @@ namespace BigAndSmall
                 }
 
                 float minimumLearning = pawn.GetStatValue(BSDefs.SM_Minimum_Learning_Speed);
-                float foodNeedCapacityMult = pawn.GetStatValue(BSDefs.SM_Food_Need_Capacity);
 
                 // Traits on pawn
                 var traits = pawn.story?.traits?.allTraits;
@@ -544,7 +543,6 @@ namespace BigAndSmall
                     lastUpdateTick = currentTick;
                     previousScaleMultiplier = this.scaleMultiplier;  // First time this runs on a pawn after loading this will be 1.
                     healthMultiplier_previous = CalculateHealthMultiplier(this.scaleMultiplier, pawn);
-                    previousFoodCapacity = this.foodNeedCapacityMult;
                 }
 
                 // Set Cache Values
@@ -563,8 +561,7 @@ namespace BigAndSmall
                 this.cosmeticScaleMultiplier = cosmeticScaleMultiplier;
                 this.minimumLearning = minimumLearning;
                 this.growthPointGain = pawn.GetStatValue(BSDefs.SM_GrowthPointAccumulation);
-                this.previousFoodCapacity = this.foodNeedCapacityMult;
-                this.foodNeedCapacityMult = foodNeedCapacityMult;
+                this.foodNeedCapacityMult = pawn.GetStatValue(BSDefs.SM_Food_Need_Capacity);
                 headSizeMultiplier = headSize;
                 isBloodFeeder = IsBloodfeederPatch.IsBloodfeeder(pawn) || bleedState == BSCache.BleedRateState.NoBleeding;
                 this.hasSizeAffliction = hasSizeAffliction;

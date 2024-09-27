@@ -3,6 +3,8 @@
 
   <BS_CacheUpdateTickRate>Tick Update Frequency (Higher = Better Performance)</BS_CacheUpdateTickRate>
   <BS_RealtimeUpdate>Real-time Update System</BS_RealtimeUpdate>
+  <BS_MiscGameMechanics>Misc Game Mechanics</BS_MiscGameMechanics>
+  <BS_PatchPlayerFactions>Patch Player Faction</BS_PatchPlayerFactions>
   <BS_GameMechanics>Game Mechanics</BS_GameMechanics>
   <BS_ScaleAnimals>Apply Scaling and other behaviour to Animals</BS_ScaleAnimals>
   <BS_LowestUsed>Note: LOWEST of Multiplicate and Linear damage will be used for each given attack.</BS_LowestUsed>

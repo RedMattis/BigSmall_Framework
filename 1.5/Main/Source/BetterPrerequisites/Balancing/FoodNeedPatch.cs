@@ -18,26 +18,41 @@ namespace BigAndSmall
             if (___pawn?.needs != null
                 && !___pawn.AnimalOrWildMan())
             {
-                var cache = HumanoidPawnScaler.GetBSDict(___pawn);
-                if (cache != null)
+                if (HumanoidPawnScaler.GetBSDict(___pawn) is BSCache cache)
                 {
-                    float newFoodCapacity = __result * cache.foodNeedCapacityMult * Mathf.Max(1, cache.scaleMultiplier.linear);
-                    __result = newFoodCapacity;
-
-                    // if newMaxlevel is not approximately equals to previous max level....
-                    if (!Mathf.Approximately(newFoodCapacity, cache.previousFoodCapacity))
+                    float scale = cache.scaleMultiplier.linear;
+                    float newFoodCapacity = __result * cache.foodNeedCapacityMult;
+                    if (scale > 1f)
                     {
-                        float foodLevel = ___curLevelInt;
-                        float currentPercent = foodLevel / newFoodCapacity;
-                        float previousPercent = foodLevel / cache.previousFoodCapacity;
-
-                        // Multiply the food level so we retain the same percentage of food.
-                        ___curLevelInt = foodLevel * (previousPercent / currentPercent);
-
-                        // Check if the value is valid, if not set it to 50%
-                        if (float.IsNaN(___curLevelInt) || float.IsInfinity(___curLevelInt))
+                        scale = Mathf.Clamp01((scale-1) / 3);
+                        newFoodCapacity *= Mathf.Lerp(1, 3f, scale);
+                    }
+                    else if (scale < 1f) // Don't shrink the food bar too much or they will waste an unreasonably large amount of food from meals.
+                    {
+                        newFoodCapacity = (newFoodCapacity / scale + newFoodCapacity) / 2;
+                    }
+                    __result = newFoodCapacity;
+                    if (cache.previousFoodCapacity is float prevFoodCap)
+                    {
+                        // if newMaxlevel is not approximately equals to previous max level....
+                        if (!Mathf.Approximately(newFoodCapacity, prevFoodCap))
                         {
-                            ___curLevelInt = newFoodCapacity * 0.5f;
+                            float foodLevel = ___curLevelInt;
+                            float currentPercent = foodLevel / newFoodCapacity;
+                            float previousPercent = foodLevel / prevFoodCap;
+
+                            ___curLevelInt = foodLevel * (previousPercent / currentPercent);
+
+                            // Check if the value is valid, if not set it to 50%
+                            if (float.IsNaN(___curLevelInt) || float.IsInfinity(___curLevelInt))
+                            {
+                                ___curLevelInt = newFoodCapacity * 0.5f;
+                            }
+                            // Check if the value is more than 300% if so set it to 300%
+                            else if (___curLevelInt > newFoodCapacity * 3)
+                            {
+                                ___curLevelInt = newFoodCapacity * 3;
+                            }
                         }
                     }
 
