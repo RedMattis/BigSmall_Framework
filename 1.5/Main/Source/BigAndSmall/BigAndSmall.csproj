@@ -59,12 +59,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Rendering\Compatibility\VEF_DrawSettings.cs" />
-    <Compile Include="Rendering\Compatibility\VLFacial_Patches.cs" />
-    <Compile Include="Rendering\Compatibility\ZAnimationMod.cs" />
-    <Compile Include="Rendering\GraphicMeshSet_MeshAt.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Rendering\HumanlikeMeshPoolUtility.cs" />
-    <Compile Include="Rendering\PawnRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

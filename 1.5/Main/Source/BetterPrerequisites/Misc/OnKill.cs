@@ -84,7 +84,7 @@ namespace BigAndSmall
             float deadRisingChance = VUReturning.DeadRisingChance;
 
 
-            if (!ModsConfig.IsActive("RedMattis.Undead"))
+            if (!ModsConfig.IsActive("RedMattis.Undead") || BigSmallMod.settings.preventUndead)
             {
                 // This means we're only using the Yokai mod. Don't cause undead to rise unless specifically triggered.
                 zombieApocChance = 0;
@@ -146,7 +146,7 @@ namespace BigAndSmall
                 }
 
                 // 10% chance of reanimation if Colonist
-                if (__instance.Faction == Faction.OfPlayer && ModsConfig.IsActive("RedMattis.Undead"))
+                if (__instance.Faction == Faction.OfPlayer && ModsConfig.IsActive("RedMattis.Undead") && !BigSmallMod.settings.preventUndead)
                 {
                     if (Rand.Chance(VUReturning.ReturnChanceColonist))
                     {

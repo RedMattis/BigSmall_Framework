@@ -16,7 +16,7 @@ namespace BigAndSmall
         {
             if (HumanoidPawnScaler.GetBSDict(__instance) is BSCache sizeCache)
             {
-                __result += sizeCache.sizeOffset;
+                __result += sizeCache.totalSizeOffset;
                 if (__result < 0.05f)
                 {
                     __result = 0.05f;

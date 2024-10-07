@@ -23,6 +23,8 @@ namespace BigAndSmall
     {
         public static ConcurrentDictionary<T, V> Cache { get; set; } = new ConcurrentDictionary<T, V>();
 
+        //private static ConcurrentDictionary<T, V> junkCache = new ConcurrentDictionary<T, V>();
+
         /// <summary>
         /// 
         /// </summary>
@@ -53,11 +55,17 @@ namespace BigAndSmall
             {
                 newEntry = true;
                 V newData = (V)Activator.CreateInstance(typeof(V), key);
+                bool result = true; 
                 if (canRegenerate)
                 {
-                    newData.RegenerateCache();
+                    result = newData.RegenerateCache();
+                }
+                if (!result && Cache.ContainsKey(key))  // If we failed to generate and there already is an entry, just use that.
+                {
+                    return Cache[key];
                 }
                 Cache[key] = newData;
+                
                 return newData;
             }
         }

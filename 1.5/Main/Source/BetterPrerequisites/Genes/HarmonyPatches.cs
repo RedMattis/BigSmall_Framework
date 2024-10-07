@@ -70,7 +70,12 @@ namespace BetterPrerequisites
         {
             if (!respawningAfterLoad)
             {
-                Pawn_PostMapInit.RefreshPawnGenes(__instance, forceRefresh:false);
+                float? foodNeed = __instance?.needs?.food?.CurLevelPercentage;
+                Pawn_PostMapInit.RefreshPawnGenes(__instance, forceRefresh:true);
+                if (foodNeed != null)
+                {
+                    __instance.needs.food.CurLevelPercentage = foodNeed.Value;
+                }
             }
         }
     }
@@ -265,7 +270,7 @@ namespace BetterPrerequisites
 
 
     [HarmonyPatch(typeof(Gene), "PostRemove")]
-    public static class VanillaGenesExpanded_Gene_PostRemove_Patch
+    public static class Gene_PostRemovePatch
     {
         public static void Postfix(Gene __instance)
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime;
@@ -6,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
-using static HarmonyLib.Code;
+using static BigAndSmall.SettingsWidgets;
 
 namespace BigAndSmall
 {
@@ -63,45 +64,75 @@ namespace BigAndSmall
             Widgets.BeginScrollView(rect3, ref scrollPosition, rect4);
 
             listStd.Begin(rect4.AtZero());
-            //listStd.TextFieldNumericLabeled("BS_CacheUpdateTickRate".Translate(), ref settings.cacheUpdateFrequency, ref cacheTickTxt, 250, 10000);
-            //listStd.CheckboxLabeled("BS_RealtimeUpdate".Translate(), ref settings.realTimeUpdates, 1);
+
+            // Reset Cache Button
+            if (listStd.ButtonText("BS_ResetCache".Translate()))
+            {
+                var pawns = HumanoidPawnScaler.Cache.Keys.Select(x=>x).ToList();
+                BigAndSmallCache.scribedCache = [];
+                BigAndSmallCache.refreshQueue.Clear();
+                BigAndSmallCache.queuedJobs.Clear();
+                BigAndSmallCache.schedulePostUpdate.Clear();
+                BigAndSmallCache.scheduleFullUpdate.Clear();
+                HumanoidPawnScaler.Cache = new ConcurrentDictionary<Pawn, BSCache>();
+                Log.Message($"Reset Cache. Updating cache for {pawns.Count} pawns.");
+                foreach (var pawn in pawns.Where(x => x != null && !x.Discarded && !x.Destroyed))
+                {
+                    if (HumanoidPawnScaler.GetBSDict(pawn, forceRefresh:true, canRegenerate:true) is BSCache cache)
+                    {
+                        Log.Message($"Big and Small: Reset cache for {pawn}");
+                        //try
+                        //{
+                        //    //Log.Message($"Big and Small: Force-Regen...{pawn}");
+                        //    //cache.RegenerateCache();
+                        //}
+                        //catch (Exception e)
+                        //{
+                        //    Log.Warning($"Big and Small: Error updating cache for {pawn}: {e}");
+                        //}
+                    }
+                }
+            }
+            if (listStd.ButtonText("BS_ResetSettings".Translate()))
+            {
+                settings.ResetToDefault();
+            }
+
+
             listStd.Label("BS_GenesSpecific".Translate().AsTipTitle());
-            listStd.Label("BS_DoDefGeneration".Translate());
-            listStd.CheckboxLabeled("", ref settings.generateDefs, 0);
+            CreateSettingCheckbox(listStd, "BS_DoDefGeneration".Translate(), ref settings.generateDefs);
             listStd.GapLine();
 
             listStd.Label("BS_GameMechanics".Translate().AsTipTitle());
-            listStd.Label("BS_ScaleAnimals".Translate());
-            listStd.CheckboxLabeled("", ref settings.scaleAnimals, 0);
+            CreateSettingCheckbox(listStd, "BS_ScaleAnimals".Translate(), ref settings.scaleAnimals);
+            CreateSettingCheckbox(listStd, "BS_PreventUndead".Translate(), ref settings.preventUndead);
             listStd.GapLine();
             listStd.Label("BS_LowestUsed".Translate());
-            listStd.Label("BS_MultDamageExplain".Translate());
-            listStd.TextFieldNumericLabeled("BS_DamageExponentExplain".Translate(), ref settings.dmgExponent, ref damageScaleTxt, min: 0.00f, max: 2f);
-            listStd.Label("BS_FlatDMGExplain".Translate());
-            listStd.TextFieldNumericLabeled("BS_FlatDamageBonunsField".Translate(), ref settings.flatDamageIncrease, ref damageFlatTxt, min: 1, max: 999f);
+
+            CreateSettingsSlider(listStd, "BS_MultDamageExplain".Translate(), ref settings.dmgExponent, min:0, max:2, valueFormatter: (f) => $"{f*100:F2}%");
+            CreateSettingsSlider(listStd, "BS_FlatDMGExplain".Translate(), ref settings.flatDamageIncrease, 1f, 20f, (f) => $"{f:F0}");
+
             listStd.GapLine();
-            listStd.Label("BS_NutritionBurnExplain".Translate());
-            listStd.TextFieldNumericLabeled("BS_HungerMultiplierField".Translate(), ref settings.hungerRate, ref hungerScaleTxt, min: 0.0f, max: 1f);
+            CreateSettingsSlider(listStd, "BS_HungerMultiplierField".Translate(), ref settings.hungerRate, 0f, 1, (f) => $"{f*100:F0}%");
             listStd.GapLine();
 
             listStd.Label("BS_MiscGameMechanics".Translate().AsTipTitle());
-            listStd.CheckboxLabeled("BS_PatchPlayerFactions", ref settings.patchPlayerFactions, 1);
+            CreateSettingCheckbox(listStd, "BS_PatchPlayerFactions".Translate(), ref settings.patchPlayerFactions);
             listStd.GapLine();
 
             listStd.Label("BS_Rendering".Translate().AsTipTitle());
-            listStd.CheckboxLabeled("Size offsets pawn", ref settings.offsetBodyPos, 0);
-            listStd.CheckboxLabeled("BS_DisabeVFCachine".Translate(), ref settings.disableTextureCaching, 1);
+            CreateSettingCheckbox(listStd, "BS_SizeOffsetPawn", ref settings.offsetBodyPos);
+            CreateSettingCheckbox(listStd, "BS_DisabeVFCachine".Translate(), ref settings.disableTextureCaching);
             listStd.Label("BS_ScalePawnDefault".Translate());
-            listStd.TextFieldNumericLabeled("BS_ScaleLargerPawns".Translate(), ref settings.visualLargerMult, ref sizeLargerMultTxt, min: 0.05f, max: 20f);
-            listStd.TextFieldNumericLabeled("BS_ScaleSmallerPawns".Translate(), ref settings.visualSmallerMult, ref sizeSmallerMultTxt, min: 0.05f, max: 1f);
+            CreateSettingsSlider(listStd, "BS_ScaleLargerPawns".Translate(), ref settings.visualLargerMult, min: 0.05f, max: 20f);
+            CreateSettingsSlider(listStd, "BS_ScaleSmallerPawns".Translate(), ref settings.visualSmallerMult, min: 0.05f, max: 1f);
             listStd.GapLine();
             listStd.Label("BS_HeadSizeExplain".Translate());
-            listStd.TextFieldNumericLabeled("BS_HeadExponentLargeField".Translate(), ref settings.headPowLarge, ref headPowLargeTxt, min: -2.00f, max: 2f);
+            CreateSettingsSlider(listStd, "BS_HeadExponentLargeField".Translate(), ref settings.headPowLarge, min: -2.00f, max: 2f);
             listStd.Label("BS_HeadExponentSmallExplain".Translate());
-            listStd.TextFieldNumericLabeled("BS_HeadExponentSmalleField".Translate(), ref settings.headPowSmall, ref headPowSmallTxt, min: -1.00f, max: 2f);
+            CreateSettingsSlider(listStd, "BS_HeadExponentSmalleField".Translate(), ref settings.headPowSmall, min: -1.00f, max: 2f);
             listStd.GapLine();
-            listStd.Label("BS_NormalizeBodyType".Translate());
-            listStd.CheckboxLabeled("", ref settings.scaleBodyTypes, 0);
+            CreateSettingCheckbox(listStd, "BS_NormalizeBodyType".Translate(), ref settings.scaleBodyTypes);
 
             
 
@@ -160,6 +191,9 @@ namespace BigAndSmall
         private static readonly bool defaultPatchPlayerFactions = true;
         public bool patchPlayerFactions = defaultPatchPlayerFactions;
 
+        public static readonly bool defaultPreventUndead = false;
+        public bool preventUndead = defaultPreventUndead;
+
         public override void ExposeData()
         {
             Scribe_Values.Look(ref generateDefs, "generateDefs", defaultGenerateDefs);
@@ -177,7 +211,27 @@ namespace BigAndSmall
             //Scribe_Values.Look(ref offsetBodyPos, "offsetBodyPos_EXPERIMENTAL", defaultOffsetBodyPos);
             Scribe_Values.Look(ref offsetBodyPos, "offsetBodyPos", defaultOffsetBodyPos);
             Scribe_Values.Look(ref patchPlayerFactions, "patchPlayerFactions", defaultPatchPlayerFactions);
+            Scribe_Values.Look(ref preventUndead, "preventUndead", defaultPreventUndead);
             base.ExposeData();
+        }
+
+        public void ResetToDefault()
+        {
+            generateDefs = defaultGenerateDefs;
+            visualLargerMult = defaultVisualLargerMult;
+            visualSmallerMult = defaultVisualSmallerMult;
+            headPowLarge = defaultHeadPowLarge;
+            headPowSmall = defaultHeadPowSmall;
+            dmgExponent = defaultDmgExponent;
+            hungerRate = defaultHungerRate;
+            scaleAnimals = defaultScaleAnimals;
+            scaleBodyTypes = defaultScaleBT;
+            flatDamageIncrease = defaultFlatDmgIncrease;
+            disableTextureCaching = defaultDisableTextureCaching;
+            realTimeUpdates = defaultRealTimeUpdates;
+            offsetBodyPos = defaultOffsetBodyPos;
+            patchPlayerFactions = defaultPatchPlayerFactions;
+            preventUndead = defaultPreventUndead;
         }
     }
 }

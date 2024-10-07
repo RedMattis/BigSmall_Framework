@@ -112,13 +112,12 @@ namespace BigAndSmall
             }
             if (req.HasThing && req.Thing.Spawned && req.Thing is Pawn pawn)
             {
-                if (FastAcccess.GetCache(pawn) is BSCache cache)
+                
+                if (pawn.GetStatValue(StatDefOf.PsychicSensitivity, cacheStaleAfterTicks:10000) >= SensitivityThreshold)
                 {
-                    if (cache.psychicSensitivity >= SensitivityThreshold)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
+                
             }
             return false;
         }

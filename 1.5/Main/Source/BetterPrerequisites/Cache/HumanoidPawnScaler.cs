@@ -20,7 +20,7 @@ namespace BigAndSmall
         public static bool regenerationAttempted = false;
         public Game game;
 
-        public Queue<Pawn> refreshQueue = new();
+        public static Queue<Pawn> refreshQueue = new();
 
         public static Queue<Action> queuedJobs = new();
 
@@ -134,22 +134,25 @@ namespace BigAndSmall
         /// null-check everything that calls this method.
         /// </summary>
         /// <returns></returns>
-        public static BSCache GetBSDict(Pawn pawn, bool forceRefresh = false, bool regenerateIfTimer = false, bool canRegenerate=true, bool scheduleForce=false)
+        public static BSCache GetBSDict(Pawn pawn, bool forceRefresh = false, bool regenerateIfTimer = false, bool canRegenerate=true, bool scheduleForce=false)//, bool debug=false)
         {
             if (pawn == null)
             {
                 return BSCache.defaultCache;
             }
-            if (scheduleForce && forceRefresh)
-            {
-                Log.Warning("BigAndSmall: GetBSDict called with both forceRefresh and schedule set to true. This is likely a mistake.");
-            }
+
+            //if (debug)
+            //{
+            //    Log.Message($"Big & Small: Getting Cache for {pawn}\n" +
+            //        $"All parameters: forceRefresh: {forceRefresh}, regenerateIfTimer: {regenerateIfTimer}, canRegenerate: {canRegenerate}, scheduleForce: {scheduleForce}\n" +
+            //        $"Predicted Outcome: {RunNormalCalculations(pawn)} {pawn != null}&&{BigSmall.performScaleCalculations}&&({pawn.RaceProps.Humanlike}||{BigSmallMod.settings.scaleAnimals})&&({pawn.needs != null}||{pawn.Dead})");
+            //}
 
             bool newEntry;
             BSCache result;
             if (canRegenerate && RunNormalCalculations(pawn))
             {
-                result = GetCache(pawn, out newEntry, forceRefresh: forceRefresh, regenerateIfTimer: regenerateIfTimer);
+                result = GetCache(pawn, out newEntry, forceRefresh: forceRefresh, regenerateIfTimer: regenerateIfTimer, canRegenerate: true);
             }
             else
             {
@@ -211,7 +214,7 @@ namespace BigAndSmall
         }
     }
 
-    public class BSCache : IExposable, ICacheable
+    public partial class BSCache : IExposable, ICacheable
     {
         public static BSCache defaultCache = new BSCache();
 
@@ -228,17 +231,17 @@ namespace BigAndSmall
 
         public float totalSize = 1;
         public float totalCosmeticSize = 1;
-        public PercentChange scaleMultiplier = new PercentChange(1, 1, 1);
+        public PercentChange scaleMultiplier = new(1, 1, 1);
         public PercentChange previousScaleMultiplier = null;
         public PercentChange cosmeticScaleMultiplier = new(1, 1, 1);
         public float healthMultiplier = 1;
         public float healthMultiplier_previous = 1;
 
-        public float sizeOffset = 0;
+        public float totalSizeOffset = 0;
         public float minimumLearning = 0;
         public float growthPointGain = 1;
-        public float foodNeedCapacityMult = 1;
-        public float? previousFoodCapacity = null;
+        //public float foodNeedCapacityMult = 1;
+        //public float? previousFoodCapacity = null;
         public float headSizeMultiplier = 1;
 
         /// <summary>
@@ -248,7 +251,6 @@ namespace BigAndSmall
         public bool hasSizeAffliction = false;
         public float attackSpeedMultiplier = 1;
         public float attackSpeedUnarmedMultiplier = 1;
-        public float psychicSensitivity = 1;
         public float alcoholmAmount = 0;
 
         public bool canWearApparel = true;
@@ -289,7 +291,7 @@ namespace BigAndSmall
         public string savedHeadDef = null;
         //public bool disableBeards = false;
         public string savedBeardDef = null;
-        
+
 
         public int? randomPickSkinColor = null;
         public int? randomPickHairColor = null;
@@ -324,15 +326,14 @@ namespace BigAndSmall
             Scribe_Deep.Look(ref scaleMultiplier, "BS_ScaleMultiplier");
             Scribe_Deep.Look(ref previousScaleMultiplier, "BS_PreviousScaleMultiplier");
             Scribe_Deep.Look(ref cosmeticScaleMultiplier, "BS_CosmeticScaleMultiplier");
-            Scribe_Values.Look(ref sizeOffset, "BS_SizeOffset", 0);
+            Scribe_Values.Look(ref totalSizeOffset, "BS_SizeOffset", 0);
             Scribe_Values.Look(ref minimumLearning, "BS_MinimumLearning", 0);
-            Scribe_Values.Look(ref foodNeedCapacityMult, "BS_FoodNeedCapacityMult", 1);
-            Scribe_Values.Look(ref previousFoodCapacity, "BS_PreviousFoodCapacity", 1);
+            //Scribe_Values.Look(ref foodNeedCapacityMult, "BS_FoodNeedCapacityMult", 1);
+            //Scribe_Values.Look(ref previousFoodCapacity, "BS_PreviousFoodCapacity", 1);
             Scribe_Values.Look(ref headSizeMultiplier, "BS_HeadSizeMultiplier", 1);
             Scribe_Values.Look(ref isBloodFeeder, "BS_IsBloodFeeder", false);
             Scribe_Values.Look(ref hasSizeAffliction, "BS_HasSizeAffliction", false);
             Scribe_Values.Look(ref attackSpeedMultiplier, "BS_AttackSpeedMultiplier", 1);
-            Scribe_Values.Look(ref psychicSensitivity, "BS_PsychicSensitivity", 1);
             Scribe_Values.Look(ref alcoholmAmount, "BS_AlcoholAmount", 0);
             Scribe_Values.Look(ref canWearApparel, "BS_CanWearApparel", true);
             Scribe_Values.Look(ref canWearClothing, "BS_CanWearClothing", true);
@@ -385,22 +386,13 @@ namespace BigAndSmall
 
         public bool RegenerateCache()
         {
+            //Log.Message($"DEBUG! REMOVE THIS BEFORE SUBMIT: Big & Small: Regenerating Cache for {pawn.Name}");
             if (pawn == null) { throw new Exception("Big & Small: Cannot regenerate Pawn Cache because the Pawn is null."); }
             if (regenerationInProgress) { return false; }
             regenerationInProgress = true;
             try
             {
                 int tick = Find.TickManager.TicksGame;
-                var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
-                List<GeneExtension> geneExts = activeGenes
-                    .Where(x => x?.def?.modExtensions != null && x.def.modExtensions.Any(y => y.GetType() == typeof(GeneExtension)))?
-                    .Select(x => x.def.GetModExtension<GeneExtension>()).ToList();
-
-                float offsetFromSizeByAge = geneExts.Where(x => x.sizeByAge != null).Sum(x => x.GetSizeFromSizeByAge(pawn?.ageTracker?.AgeBiologicalYearsFloat));
-
-                // Multiply each value together.
-                float multiplierFromSizeMultiplierByAge = geneExts.Where(x => x.sizeByAgeMult != null).Aggregate(1f, (acc, x) => acc * x.GetSizeMultiplierFromSizeByAge(pawn?.ageTracker?.AgeBiologicalYearsFloat));
-
                 DevelopmentalStage dStage;
                 try
                 {
@@ -409,90 +401,16 @@ namespace BigAndSmall
                 catch
                 {
                     Log.Warning($"[BigAndSmall] caught an exception when fetching Developmental Stage for {pawn.Name} Aborting generation of pawn cache.\n" +
-                        $"This likely means the pawn lacks \"lifeStageAges\" or another requirement for fetching the age.");
+                        $"This likely means the pawn lacks \"lifeStageAges\" or another requirement for fetching the age is missing.");
                     return false;
                 }
-                float sizeFromAge = pawn?.ageTracker?.CurLifeStage?.bodySizeFactor ?? 1;
-                float baseSize = pawn?.RaceProps?.baseBodySize ?? 1;
-                float previousTotalSize = sizeFromAge * baseSize;
 
-                float sizeOffset = pawn.GetStatValue(BSDefs.SM_BodySizeOffset) + offsetFromSizeByAge;
-                float cosmeticSizeOffset = pawn.GetStatValue(BSDefs.SM_Cosmetic_BodySizeOffset);
-                float sizeMultiplier = pawn.GetStatValue(BSDefs.SM_BodySizeMultiplier) * multiplierFromSizeMultiplierByAge;
-                float cosmeticMultiplier = pawn.GetStatValue(BSDefs.SM_Cosmetic_BodySizeMultiplier);
-
-                cosmeticSizeOffset += sizeOffset;
-
-                float totalCosmeticMultiplier = sizeMultiplier + cosmeticMultiplier - 1;
-
-                float bodySizeOffset = ((baseSize + sizeOffset) * sizeMultiplier * sizeFromAge) - previousTotalSize;
-
-                float bodySizeCosmeticOffset = ((baseSize + cosmeticSizeOffset) * totalCosmeticMultiplier * sizeFromAge) - previousTotalSize;
-
-                // Get total size
-                float totalSize = bodySizeOffset + previousTotalSize;
-                float totalCosmeticSize = bodySizeCosmeticOffset + previousTotalSize;
-
-                // Check if the pawn has a hediff with a name starting with BS_Affliction
+                var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
+                List<GeneExtension> geneExts = activeGenes
+                    .Where(x => x?.def?.modExtensions != null && x.def.modExtensions.Any(y => y.GetType() == typeof(GeneExtension)))?
+                    .Select(x => x.def.GetModExtension<GeneExtension>()).ToList();
                 bool hasSizeAffliction = ScalingMethods.CheckForSizeAffliction(pawn);
-                if (!hasSizeAffliction)
-                {
-                    ////////////////////////////////// 
-                    // Clamp Total Size
-
-                    // Prevent babies from getting too large for even the giant cribs, or too smol in general.
-                    if (dStage < DevelopmentalStage.Child)
-                    {
-                        totalSize = Mathf.Clamp(totalSize, 0.05f, 0.40f);
-                        // Clamp the offset too.
-                        bodySizeOffset = Mathf.Clamp(bodySizeOffset, 0.05f - previousTotalSize, 0.40f - previousTotalSize);
-
-                    }
-                    else if (totalSize < 0.10)
-                    {
-                        totalSize = 0.10f;
-                        bodySizeOffset = 0.10f - previousTotalSize;
-                    }
-
-
-                    ////////////////////////////////// 
-                    // Clamp Offset to avoid extremes
-                    if (totalSize < 0.05f && dStage < DevelopmentalStage.Child)
-                    {
-                        bodySizeOffset = -(previousTotalSize - 0.05f);
-                    }
-                    // Don't permit babies too large to fit in cribs (0.25)
-                    else if (totalSize > 0.40f && dStage < DevelopmentalStage.Child && pawn.RaceProps.Humanlike)
-                    {
-                        bodySizeOffset = -(previousTotalSize - 0.40f);
-                    }
-                    else if (totalSize < 0.10f && dStage == DevelopmentalStage.Child)
-                    {
-                        bodySizeOffset = -(previousTotalSize - 0.10f);
-                    }
-                    // If adult basically limit size to 0.10
-                    else if (totalSize < 0.10f && dStage > DevelopmentalStage.Child && pawn.RaceProps.Humanlike)
-                    {
-                        bodySizeOffset = -(previousTotalSize - 0.10f);
-                    }
-                }
-                else
-                {
-                    // Even with funky status conditions set the limit at 2%.
-                    totalSize = Mathf.Max(totalSize, 0.02f);
-                }
-
-                float headSize = pawn.GetStatValue(BSDefs.SM_HeadSize_Cosmetic);
-
-                PercentChange scaleMultiplier = GetPercentChange(bodySizeOffset, pawn);
-                PercentChange cosmeticScaleMultiplier = GetPercentChange(bodySizeCosmeticOffset, pawn);
-
-                if (!pawn.RaceProps.Humanlike) //&& cosmeticScaleMultiplier.linear > 1.5f)
-                {
-                    // Because of how we scale animals in the ELSE-statement the scaling of animals/Mechs gets run twice.
-                    // Checking their node explicitly risks missing cases where someone uses another node.
-                    cosmeticScaleMultiplier.linear = Mathf.Sqrt(cosmeticScaleMultiplier.linear);
-                }
+                CalculateSize(dStage, geneExts, hasSizeAffliction);
 
                 float minimumLearning = pawn.GetStatValue(BSDefs.SM_Minimum_Learning_Speed);
 
@@ -561,40 +479,29 @@ namespace BigAndSmall
                 float alcoholLevel = alcoholHediff?.Severity ?? 0;
                 alcoholmAmount = alcoholLevel;
 
-                int currentTick = Find.TickManager.TicksGame;
+                //int currentTick = Find.TickManager.TicksGame;
 
                 // Set "Previous" Values. This is meant to make sure the previous values don't get overwritten before they can be used.
-                if (lastUpdateTick == null || lastUpdateTick != currentTick)
-                {
-                    lastUpdateTick = currentTick;
-                    previousScaleMultiplier = this.scaleMultiplier;  // First time this runs on a pawn after loading this will be 1.
-                    healthMultiplier_previous = CalculateHealthMultiplier(this.scaleMultiplier, pawn);
-                }
+                //if (lastUpdateTick == null || lastUpdateTick != currentTick)
+                //{
+                //    lastUpdateTick = currentTick;
+                //    previousScaleMultiplier = this.scaleMultiplier;  // First time this runs on a pawn after loading this will be 1.
+                //    healthMultiplier_previous = CalculateHealthMultiplier(this.scaleMultiplier, pawn);
+                //}
 
                 // Set Cache Values
-                this.totalSize = totalSize;
-                this.totalCosmeticSize = totalCosmeticSize;
-                this.sizeOffset = bodySizeOffset;
-
-                // The stored value (this)
-                
                 
 
                 // The current value.
-                this.scaleMultiplier = scaleMultiplier;
-                healthMultiplier = CalculateHealthMultiplier(scaleMultiplier, pawn);
-
-                this.cosmeticScaleMultiplier = cosmeticScaleMultiplier;
+                
                 this.minimumLearning = minimumLearning;
                 this.growthPointGain = pawn.GetStatValue(BSDefs.SM_GrowthPointAccumulation);
-                this.foodNeedCapacityMult = pawn.GetStatValue(BSDefs.SM_Food_Need_Capacity);
-                headSizeMultiplier = headSize;
+                //this.foodNeedCapacityMult = pawn.GetStatValue(BSDefs.SM_Food_Need_Capacity);
+                
                 isBloodFeeder = IsBloodfeederPatch.IsBloodfeeder(pawn) || bleedState == BSCache.BleedRateState.NoBleeding;
                 this.hasSizeAffliction = hasSizeAffliction;
                 attackSpeedMultiplier = pawn.GetStatValue(BSDefs.SM_AttackSpeed);
                 attackSpeedUnarmedMultiplier = pawn.GetStatValue(BSDefs.SM_UnarmedAttackSpeed);
-
-                psychicSensitivity = pawn.GetStatValue(StatDefOf.PsychicSensitivity);
 
                 canWearClothing = !(cannotWearClothing || cannotWearApparel);
                 canWearArmor = !(cannotWearArmor || cannotWearApparel);
@@ -602,10 +509,7 @@ namespace BigAndSmall
 
                 isDrone = geneExts.Any(x => x.isDrone);
 
-                if (!healthMultiplier_previous.ApproximatelyEquals(healthMultiplier))
-                {
-                    injuriesRescaled = false;
-                }
+                
 
                 // Check if they are a shambler
                 var isShambler = pawn?.mutant?.Def?.defName?.ToLower().Contains("shambler") == true;
@@ -657,6 +561,8 @@ namespace BigAndSmall
 
             return true;
         }
+
+
 
         public void ScheduleUpdate(int delayTicks)
         {
@@ -764,211 +670,7 @@ namespace BigAndSmall
             Metamorphosis.HandleMetamorph(pawn, geneExts);
         }
 
-        private static float CalculateHealthMultiplier(BSCache.PercentChange scalMult, Pawn pawn)
-        {
-            if (scalMult.linear <= 1) return scalMult.linear;
-            float percentChange = scalMult.linear;
-
-            const float maxHealthScale = 4;  // A Thrumbo has x2. (8 / 4), then it falls off.
-            float lerpScaleFactor = maxHealthScale / 1;
-
-            float raceHealthBase = pawn.RaceProps?.baseHealthScale ?? 1;
-            float raceSize = pawn.RaceProps?.baseBodySize ?? 1;
-
-            float raceHealth = raceHealthBase / raceSize;
-            float targetRaceHScale = Mathf.Max(maxHealthScale, raceHealth);
-
-            float baseSize = raceSize * pawn?.ageTracker?.CurLifeStage?.bodySizeFactor ?? 1;
-            float newSize = percentChange * baseSize;
-            float sizeChange = newSize - baseSize;
-
-            // At a total offset of +3.0, the health scale will be 8 if not better, as with a Thrumbo
-            float n = Mathf.Clamp01(sizeChange/lerpScaleFactor);
-
-            float newScale = Mathf.SmoothStep(raceHealth, targetRaceHScale, n);
-            float newScale2 = Mathf.Lerp(raceHealth, targetRaceHScale, n);
-            newScale = Mathf.Lerp(newScale, newScale2, 0.5f);
-
-            float changeInRaceScale = newScale / raceHealth;
-
-            return percentChange * changeInRaceScale;
-        }
-
-        public class PercentChange : IExposable
-        {
-            public float linear = 1;
-            public float quadratic = 1;
-            public float cubic = 1;
-            public float KelibersLaw => Mathf.Pow(cubic, 0.75f);    // Results in a colonist that does nothing but eat. Not a great idea...
-            public float DoubleMaxLinear => linear < 1 ? linear : 1 + ((linear - 1) * 2);
-            public float TripleMaxLinear => linear < 1 ? linear : 1 + ((linear - 1) * 3);
-
-            // For Scribe
-            public PercentChange() { }
-
-            public PercentChange(float linear, float quadratic, float cubic)
-            {
-                this.linear = linear;
-                this.quadratic = quadratic;
-                this.cubic = cubic;
-            }
-
-            public void ExposeData()
-            {
-                Scribe_Values.Look(ref linear, "linear", 1);
-                Scribe_Values.Look(ref quadratic, "quadratic", 1);
-                Scribe_Values.Look(ref cubic, "cubic", 1);
-            }
-        }
-
-        private static PercentChange GetPercentChange(float bodySizeOffset, Pawn pawn)
-        {
-            if (pawn != null
-                && (pawn.needs != null || pawn.Dead))
-            {
-                const float minimum = 0.2f;  // Let's not make humans sprites unreasonably small.
-                float sizeFromAge = pawn.ageTracker.CurLifeStage.bodySizeFactor;
-                float baseSize = pawn?.RaceProps?.baseBodySize ?? 1;
-                float prevBodySize = sizeFromAge * baseSize;
-                float postBodySize = prevBodySize + bodySizeOffset;
-                float percentChange = postBodySize / prevBodySize;
-                float quadratic = Mathf.Pow(postBodySize, 2) - Mathf.Pow(prevBodySize, 2);
-                float cubic = Mathf.Pow(postBodySize, 3) - Mathf.Pow(prevBodySize, 3);
-
-                // Ensure we don't get negative values.
-                percentChange = Mathf.Max(percentChange, 0.04f);
-                quadratic = Mathf.Max(quadratic, 0.04f);
-                cubic = Mathf.Max(cubic, 0.04f);
-
-                if (percentChange < minimum) percentChange = minimum;
-                return new PercentChange(percentChange, quadratic, cubic);
-            }
-            return new PercentChange(1, 1, 1);
-        }
-
-        /// <summary>
-        /// Used to get more realistic results from size changes.
-        /// F.ex. most things scale quadratically, but weight/health scales by cube.
-        /// 
-        /// Technically a Rimworld Scale isn't really linear, but this type of change gives fairly good values when going upwards.
-        /// Downwards is another story though, and we don't want small pawns to get utterly obliterated if something looks at the wrong.
-        /// </summary>
-        public enum SizeChangeType
-        {
-            Linear = 1,     // ...Height
-            Quadratic = 2,  // Muscle Strength, food consumption, health, etc.
-            Cubic = 3      // Weight
-        };
-
-        static readonly float hulkSize = 0.88f;
-        static readonly float fatSize = 0.93f;
-        static readonly float thinSize = 1.00f;
-        public float GetHeadRenderSize()
-        {
-            float bodyRSize = GetBodyRenderSize();
-
-            float bodyTypeScale = 1;
-            // Even out the cosmetic sizes of the pawn since we already have genes for the bodysize itself.
-            if (pawn.story != null && BigSmallMod.settings.scaleBodyTypes)
-            {
-                if (pawn.story.bodyType == BodyTypeDefOf.Hulk)
-                {
-                    bodyTypeScale = hulkSize;
-                }
-                else if (pawn.story.bodyType == BodyTypeDefOf.Fat)
-                {
-                    bodyTypeScale = fatSize;
-                }
-                else if (pawn.story.bodyType == BodyTypeDefOf.Thin)
-                {
-                    bodyTypeScale = thinSize;
-                }
-                bodyRSize *= 1 / bodyTypeScale;
-            }
-
-            float headSize = bodyRSize;
-
-            if (headSize > 1)
-            {
-                //headSize = Mathf.Pow(bodyRSize, 0.8f);
-                headSize = Mathf.Pow(bodyRSize, BigSmallMod.settings.headPowLarge);
-                headSize = Math.Max(bodyRSize - 0.5f, headSize);
-            }
-            else
-            {
-                // Beeg head for tiny people.
-                headSize = Mathf.Pow(bodyRSize, BigSmallMod.settings.headPowSmall);
-            }
-
-            headSize *= headSizeMultiplier;
-            return headSize;
-        }
-        public float GetBodyRenderSize()
-        {
-            float bodyScale = cosmeticScaleMultiplier.linear;
-
-            if (bodyScale == 1)
-            {
-                //return 1;
-            }
-            else if (bodyScale < 1)
-            {
-                if (!hasSizeAffliction)
-                {
-                    // Make Nisse babies smaller so they look plausible next to their parents.
-                    if (pawn.DevelopmentalStage < DevelopmentalStage.Child)
-                    {
-                        bodyScale = Mathf.Pow(bodyScale, 0.95f);
-                    }
-                    else if (pawn.DevelopmentalStage < DevelopmentalStage.Adult)
-                    {
-                        bodyScale = Mathf.Pow(bodyScale, 0.90f);
-                    }
-                    else // Don't make children/adults too small on screen.
-                    {
-                        bodyScale = Mathf.Pow(bodyScale, 0.75f);
-                    }
-                }
-                bodyScale = bodyScale * BigSmallMod.settings.visualSmallerMult;
-
-            }
-            else
-            {
-                if (pawn.DevelopmentalStage < DevelopmentalStage.Child) // Babies should still be small-ish. even for large races.
-                {
-                    bodyScale = Mathf.Pow(bodyScale, 0.40f);
-                }
-                else if (pawn.DevelopmentalStage < DevelopmentalStage.Adult) // Don't oversize children too much.
-                {
-                    bodyScale = Mathf.Pow(bodyScale, 0.50f);
-                }
-                else // Don't make large characters unreasonably huge.
-                {
-                    bodyScale = Mathf.Pow(bodyScale, 0.7f);
-                }
-                bodyScale = (bodyScale - 1) * BigSmallMod.settings.visualLargerMult + 1;
-            }
-
-            // Even out the cosmetic sizes of the pawn since we already have genes for the bodysize itself.
-            if (pawn.story != null && BigSmallMod.settings.scaleBodyTypes)
-            {
-                if (pawn.story.bodyType == BodyTypeDefOf.Hulk)
-                {
-                    bodyScale *= hulkSize;
-                }
-                else if (pawn.story.bodyType == BodyTypeDefOf.Fat)
-                {
-                    bodyScale *= fatSize;
-                }
-                else if (pawn.story.bodyType == BodyTypeDefOf.Thin)
-                {
-                    bodyScale *= thinSize;
-                }
-            }
-
-            return bodyScale;
-        }
-
+        
 
     }
 

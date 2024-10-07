@@ -1,4 +1,11 @@
 <Patch>
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/StatDef[defName="MaxNutrition"]/parts</xpath>
+		<value>
+			<li Class="BigAndSmall.StatPart_MaxNutritionFromSize"/>
+		</value>
+	</Operation>
+
 	<Operation Class="PatchOperationReplace">
 		<xpath>Defs/ThingDef[@Name="MealBaseIngredientless"]/ingestible/maxNumToIngestAtOnce</xpath>
 		<value>

@@ -7,6 +7,32 @@
         <displayAllByDefault>true</displayAllByDefault>
     </StatCategoryDef>
 
+    <!-- <StatDef>
+        <defName>BS_FinalSizeMultiplier</defName>
+        <workerClass>BigAndSmall.StatWorker_Size</workerClass>
+        <label>actual size change</label>
+        <description>Hidden value for pawn size change.</description>
+        <category>BasicsPawn</category>
+        <alwaysHide>true</alwaysHide>
+        <minValue>0.001</minValue>
+        <toStringStyle>FloatOne</toStringStyle>
+        <defaultBaseValue>1.0</defaultBaseValue>
+        <cacheable>true</cacheable>
+    </StatDef> -->
+
+    <StatDef>
+        <defName>BS_MaxNutritionFromSize</defName>
+        <workerClass>BigAndSmall.StatWorker_MaxNutritionFromSize</workerClass>
+        <label>actual size change</label>
+        <description>Hidden value used to calculate nutrition.</description>
+        <category>BasicsPawn</category>
+        <alwaysHide>true</alwaysHide>
+        <minValue>0.01</minValue>
+        <toStringStyle>FloatOne</toStringStyle>
+        <defaultBaseValue>1.0</defaultBaseValue>
+        <cacheable>true</cacheable>
+    </StatDef>
+
     <StatDef>
         <defName>SM_BodySizeOffset</defName>
         <label>body size offset</label>
@@ -42,15 +68,15 @@
     </StatDef>
 
     <StatDef>
-		<defName>SM_Cosmetic_BodySizeMultiplier</defName>
-		<label>cosmetic body size multiplier</label>
-		<description>Increases the size of the pawn by a multiple of their current size</description>
-		<alwaysHide>true</alwaysHide>
-		<category>BasicsPawn</category>
-		<toStringStyle>PercentZero</toStringStyle>
-		<defaultBaseValue>1.0</defaultBaseValue>
-		<minValue>-99</minValue>
-	</StatDef>
+        <defName>SM_Cosmetic_BodySizeMultiplier</defName>
+        <label>cosmetic body size multiplier</label>
+        <description>Increases the size of the pawn by a multiple of their current size</description>
+        <alwaysHide>true</alwaysHide>
+        <category>BasicsPawn</category>
+        <toStringStyle>PercentZero</toStringStyle>
+        <defaultBaseValue>1.0</defaultBaseValue>
+        <minValue>-99</minValue>
+    </StatDef>
 
     <StatDef>
         <defName>SM_RaidWealthMultiplier</defName>
@@ -107,7 +133,7 @@
         <toStringStyle>PercentZero</toStringStyle>
         <defaultBaseValue>0</defaultBaseValue>
         <hideAtValue>0.05</hideAtValue>
-      </StatDef>
+    </StatDef>
 
     <!-- Will not lower skill learning speed below the default. -->
     <StatDef>

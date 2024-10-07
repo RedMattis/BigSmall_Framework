@@ -105,6 +105,14 @@ namespace BigAndSmall
                 {
                     geneAdded.PostAdd();
                 }
+                if (genesRemoved.Count > 0)
+                {
+                    foreach (var nGene in genesAdded)
+                    {
+                        CustomGeneAddedOrRemovedEvent(nGene, false);
+                    }
+                }
+
                 if (genesAdded.Count > 0)
                 {
                     foreach (var nGene in genesAdded.Where(g =>
@@ -114,6 +122,10 @@ namespace BigAndSmall
                     ))
                     {
                         NotifyGenesUpdated(pawn, nGene.def);
+                    }
+                    foreach(var nGene in genesAdded)
+                    {
+                        CustomGeneAddedOrRemovedEvent(nGene, true);
                     }
                 }
                 ClearCachedGenes(pawn);
@@ -136,6 +148,18 @@ namespace BigAndSmall
             }
             // Process Overrides.
             CheckForOverrides_MethodInfo.Invoke(pawn.genes, []);
+        }
+
+        public static void CustomGeneAddedOrRemovedEvent(Gene gene, bool added)
+        {
+            if (added)
+            {
+                Gene_PostAddPatch.Postfix(gene);
+            }
+            else
+            {
+                Gene_PostRemovePatch.Postfix(gene);
+            }
         }
 
         public static List<Gene> GetActiveGeneByName(Pawn pawn, string geneName)

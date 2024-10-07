@@ -71,9 +71,9 @@ namespace BigAndSmall
             // If caching disabled...
             if (!disableCache && BigSmallMod.settings.disableTextureCaching)
             {
-                if (FastAcccess.GetCache(___pawn) is BSCache cache)
+                if (HumanoidPawnScaler.GetBSDict(___pawn, canRegenerate:false) is BSCache cache)
                 {
-                    if (cache.sizeOffset > 0 || cache.scaleMultiplier.linear > 1 || cache.renderCacheOff)
+                    if (cache.totalSizeOffset > 0 || cache.scaleMultiplier.linear > 1 || cache.renderCacheOff)
                     {
                         disableCache = true;
                     }
