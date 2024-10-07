@@ -57,7 +57,7 @@ namespace BetterPrerequisites
                 if (__instance?.pawn?.Drawer?.renderer != null && __instance.pawn.Spawned)
                 {
                     __instance.pawn.Drawer.renderer.SetAllGraphicsDirty();
-                    HumanoidPawnScaler.GetBSDict(__instance.pawn, forceRefresh: true);
+                    HumanoidPawnScaler.GetBSDict(__instance.pawn, scheduleForce: true);
                 }
             }
         }
@@ -191,7 +191,7 @@ namespace BetterPrerequisites
             // Update the Cache
             if (__instance?.pawn != null)
             {
-                HumanoidPawnScaler.GetBSDict(__instance.pawn, forceRefresh: true);
+                HumanoidPawnScaler.GetBSDict(__instance.pawn, scheduleForce: true);
                 Pawn_PostMapInit.UpdatePawnHairAndHeads(__instance.pawn);
 
                 if (__instance?.pawn?.Drawer?.renderer != null && __instance.pawn.Spawned)
@@ -200,6 +200,7 @@ namespace BetterPrerequisites
         }
     }
 
+    [HarmonyPriority(Priority.High)]
     [HarmonyPatch(typeof(Hediff), nameof(Hediff.PostRemoved))]
     public static class Hediff_PostRemove
     {
@@ -231,7 +232,7 @@ namespace BetterPrerequisites
             }
             if (__instance?.pawn != null)
             {
-                HumanoidPawnScaler.GetBSDict(__instance.pawn, forceRefresh: true);
+                HumanoidPawnScaler.GetBSDict(__instance.pawn, scheduleForce: true);
             }
         }
     }
@@ -242,6 +243,7 @@ namespace BetterPrerequisites
     {
         public static void Postfix(Gene __instance, Gene overriddenBy)
         {
+            if (!BigSmall.performScaleCalculations) return;
             bool overriden = overriddenBy != null;
             Gene gene = __instance;
             if (gene != null && gene.pawn != null && gene.pawn.Spawned)
@@ -255,7 +257,7 @@ namespace BetterPrerequisites
 
                 if (gene?.pawn != null)
                 {
-                    HumanoidPawnScaler.GetBSDict(gene.pawn, regenerateIfTimer:true);
+                    HumanoidPawnScaler.GetBSDict(gene.pawn, scheduleForce: true);
                 }
             }
         }
@@ -301,8 +303,11 @@ namespace BetterPrerequisites
 
     public static class GeneEffectManager
     {
+        private static Action<Pawn_GeneTracker, GeneDef> notifyGenesChangedDelegate = null;
+        public static Action<Pawn_SkillTracker> dirtyAptitudesDelegate = null;
         public static void GainOrRemovePassion(bool disabled, Gene gene)
         {
+            
             if (gene.def.passionMod != null && gene.def.prerequisite == null)
             {
                 if (disabled)
@@ -316,16 +321,13 @@ namespace BetterPrerequisites
                     gene.passionPreAdd = skill.passion;
                     skill.passion = gene.def.passionMod.NewPassionFor(skill);
                 }
+                // public void DirtyAptitudes()
+                dirtyAptitudesDelegate ??= AccessTools.MethodDelegate<Action<Pawn_SkillTracker>>(AccessTools.Method(typeof(Pawn_SkillTracker), "DirtyAptitudes"));
+                dirtyAptitudesDelegate(gene.pawn.skills);
 
-                MethodInfo methodInfo = AccessTools.Method("RimWorld.Pawn_GeneTracker:Notify_GenesChanged");
-                if (!(methodInfo == null))
-                {
-                    methodInfo.Invoke(gene.pawn.genes, new object[1] { gene.def });
-                }
-                //var method = gene.pawn.genes.GetType().GetMethod("Notify_GenesChanged", new Type[1]{typeof(GeneDef) });
-                //if (method != null) method.Invoke(gene.pawn.genes, new object[1] { gene });
-                else { Log.Message($"Notify_GenesChanged not found"); }
-                //gene.pawn.genes.Notify_GenesChanged(gene.def);
+                // Uh... This is questionable. Why are we notifying gene change here?
+                //notifyGenesChangedDelegate ??= AccessTools.MethodDelegate<Action<Pawn_GeneTracker, GeneDef>>(AccessTools.Method(typeof(Pawn_GeneTracker), "Notify_GenesChanged"));
+                //notifyGenesChangedDelegate(gene.pawn.genes, gene.def);
             }
         }
 

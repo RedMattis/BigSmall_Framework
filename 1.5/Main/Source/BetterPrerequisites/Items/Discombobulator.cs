@@ -153,7 +153,7 @@ namespace BigAndSmall
                 targetGenes = GeneHelpers.GetAllActiveGenes(pawn).ToList();
 
                 // Filter genes from "weird" sources, e.g. Insector.
-                targetGenes = targetGenes.Where(x => pawn.genes.Xenogenes.Contains(x) && !pawn.genes.Endogenes.Contains(x)).ToList();
+                targetGenes = targetGenes.Where(x => pawn.genes.Xenogenes.Contains(x) || pawn.genes.Endogenes.Contains(x)).ToList();
             }
             else
             {

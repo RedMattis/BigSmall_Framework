@@ -34,7 +34,7 @@
         <capMods>
           <li>
             <capacity>Consciousness</capacity>
-            <setMax>0.85</setMax>
+            <postFactor>0.8</postFactor>
           </li>
         </capMods>
         <statOffsets>

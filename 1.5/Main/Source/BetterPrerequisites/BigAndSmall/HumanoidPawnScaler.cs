@@ -24,7 +24,8 @@ namespace BigAndSmall
 
         public static Queue<Action> queuedJobs = new();
 
-        public static Dictionary<int, List<BSCache>> schedule = new();
+        public static Dictionary<int, HashSet<BSCache>> schedulePostUpdate = [];
+        public static Dictionary<int, HashSet<BSCache>> scheduleFullUpdate = [];
 
         public BigAndSmallCache(Game game)
         {
@@ -60,13 +61,25 @@ namespace BigAndSmall
 
             int currentTick = Find.TickManager.TicksGame;
 
-            if (schedule.ContainsKey(currentTick))
+            if (schedulePostUpdate.ContainsKey(currentTick))
             {
-                foreach (var job in schedule[currentTick])
+                foreach (var cache in schedulePostUpdate[currentTick])
                 {
-                    job?.DelayedUpdate();
+                    cache?.DelayedUpdate();
                 }
-                schedule.Remove(currentTick);
+                schedulePostUpdate.Remove(currentTick);
+            }
+            if (scheduleFullUpdate.ContainsKey(currentTick))
+            {
+                foreach (var cache in scheduleFullUpdate[currentTick])
+                {
+                    var cPawn = cache?.pawn;
+                    if (cPawn != null && !cPawn.Discarded)
+                    {
+                        HumanoidPawnScaler.GetBSDict(cPawn, forceRefresh: true);
+                    }
+                }
+                scheduleFullUpdate.Remove(currentTick);
             }
 
             if (currentTick % 100 != 0)
@@ -121,11 +134,15 @@ namespace BigAndSmall
         /// null-check everything that calls this method.
         /// </summary>
         /// <returns></returns>
-        public static BSCache GetBSDict(Pawn pawn, bool forceRefresh = false, bool regenerateIfTimer = false, bool canRegenerate=true)
+        public static BSCache GetBSDict(Pawn pawn, bool forceRefresh = false, bool regenerateIfTimer = false, bool canRegenerate=true, bool scheduleForce=false)
         {
             if (pawn == null)
             {
                 return BSCache.defaultCache;
+            }
+            if (scheduleForce && forceRefresh)
+            {
+                Log.Warning("BigAndSmall: GetBSDict called with both forceRefresh and schedule set to true. This is likely a mistake.");
             }
 
             bool newEntry;
@@ -159,6 +176,15 @@ namespace BigAndSmall
                 {
                     pawn.Drawer.renderer.SetAllGraphicsDirty();
                 }
+            }
+            if (scheduleForce)
+            {
+                int targetTick = Find.TickManager.TicksGame + 1;
+                if (BigAndSmallCache.scheduleFullUpdate.ContainsKey(targetTick) == false)
+                {
+                    BigAndSmallCache.scheduleFullUpdate[targetTick] = [];
+                }
+                BigAndSmallCache.scheduleFullUpdate[targetTick].Add(result);
             }
 
             return result;
@@ -635,12 +661,12 @@ namespace BigAndSmall
         public void ScheduleUpdate(int delayTicks)
         {
             int targetTick = Find.TickManager.TicksGame + delayTicks;
-            if (BigAndSmallCache.schedule.ContainsKey(targetTick) == false)
+            if (BigAndSmallCache.schedulePostUpdate.ContainsKey(targetTick) == false)
             {
-                BigAndSmallCache.schedule[targetTick] = new List<BSCache>();
+                BigAndSmallCache.schedulePostUpdate[targetTick] = [];
             }
 
-            BigAndSmallCache.schedule[targetTick].Add(this);
+            BigAndSmallCache.schedulePostUpdate[targetTick].Add(this);
         }
 
         /// <summary>

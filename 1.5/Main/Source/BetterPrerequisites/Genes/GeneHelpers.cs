@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine.SceneManagement;
 using Verse;
 
 namespace BigAndSmall
@@ -27,6 +28,114 @@ namespace BigAndSmall
             Notify_GenesChanged_MethodInfo.Invoke(pawn.genes, new object[] { geneDef });
 
             //Log.Message($"Notified genes updated for {pawn.Name} with gene {geneDef.defName}.");
+        }
+
+        public static MethodInfo CheckForOverrides_MethodInfo = null;
+
+        public static void RefreshAllGenes(Pawn pawn, List<Gene> genesAdded, List<Gene> genesRemoved)
+        {
+            if (pawn?.genes == null) return;
+            BigSmall.performScaleCalculations = false;
+            try
+            {
+                foreach (var rGene in genesRemoved)
+                {
+                    // Removes all abilities with missing genes.
+                    if (rGene.def.abilities.NullOrEmpty() == false)
+                    {
+                        foreach (var ab in rGene.def.abilities)
+                        {
+                            pawn.abilities.RemoveAbility(ab);
+                        }
+                    }
+                    // Remove all passions/skills with missing genes.
+                    if (rGene.def.passionMod != null)
+                    {
+                        SkillRecord skill = pawn.skills.GetSkill(rGene.def.passionMod.skill);
+                        skill.passion = rGene.NewPassionForOnRemoval(skill);
+                    }
+                }
+                // Remove all traits with missing genes.
+                for (int tIdx = pawn.story.traits.allTraits.Count - 1; tIdx >= 0; tIdx--)
+                {
+                    Trait trait = pawn.story.traits.allTraits[tIdx];
+                    if (trait.sourceGene != null)
+                    {
+                        if (genesRemoved.Any(x => x.def == trait.sourceGene.def))
+                        {
+                            pawn.story.traits.RemoveTrait(trait);
+                        }
+                    }
+                }
+
+                CheckForOverrides(pawn);
+
+                // Add all abilities from active genes.
+                foreach (var aGene in genesAdded.Where(g=>g.Active))
+                {
+                    if (aGene.def.abilities.NullOrEmpty() == false)
+                    {
+                        foreach (var ab in aGene.def.abilities)
+                        {
+                            pawn.abilities.GainAbility(ab);
+                        }
+                    }
+                    // Traits
+                    if (!aGene.def.forcedTraits.NullOrEmpty() && pawn.story != null)
+                    {
+                        for (int j = 0; j < aGene.def.forcedTraits.Count; j++)
+                        {
+                            Trait trait = new(aGene.def.forcedTraits[j].def, aGene.def.forcedTraits[j].degree)
+                            {
+                                sourceGene = aGene
+                            };
+                            pawn.story.traits.GainTrait(trait, suppressConflicts: true);
+                        }
+                    }
+                    // Add all passions/skills from active genes.
+                    if (aGene.def.passionMod != null)
+                    {
+                        SkillRecord skill = pawn.skills.GetSkill(aGene.def.passionMod.skill);
+                        aGene.passionPreAdd = skill.passion;
+                        skill.passion = aGene.def.passionMod.NewPassionFor(skill);
+                    }
+                    pawn.story?.traits?.RecalculateSuppression();
+                }
+                foreach (var geneAdded in genesAdded)
+                {
+                    geneAdded.PostAdd();
+                }
+                if (genesAdded.Count > 0)
+                {
+                    foreach (var nGene in genesAdded.Where(g =>
+                    g.def.skinIsHairColor || g.def.hairColorOverride != null || g.def.skinColorBase != null || g.def.skinColorOverride != null ||
+                    g.def.bodyType != null || g.def.forcedHeadTypes != null || g.def.forcedHair != null || g.def.hairTagFilter != null ||
+                    g.def.beardTagFilter != null || g.def.fur != null || g.def.RandomChosen || g.def.soundCall != null
+                    ))
+                    {
+                        NotifyGenesUpdated(pawn, nGene.def);
+                    }
+                }
+                ClearCachedGenes(pawn);
+                // Add and remove a dummy gene to force updates from HAR; etc.
+                var dummyGene = pawn.genes.AddGene(BSDefs.Robust, true);
+                pawn.genes.RemoveGene(dummyGene);
+            }
+            finally
+            {
+                BigSmall.performScaleCalculations = true;
+            }
+            FastAcccess.GetCache(pawn, force: true);
+        }
+
+        private static void CheckForOverrides(Pawn pawn)
+        {
+            if (CheckForOverrides_MethodInfo == null)
+            {
+                CheckForOverrides_MethodInfo = typeof(Pawn_GeneTracker).GetMethod("CheckForOverrides", BindingFlags.NonPublic | BindingFlags.Instance);
+            }
+            // Process Overrides.
+            CheckForOverrides_MethodInfo.Invoke(pawn.genes, []);
         }
 
         public static List<Gene> GetActiveGeneByName(Pawn pawn, string geneName)
@@ -300,6 +409,7 @@ namespace BigAndSmall
 
         public static void AddAllXenotypeGenes(Pawn pawn, XenotypeDef def, string name = null, bool xenogene = false)
         {
+            pawn.genes.SetXenotypeDirect(def);
             foreach (var xenotypeGene in def.genes)
             {
                 // Check if the pawn has the gene already
@@ -308,9 +418,9 @@ namespace BigAndSmall
                     // If not, add the gene to the pawn
                     pawn.genes.AddGene(xenotypeGene, xenogene: xenogene);
                 }
-                if (name != null)
-                    pawn.genes.xenotypeName = name;
             }
+            if (name != null)
+                pawn.genes.xenotypeName = name;
         }
 
         private static FieldInfo cachedGenesField = null;
@@ -320,8 +430,8 @@ namespace BigAndSmall
             if (genes == null) return;
             if (cachedGenesField == null)
                 cachedGenesField = AccessTools.Field(typeof(Pawn_GeneTracker), "cachedGenes");
-            var cachedGenes = cachedGenesField.GetValue(pawn.genes) as List<Gene>;
-            cachedGenes.Clear();
+            // Set the field to null.
+            cachedGenesField.SetValue(genes, null);
         }
 
         public static List<GeneExtension> GetActiveGeneExtensions(Pawn pawn)
@@ -333,12 +443,14 @@ namespace BigAndSmall
                    .Select(x => x.def.GetModExtension<GeneExtension>()).ToList();
         }
 
-        public static void ChangeXenotype(Pawn pawn, XenotypeDef targetXenottype)
+        public static void ChangeXenotypeFast(Pawn pawn, XenotypeDef targetXenottype)
         {
+            var allGenesBefore = pawn.genes.GenesListForReading.ToList();
+            var activeGenesBefore = GetAllActiveGenes(pawn);
+            var activeGeneDefsBefore = activeGenesBefore.Select(x => x.def).ToHashSet();
             bool sourceIsEndo = pawn.genes.Xenotype.inheritable;
             bool targetIsEndo = targetXenottype.inheritable;
             var xenoTypeGenes = pawn.genes.Xenotype.AllGenes.ToList();
-            var defsToNotifyChange = pawn.genes.GenesListForReading.Select(x => x.def).ToList();
 
             var currentXenoGenes = pawn.genes.Xenogenes.Select(x => x).ToList();
             if (sourceIsEndo || targetIsEndo)
@@ -346,18 +458,22 @@ namespace BigAndSmall
                 pawn.genes.Endogenes.Clear();
             }
             pawn.genes.Xenogenes.Clear();
-            ClearCachedGenes(pawn);
 
-            pawn.genes.SetXenotype(targetXenottype);
+            foreach (var gDef in targetXenottype.genes)
+            {
+                if (targetIsEndo)
+                {
+                    pawn.genes.Endogenes.Add(GeneMaker.MakeGene(gDef, pawn));
+                }
+                else
+                {
+                    pawn.genes.Xenogenes.Add(GeneMaker.MakeGene(gDef, pawn));
+                }
+            }
 
             if (sourceIsEndo && targetIsEndo) // Re-add the xenogenes.
             {
                 pawn.genes.Xenogenes.AddRange(currentXenoGenes);
-                defsToNotifyChange.AddRange(currentXenoGenes.Select(x => x.def));
-            }
-            foreach (var geneDef in defsToNotifyChange)
-            {
-                NotifyGenesUpdated(pawn, geneDef);
             }
 
             // If a gene targeting the CURRENT xenotype exists, remove it.
@@ -365,9 +481,45 @@ namespace BigAndSmall
             var genesToRemove = allGenes.Where(x => x.def.modExtensions != null && x.def.modExtensions.Any(y => y.GetType() == typeof(GeneExtension) && (y as GeneExtension).metamorphTarget == pawn.genes.Xenotype)).ToList();
             foreach (var gene in genesToRemove)
             {
+                Log.Warning($"Removing gene {gene.def.defName} from {pawn.Name} as it targets the current xenotype.");
                 pawn.genes.RemoveGene(gene);
-                pawn.story.traits.Notify_GeneRemoved(gene);
             }
+
+            ClearCachedGenes(pawn);
+            CheckForOverrides(pawn);
+
+            //var activeGenes = GetAllActiveGenes(pawn);
+            List<Gene> allGenesNow = pawn.genes.GenesListForReading.ToList();
+            List<Gene> newGenes = allGenesNow.Where(n => !allGenesBefore.Any(b=> b.def == n.def)).ToList();
+
+            List<Gene> removedGenes = allGenesBefore.Where(b => !allGenesNow.Any(n => n.def == b.def)).ToList();
+
+
+            //Log.Message($"DEBUG: {pawn.Name}\nRemoved genes: {removedGenes.Join(x => x.def.defName, ", ")}.\nAdded genes: {newGenes.Join(x => x.def.defName, ", ")}\n");
+
+            //Log.Message($"DEBUG: {pawn.Name}\nGenes Before: {allGenesBefore.Join(x => x.def.defName, ", ")}.\nGenes Now: {allGenesNow.Join(x => x.def.defName, ", ")}\n");
+
+            //foreach (var geneDef in defsToNotifyChange.Where(x => activeGeneDefsBefore.Contains(x) == false))
+            //{
+            //    NotifyGenesUpdated(pawn, geneDef);
+            //}
+
+            //var allActiveGenesNow = GetAllActiveGenes(pawn);
+            //// Go over all traits foced by a gene and check so the gene is still active.
+            //for (int tIdx = pawn.story.traits.allTraits.Count - 1; tIdx >= 0; tIdx--)
+            //{
+            //    Trait trait = pawn.story.traits.allTraits[tIdx];
+            //    if (trait.sourceGene != null)
+            //    {
+            //        if (!allActiveGenesNow.Contains(trait.sourceGene) || trait.sourceGene.Active == false)
+            //        {
+            //            pawn.story.traits.allTraits.Remove(trait);
+            //        }
+            //    }
+            //}
+
+            RefreshAllGenes(pawn, newGenes, removedGenes);
+            pawn.genes.SetXenotypeDirect(targetXenottype);
         }
     }
 }

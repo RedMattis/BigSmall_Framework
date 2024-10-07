@@ -15,8 +15,7 @@ namespace BigAndSmall
     {
         public static void Postfix(ref float __result, ref Need_Food __instance, ref Pawn ___pawn, ref float ___curLevelInt)
         {
-            if (___pawn?.needs != null
-                && !___pawn.AnimalOrWildMan())
+            if (___pawn?.needs != null && ___pawn?.RaceProps?.Humanlike == true)
             {
                 if (HumanoidPawnScaler.GetBSDict(___pawn) is BSCache cache)
                 {
@@ -44,7 +43,7 @@ namespace BigAndSmall
                             ___curLevelInt = foodLevel * (previousPercent / currentPercent);
 
                             // Check if the value is valid, if not set it to 50%
-                            if (float.IsNaN(___curLevelInt) || float.IsInfinity(___curLevelInt))
+                            if (float.IsFinite(___curLevelInt))
                             {
                                 ___curLevelInt = newFoodCapacity * 0.5f;
                             }

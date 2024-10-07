@@ -11,11 +11,22 @@ namespace BigAndSmall
 {
     public class GrowthRayHediff : HediffWithComps
     {
+        public override float Severity
+        {
+            get => base.Severity;
+            set
+            {
+                base.Severity = value;
+                HumanoidPawnScaler.GetBSDict(pawn, forceRefresh: true);
+                pawn.Drawer.renderer.SetAllGraphicsDirty();
+            }
+        }
+
         public override void Tick()
         {
             base.Tick();
             // Tick every 250 ticks
-            if (Find.TickManager.TicksGame % 250 == 0)
+            if (Find.TickManager.TicksGame % 200 == 0)
             {
                 // Refresh Cache
                 HumanoidPawnScaler.GetBSDict(pawn, forceRefresh: true);
@@ -78,6 +89,16 @@ namespace BigAndSmall
 
     public class ShrinkRayHediff : HediffWithComps
     {
+        public override float Severity
+        {
+            get => base.Severity;
+            set
+            {
+                base.Severity = value;
+                HumanoidPawnScaler.GetBSDict(pawn, forceRefresh: true);
+                pawn.Drawer.renderer.SetAllGraphicsDirty();
+            }
+        }
         public override void PostTick()
         {
             base.PostTick();

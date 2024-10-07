@@ -14,13 +14,10 @@ namespace BigAndSmall
     {
         public static void Postfix(ref float __result, Pawn pawn)
         {
-            if (pawn.needs != null)
+            var cache = HumanoidPawnScaler.GetBSDict(pawn);
+            if (cache != null)
             {
-                var cache = HumanoidPawnScaler.GetBSDict(pawn);
-                if (cache != null)
-                {
-                    __result *= cache.pregnancySpeed;
-                }
+                __result *= cache.pregnancySpeed;
             }
         }
     }

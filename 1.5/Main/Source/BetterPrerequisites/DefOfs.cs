@@ -38,6 +38,7 @@ namespace BigAndSmall
         public static TraitDef Masochist;
 
         // Genes
+        public static GeneDef Robust;
         public static GeneDef Body_Androgynous;
         public static GeneDef Body_MaleOnly;
         public static GeneDef Body_FemaleOnly;

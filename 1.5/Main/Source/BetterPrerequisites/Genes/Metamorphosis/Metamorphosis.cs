@@ -135,7 +135,7 @@ namespace BigAndSmall
                     pawnsQueuedForMorphing.Add(pawn);
                     void morphAction()
                     {
-                        GeneHelpers.ChangeXenotype(pawn, metamorphTarget);
+                        GeneHelpers.ChangeXenotypeFast(pawn, metamorphTarget);
                         pawnsQueuedForMorphing.Remove(pawn);
                     }
                     BigAndSmallCache.queuedJobs.Enqueue(morphAction);
