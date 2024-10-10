@@ -17,7 +17,7 @@ namespace BigAndSmall
             if (prey != null
                 && prey.needs != null)
             {
-                var cache = HumanoidPawnScaler.GetBSDict(prey);
+                var cache = HumanoidPawnScaler.GetCache(prey);
                 if (cache != null && cache.animalFriend)
                 {
                     __result = false;

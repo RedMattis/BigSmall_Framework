@@ -36,7 +36,7 @@ namespace BigAndSmall
             // Just random code to make sure the pawn is spawned in and is on the map.
             if (Find.TickManager.TicksGame % 250 == 0 &&  // 250 is comparable to "Rare Tick".
                 Pawn != null && Pawn.Spawned &&
-                HumanoidPawnScaler.GetBSDict(Pawn) != null &&
+                HumanoidPawnScaler.GetCache(Pawn) != null &&
                 Pawn.Map != null)
             {
                 // Check if pawn is spawned in on the map and not in a container.

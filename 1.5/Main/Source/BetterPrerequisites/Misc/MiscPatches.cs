@@ -206,7 +206,7 @@ namespace BigAndSmall
         [HarmonyPostfix]
         public static void RemoveDisfigurement(ref bool __result, Pawn pawn)
         {
-            if (HumanoidPawnScaler.GetBSDict(pawn) is BSCache cache)
+            if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache)
             {
                 if (cache.preventDisfigurement)
                 {

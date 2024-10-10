@@ -139,7 +139,7 @@ namespace BigAndSmall
             
             ApplySoulless(victim);
 
-            HumanoidPawnScaler.GetBSDict(attacker, forceRefresh: true);
+            HumanoidPawnScaler.GetCache(attacker, forceRefresh: true);
         }
 
         public static void ApplySoulless(Pawn victim)

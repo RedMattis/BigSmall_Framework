@@ -8,7 +8,7 @@ public class ZombielandSupport
     {
         if ((pawn.Dead && pawn.RaceProps.Humanlike) || pawn.needs != null)
         {
-            var sizeCache = HumanoidPawnScaler.GetBSDict(pawn);
+            var sizeCache = HumanoidPawnScaler.GetCache(pawn);
             if (sizeCache != null)
             {
                 if (sizeCache.isUnliving || sizeCache.isBloodFeeder || sizeCache.willBeUndead)
@@ -24,7 +24,7 @@ public class ZombielandSupport
     {
         if (pawn.needs != null)
         {
-            var sizeCache = HumanoidPawnScaler.GetBSDict(pawn);
+            var sizeCache = HumanoidPawnScaler.GetCache(pawn);
             if (sizeCache != null)
             {
                 if (sizeCache.deathlike)

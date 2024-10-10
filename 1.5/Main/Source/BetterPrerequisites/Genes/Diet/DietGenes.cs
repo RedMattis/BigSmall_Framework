@@ -45,7 +45,7 @@ namespace BigAndSmall
                 {
                     return true;
                 }
-                if (HumanoidPawnScaler.GetBSDict(p) is BSCache cache)
+                if (HumanoidPawnScaler.GetCache(p) is BSCache cache)
                 {
                     if (cache.diet == FoodKind.Any)
                         return true;
@@ -90,7 +90,7 @@ namespace BigAndSmall
 
             if (ingester?.Spawned == true && ingester?.RaceProps?.Humanlike == true && ingester.genes != null)
             {
-                var cache = HumanoidPawnScaler.GetBSDict(ingester);
+                var cache = HumanoidPawnScaler.GetCache(ingester);
                 if (cache != null)
                 {
                     bool ateInedible = false;

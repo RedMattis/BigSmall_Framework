@@ -35,7 +35,7 @@ namespace BetterPrerequisites
             if (WealthWatcher_ForceRecount_Patch.raidWealthActive)
             {
                 if (__instance is Pawn pawn &&
-                    HumanoidPawnScaler.GetBSDict(pawn) is BSCache cache)
+                    HumanoidPawnScaler.GetCache(pawn) is BSCache cache)
                 {
                     __result *= cache.raidWealthMultiplier;
                     __result += cache.raidWealthOffset;

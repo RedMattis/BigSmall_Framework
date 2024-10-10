@@ -18,7 +18,7 @@ namespace BigAndSmall
 
             if (!terrainTools)
             {
-                var sizeCache = HumanoidPawnScaler.GetBSDict(pawn);
+                var sizeCache = HumanoidPawnScaler.GetCache(pawn);
                 if (sizeCache != null && sizeCache.unarmedOnly)
                 {
                     // Basically go through the equipment again, and remove any verbs that were added from them.

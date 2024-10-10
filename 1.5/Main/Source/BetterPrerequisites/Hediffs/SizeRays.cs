@@ -17,7 +17,7 @@ namespace BigAndSmall
             set
             {
                 base.Severity = value;
-                HumanoidPawnScaler.GetBSDict(pawn, forceRefresh: true);
+                HumanoidPawnScaler.GetCache(pawn, forceRefresh: true);
                 pawn.Drawer.renderer.SetAllGraphicsDirty();
             }
         }
@@ -29,7 +29,7 @@ namespace BigAndSmall
             if (Find.TickManager.TicksGame % 200 == 0)
             {
                 // Refresh Cache
-                HumanoidPawnScaler.GetBSDict(pawn, forceRefresh: true);
+                HumanoidPawnScaler.GetCache(pawn, forceRefresh: true);
                 pawn.Drawer.renderer.SetAllGraphicsDirty();
             }
 
@@ -95,7 +95,7 @@ namespace BigAndSmall
             set
             {
                 base.Severity = value;
-                HumanoidPawnScaler.GetBSDict(pawn, forceRefresh: true);
+                HumanoidPawnScaler.GetCache(pawn, forceRefresh: true);
                 pawn.Drawer.renderer.SetAllGraphicsDirty();
             }
         }
@@ -107,7 +107,7 @@ namespace BigAndSmall
             if (Find.TickManager.TicksGame % 250 == 0)
             {
                 // Refresh Cache
-                HumanoidPawnScaler.GetBSDict(pawn, forceRefresh:true);
+                HumanoidPawnScaler.GetCache(pawn, forceRefresh:true);
                 pawn.Drawer.renderer.SetAllGraphicsDirty();
             }
 

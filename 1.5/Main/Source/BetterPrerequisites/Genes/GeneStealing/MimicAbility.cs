@@ -106,7 +106,7 @@ namespace BigAndSmall
             }
 
             // Get cache
-            HumanoidPawnScaler.GetBSDict(pawn, forceRefresh: true);
+            HumanoidPawnScaler.GetCache(pawn, forceRefresh: true);
         }
     }
 

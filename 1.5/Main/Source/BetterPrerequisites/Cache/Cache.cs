@@ -21,9 +21,8 @@ namespace BigAndSmall
     /// <typeparam name="V">A class whcih implements the ICachable Interface</typeparam>
     public abstract class DictCache<T, V> where V : ICacheable
     {
-        public static ConcurrentDictionary<T, V> Cache { get; set; } = new ConcurrentDictionary<T, V>();
-
-        //private static ConcurrentDictionary<T, V> junkCache = new ConcurrentDictionary<T, V>();
+        public static ConcurrentDictionary<T, V> Cache { get; set; } = new();
+        protected readonly static ConcurrentDictionary<T, V> JunkCache = new();
 
         /// <summary>
         /// 
@@ -32,7 +31,7 @@ namespace BigAndSmall
         /// <param name="forceRefresh"></param>
         /// <param name="canRegenerate">The Cache will not be regenerated, if one does not exist it will simply return default values.</param>
         /// <returns></returns>
-        public static V GetCache(T key, out bool newEntry, bool forceRefresh=false, bool canRegenerate=true, bool regenerateIfTimer=false)
+        public static V GetCache(T key, out bool newEntry, bool forceRefresh=false, bool canRegenerate=true)
         {
             newEntry = false;
             if (key == null)
@@ -40,10 +39,9 @@ namespace BigAndSmall
             if (Cache.TryGetValue(key, out V data))
             {
                 // Check if the cache has timed out
-                if (forceRefresh || regenerateIfTimer && data.Timer.AnyTimeout())
+                if (forceRefresh)
                 {
                     data.RegenerateCache();
-                    data.Timer.ResetTimers();
                     return data;
                 }
                 else
@@ -51,22 +49,30 @@ namespace BigAndSmall
                     return data;
                 }
             }
+            if (!forceRefresh && JunkCache.TryGetValue(key, out V junkData))
+            {
+                return junkData;
+            }
             else
             {
                 newEntry = true;
                 V newData = (V)Activator.CreateInstance(typeof(V), key);
-                bool result = true; 
+                
                 if (canRegenerate)
                 {
-                    result = newData.RegenerateCache();
+                    bool result = newData.RegenerateCache();
+                    if (!result && Cache.ContainsKey(key))  // If we failed to generate and there already is an entry, just use that.
+                    {
+                        return Cache[key];
+                    }
+                    Cache[key] = newData;
+                    return newData;
                 }
-                if (!result && Cache.ContainsKey(key))  // If we failed to generate and there already is an entry, just use that.
+                else
                 {
-                    return Cache[key];
+                    JunkCache[key] = newData;
+                    return newData;
                 }
-                Cache[key] = newData;
-                
-                return newData;
             }
         }
     }

@@ -61,7 +61,7 @@ namespace BigAndSmall.Balancing.VEPatches
 
                 if (spawnCountField != null)
                 {
-                    var sizeCache = HumanoidPawnScaler.GetBSDict(pawn);
+                    var sizeCache = HumanoidPawnScaler.GetCache(pawn);
                     if (sizeCache != null)
                     {
 

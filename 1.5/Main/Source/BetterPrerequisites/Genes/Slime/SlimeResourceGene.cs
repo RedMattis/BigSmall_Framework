@@ -205,7 +205,7 @@ namespace BigAndSmall
 
         private void RefreshCache()
         {
-            HumanoidPawnScaler.GetBSDict(pawn, forceRefresh: true);
+            HumanoidPawnScaler.GetCache(pawn, forceRefresh: true);
         }
 
         public override void Reset()

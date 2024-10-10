@@ -25,7 +25,7 @@ namespace BigAndSmall.Balancing
         {
             if (__instance.IsMeleeAttack && attacker != null)
             {
-                var sizeCache = HumanoidPawnScaler.GetBSDict(attacker);
+                var sizeCache = HumanoidPawnScaler.GetCache(attacker);
                 if (sizeCache != null)
                 {
                     float extraArmourPen;
@@ -66,7 +66,7 @@ namespace BigAndSmall.Balancing
         {
             if (attacker != null)
             {
-                var sizeCache = HumanoidPawnScaler.GetBSDict(attacker);
+                var sizeCache = HumanoidPawnScaler.GetCache(attacker);
                 if (sizeCache != null)
                 {
                     float sizeScale = sizeCache.scaleMultiplier.linear;

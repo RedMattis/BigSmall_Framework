@@ -14,7 +14,7 @@ namespace BigAndSmall
     {
         public static void Postfix(ref float __result, Pawn pawn)
         {
-            var cache = HumanoidPawnScaler.GetBSDict(pawn);
+            var cache = HumanoidPawnScaler.GetCache(pawn);
             if (cache != null)
             {
                 __result *= cache.pregnancySpeed;
@@ -30,7 +30,7 @@ namespace BigAndSmall
         {
             if (pawn.needs != null)
             {
-                var cache = HumanoidPawnScaler.GetBSDict(pawn);
+                var cache = HumanoidPawnScaler.GetCache(pawn);
                 if (cache != null && cache.everFertile)
                 {
                     if (__result < 1f)

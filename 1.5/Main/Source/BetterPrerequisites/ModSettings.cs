@@ -47,23 +47,23 @@ namespace BigAndSmall
 
             Listing_Standard listStd = new Listing_Standard();
 
-            Rect rect = inRect.ContractedBy(10f);
-            rect.height -= listStd.CurHeight;
-            rect.y += listStd.CurHeight;
-            Widgets.DrawBoxSolid(rect, Color.grey);
-            Rect rect2 = rect.ContractedBy(1f);
-            Widgets.DrawBoxSolid(rect2, new ColorInt(42, 43, 44).ToColor);
-            Rect rect3 = rect2.ContractedBy(5f);
+            Rect mainRect = inRect; //.ContractedBy(2f);
+            mainRect.height -= listStd.CurHeight;
+            mainRect.y += listStd.CurHeight;
+            Widgets.DrawBoxSolid(mainRect, Color.grey);
+            Rect Border = mainRect.ContractedBy(1f);
+            Widgets.DrawBoxSolid(Border, new ColorInt(42, 43, 44).ToColor);
+            Rect scrollRect = Border.ContractedBy(5f);
             //rect3.y += 15f;
             //rect3.height -= 15f;
-            Rect rect4 = rect3;
-            rect4.x = 0f;
-            rect4.y = 0f;
-            rect4.width -= 20f;
-            rect4.height = 950f;
-            Widgets.BeginScrollView(rect3, ref scrollPosition, rect4);
+            Rect innerScrollRect = scrollRect;
+            innerScrollRect.x = 0f;
+            innerScrollRect.y = 0f;
+            innerScrollRect.width -= 16f;
+            innerScrollRect.height = 950f;
+            Widgets.BeginScrollView(scrollRect, ref scrollPosition, innerScrollRect);
 
-            listStd.Begin(rect4.AtZero());
+            listStd.Begin(innerScrollRect.AtZero());
 
             // Reset Cache Button
             if (listStd.ButtonText("BS_ResetCache".Translate()))
@@ -78,7 +78,7 @@ namespace BigAndSmall
                 Log.Message($"Reset Cache. Updating cache for {pawns.Count} pawns.");
                 foreach (var pawn in pawns.Where(x => x != null && !x.Discarded && !x.Destroyed))
                 {
-                    if (HumanoidPawnScaler.GetBSDict(pawn, forceRefresh:true, canRegenerate:true) is BSCache cache)
+                    if (HumanoidPawnScaler.GetCache(pawn, forceRefresh:true, canRegenerate:true) is BSCache cache)
                     {
                         Log.Message($"Big and Small: Reset cache for {pawn}");
                         //try
@@ -124,13 +124,13 @@ namespace BigAndSmall
             CreateSettingCheckbox(listStd, "BS_SizeOffsetPawn", ref settings.offsetBodyPos);
             CreateSettingCheckbox(listStd, "BS_DisabeVFCachine".Translate(), ref settings.disableTextureCaching);
             listStd.Label("BS_ScalePawnDefault".Translate());
-            CreateSettingsSlider(listStd, "BS_ScaleLargerPawns".Translate(), ref settings.visualLargerMult, min: 0.05f, max: 20f);
-            CreateSettingsSlider(listStd, "BS_ScaleSmallerPawns".Translate(), ref settings.visualSmallerMult, min: 0.05f, max: 1f);
+            CreateSettingsSlider(listStd, "BS_ScaleLargerPawns".Translate(), ref settings.visualLargerMult, min: 0.05f, max: 20f, (f) => $"{f:F2}");
+            CreateSettingsSlider(listStd, "BS_ScaleSmallerPawns".Translate(), ref settings.visualSmallerMult, min: 0.05f, max: 1f, (f) => $"{f:F2}");
             listStd.GapLine();
             listStd.Label("BS_HeadSizeExplain".Translate());
-            CreateSettingsSlider(listStd, "BS_HeadExponentLargeField".Translate(), ref settings.headPowLarge, min: -2.00f, max: 2f);
+            CreateSettingsSlider(listStd, "BS_HeadExponentLargeField".Translate(), ref settings.headPowLarge, min: -2.00f, max: 2f, (f) => $"{f:F2}");
             listStd.Label("BS_HeadExponentSmallExplain".Translate());
-            CreateSettingsSlider(listStd, "BS_HeadExponentSmalleField".Translate(), ref settings.headPowSmall, min: -1.00f, max: 2f);
+            CreateSettingsSlider(listStd, "BS_HeadExponentSmalleField".Translate(), ref settings.headPowSmall, min: -1.00f, max: 2f, (f) => $"{f:F2}");
             listStd.GapLine();
             CreateSettingCheckbox(listStd, "BS_NormalizeBodyType".Translate(), ref settings.scaleBodyTypes);
 

@@ -542,7 +542,7 @@ namespace BigAndSmall
                 // Use up more food if there is a pilot.
                 if (InnerContainer.Count() > 0)
                 {
-                    pawn.needs.food.CurLevel += -pawn.needs.food.FoodFallPerTick * tickRate * -0.5f;
+                    pawn.needs.food.CurLevel -= pawn.needs.food.FoodFallPerTick * tickRate * 0.5f;
                 }
                 if (Severity != severity)
                 {

@@ -14,7 +14,7 @@ namespace BigAndSmall
     {
         public static void Postfix(ref float __result, SkillRecord __instance)
         {
-            var sizeCache = HumanoidPawnScaler.GetBSDict(__instance.Pawn);
+            var sizeCache = HumanoidPawnScaler.GetCache(__instance.Pawn);
             if (sizeCache != null && sizeCache.minimumLearning > 0.351)
             {
                 if (__instance.passion == Passion.None)
@@ -33,8 +33,8 @@ namespace BigAndSmall
     {
         public static void Postfix(ref float __result, Pawn ___pawn)
         {
-            var sizeCache = HumanoidPawnScaler.GetBSDict(___pawn);
-            if (HumanoidPawnScaler.GetBSDict(___pawn) is BSCache cache)
+            var sizeCache = HumanoidPawnScaler.GetCache(___pawn);
+            if (HumanoidPawnScaler.GetCache(___pawn) is BSCache cache)
             {
                 __result *= cache.growthPointGain;
             }

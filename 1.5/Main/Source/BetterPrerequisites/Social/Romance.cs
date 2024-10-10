@@ -29,7 +29,7 @@ namespace BigAndSmall
             if (initiator != null
                 && initiator.needs != null)
             {
-                var cache = HumanoidPawnScaler.GetBSDict(initiator);
+                var cache = HumanoidPawnScaler.GetCache(initiator);
                 if (cache != null && cache.succubusUnbonded)
                 {
                     __result *= 20;

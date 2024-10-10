@@ -17,7 +17,7 @@ namespace BigAndSmall
     {
         public static BSCache GetCache(Pawn pawn, bool force=false, bool scheduleForce=false)
         {
-            return HumanoidPawnScaler.GetBSDict(pawn, forceRefresh: force, scheduleForce: scheduleForce);
+            return HumanoidPawnScaler.GetCache(pawn, forceRefresh: force, scheduleForce: 1);
         }
 
         public static bool IsUndead(this Pawn pawn)

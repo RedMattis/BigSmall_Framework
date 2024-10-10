@@ -34,7 +34,7 @@ namespace BigAndSmall
     {
         public static void Postfix(Tool tool, Pawn attacker, Thing equipment, ref float __result)
         {
-            var sizeCache = HumanoidPawnScaler.GetBSDict(attacker);
+            var sizeCache = HumanoidPawnScaler.GetCache(attacker);
             if (sizeCache != null)
             {
                 if (equipment == null)

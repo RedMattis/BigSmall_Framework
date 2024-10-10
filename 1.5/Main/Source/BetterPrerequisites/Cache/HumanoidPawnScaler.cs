@@ -26,6 +26,7 @@ namespace BigAndSmall
 
         public static Dictionary<int, HashSet<BSCache>> schedulePostUpdate = [];
         public static Dictionary<int, HashSet<BSCache>> scheduleFullUpdate = [];
+        public static HashSet<BSCache> currentlyQueued = new(); // Ensures we never queue the same cache twice.
 
         public BigAndSmallCache(Game game)
         {
@@ -76,8 +77,9 @@ namespace BigAndSmall
                     var cPawn = cache?.pawn;
                     if (cPawn != null && !cPawn.Discarded)
                     {
-                        HumanoidPawnScaler.GetBSDict(cPawn, forceRefresh: true);
+                        HumanoidPawnScaler.GetCache(cPawn, forceRefresh: true);
                     }
+                    currentlyQueued.Remove(cache);
                 }
                 scheduleFullUpdate.Remove(currentTick);
             }
@@ -102,7 +104,7 @@ namespace BigAndSmall
                 var cachedPawn = refreshQueue.Dequeue();
                 if (cachedPawn != null && cachedPawn.Spawned)
                 {
-                    HumanoidPawnScaler.GetBSDict(cachedPawn, forceRefresh: true);
+                    HumanoidPawnScaler.GetCache(cachedPawn, forceRefresh: true);
                 }
             }
 
@@ -129,12 +131,35 @@ namespace BigAndSmall
 
     public class HumanoidPawnScaler : DictCache<Pawn, BSCache>
     {
+        public struct PerThreadMiniCache
+        {
+            public Pawn pawn;
+            public BSCache cache;
+        }
+        [ThreadStatic]
+        static PerThreadMiniCache threadStaticCache;
+
+        public static BSCache GetCacheUltraSpeed(Pawn pawn, bool canRegenerate = true)
+        {
+            if (pawn != null && threadStaticCache.pawn == pawn)
+            {
+                return threadStaticCache.cache;
+            }
+            else if (canRegenerate) return GetCache(pawn, canRegenerate: canRegenerate);
+            else return BSCache.defaultCache;
+        }
+        [Obsolete]
+        public static BSCache GetBSDict(Pawn pawn, bool forceRefresh = false, bool canRegenerate = true, int scheduleForce = -1)
+        {
+            return GetCache(pawn, forceRefresh, canRegenerate, scheduleForce);
+        }
+
         /// <summary>
         /// Note that if the pawn is "null" then it will use a generic cache with default values. This is mostly to just get rid of the need to
         /// null-check everything that calls this method.
         /// </summary>
         /// <returns></returns>
-        public static BSCache GetBSDict(Pawn pawn, bool forceRefresh = false, bool regenerateIfTimer = false, bool canRegenerate=true, bool scheduleForce=false)//, bool debug=false)
+        public static BSCache GetCache(Pawn pawn, bool forceRefresh = false, bool canRegenerate=true, int scheduleForce=-1)//, bool debug=false)
         {
             if (pawn == null)
             {
@@ -152,7 +177,7 @@ namespace BigAndSmall
             BSCache result;
             if (canRegenerate && RunNormalCalculations(pawn))
             {
-                result = GetCache(pawn, out newEntry, forceRefresh: forceRefresh, regenerateIfTimer: regenerateIfTimer, canRegenerate: true);
+                result = GetCache(pawn, out newEntry, forceRefresh: forceRefresh, canRegenerate: true);
             }
             else
             {
@@ -170,6 +195,7 @@ namespace BigAndSmall
                 else
                 {
                     BigAndSmallCache.scribedCache.Add(result);
+                    ShedueleForceRegenerate(result, 1);
                 }
             }
             if (forceRefresh)
@@ -180,17 +206,27 @@ namespace BigAndSmall
                     pawn.Drawer.renderer.SetAllGraphicsDirty();
                 }
             }
-            if (scheduleForce)
+            if (scheduleForce > -1)
             {
-                int targetTick = Find.TickManager.TicksGame + 1;
-                if (BigAndSmallCache.scheduleFullUpdate.ContainsKey(targetTick) == false)
-                {
-                    BigAndSmallCache.scheduleFullUpdate[targetTick] = [];
-                }
-                BigAndSmallCache.scheduleFullUpdate[targetTick].Add(result);
+                ShedueleForceRegenerate(result, scheduleForce);
             }
 
             return result;
+        }
+
+        private static void ShedueleForceRegenerate(BSCache cache, int delay)
+        {
+            if (BigAndSmallCache.currentlyQueued.Contains(cache))
+            {
+                return;
+            }
+            int targetTick = Find.TickManager.TicksGame + delay;
+            if (BigAndSmallCache.scheduleFullUpdate.ContainsKey(targetTick) == false)
+            {
+                BigAndSmallCache.scheduleFullUpdate[targetTick] = [];
+            }
+            BigAndSmallCache.scheduleFullUpdate[targetTick].Add(cache);
+            BigAndSmallCache.currentlyQueued.Add(cache);
         }
 
         public static BSCache CheckForScribedEntry(Pawn pawn)
@@ -216,12 +252,13 @@ namespace BigAndSmall
 
     public partial class BSCache : IExposable, ICacheable
     {
-        public static BSCache defaultCache = new BSCache();
+        public static BSCache defaultCache = new();
 
         public Pawn pawn = null;
         public bool refreshQueued = false;
         public int? lastUpdateTick = null;
         public bool SameTick => lastUpdateTick == Find.TickManager.TicksGame;
+
         public CacheTimer Timer { get; set; } = new CacheTimer();
 
         public float bodyRenderSize = 1;
@@ -234,6 +271,8 @@ namespace BigAndSmall
         public PercentChange scaleMultiplier = new(1, 1, 1);
         public PercentChange previousScaleMultiplier = null;
         public PercentChange cosmeticScaleMultiplier = new(1, 1, 1);
+        public bool isHumanlike = false;
+
         public float healthMultiplier = 1;
         public float healthMultiplier_previous = 1;
 
@@ -281,7 +320,7 @@ namespace BigAndSmall
 
         public FoodKind diet = FoodKind.Any;
 
-        public List<ApparelCache> apparelCaches = new List<ApparelCache>();
+        public List<ApparelCache> apparelCaches = [];
 
         // Color and Fur Transform cache
         public Color? savedSkinColor = null;
@@ -327,6 +366,8 @@ namespace BigAndSmall
             Scribe_Deep.Look(ref previousScaleMultiplier, "BS_PreviousScaleMultiplier");
             Scribe_Deep.Look(ref cosmeticScaleMultiplier, "BS_CosmeticScaleMultiplier");
             Scribe_Values.Look(ref totalSizeOffset, "BS_SizeOffset", 0);
+            Scribe_Values.Look(ref isHumanlike, "BS_IsHumanlike", false);
+
             Scribe_Values.Look(ref minimumLearning, "BS_MinimumLearning", 0);
             //Scribe_Values.Look(ref foodNeedCapacityMult, "BS_FoodNeedCapacityMult", 1);
             //Scribe_Values.Look(ref previousFoodCapacity, "BS_PreviousFoodCapacity", 1);
@@ -404,6 +445,7 @@ namespace BigAndSmall
                         $"This likely means the pawn lacks \"lifeStageAges\" or another requirement for fetching the age is missing.");
                     return false;
                 }
+                isHumanlike = pawn.RaceProps?.Humanlike == true;
 
                 var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
                 List<GeneExtension> geneExts = activeGenes

@@ -67,7 +67,7 @@ namespace BigAndSmall
             float nutritionCapMult = 1; //GetBaseValueFor(req);  // This should be 1.
             if (req.Thing is Pawn pawn)
             {
-                if (HumanoidPawnScaler.GetBSDict(pawn) is BSCache cache)
+                if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache)
                 {
                     float scale = cache.scaleMultiplier.linear;
                     return GetNutritionMultiplier(scale);

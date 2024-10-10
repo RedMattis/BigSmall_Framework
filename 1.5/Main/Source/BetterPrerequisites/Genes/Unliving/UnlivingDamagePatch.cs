@@ -15,7 +15,7 @@ namespace BigAndSmall
             if (__instance is Pawn pawn == false)
                 return;
 
-            var sizeCache = HumanoidPawnScaler.GetBSDict(pawn, regenerateIfTimer:true);
+            var sizeCache = HumanoidPawnScaler.GetCache(pawn, scheduleForce: 30);
             if (sizeCache == null)
                 return;
 
@@ -136,7 +136,7 @@ namespace BigAndSmall
             {
                 if (___pawn?.needs != null)
                 {
-                    var sizeCache = HumanoidPawnScaler.GetBSDict(___pawn);
+                    var sizeCache = HumanoidPawnScaler.GetCache(___pawn);
                     if (sizeCache != null)
                     {
                         if (sizeCache.bleedRate == BSCache.BleedRateState.NoBleeding)
@@ -173,7 +173,7 @@ namespace BigAndSmall
                 var pawn = __instance.pawn;
                 if (pawn?.needs != null)
                 {
-                    var sizeCache = HumanoidPawnScaler.GetBSDict(pawn);
+                    var sizeCache = HumanoidPawnScaler.GetCache(pawn);
                     if (sizeCache != null)
                     {
                         if (sizeCache.bleedRate == BSCache.BleedRateState.NoBleeding)
@@ -205,7 +205,7 @@ namespace BigAndSmall
             if (pawn?.needs != null)
             {
                 
-                var sizeCache = HumanoidPawnScaler.GetBSDict(pawn);
+                var sizeCache = HumanoidPawnScaler.GetCache(pawn);
                 if (sizeCache != null)
                 {
                     var validGenes = GeneHelpers.GetActiveGenesByName(pawn, "BS_NoXenogerms");
@@ -226,7 +226,7 @@ namespace BigAndSmall
         {
             if (__result == false && pawn?.needs != null)
             {
-                var sizeCache = HumanoidPawnScaler.GetBSDict(pawn);
+                var sizeCache = HumanoidPawnScaler.GetCache(pawn);
                 if (sizeCache != null)
                 {
                     __result = sizeCache.isBloodFeeder;

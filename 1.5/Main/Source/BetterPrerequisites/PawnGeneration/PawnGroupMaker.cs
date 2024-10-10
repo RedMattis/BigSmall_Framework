@@ -50,7 +50,7 @@ namespace BigAndSmall
                         pilot.equipment.Remove(pilot.equipment.Primary);
                     }
 
-                    HumanoidPawnScaler.GetBSDict(pilot, forceRefresh: true);
+                    HumanoidPawnScaler.GetCache(pilot, forceRefresh: true);
                     // If the pilot would be too big, give it the dwarfism trait.
                     if (pilot.BodySize > piloted.MaxCapacity)
                     {

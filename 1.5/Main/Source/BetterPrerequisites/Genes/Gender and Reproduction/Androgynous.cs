@@ -15,6 +15,7 @@ namespace BigAndSmall
     public static partial class HarmonyPatches
     {
         [HarmonyPatch(typeof(GeneUtility), nameof(GeneUtility.ToBodyType))]
+        [HarmonyPriority(Priority.VeryLow)]
         [HarmonyPrefix]
         public static bool ToBodyTypePatch(ref BodyTypeDef __result, GeneticBodyType bodyType, Pawn pawn)
         {
@@ -28,6 +29,35 @@ namespace BigAndSmall
                 }
             }
             return true;
+        }
+
+
+        [HarmonyPatch(typeof(PawnGenerator), nameof(PawnGenerator.GetBodyTypeFor))]
+        [HarmonyPriority(Priority.VeryLow)]
+        [HarmonyPostfix]
+        public static void PawnGenerator_GetBodyTypeFor(Pawn pawn, ref BodyTypeDef __result)
+        {
+            if (pawn != null && pawn.gender == Gender.Male && pawn?.genes?.GenesListForReading?.Any(x => x.def == BSDefs.Body_Androgynous) == true)
+            {
+                if (__result == BodyTypeDefOf.Male)
+                {
+                    __result = BodyTypeDefOf.Female;
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(PawnGenerator), "GenerateBodyType")]
+        [HarmonyPriority(Priority.VeryLow)]
+        [HarmonyPostfix]
+        public static void PawnGenerator_GenerateBodyType(Pawn pawn)
+        {
+            if (pawn != null && pawn.gender == Gender.Male && pawn?.genes?.GenesListForReading?.Any(x => x.def == BSDefs.Body_Androgynous) == true)
+            {
+                if (pawn.story.bodyType == BodyTypeDefOf.Male)
+                {
+                    pawn.story.bodyType = BodyTypeDefOf.Female;
+                }
+            }
         }
 
         // The purpose of these two lists is to avoid doing repeated lookups.

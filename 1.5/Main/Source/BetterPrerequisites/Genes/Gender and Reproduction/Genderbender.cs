@@ -36,24 +36,12 @@ namespace BigAndSmall
                 if (pawn.gender == Gender.Male)
                 {
                     pawn.gender = Gender.Female;
-                    if (pawn.story.bodyType.defName == BodyTypeDefOf.Male.defName)
-                        pawn.story.bodyType = BodyTypeDefOf.Female;
                 }
                 else
                 {
                     pawn.gender = Gender.Male;
-                    if (pawn.story.bodyType.defName == BodyTypeDefOf.Female.defName)
-                        pawn.story.bodyType = BodyTypeDefOf.Male;
                 }
-
-                if (pawn.story.headType.gender != 0 && pawn.story.headType.gender != pawn.gender && !pawn.story.TryGetRandomHeadFromSet(DefDatabase<HeadTypeDef>.AllDefs.Where((HeadTypeDef x) => x.randomChosen)))
-                {
-                    Log.Warning("Couldn't find an appropriate head after changing pawn gender.");
-                }
-                if (!pawn.style.CanWantBeard && pawn.style.beardDef != BeardDefOf.NoBeard)
-                {
-                    pawn.style.beardDef = BeardDefOf.NoBeard;
-                }
+                GenderHelper.UpdateBodyHeadAndBeardPostGenderChange(pawn);
             }
             catch
             {
@@ -61,14 +49,94 @@ namespace BigAndSmall
             }
             pawn.Drawer.renderer.SetAllGraphicsDirty();
 
-            //if (pawn.story.headType.gender != 0 && pawn.story.headType.gender != pawn.gender && !pawn.story.TryGetRandomHeadFromSet(DefDatabase<HeadTypeDef>.AllDefs.Where((HeadTypeDef x) => x.randomChosen)))
-            //{
-            //    Log.Warning("Couldn't find an appropriate head after changing pawn gender.");
-            //}
-            //if (!pawn.style.CanWantBeard && pawn.style.beardDef != BeardDefOf.NoBeard)
-            //{
-            //    pawn.style.beardDef = BeardDefOf.NoBeard;
-            //}
+        }
+
+        
+    }
+
+    public static class GenderHelper
+    {
+        public static GeneticBodyType BodyTypeToGeneticBodyType(this BodyTypeDef bodyType)
+        {
+            if (bodyType == BodyTypeDefOf.Fat)
+            {
+                return GeneticBodyType.Fat;
+            }
+            else if (bodyType == BodyTypeDefOf.Hulk)
+            {
+                return GeneticBodyType.Hulk;
+            }
+            else if (bodyType == BodyTypeDefOf.Thin)
+            {
+                return GeneticBodyType.Thin;
+            }
+            else
+            {
+                return GeneticBodyType.Standard;
+            }
+        }
+
+        public static void UpdateBodyHeadAndBeardPostGenderChange(Pawn pawn)
+        {
+            bool headNeedsChange = pawn.story.headType.gender != 0 && pawn.story.headType.gender != pawn.gender;
+
+            var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
+            // Set body type.
+            if (activeGenes.Any(x => x.def.bodyType != null))
+            {
+                var bodyType = activeGenes.First(x => x.def.bodyType != null).def.bodyType;
+                if (bodyType != null)
+                {
+                    pawn.story.bodyType = bodyType.Value.ToBodyType(pawn);
+                }
+                else // Shouldn't happen, but just in case.
+                {
+                    pawn.story.bodyType = PawnGenerator.GetBodyTypeFor(pawn);//.BodyTypeToGeneticBodyType().ToBodyType(pawn);
+                }
+            }
+            else
+            {
+                pawn.story.bodyType = PawnGenerator.GetBodyTypeFor(pawn);//.BodyTypeToGeneticBodyType().ToBodyType(pawn);
+            }
+
+
+            // If we have a head gene we don't want to use a randomchosen head.
+            var headGenes = activeGenes.Where(x => !x.def.forcedHeadTypes.NullOrEmpty());
+            var possibleHeads = headGenes.SelectMany(x => x.def.forcedHeadTypes).ToList();
+            bool androgynous = activeGenes.Any(x => x.def == BSDefs.Body_Androgynous);
+
+            if (possibleHeads.Count > 0)
+            {
+                Gender targetGender = pawn.gender;
+                if (androgynous)
+                {
+                    targetGender = Gender.Female;
+                }
+                var validHeads = possibleHeads.Where(x => headGenes.All(ag => ag.def.forcedHeadTypes.Contains(x))).Where(x => x.gender == Gender.None || x.gender == targetGender).ToList();
+                if (validHeads.Count > 0)
+                {
+                    Rand.PushState(pawn.thingIDNumber);
+                    pawn.story.headType = validHeads.RandomElement();
+                    Rand.PopState();
+                    headNeedsChange = false;
+                }
+                else
+                {
+                    Log.Warning($"Couldn't find an appropriate head fitting {pawn}'s genes.");
+                }
+            }
+            if (headNeedsChange && !pawn.story.TryGetRandomHeadFromSet(DefDatabase<HeadTypeDef>.AllDefs.Where((HeadTypeDef x) => x.randomChosen)))
+            {
+                if (!pawn.story.TryGetRandomHeadFromSet(DefDatabase<HeadTypeDef>.AllDefs.Where((HeadTypeDef x) => x.randomChosen)))
+                {
+                    Log.Warning($"Couldn't find an appropriate head for {pawn}.");
+                }
+
+            }
+            if (!pawn.style.CanWantBeard && pawn.style.beardDef != BeardDefOf.NoBeard)
+            {
+                pawn.style.beardDef = BeardDefOf.NoBeard;
+            }
         }
     }
 }

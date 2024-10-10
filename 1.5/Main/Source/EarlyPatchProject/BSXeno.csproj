@@ -3,6 +3,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
+    <Optimize>true</Optimize>
     <!--<LangVersion>preview</LangVersion>-->
     <!--<LangVersion>7.3</LangVersion>-->
   </PropertyGroup>

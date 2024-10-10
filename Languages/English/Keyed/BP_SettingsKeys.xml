@@ -1,7 +1,7 @@
 <LanguageData>
   <BS_BigAndSmall>Big and Small</BS_BigAndSmall>
 
-  <BS_ResetCache>Clear and Regenerate Caches (SLOW!)</BS_ResetCache>
+  <BS_ResetCache>Clear and Regenerate Caches</BS_ResetCache>
   <BS_ResetSettings>Reset Settings to Default</BS_ResetSettings>
 
   <BS_CacheUpdateTickRate>Tick Update Frequency (Higher = Better Performance)</BS_CacheUpdateTickRate>
@@ -10,12 +10,12 @@
   <BS_PatchPlayerFactions>Patch Player Faction</BS_PatchPlayerFactions>
   <BS_GameMechanics>Game Mechanics</BS_GameMechanics>
   <BS_ScaleAnimals>Apply Scaling and other behaviour to Animals</BS_ScaleAnimals>
-  <BS_LowestUsed>Note: LOWEST of Multiplicate and Linear damage will be used for each given attack.</BS_LowestUsed>
-  <BS_MultDamageExplain>Multiplicative damage change from size. 0 = no increase. 1 = linear increase.</BS_MultDamageExplain>
-  <BS_DamageExponentExplain>Damage Exponent (default 0.75)  </BS_DamageExponentExplain>
+  <BS_LowestUsed>The lowest of these two will be used as a bonus for melee attacks.</BS_LowestUsed>
+  <BS_MultDamageExplain>Multiplicative damage change from size.</BS_MultDamageExplain>
+  <BS_DamageExponentExplain>Damage Exponent</BS_DamageExponentExplain>
   <BS_FlatDMGExplain>Flat bonus to all attacks per size-level.</BS_FlatDMGExplain>
-  <BS_FlatDamageBonunsField>Flat Damage bonus (default 8)  </BS_FlatDamageBonunsField>
-  <BS_NutritionBurnExplain>Nutrition Burn. 0.0 = no change. 1.0 = Modified based on body size.</BS_NutritionBurnExplain>
+  <BS_FlatDamageBonunsField>Flat Damage bonus</BS_FlatDamageBonunsField>
+  <BS_NutritionBurnExplain>Nutrition Burn..</BS_NutritionBurnExplain>
   <BS_HungerMultiplierField>Size effect on Hunger</BS_HungerMultiplierField>
   <BS_Rendering>Rendering</BS_Rendering>
   <BS_SizeOffsetPawn>Size offsets pawn position</BS_SizeOffsetPawn>
@@ -24,9 +24,9 @@
   <BS_ScaleLargerPawns>Scale Larger Pawns </BS_ScaleLargerPawns>
   <BS_ScaleSmallerPawns>Scale Smaller Pawns </BS_ScaleSmallerPawns>
   <BS_HeadSizeExplain>Head Size of large pawns. Higher Value = Large Head.</BS_HeadSizeExplain>
-  <BS_HeadExponentLargeField>Head Exponent Larger (default 0.8) </BS_HeadExponentLargeField>
+  <BS_HeadExponentLargeField>Head exponent larger</BS_HeadExponentLargeField>
   <BS_HeadExponentSmallExplain>Change head size of small pawns. Smaller Values = Larger Head.</BS_HeadExponentSmallExplain>
-  <BS_HeadExponentSmalleField>Head Exponent Smaller (default 0.65) </BS_HeadExponentSmalleField>
+  <BS_HeadExponentSmalleField>Head exponent smaller</BS_HeadExponentSmalleField>
   <BS_NormalizeBodyType>Normalize bodytype scale for Hulks and Fat (Recommended).</BS_NormalizeBodyType>
   <BS_GenesSpecific>Big and Small Genes Settings</BS_GenesSpecific>
   <BS_DoDefGeneration>Permit generated GeneDefs (Recommended, requires restart)</BS_DoDefGeneration>

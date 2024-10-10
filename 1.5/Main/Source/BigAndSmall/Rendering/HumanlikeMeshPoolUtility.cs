@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using RimWorld;
+using Verse.Noise;
+using System.Threading;
+using System.Collections.Concurrent;
 
 namespace BigAndSmall
 {
@@ -28,7 +31,7 @@ namespace BigAndSmall
                 //    factorFromVEF *= VEPawnData.bodyRenderSize;
                 //}
 
-                if (HumanoidPawnScaler.GetBSDict(pawn, canRegenerate: false) is BSCache sizeCache)
+                if (HumanoidPawnScaler.GetCacheUltraSpeed(pawn, canRegenerate: false) is BSCache sizeCache)
                 {
                     var bodySize = sizeCache.bodyRenderSize;
                     var headSize = sizeCache.headRenderSize * factorFromVEF;
@@ -71,7 +74,7 @@ namespace BigAndSmall
             // If caching disabled...
             if (!disableCache && BigSmallMod.settings.disableTextureCaching)
             {
-                if (HumanoidPawnScaler.GetBSDict(___pawn, canRegenerate:false) is BSCache cache)
+                if (HumanoidPawnScaler.GetCacheUltraSpeed(___pawn, canRegenerate:false) is BSCache cache)
                 {
                     if (cache.totalSizeOffset > 0 || cache.scaleMultiplier.linear > 1 || cache.renderCacheOff)
                     {
@@ -96,7 +99,7 @@ namespace BigAndSmall
 
         public static float GetOffset(Pawn ___pawn)
         {
-            var cache = HumanoidPawnScaler.GetBSDict(___pawn, canRegenerate: false);
+            var cache = HumanoidPawnScaler.GetCacheUltraSpeed(___pawn, canRegenerate: false);
             var factor = cache.bodyRenderSize;
             var originalFactor = factor;
             if (factor < 1) { factor = 1; }
@@ -143,7 +146,7 @@ namespace BigAndSmall
     }
 
     [HarmonyPatch]
-    public static partial class HarmonyPatches
+    public static class RenderingPatches
     {
         static readonly float lifestageFactor = 1.5f;
 
@@ -242,36 +245,47 @@ namespace BigAndSmall
         //        hFactor *= hairMeshSize;
         //    }
         //}
+        public struct PerThreadMiniCache
+        {
+            public Pawn pawn;
+            public BSCache cache;
+        }
+        [ThreadStatic]
+        static PerThreadMiniCache threadStaticCache;
 
-
+        //static readonly ConcurrentDictionary<int, PerThreadMiniCache> threadDictCache = [];
+        //static readonly ThreadLocal<PerThreadMiniCache> threadLocalCache = new(() => new PerThreadMiniCache());
         // This WORKS, but maybe it is a bit too aggresive since it patches everything? Using it for the time being just so it is the same as VEF.
         [HarmonyPatch(typeof(PawnRenderNodeWorker), nameof(PawnRenderNodeWorker.ScaleFor))]
         [HarmonyPostfix]
         public static void ScaleForPatch(ref Vector3 __result, PawnRenderNode node, PawnDrawParms parms)
         {
             var pawn = parms.pawn;
-            if (HumanoidPawnScaler.GetBSDict(pawn, canRegenerate: false) is BSCache cache)
+            if (pawn == null)
             {
-                if (pawn?.RaceProps?.Humanlike == true)
-                {
-                    if (node is PawnRenderNode_Body)
-                    {
-                        __result *= cache.bodyRenderSize;
-                    }
-                    else if (node is PawnRenderNode_Head)
-                    {
-                        __result *= cache.headRenderSize;
-                    }
-                }
-                else
+                Log.Error($"PawnRenderNodeWorker.ScaleFor was called with a null pawn! {parms}");
+                return;
+            }
+            if (threadStaticCache.pawn != pawn)
+            {
+                threadStaticCache.cache = HumanoidPawnScaler.GetCache(pawn, canRegenerate: false);
+                threadStaticCache.pawn = pawn;
+            }
+            var cache = threadStaticCache.cache;
+            if (cache.isHumanlike)
+            {
+                if (node is PawnRenderNode_Body)
                 {
                     __result *= cache.bodyRenderSize;
                 }
-
-                //if (node.gene != null)
-                //{
-                //    //__result *= pawn?.story?.bodyType?.bodyGraphicScale.x ?? 1;
-                //}
+                else if (node is PawnRenderNode_Head)
+                {
+                    __result *= cache.headRenderSize;
+                }
+            }
+            else
+            {
+                __result *= cache.bodyRenderSize;
             }
         }
     }

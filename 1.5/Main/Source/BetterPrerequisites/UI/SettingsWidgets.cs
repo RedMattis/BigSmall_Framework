@@ -16,9 +16,9 @@ namespace BigAndSmall
             Rect fullRow = listingStandard.GetRect(Text.LineHeight);
 
             // Divide the row into segments for the label, the slider, and the value text
-            float labelWidth = fullRow.width * 0.5f;  // 50% for label
-            float sliderWidth = fullRow.width * 0.35f; // 35% for slider
-            float valueWidth = fullRow.width * 0.15f;  // 15% for value display
+            float labelWidth = fullRow.width * 0.46f;
+            float sliderWidth = fullRow.width * 0.45f;
+            float valueWidth = fullRow.width * 0.09f; 
 
             Rect labelRect = new(fullRow.x, fullRow.y, labelWidth, fullRow.height);
             Rect sliderRect = new(labelRect.xMax, fullRow.y, sliderWidth, fullRow.height);
@@ -33,7 +33,7 @@ namespace BigAndSmall
             }
             else
             {
-                Widgets.Label(valueRect, $"{value * 100:F0}");
+                Widgets.Label(valueRect, $"{value:F1}");
             }
         }
 
@@ -41,8 +41,8 @@ namespace BigAndSmall
         {
             Rect fullRow = listingStandard.GetRect(Text.LineHeight);
             // Divide the row into two segments for the label and the checkbox
-            float labelWidth = fullRow.width * 0.85f;  // 85% for label
-            float checkboxWidth = fullRow.width * 0.15f; // 15% for checkbox
+            float labelWidth = fullRow.width * 0.90f;
+            float checkboxWidth = fullRow.width * 0.1f; 
             Rect labelRect = new(fullRow.x, fullRow.y, labelWidth, fullRow.height);
             Rect checkboxRect = new(labelRect.xMax, fullRow.y, checkboxWidth, fullRow.height);
 

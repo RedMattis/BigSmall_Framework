@@ -29,6 +29,50 @@ namespace BetterPrerequisites
         }
     }
 
+    [HarmonyPriority(Priority.High)]
+    [HarmonyPatch(typeof(Hediff), nameof(Hediff.PostRemoved))]
+    public static class Hediff_PostRemove
+    {
+        public static void Postfix(Hediff __instance)
+        {
+            bool supressMngrChangeMade = false;
+            if (__instance.pawn != null)
+            {
+                var HediffName = __instance.def.defName;
+                if (GeneSuppressorManager.supressedGenesPerPawn_Hediff.Keys.Contains(__instance.pawn))
+                {
+                    var suppressDict = GeneSuppressorManager.supressedGenesPerPawn_Hediff[__instance.pawn];
+                    // Remove the Hediff from the Suppressors in the dictionary list.
+                    foreach (var key in suppressDict.Keys)
+                    {
+                        if (suppressDict[key].Contains(HediffName))
+                        {
+                            suppressDict[key].Remove(HediffName);
+                            supressMngrChangeMade = true;
+                        }
+                    }
+                    // Remove all dictionary entries with no suppressors.
+                    foreach (var key in suppressDict.Keys.ToList())
+                    {
+                        if (suppressDict[key].Count == 0)
+                        {
+                            suppressDict.Remove(key);
+                            supressMngrChangeMade = true;
+                        }
+                    }
+                }
+            }
+            if (__instance?.pawn?.Drawer?.renderer != null && __instance.pawn.Spawned)
+            {
+                if (supressMngrChangeMade)
+                {
+                    __instance.pawn.Drawer.renderer.SetAllGraphicsDirty();
+                }
+                HumanoidPawnScaler.GetCache(__instance.pawn, scheduleForce: 1);
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(Hediff), nameof(Hediff.PostAdd))]
     public static class Hediff_PostAdd
     {
@@ -44,11 +88,11 @@ namespace BetterPrerequisites
             var geneList = genes.GenesListForReading;
             if (genes != null && geneList.Count > 0)
             {
-                //bool changeMade = false;
+                bool changeMade = false;
                 try
                 {
                     PGene.supressPostfix = true;
-                    GeneSuppressorManager.TryAddSuppressor(__instance, __instance.pawn);
+                    changeMade = GeneSuppressorManager.TryAddSuppressor(__instance, __instance.pawn);
                 }
                 finally
                 {
@@ -56,12 +100,18 @@ namespace BetterPrerequisites
                 }
                 if (__instance?.pawn?.Drawer?.renderer != null && __instance.pawn.Spawned)
                 {
-                    __instance.pawn.Drawer.renderer.SetAllGraphicsDirty();
-                    HumanoidPawnScaler.GetBSDict(__instance.pawn, scheduleForce: true);
+                    if (changeMade)
+                    {
+                        __instance.pawn.Drawer.renderer.SetAllGraphicsDirty();
+                    }
+                    HumanoidPawnScaler.GetCache(__instance.pawn, scheduleForce: 1);
                 }
+                
             }
         }
     }
+
+
 
     [HarmonyPatch(typeof(Pawn), nameof(Pawn.SpawnSetup))]
     public static class Pawn_SpawnSetup
@@ -113,7 +163,7 @@ namespace BetterPrerequisites
                 }
                 if (forceRefresh)
                 {
-                    HumanoidPawnScaler.GetBSDict(__instance, forceRefresh: true);
+                    HumanoidPawnScaler.GetCache(__instance, forceRefresh: true);
                 }
             }
             else
@@ -196,7 +246,7 @@ namespace BetterPrerequisites
             // Update the Cache
             if (__instance?.pawn != null)
             {
-                HumanoidPawnScaler.GetBSDict(__instance.pawn, scheduleForce: true);
+                HumanoidPawnScaler.GetCache(__instance.pawn, scheduleForce: 1);
                 Pawn_PostMapInit.UpdatePawnHairAndHeads(__instance.pawn);
 
                 if (__instance?.pawn?.Drawer?.renderer != null && __instance.pawn.Spawned)
@@ -205,42 +255,7 @@ namespace BetterPrerequisites
         }
     }
 
-    [HarmonyPriority(Priority.High)]
-    [HarmonyPatch(typeof(Hediff), nameof(Hediff.PostRemoved))]
-    public static class Hediff_PostRemove
-    {
-        public static void Postfix(Hediff __instance)
-        {
-            if (__instance.pawn != null)
-            {
-                var HediffName = __instance.def.defName;
-                if (GeneSuppressorManager.supressedGenesPerPawn_Hediff.Keys.Contains(__instance.pawn))
-                {
-                    var suppressDict = GeneSuppressorManager.supressedGenesPerPawn_Hediff[__instance.pawn];
-                    // Remove the Hediff from the Suppressors in the dictionary list.
-                    foreach (var key in suppressDict.Keys)
-                    {
-                        if (suppressDict[key].Contains(HediffName))
-                        {
-                            suppressDict[key].Remove(HediffName);
-                        }
-                    }
-                    // Remove all dictionary entries with no suppressors.
-                    foreach (var key in suppressDict.Keys.ToList())
-                    {
-                        if (suppressDict[key].Count == 0)
-                        {
-                            suppressDict.Remove(key);
-                        }
-                    }
-                }
-            }
-            if (__instance?.pawn != null)
-            {
-                HumanoidPawnScaler.GetBSDict(__instance.pawn, scheduleForce: true);
-            }
-        }
-    }
+    
 
     //// When a gene's OverrideBy state changes, remove/add gene effects
     [HarmonyPatch(typeof(Gene), nameof(Gene.OverrideBy))]
@@ -262,7 +277,7 @@ namespace BetterPrerequisites
 
                 if (gene?.pawn != null)
                 {
-                    HumanoidPawnScaler.GetBSDict(gene.pawn, scheduleForce: true);
+                    HumanoidPawnScaler.GetCache(gene.pawn, scheduleForce: 1);
                 }
             }
         }

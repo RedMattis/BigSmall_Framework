@@ -128,7 +128,7 @@ namespace BigAndSmall
     {
         public static void Postfix(ref float __result, LocalTargetInfo target)
         {
-            if (target.Thing is Pawn pawn && __result < 0.99f && HumanoidPawnScaler.GetBSDict(pawn) is BSCache sizeCache)
+            if (target.Thing is Pawn pawn && __result < 0.99f && HumanoidPawnScaler.GetCache(pawn) is BSCache sizeCache)
             {
                 __result /= sizeCache.scaleMultiplier.linear;
                 if (__result >= 0.96)
