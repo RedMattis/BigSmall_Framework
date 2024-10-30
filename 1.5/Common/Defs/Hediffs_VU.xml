@@ -460,7 +460,7 @@
           <RestFallRateFactor>1.5</RestFallRateFactor>
           <InjuryHealingFactor>0.35</InjuryHealingFactor>
           <SM_BulletDmgMult>0.35</SM_BulletDmgMult>
-          <Fertility>0</Fertility>
+          <Fertility MayRequire="Ludeon.Rimworld.Biotech"> 0</Fertility>
         </statFactors>
         <statOffsets>
           <ToxicResistance>2</ToxicResistance>

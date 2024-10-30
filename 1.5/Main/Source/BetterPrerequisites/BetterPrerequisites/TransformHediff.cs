@@ -12,15 +12,29 @@ namespace BetterPrerequisites
 {
     public class CompProperties_ColorAndFur : HediffCompProperties
     {
-        public List<Color> skinColorOverride = null;
-        public List<Color> hairColorOverride = null;
+        private List<Color> skinColorOverride = null;
+        private List<Color> hairColorOverride = null;
         public FurDef furskinOverride = null;
         public bool skinIsHairColor = false;
+        
         public BodyTypeDef bodyDefOverride = null;
+        public BodyTypeDef bodyDefOverride_Female = null;
         public HeadTypeDef headDefOverride = null;
+        public HeadTypeDef headDefOverride_Female = null;
         public bool disableFacialAnims = false;
         public bool disableBeards = false;
+        public bool disableHair = false;
+        public bool hideHead = false;
+        public bool hideBody = false;
 
+        public BodyTypeDef BodyTypeDef(Pawn pawn) => (pawn.gender == Gender.Female && bodyDefOverride_Female != null) ? bodyDefOverride_Female : bodyDefOverride;
+        public HeadTypeDef HeadTypeDef(Pawn pawn) => (pawn.gender == Gender.Female && headDefOverride_Female != null) ? headDefOverride_Female : headDefOverride;
+
+
+        // If the body is hidden, we simply set the colors to fully transparent
+        public List<Color> SkinColorOverride => skinColorOverride; //{ get => hideBody ? [new(0, 0, 0, 0)] : skinColorOverride; set => skinColorOverride = value;}
+        public List<Color> HairColorOverride => hairColorOverride; //{ get => hideBody ? [new(0, 0, 0, 0)] : hairColorOverride; set => hairColorOverride = value; }
+        
         public CompProperties_ColorAndFur()
         {
             compClass = typeof(HediffComp_ColorAndFur);
@@ -29,9 +43,9 @@ namespace BetterPrerequisites
 
     public class HediffComp_ColorAndFur : HediffComp
     {
-        public CompProperties_ColorAndFur Props => (CompProperties_ColorAndFur)props;
-        
+        public CompProperties_ColorAndFur CRProps => (CompProperties_ColorAndFur)props;
 
+        
         public override void CompPostMake()
         {
             base.CompPostMake();
@@ -48,15 +62,15 @@ namespace BetterPrerequisites
                     cache.savedHeadDef = pawn.story?.headType?.defName;
                     cache.savedBeardDef = pawn.style?.beardDef?.defName;
                 }
-                if (Props.hairColorOverride != null)
+                if (CRProps.HairColorOverride != null)
                 {
-                    if (cache.randomPickHairColor == null || cache.randomPickHairColor >= Props.hairColorOverride.Count - 1)
+                    if (cache.randomPickHairColor == null || cache.randomPickHairColor >= CRProps.HairColorOverride.Count - 1)
                     {
-                        cache.randomPickHairColor = Rand.Range(0, Props.hairColorOverride.Count - 1);
+                        cache.randomPickHairColor = Rand.Range(0, CRProps.HairColorOverride.Count - 1);
                     }
-                    pawn.story.HairColor = Props.hairColorOverride[cache.randomPickHairColor.Value];
+                    pawn.story.HairColor = CRProps.HairColorOverride[cache.randomPickHairColor.Value];
                 }
-                if (Props.skinIsHairColor)
+                if (CRProps.skinIsHairColor)
                 {
                     if (pawn.story.HairColor.a < 0.05f)
                     {
@@ -67,35 +81,39 @@ namespace BetterPrerequisites
                     hairColor.a = 1f;
                     pawn.story.skinColorOverride = pawn.story.HairColor;
                 }
-                else if (Props.skinColorOverride != null)
+                else if (CRProps.SkinColorOverride != null)
                 {
-                    if (cache.randomPickSkinColor == null || cache.randomPickSkinColor >= Props.skinColorOverride.Count -1)
+                    if (cache.randomPickSkinColor == null || cache.randomPickSkinColor >= CRProps.SkinColorOverride.Count -1)
                     {
-                        cache.randomPickSkinColor = Rand.Range(0, Props.skinColorOverride.Count - 1);
+                        cache.randomPickSkinColor = Rand.Range(0, CRProps.SkinColorOverride.Count - 1);
                     }
-                    pawn.story.skinColorOverride = Props.skinColorOverride[cache.randomPickSkinColor.Value];
+                    pawn.story.skinColorOverride = CRProps.SkinColorOverride[cache.randomPickSkinColor.Value];
                 }
-                if (Props.bodyDefOverride != null)
+                if (CRProps.BodyTypeDef(pawn) != null)
                 {
-                    pawn.story.bodyType = Props.bodyDefOverride;
+                    pawn.story.bodyType = CRProps.BodyTypeDef(pawn);
                 }
-                if (Props.headDefOverride != null)
+                if (CRProps.HeadTypeDef(pawn) != null)
                 {
-                    pawn.story.headType = Props.headDefOverride;
+                    pawn.story.headType = CRProps.HeadTypeDef(pawn);
                 }
                 
-                if (Props.furskinOverride != null)
+                if (CRProps.furskinOverride != null)
                 {
-                    pawn.story.furDef = Props.furskinOverride;
+                    pawn.story.furDef = CRProps.furskinOverride;
                     //pawn.Drawer.renderer.SetAllGraphicsDirty();
                 }
-                if (Props.disableFacialAnims)
+                if (CRProps.disableFacialAnims)
                 {
                     cache.facialAnimationDisabled_Transform = true;
                 }
-                if (Props.disableBeards)
+                if (CRProps.disableBeards)
                 {
                     pawn.style.beardDef = null;
+                }
+                if (CRProps.disableHair)
+                {
+                    pawn.story.hairDef = HairDefOf.Bald;
                 }
             }
         }
@@ -129,17 +147,26 @@ namespace BetterPrerequisites
                     {
                         pawn.story.headType = headDef;
                     }
-                    if (Props.disableFacialAnims)
+                    if (CRProps.disableFacialAnims)
                     {
                         cache.facialAnimationDisabled_Transform = false;
                     }
-                    if (Props.disableBeards)
+                    if (CRProps.disableBeards)
                     {
                         if (cache.savedBeardDef != null && DefDatabase<BeardDef>.GetNamed(cache.savedBeardDef) is BeardDef beardDef)
                             pawn.style.beardDef = beardDef;
                         else
                         {
                             pawn.style.beardDef = null;
+                        }
+                    }
+                    if (CRProps.disableHair)
+                    {
+                        if (cache.savedHairDef != null && DefDatabase<HairDef>.GetNamed(cache.savedHairDef) is HairDef hairDef)
+                            pawn.story.hairDef = hairDef;
+                        else
+                        {
+                            pawn.story.hairDef = DefDatabase<HairDef>.AllDefs.RandomElement();
                         }
                     }
                 }

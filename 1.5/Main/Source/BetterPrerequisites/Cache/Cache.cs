@@ -31,7 +31,7 @@ namespace BigAndSmall
         /// <param name="forceRefresh"></param>
         /// <param name="canRegenerate">The Cache will not be regenerated, if one does not exist it will simply return default values.</param>
         /// <returns></returns>
-        public static V GetCache(T key, out bool newEntry, bool forceRefresh=false, bool canRegenerate=true)
+        protected static V GetCacheInner(T key, out bool newEntry, bool forceRefresh=false, bool canRegenerate=true)
         {
             newEntry = false;
             if (key == null)

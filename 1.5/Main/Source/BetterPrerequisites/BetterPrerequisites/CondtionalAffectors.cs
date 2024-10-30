@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using BigAndSmall;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +18,9 @@ namespace BetterPrerequisites
         {
             if (gene == null || gene.def == null) return false;
             var geneDef = gene.def;
-            if (geneDef.HasModExtension<GeneExtension>())
+            if (geneDef.HasModExtension<PawnExtension>())
             {
-                var geneExtension = geneDef.GetModExtension<GeneExtension>();
+                var geneExtension = geneDef.GetModExtension<PawnExtension>();
                 bool invert = geneExtension.invert != null && geneExtension.invert == true;
                 if (TestConditionals(gene, geneExtension.conditionals))
                 {

@@ -13,7 +13,7 @@ namespace BigAndSmall
 {
     public partial class BSCache : IExposable, ICacheable
     {
-        public void CalculateSize(DevelopmentalStage dStage, List<GeneExtension> geneExts, bool overrideLimits)
+        public void CalculateSize(DevelopmentalStage dStage, List<PawnExtension> geneExts, bool overrideLimits)
         {
             int currentTick = Find.TickManager.TicksGame;
             if (lastUpdateTick == null || lastUpdateTick != currentTick)
@@ -23,28 +23,29 @@ namespace BigAndSmall
                 healthMultiplier_previous = CalculateHealthMultiplier(this.scaleMultiplier, pawn);
             }
 
-            float offsetFromSizeByAge = geneExts.Where(x => x.sizeByAge != null).Sum(x => x.GetSizeFromSizeByAge(pawn?.ageTracker?.AgeBiologicalYearsFloat));
+            float offsetFromSizeByAge = geneExts.Sum(x => x.GetSizeFromSizeByAge(pawn?.ageTracker?.AgeBiologicalYearsFloat));
 
             // Multiply each value together.
             float multiplierFromSizeMultiplierByAge = geneExts.Where(x => x.sizeByAgeMult != null).Aggregate(1f, (acc, x) => acc * x.GetSizeMultiplierFromSizeByAge(pawn?.ageTracker?.AgeBiologicalYearsFloat));
+
             float sizeFromAge = pawn?.ageTracker?.CurLifeStage?.bodySizeFactor ?? 1;
             float baseSize = pawn?.RaceProps?.baseBodySize ?? 1;
             float previousTotalSize = sizeFromAge * baseSize;
 
-            totalSizeOffset = pawn.GetStatValue(BSDefs.SM_BodySizeOffset) + offsetFromSizeByAge;
-            float cosmeticSizeOffset = pawn.GetStatValue(BSDefs.SM_Cosmetic_BodySizeOffset);
-            float sizeMultiplier = pawn.GetStatValue(BSDefs.SM_BodySizeMultiplier) * multiplierFromSizeMultiplierByAge;
-            float cosmeticMultiplier = pawn.GetStatValue(BSDefs.SM_Cosmetic_BodySizeMultiplier);
+            float offsetStat = pawn.GetStatValue(BSDefs.SM_BodySizeOffset) + offsetFromSizeByAge;
+            float cosmeticOffsetStat = pawn.GetStatValue(BSDefs.SM_Cosmetic_BodySizeOffset);
+            float multiplierStat = pawn.GetStatValue(BSDefs.SM_BodySizeMultiplier) * multiplierFromSizeMultiplierByAge;
+            float cosmeticMultiplierStat = pawn.GetStatValue(BSDefs.SM_Cosmetic_BodySizeMultiplier);
 
-            cosmeticSizeOffset += totalSizeOffset;
+            cosmeticOffsetStat += offsetStat;
 
-            float totalCosmeticMultiplier = sizeMultiplier + cosmeticMultiplier - 1;
+            float totalCosmeticMultiplier = multiplierStat + cosmeticMultiplierStat - 1;
 
-            float bodySizeOffset = ((baseSize + totalSizeOffset) * sizeMultiplier * sizeFromAge) - previousTotalSize;
-            float bodySizeCosmeticOffset = ((baseSize + cosmeticSizeOffset) * totalCosmeticMultiplier * sizeFromAge) - previousTotalSize;
+            totalSizeOffset = ((baseSize + offsetStat) * multiplierStat * sizeFromAge) - previousTotalSize;
+            float bodySizeCosmeticOffset = ((baseSize + cosmeticOffsetStat) * totalCosmeticMultiplier * sizeFromAge) - previousTotalSize;
 
             // Get total size
-            totalSize = bodySizeOffset + previousTotalSize;
+            totalSize = totalSizeOffset + previousTotalSize;
             totalCosmeticSize = bodySizeCosmeticOffset + previousTotalSize;
 
             // Check if the pawn has a hediff with a name starting with BS_Affliction
@@ -59,13 +60,13 @@ namespace BigAndSmall
                 {
                     totalSize = Mathf.Clamp(totalSize, 0.05f, 0.40f);
                     // Clamp the offset too.
-                    bodySizeOffset = Mathf.Clamp(bodySizeOffset, 0.05f - previousTotalSize, 0.40f - previousTotalSize);
+                    totalSizeOffset = Mathf.Clamp(totalSizeOffset, 0.05f - previousTotalSize, 0.40f - previousTotalSize);
 
                 }
                 else if (totalSize < 0.10)
                 {
                     totalSize = 0.10f;
-                    bodySizeOffset = 0.10f - previousTotalSize;
+                    totalSizeOffset = 0.10f - previousTotalSize;
                 }
 
 
@@ -73,21 +74,21 @@ namespace BigAndSmall
                 // Clamp Offset to avoid extremes
                 if (totalSize < 0.05f && dStage < DevelopmentalStage.Child)
                 {
-                    bodySizeOffset = -(previousTotalSize - 0.05f);
+                    totalSizeOffset = -(previousTotalSize - 0.05f);
                 }
                 // Don't permit babies too large to fit in cribs (0.25)
                 else if (totalSize > 0.40f && dStage < DevelopmentalStage.Child && pawn.RaceProps.Humanlike)
                 {
-                    bodySizeOffset = -(previousTotalSize - 0.40f);
+                    totalSizeOffset = -(previousTotalSize - 0.40f);
                 }
                 else if (totalSize < 0.10f && dStage == DevelopmentalStage.Child)
                 {
-                    bodySizeOffset = -(previousTotalSize - 0.10f);
+                    totalSizeOffset = -(previousTotalSize - 0.10f);
                 }
                 // If adult basically limit size to 0.10
                 else if (totalSize < 0.10f && dStage > DevelopmentalStage.Child && pawn.RaceProps.Humanlike)
                 {
-                    bodySizeOffset = -(previousTotalSize - 0.10f);
+                    totalSizeOffset = -(previousTotalSize - 0.10f);
                 }
             }
             else
@@ -98,7 +99,7 @@ namespace BigAndSmall
 
             headSizeMultiplier = pawn.GetStatValue(BSDefs.SM_HeadSize_Cosmetic);
 
-            scaleMultiplier = GetPercentChange(bodySizeOffset, pawn);
+            scaleMultiplier = GetPercentChange(totalSizeOffset, pawn);
             cosmeticScaleMultiplier = GetPercentChange(bodySizeCosmeticOffset, pawn);
 
             if (!pawn.RaceProps.Humanlike) //&& cosmeticScaleMultiplier.linear > 1.5f)
@@ -122,10 +123,45 @@ namespace BigAndSmall
             }
         }
 
+        private void CalculateHeadOffset()
+        {
+            var headPos = Mathf.Lerp(bodyRenderSize, headRenderSize, 0.8f);
+            headPos *= headPosMultiplier;
+            //var headPos = Mathf.Max(bodySize, headSize);
+
+            // Move up the head for dwarves etc. so they don't end up a walking head.
+            if (headPos < 1) { headPos = Mathf.Pow(headPos, 0.96f); }
+            headPositionMultiplier = headPos;
+        }
+
+        private void SetWorldOffset()
+        {
+
+            var factor = bodyRenderSize;
+
+            var originalFactor = factor;
+            if (factor < 1) { factor = 1; }
+            float offsetFromCache = bodyPosOffset;
+            float typeGScale = 1;
+            if (pawn.story?.bodyType != null)
+            {
+                var bodyType = pawn.story.bodyType;
+
+                typeGScale = bodyType.bodyGraphicScale.y;
+                // Check if hulk. If so increase the value, because hulks are weirldy offset down in vanilla.
+                if (bodyType == BodyTypeDefOf.Hulk)
+                {
+                    offsetFromCache += 0.25f;
+                }
+            }
+
+            worldspaceOffset = (factor - 1) / 2 * (offsetFromCache + 1) + offsetFromCache * 0.30f * (originalFactor < 1 ? originalFactor : 1) * typeGScale;
+        }
+
         private static PercentChange GetPercentChange(float bodySizeOffset, Pawn pawn)
         {
-            if (pawn != null
-                && (pawn.needs != null || pawn.Dead))
+            if (pawn != null && bodySizeOffset != 0 &&
+               (pawn.needs != null || pawn.Dead))
             {
                 const float minimum = 0.2f;  // Let's not make humans sprites unreasonably small.
                 float sizeFromAge = pawn.ageTracker.CurLifeStage.bodySizeFactor;
@@ -133,8 +169,8 @@ namespace BigAndSmall
                 float prevBodySize = sizeFromAge * baseSize;
                 float postBodySize = prevBodySize + bodySizeOffset;
                 float percentChange = postBodySize / prevBodySize;
-                float quadratic = Mathf.Pow(postBodySize, 2) - Mathf.Pow(prevBodySize, 2);
-                float cubic = Mathf.Pow(postBodySize, 3) - Mathf.Pow(prevBodySize, 3);
+                float quadratic = Mathf.Pow(postBodySize, 2) / Mathf.Pow(prevBodySize, 2);
+                float cubic = Mathf.Pow(postBodySize, 3) / Mathf.Pow(prevBodySize, 3);
 
                 // Ensure we don't get negative values.
                 percentChange = Mathf.Max(percentChange, 0.04f);

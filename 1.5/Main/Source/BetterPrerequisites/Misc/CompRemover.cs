@@ -11,6 +11,7 @@ namespace BigAndSmall
     {
         public List<string> compNameList = new List<string>();
         public List<string> compNamespaceList = new List<string>();
+        public List<string> compFullNameList = new List<string>();
         public CompProperties_CompRemover()
         {
             compClass = typeof(CompRemover);
@@ -47,6 +48,18 @@ namespace BigAndSmall
                     //}
 
                     if (parent.AllComps.FirstOrDefault(x => x.GetType().Namespace == compName) is ThingComp comp)
+                    {
+                        parent.AllComps.Remove(comp);
+                    }
+                }
+                foreach (var compName in compProps.compFullNameList)
+                {
+                    //foreach (var c in parent.AllComps)
+                    //{
+                    //    Log.Message($"Comparing {c.GetType().FullName} to {compName}: Result {c.GetType().Name == compName}");
+                    //}
+
+                    if (parent.AllComps.FirstOrDefault(x => x.GetType().FullName == compName) is ThingComp comp)
                     {
                         parent.AllComps.Remove(comp);
                     }

@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using BetterPrerequisites;
+using RimWorld;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
@@ -187,7 +188,7 @@ namespace BigAndSmall
             
 
             // Check if the baby has the Early Maturity Gene.
-            int babyStartAge = GeneHelpers.GetActiveGeneExtensions(babyPawn).FirstOrDefault(x=>x.babyStartAge != null)?.babyStartAge ?? 3;
+            int babyStartAge = ModExtHelper.GetAllExtensions<PawnExtension>(babyPawn).FirstOrDefault(x=>x.babyStartAge != null)?.babyStartAge ?? 3;
 
 
             // Age baby up to 3 years

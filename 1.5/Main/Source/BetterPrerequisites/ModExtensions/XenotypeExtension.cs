@@ -13,6 +13,7 @@ namespace BetterPrerequisites
     {
         public float morphWeight = 1;
         public bool morphIgnoreGender = false;
+        public ThingDef forceRaceOnGeneration = null;
         //public int? maxAge = null;
         //public Gender? morphGender = null;
 

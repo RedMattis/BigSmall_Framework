@@ -92,6 +92,7 @@ namespace BigAndSmall
                         //}
                     }
                 }
+                //HumanoidPawnScaler.permitThreadedCaches = false;
             }
             if (listStd.ButtonText("BS_ResetSettings".Translate()))
             {
@@ -121,7 +122,7 @@ namespace BigAndSmall
             listStd.GapLine();
 
             listStd.Label("BS_Rendering".Translate().AsTipTitle());
-            CreateSettingCheckbox(listStd, "BS_SizeOffsetPawn", ref settings.offsetBodyPos);
+            CreateSettingCheckbox(listStd, "BS_SizeOffsetPawn".Translate(), ref settings.offsetBodyPos);
             CreateSettingCheckbox(listStd, "BS_DisabeVFCachine".Translate(), ref settings.disableTextureCaching);
             listStd.Label("BS_ScalePawnDefault".Translate());
             CreateSettingsSlider(listStd, "BS_ScaleLargerPawns".Translate(), ref settings.visualLargerMult, min: 0.05f, max: 20f, (f) => $"{f:F2}");

@@ -19,7 +19,7 @@ namespace BigAndSmall
         {
             var allGeneDefs = DefDatabase<GeneDef>.AllDefsListForReading;
 
-            var allGenesWithGenExt = allGeneDefs.Where(x => x.modExtensions != null && x.modExtensions.Any(y => y is GeneExtension));
+            var allGenesWithGenExt = allGeneDefs.Where(x => x.modExtensions != null && x.modExtensions.Any(y => y is PawnExtension));
 
             // If vanilla expanded insectoids 2 is loaded
             if (ModsConfig.IsActive("OskarPotocki.VFE.Insectoid2"))
@@ -31,7 +31,7 @@ namespace BigAndSmall
                     if (allowedGenesFInfo != null)
                     {
                         var allowedGenes = allowedGenesFInfo.GetValue(null) as HashSet<string>;
-                        var genesToAdd = allGenesWithGenExt.Where(x => x.modExtensions.Any(y => y is GeneExtension geneExt && geneExt.canWalkOnCreep));
+                        var genesToAdd = allGenesWithGenExt.Where(x => x.modExtensions.Any(y => y is PawnExtension geneExt && geneExt.canWalkOnCreep));
                         allowedGenes.AddRange(genesToAdd.Select(x => x.defName));
 
                         // Print the hashset as a comma seperated string.
@@ -104,7 +104,7 @@ namespace BigAndSmall
                 {
                     foreach (var modExt in geneDef.modExtensions)
                     {
-                        if (modExt is GeneExtension geneExt)
+                        if (modExt is PawnExtension geneExt)
                         {
                             if (geneExt.hideInGenePicker)
                             {

@@ -140,7 +140,7 @@ namespace BigAndSmall
             FastAcccess.GetCache(pawn, force: true);
         }
 
-        private static void CheckForOverrides(Pawn pawn)
+        public static void CheckForOverrides(Pawn pawn)
         {
             if (CheckForOverrides_MethodInfo == null)
             {
@@ -224,7 +224,7 @@ namespace BigAndSmall
 
         public static List<Gene> GetAllGenes(Pawn pawn)
         {
-            List<Gene> result = new();
+            List<Gene> result = [];
             var genes = pawn?.genes?.GenesListForReading;
             if (genes == null) return result;
             return genes;
@@ -382,6 +382,15 @@ namespace BigAndSmall
             return pawn.genes.GetGene(geneDef)?.Active ?? false;
         }
 
+        public static bool HasGene(this Pawn pawn, GeneDef geneDef)
+        {
+            if (pawn.genes == null)
+            {
+                return false;
+            }
+            return pawn.genes.GetGene(geneDef) != null;
+        }
+
 
         public static void RemoveRandomToMetabolism(int initialMet, List<GeneDef> newGenes, int minMet = -6, List<GeneDef> exclusionList = null)
         {
@@ -458,13 +467,41 @@ namespace BigAndSmall
             cachedGenesField.SetValue(genes, null);
         }
 
-        public static List<GeneExtension> GetActiveGeneExtensions(Pawn pawn)
+        //public static List<PawnExtension> GetPawnExtensions(this Pawn pawn, bool includeRace=true)
+        //{
+        //    var fromGenes = GetActiveGeneExtensions<PawnExtension>(pawn);
+        //    var fromHediffs = GetNonRaceHediffExtensions<PawnExtension>(pawn);
+        //    if (includeRace)
+        //    {
+        //        fromHediffs.Add(RaceHelper.GetRacePawnExtension(pawn));
+        //    }
+        //    return [.. fromGenes, .. fromHediffs];
+        //}
+
+        //public static List<T> GetActiveGeneExtensions<T>(this Pawn pawn) where T : DefModExtension
+        //{
+        //    var activeGenes = GetAllActiveGenes(pawn);
+        //    if (activeGenes.NullOrEmpty()) return []; ;
+        //    return activeGenes
+        //           .Where(x => x?.def?.modExtensions != null && x.def.HasModExtension<T>())?
+        //           .Select(x => x.def.GetModExtension<T>()).ToList();
+        //}
+
+        //public static List<T> GetNonRaceHediffExtensions<T>(this Pawn pawn) where T : DefModExtension
+        //{
+        //    var hediffExtensions = pawn.health.hediffSet.hediffs.Where(x => (x is not RaceTracker) && x.def.modExtensions != null && x.def.modExtensions.Any(y => y.GetType() == typeof(T)))?
+        //                          .Select(x => x.def.GetModExtension<T>()).ToList();
+        //    return hediffExtensions;
+        //}
+
+        public static PawnExtension GetPawnExt(this Gene gene)
         {
-            var activeGenes = GetAllActiveGenes(pawn);
-            if (activeGenes.NullOrEmpty()) return new List<GeneExtension>(); ;
-            return activeGenes
-                   .Where(x => x?.def?.modExtensions != null && x.def.modExtensions.Any(y => y.GetType() == typeof(GeneExtension)))?
-                   .Select(x => x.def.GetModExtension<GeneExtension>()).ToList();
+            return gene.def.GetModExtension<PawnExtension>();
+        }
+
+        public static List<Gene> GetActiveGenesByName(Pawn pawn, string geneName)
+        {
+            return GetActiveGenesByNames(pawn, new List<string> { geneName });
         }
 
         public static void ChangeXenotypeFast(Pawn pawn, XenotypeDef targetXenottype)
@@ -502,7 +539,7 @@ namespace BigAndSmall
 
             // If a gene targeting the CURRENT xenotype exists, remove it.
             var allGenes = pawn.genes.GenesListForReading.ToList();
-            var genesToRemove = allGenes.Where(x => x.def.modExtensions != null && x.def.modExtensions.Any(y => y.GetType() == typeof(GeneExtension) && (y as GeneExtension).metamorphTarget == pawn.genes.Xenotype)).ToList();
+            var genesToRemove = allGenes.Where(x => x.def.modExtensions != null && x.def.modExtensions.Any(y => y.GetType() == typeof(PawnExtension) && (y as PawnExtension).metamorphTarget == pawn.genes.Xenotype)).ToList();
             foreach (var gene in genesToRemove)
             {
                 Log.Warning($"Removing gene {gene.def.defName} from {pawn.Name} as it targets the current xenotype.");

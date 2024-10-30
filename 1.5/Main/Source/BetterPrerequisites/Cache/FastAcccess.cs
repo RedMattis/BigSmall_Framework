@@ -15,9 +15,9 @@ namespace BigAndSmall
     // This class is for fast access to the cache. The entire thing really should move over to this instead of the utter mess it is now.
     public static class FastAcccess
     {
-        public static BSCache GetCache(Pawn pawn, bool force=false, bool scheduleForce=false)
+        public static BSCache GetCache(Pawn pawn, bool force=false, int scheduleForce=-1)
         {
-            return HumanoidPawnScaler.GetCache(pawn, forceRefresh: force, scheduleForce: 1);
+            return HumanoidPawnScaler.GetCache(pawn, forceRefresh: force, scheduleForce: -1);
         }
 
         public static bool IsUndead(this Pawn pawn)

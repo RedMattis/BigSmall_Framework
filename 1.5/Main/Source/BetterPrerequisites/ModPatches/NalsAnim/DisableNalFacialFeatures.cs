@@ -155,13 +155,14 @@ namespace BigAndSmall
             //public static FieldInfo pawnField = null;
             public static bool pawnInitialized = true;
 
-            public static bool Prefix(object __instance, Pawn pawn)
+            public static bool Prefix(ref bool __result, object __instance, Pawn pawn)
             {
                 //FieldInfo pawnField = GetPawnField(__instance);
                 //Pawn pawn = pawnField.GetValue(__instance) as Pawn;
-                if (FastAcccess.GetCache(pawn) is BSCache cache && cache.facialAnimationDisabled)
+                if (HumanoidPawnScaler.GetCacheUltraSpeed(pawn, canRegenerate:false) is BSCache cache && cache.facialAnimationDisabled)
                 {
-                    return false;
+                    __result = false;
+                    return false; // Skip original method
                 }
                 return true;
             }

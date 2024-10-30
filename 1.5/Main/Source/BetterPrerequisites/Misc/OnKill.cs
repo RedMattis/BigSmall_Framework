@@ -45,7 +45,7 @@ namespace BigAndSmall
 
                 bool targetFar = (corpse?.Spawned == true || victim?.Spawned == true) && (instigator.Position.DistanceTo(position.Value) > 2);
 
-                var genExt = GeneHelpers.GetAllActiveGenes(instigator).Select(x => x.def.GetModExtension<GeneExtension>()).Where(x => x != null).ToList();
+                var genExt = GeneHelpers.GetAllActiveGenes(instigator).Select(x => x.def.GetModExtension<PawnExtension>()).Where(x => x != null).ToList();
                 if (!targetFar && genExt.Any(x=>x.consumeSoulOnHit != null))
                 {
                     var consumeSoulOnHit = genExt.First(x => x.consumeSoulOnHit != null).consumeSoulOnHit;

@@ -8,11 +8,26 @@
   <PsychicSensitivity_VeryHigh>Psychic Sensitivity above 225%</PsychicSensitivity_VeryHigh>
   <PsychicSensitivity_Normal>Psychic Sensitivity above 90%</PsychicSensitivity_Normal>
 
-  <BS_GenePreventsEquipping>Cannot equip weapons</BS_GenePreventsEquipping>
-  <BS_CannotWearApparel>Cannot wear apparel</BS_CannotWearApparel>
-  <BS_CannotWearClothing>Cannot wear clothing</BS_CannotWearClothing>
-  <BS_CannotWearArmor>Cannot wear dedicated armor</BS_CannotWearArmor>
-  <BS_CannotWearThisApparel>Cannot wear this type of apparel</BS_CannotWearThisApparel>
+  <BS_GenePreventsEquipping>Race cannot equip weapons</BS_GenePreventsEquipping>
+  <BS_CannotWearApparel>Race cannot wear apparel</BS_CannotWearApparel>
+  <BS_CannotWearClothing>Race cannot wear clothing</BS_CannotWearClothing>
+  <BS_CannotWearArmor>Race cannot wear dedicated armor</BS_CannotWearArmor>
+  <BS_CannotWearThis>Race cannot wear this particular item</BS_CannotWearThis>
+  <BS_CannotWearPants>Race cannot wear pants</BS_CannotWearPants>
+  <BS_CannotWearFoot>Race cannot wear this particular item</BS_CannotWearFoot>
+
+  <BS_CannotWearOverHead>Race cannot wear over the head apparel</BS_CannotWearOverHead>
+  <BS_CannotWearOuter>Race cannot wear outer layer apparel</BS_CannotWearOuter>
+  <BS_CannotWearMiddle>Race cannot wear middle layer apparel</BS_CannotWearMiddle>
+  <BS_CannotWearInner>Race cannot wear inner layer apparel</BS_CannotWearInner>
+
+  <BS_CannotWearExact>Race prevents wearing this exact thing.</BS_CannotWearExact>
+  <BS_CannotWearLayer>Race cannot wear apparel on a layer required by the item.</BS_CannotWearLayer>
+  <BS_CannotWearBodyPart>Race cannot wear apparel on a bodypart required by the item.</BS_CannotWearBodyPart>
+  <BS_CannotWearTag>Race cannot wear apparel of this type.</BS_CannotWearTag>
+
+  <BS_CannotWearThisApparel>Race cannot wear this apparel</BS_CannotWearThisApparel>
+
   <BS_AccumulateSlimeUntil>Convert nutrition into slime until</BS_AccumulateSlimeUntil>
   <AbilityPoolCost>Cost</AbilityPoolCost>
 

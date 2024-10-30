@@ -90,19 +90,4 @@ namespace BigAndSmall
             return FoodKind.Any;
         }
     }
-
-    public static partial class GeneHelpers
-    {
-        public static bool ApproximatelyEquals(this float f1, float f2, float tolerance = 0.01f)
-        {
-            return Math.Abs(f1 - f2) < tolerance;
-        }
-
-        public static List<Gene> GetActiveGenesByName(Pawn pawn, string geneName)
-        {
-            return GetActiveGenesByNames(pawn, new List<string> { geneName });
-        }
-
-        
-    }
 }

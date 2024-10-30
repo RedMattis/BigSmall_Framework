@@ -1,0 +1,8 @@
+<Patch>
+  <Operation Class="PatchOperationAttributeSet">
+    <xpath>Defs/ThingDef[defName="BS_Slime" or BS_Sludge or BS_SpiderPersonRace or BS_Marlith or BS_Naga or BS_GluttonRace or BS_InsectoidHumanoid_FourArmed or BS_HumanFouramed]</xpath>
+    <success>Always</success>
+    <attribute>Class</attribute>
+    <value>AlienRace.ThingDef_AlienRace</value>
+  </Operation>
+</Patch>

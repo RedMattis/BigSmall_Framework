@@ -19,6 +19,7 @@ namespace BetterPrerequisites
     {
         public NeedDef need;
         public float value;
+        public bool minValue = false;
     }
         
     public class LockedNeedGene : PGene

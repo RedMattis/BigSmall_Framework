@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BetterPrerequisites;
+using HarmonyLib;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -105,12 +106,13 @@ namespace BigAndSmall
                 try
                 {
                     // Force refresh the pawn so they get correct body-size and stuff.
-                    var cache = FastAcccess.GetCache(member, true);
-                    changed = true;
-
-                    if (cache != null)
+                    if (HumanoidPawnScaler.GetCache(member, forceRefresh: true) is BSCache cache)
                     {
-                        RemoveInvalidThings(member);
+                        changed = true;
+                        try { TryThingDefSwap(member); }
+                        catch (Exception e) { Log.Warning($"BigAndSmall (GeneratePawns): Failed to swap thingdef for {member.Name} ({member.Label}): + {e.Message}"); }
+                        try { RemoveInvalidThings(member); }
+                        catch (Exception e) { Log.Warning($"BigAndSmall (GeneratePawns): Failed to remove invalid apparel for {member.Name} ({member.Label}): + {e.Message}"); }
                     }
                 }
                 catch (Exception e)
@@ -184,6 +186,27 @@ namespace BigAndSmall
             return changed;
         }
 
+        private static void TryThingDefSwap(Pawn member)
+        {
+            if (member?.RaceProps?.Humanlike != true) return;
+            if (member.genes?.Xenotype == null) return;
+            if (member.genes.Xenotype.GetModExtension<XenotypeExtension>() is XenotypeExtension xenotypeExt)
+            {
+                if (xenotypeExt.forceRaceOnGeneration != null)
+                {
+                    try
+                    {
+                        RaceMorpher.SwapThingDef(member.def, member, xenotypeExt.forceRaceOnGeneration, true);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error($"BigAndSmall: Error swapping thingdef for {member.Name}: {e.Message}");
+                    }
+                }
+            }
+
+        }
+
         private static void RemoveInvalidThings(Pawn member)
         {
             if (member?.RaceProps?.Humanlike != true) return;
@@ -193,7 +216,7 @@ namespace BigAndSmall
             {
                 bool canEquip = true;
                 string cantReason = "";
-                canEquip = GiantTraitPatches.CanEquipThing(canEquip, apparel.def, member, ref cantReason);
+                canEquip = CanEquipPatches.CanEquipThing(canEquip, apparel.def, member, ref cantReason);
                 if (!canEquip)
                 {
                     member.apparel.Remove(apparel);
@@ -206,7 +229,7 @@ namespace BigAndSmall
             {
                 bool canEquip = true;
                 string cantReason = "";
-                canEquip = GiantTraitPatches.CanEquipThing(canEquip, equip.def, member, ref cantReason);
+                canEquip = CanEquipPatches.CanEquipThing(canEquip, equip.def, member, ref cantReason);
                 if (!canEquip)
                 {
                     member.equipment.Remove(equip);

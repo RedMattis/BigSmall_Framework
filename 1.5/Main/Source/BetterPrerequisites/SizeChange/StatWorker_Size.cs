@@ -69,6 +69,7 @@ namespace BigAndSmall
             {
                 if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache)
                 {
+                    if (cache.developmentalStage <= DevelopmentalStage.Baby) return 1;
                     float scale = cache.scaleMultiplier.linear;
                     return GetNutritionMultiplier(scale);
                     //Log.Message($"Debug : {pawn} StatWorker_MaxNutritionFromSize: nutritionCapMult: {nutritionCapMult}");
@@ -87,7 +88,7 @@ namespace BigAndSmall
             }
             else if (scale < 1f) // Don't shrink the food bar too much or they will waste an unreasonably large amount of food from meals.
             {
-                nutritionCapMult = (nutritionCapMult / scale + nutritionCapMult) / 2;
+                nutritionCapMult = (nutritionCapMult / scale + 1f) / 2;
             }
             return nutritionCapMult;
         }

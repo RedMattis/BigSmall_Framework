@@ -106,15 +106,51 @@
 			<li>Royalty</li>
 		</mods>
 
-		<match Class="PatchOperationAdd">
-			<success>Always</success>
-			<xpath>Defs/FactionDef[defName="Empire"]/permanentEnemyToEveryoneExcept</xpath>
-			<value>
-				<li>BS_PlayerTribeXenoPlus</li>
-				<li>BS_PlayerColonyXenoPlus</li>
-				<li MayRequire="RedMattis.BigSmall.Bugs">BS_XenoInsectoidHiveStart</li>
-			</value>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAdd">
+					<success>Always</success>
+					<xpath>Defs/FactionDef[defName="Empire"]/permanentEnemyToEveryoneExcept</xpath>
+					<value>
+						<li MayRequire="Ludeon.Rimworld.Biotech">BS_PlayerTribeXenoPlus</li>
+						<li MayRequire="Ludeon.Rimworld.Biotech">BS_PlayerColonyXenoPlus</li>
+						<li MayRequire="RedMattis.BigSmall.Bugs">BS_XenoInsectoidHiveStart</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<success>Always</success>
+					<xpath>Defs/HediffDef[defName="NuclearStomach" or defName="ReprocessorStomach" or defName="DetoxifierStomach"][not(modExtensions)]</xpath>
+					<value>
+						<modExtensions/>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/HediffDef[defName="NuclearStomach"]/modExtensions</xpath>
+					<value>
+						<li Class="BigAndSmall.PawnExtension">
+							<pawnDiet>BS_EverythingAndFuel</pawnDiet>
+							<pawnDietRacialOverride>true</pawnDietRacialOverride>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/HediffDef[defName="ReprocessorStomach" or defName="DetoxifierStomach"]/modExtensions</xpath>
+					<value>
+						<li Class="BigAndSmall.PawnExtension">
+							<pawnDietRacialOverride>true</pawnDietRacialOverride>
+						</li>
+					</value>
+				</li>
+			</operations>
 		</match>
 	</Operation>
-
 </Patch>
+<!-- 
+
+<Operation Class="PatchOperationAdd">
+	<success>Always</success>
+	<xpath>Defs/ThoughtDef[defName="AteCorpse"][not(nullifyingGenes)]</xpath>
+	<value>
+		<nullifyingGenes/>
+	</value>
+</Operation> -->

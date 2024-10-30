@@ -33,6 +33,7 @@ namespace BigAndSmall
         // Traits
         [MayRequire("RedMattis.BigSmall.Core")]
         public static TraitDef BS_Giant;
+        [MayRequire("Ludeon.Rimworld.Biotech")]
         public static TraitDef BS_Gentle;
         public static TraitDef Cannibal;
         public static TraitDef Beauty;
@@ -41,9 +42,17 @@ namespace BigAndSmall
         public static TraitDef Masochist;
 
         // Genes
+        [MayRequire("Ludeon.Rimworld.Biotech")]
         public static GeneDef Robust;
+        [MayRequire("Ludeon.Rimworld.Biotech")]
+        public static GeneDef DiseaseFree;
+        [MayRequire("Ludeon.Rimworld.Biotech")]
+        public static GeneDef Ageless;
+        [MayRequire("Ludeon.Rimworld.Biotech")]
         public static GeneDef Body_Androgynous;
+        [MayRequire("Ludeon.Rimworld.Biotech")]
         public static GeneDef Body_MaleOnly;
+        [MayRequire("Ludeon.Rimworld.Biotech")]
         public static GeneDef Body_FemaleOnly;
         [MayRequire("RedMattis.BigSmall.Core")]
         public static GeneDef BS_ReturningSoul;
@@ -101,6 +110,9 @@ namespace BigAndSmall
         public static ThoughtDef BS_DroneDied;
         [MayRequire("RedMattis.BigSmall.Core")]
         public static ThoughtDef BS_DroneLost;
+
+        // BodyPartGroupDefs
+        public static BodyPartGroupDef Feet;
 
 
 

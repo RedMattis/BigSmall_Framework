@@ -11,7 +11,7 @@ using BetterPrerequisites;
 using System.Reflection;
 using System.Runtime;
 
-namespace BigSmallDefGen
+namespace BigAndSmall
 {
     [StaticConstructorOnStartup]
     internal class BigAndSmall_Early : Mod
@@ -30,7 +30,7 @@ namespace BigSmallDefGen
 
         static void ApplyHarmonyPatches()
         {
-            var harmony = new Harmony("RedMattis.BSXeno");
+            var harmony = new Harmony("RedMattis.BigAndSmall_Early");
             harmony.PatchAll();
         }
     }

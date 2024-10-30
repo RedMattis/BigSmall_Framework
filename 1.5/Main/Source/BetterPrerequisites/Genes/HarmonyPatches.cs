@@ -126,9 +126,24 @@ namespace BetterPrerequisites
                 {
                     __instance.needs.food.CurLevelPercentage = foodNeed.Value;
                 }
+
+                __instance.def.modExtensions?.OfType<RaceExtension>()?.FirstOrDefault()?.ApplyTrackerIfMissing(__instance);
             }
         }
     }
+
+    //[HarmonyPatch(typeof(Pawn), nameof(Pawn.SetFaction))]
+    //public static class SetFaction
+    //{
+    //    public static void Postfix(Pawn __instance, Faction newFaction)
+    //    {
+    //        if(__instance?.Drawer != null && HumanoidPawnScaler.GetCacheUltraSpeed(__instance) is BSCache cache)
+    //        {
+    //            cache.ReevaluateGraphics();
+    //        }
+    //    }
+    //}
+
 
     // When the game is loaded, go through all hedifs in the pawns health tab and try to add supressors
     [HarmonyPatch(typeof(Pawn), nameof(Pawn.PostMapInit))]
@@ -341,6 +356,8 @@ namespace BetterPrerequisites
                     gene.passionPreAdd = skill.passion;
                     skill.passion = gene.def.passionMod.NewPassionFor(skill);
                 }
+                int? test = null;
+                test.GetValueOrDefault();
                 // public void DirtyAptitudes()
                 dirtyAptitudesDelegate ??= AccessTools.MethodDelegate<Action<Pawn_SkillTracker>>(AccessTools.Method(typeof(Pawn_SkillTracker), "DirtyAptitudes"));
                 dirtyAptitudesDelegate(gene.pawn.skills);
@@ -424,7 +441,7 @@ namespace BetterPrerequisites
         private static MethodInfo headTypeFilterMethod = null;
         public static bool canRefreshGeneEffects = false;
 
-        public static bool RefreshGeneEffects(Gene __instance, bool activate, GeneExtension geneExt = null)
+        public static bool RefreshGeneEffects(Gene __instance, bool activate, PawnExtension geneExt = null)
         {
             //if (__instance.pawn == null || !__instance.pawn.Spawned)
             //{
@@ -448,7 +465,7 @@ namespace BetterPrerequisites
 
             var gene = __instance;
 
-            GeneExtension extension = geneExt ?? gene.def.GetModExtension<GeneExtension>();
+            PawnExtension extension = geneExt ?? gene.def.GetModExtension<PawnExtension>();
             if (extension == null) return false;
             try
             {
@@ -463,7 +480,7 @@ namespace BetterPrerequisites
             return changeMade;
         }
 
-        private static void AddHediffToPart(bool activate, ref bool changeMade, Gene gene, GeneExtension extension)
+        private static void AddHediffToPart(bool activate, ref bool changeMade, Gene gene, PawnExtension extension)
         {
             if (extension.applyPartHediff != null)
             {
@@ -511,7 +528,7 @@ namespace BetterPrerequisites
                             bool found = false;
                             var otherGenes = GeneHelpers.GetAllActiveGenes(gene.pawn).Where(x => x != gene);
                             if (otherGenes.Count() == 0) continue;
-                            foreach (var otherGene in otherGenes.Select(x => x.def.GetModExtension<GeneExtension>()).Where(x => x != null))
+                            foreach (var otherGene in otherGenes.Select(x => x.def.GetModExtension<PawnExtension>()).Where(x => x != null))
                             {
                                 if (otherGene.applyPartHediff != null)
                                 {
@@ -555,7 +572,7 @@ namespace BetterPrerequisites
             }
         }
 
-        private static void AddHediffToPawn(bool activate, ref bool changeMade, Gene gene, GeneExtension extension)
+        private static void AddHediffToPawn(bool activate, ref bool changeMade, Gene gene, PawnExtension extension)
         {
             List<HediffToBody> toRemove = new List<HediffToBody>();
             if (extension.applyBodyHediff != null)
@@ -579,7 +596,7 @@ namespace BetterPrerequisites
                             {
                                 // Check all other genes to see if they have the same hediff. If not, remove it.
                                 bool found = false;
-                                foreach (var otherGene in GeneHelpers.GetAllActiveGenes(gene.pawn).Where(x => x != gene).Select(x => x.def.GetModExtension<GeneExtension>()).Where(x => x != null))
+                                foreach (var otherGene in GeneHelpers.GetAllActiveGenes(gene.pawn).Where(x => x != gene).Select(x => x.def.GetModExtension<PawnExtension>()).Where(x => x != null))
                                 {
                                     if (otherGene.applyBodyHediff != null)
                                     {
@@ -718,9 +735,9 @@ namespace BetterPrerequisites
                 }
             }
 
-            if (__instance.HasModExtension<GeneExtension>())
+            if (__instance.HasModExtension<PawnExtension>())
             {
-                var geneExt = __instance.GetModExtension<GeneExtension>();
+                var geneExt = __instance.GetModExtension<PawnExtension>();
 
                 StringBuilder stringBuilder = new();
                 stringBuilder.AppendLine(__result);

@@ -1,0 +1,114 @@
+<Defs>
+  <FactionDef Name="BS_PlayerFactionBaseXenoPlus" ParentName="PlayerFactionBase" Abstract="True">
+
+    <modExtensions>
+      <li Class="BigAndSmall.FactionExtension">
+        <pawnKindSwaps>
+          <li>
+            <eventsToSwapPawnKind>
+              <li>QuestNode_Root_WandererJoin_WalkIn</li>
+            </eventsToSwapPawnKind>
+            <pawnKindSet>
+              <Villager>1</Villager>
+              <BS_VillagerXenoPlus>2</BS_VillagerXenoPlus>
+            </pawnKindSet>
+            <!-- <forcePawnKindIdeology>true</forcePawnKindIdeology> -->
+          </li>
+          <li>
+            <eventsToSwapPawnKind>
+              <li>ThingSetMaker_RefugeePod</li>
+            </eventsToSwapPawnKind>
+            <pawnKindSet>
+              <SpaceRefugee>1</SpaceRefugee>
+              <BS_SpaceRefugeeXenoPlus>2</BS_SpaceRefugeeXenoPlus>
+            </pawnKindSet>
+          </li>
+        </pawnKindSwaps>
+      </li>
+    </modExtensions>
+  </FactionDef>
+
+  <FactionDef ParentName="BS_PlayerFactionBaseXenoPlus">
+    <defName>BS_PlayerTribeXenoPlus</defName>
+    <label>New Xeno Tribe</label>
+    <description>A small tribe on a world with a great variety of xenotypes.</description>
+    <isPlayer>true</isPlayer>
+    <categoryTag>Tribal</categoryTag>
+    <pawnSingular>tribesman</pawnSingular>
+    <pawnsPlural>tribespeople</pawnsPlural>
+    <basicMemberKind>Tribesperson</basicMemberKind>
+    <techLevel>Neolithic</techLevel>
+    <factionNameMaker>NamerFactionTribal</factionNameMaker>
+    <settlementNameMaker>NamerSettlementTribal</settlementNameMaker>
+    <allowedCultures>
+      <li>Corunan</li>
+    </allowedCultures>
+    <disallowedMemes>
+      <li MayRequire="Ludeon.RimWorld.Ideology">Transhumanist</li>
+    </disallowedMemes>
+    <disallowedPrecepts>
+      <li MayRequire="Ludeon.RimWorld.Ideology">Nudity_Male_CoveringAnythingButGroinDisapproved</li>
+      <li MayRequire="Ludeon.RimWorld.Ideology">Nudity_Female_CoveringAnythingButGroinDisapproved</li>
+    </disallowedPrecepts>
+    <backstoryFilters>
+      <li>
+        <categories>
+          <li>Tribal</li>
+        </categories>
+      </li>
+    </backstoryFilters>
+    <factionIconPath>World/WorldObjects/Expanding/Village</factionIconPath>
+    <settlementTexturePath>World/WorldObjects/TribalSettlement</settlementTexturePath>
+    <forageabilityFactor>1.7</forageabilityFactor>
+    <startingResearchTags>
+      <li>TribalStart</li>
+    </startingResearchTags>
+    <startingTechprintsResearchTags>
+      <li>TribalStart</li>
+      <li>TribalStartTechprints</li>
+    </startingTechprintsResearchTags>
+    <apparelStuffFilter>
+      <thingDefs>
+        <li>Cloth</li>
+      </thingDefs>
+    </apparelStuffFilter>
+    <recipePrerequisiteTags>
+      <li>Tribal</li>
+    </recipePrerequisiteTags>
+  </FactionDef>
+
+  <FactionDef ParentName="BS_PlayerFactionBaseXenoPlus">
+    <defName>BS_PlayerColonyXenoPlus</defName>
+    <label>New Xeno Arrivals</label>
+    <description>A colony of recently-arrived off-worlders. Who have found themselves on a world with a great variety of xenotypes.</description>
+    <isPlayer>true</isPlayer>
+    <basicMemberKind>Colonist</basicMemberKind>
+    <pawnSingular>colonist</pawnSingular>
+    <pawnsPlural>colonists</pawnsPlural>
+    <techLevel>Industrial</techLevel>
+    <factionNameMaker>NamerFactionOutlander</factionNameMaker>
+    <settlementNameMaker>NamerSettlementOutlander</settlementNameMaker>
+    <allowedCultures><li>Astropolitan</li></allowedCultures>
+    <backstoryFilters>
+      <li>
+        <categories>
+          <li>Offworld</li>
+        </categories>
+      </li>
+    </backstoryFilters>
+    <factionIconPath>World/WorldObjects/Expanding/Town</factionIconPath>
+    <startingResearchTags>
+      <li>ClassicStart</li>
+    </startingResearchTags>
+    <startingTechprintsResearchTags>
+      <li>ClassicStart</li>
+      <li>ClassicStartTechprints</li>
+    </startingTechprintsResearchTags>
+    <apparelStuffFilter>
+      <thingDefs>
+        <li>Synthread</li>
+      </thingDefs>
+    </apparelStuffFilter>
+  </FactionDef>
+  
+</Defs>

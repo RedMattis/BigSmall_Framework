@@ -26,7 +26,7 @@ namespace BigAndSmall
             public bool morphUpRequiresDay = false;
             public bool morphUpRequiresNight = false;
 
-            public static bool ValidToMorph(List<GeneExtension> geneExts)
+            public static bool ValidToMorph(List<PawnExtension> geneExts)
             {
                 return geneExts.Any(x => x.CanMorphAtAll);
             }
@@ -89,7 +89,7 @@ namespace BigAndSmall
                 return defs;
             }
 
-            public MorphManager(List<GeneExtension> geneExts)
+            public MorphManager(List<PawnExtension> geneExts)
             {
                 upstreamXenos = geneExts.Where(x => x.metamorphTarget != null)?.Select(x => x.metamorphTarget).ToList();
                 downstreamXenos = geneExts.Where(x => x.retromorphTarget != null)?.Select(x => x.retromorphTarget).ToList();
@@ -100,7 +100,7 @@ namespace BigAndSmall
                 morphUpRequiresPreg = geneExts.Where(x => x.metamorphIfPregnant).Any();
             }
         }
-        private static MorphManager GetMorphChain(Pawn pawn, List<GeneExtension> geneExts)
+        private static MorphManager GetMorphChain(Pawn pawn, List<PawnExtension> geneExts)
         {
             var pawnGT = pawn.genes;
 
@@ -112,7 +112,7 @@ namespace BigAndSmall
         }
 
         public static HashSet<Pawn> pawnsQueuedForMorphing = new();
-        public static void HandleMetamorph(Pawn pawn, List<GeneExtension> geneExts)
+        public static void HandleMetamorph(Pawn pawn, List<PawnExtension> geneExts)
         {
             if (geneExts.Count == 0 || pawnsQueuedForMorphing.Contains(pawn))
             {

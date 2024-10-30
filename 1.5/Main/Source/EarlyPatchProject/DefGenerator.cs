@@ -1,5 +1,4 @@
 ﻿using BetterPrerequisites;
-using BigAndSmall;
 using HarmonyLib;
 using RimWorld;
 using System;
@@ -11,7 +10,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
-namespace BSXeno
+namespace BigAndSmall
 {
     [HarmonyPatch]
     public static class DefGenerator
@@ -62,7 +61,7 @@ namespace BSXeno
                 {
                     if (metTemplate != null)
                     {
-                        var geneExt = new GeneExtension
+                        var geneExt = new PawnExtension
                         {
                             metamorphTarget = xeno,
                             hideInGenePicker = false
@@ -73,7 +72,7 @@ namespace BSXeno
 
                     if (metDownTemplate != null)
                     {
-                        var geneExtTarget = new GeneExtension
+                        var geneExtTarget = new PawnExtension
                         {
                             retromorphTarget = xeno,
                             hideInGenePicker = false

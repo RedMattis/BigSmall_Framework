@@ -10,9 +10,10 @@
   <v1.5>
     <li>/</li>
     <li>1.5/Common</li>
+    <li IfModActive="Ludeon.Rimworld.Biotech">1.5/Biotech</li>
     <li>1.5/Main</li>
-    <!-- <li IfModActive="erdelf.HumanoidAlienRaces">1.5/HAR</li>
-    <li IfModNotActive="erdelf.HumanoidAlienRaces">1.5/No_HAR</li> -->
+    <li IfModActive="erdelf.HumanoidAlienRaces">1.5/HAR</li>
+    <!-- <li IfModNotActive="erdelf.HumanoidAlienRaces">1.5/No_HAR</li> -->
     <!-- <li>1.5/No_HAR</li> -->
     <li IfModActive="nals.facialanimation">1.5/FacialAnim</li>
   </v1.5>

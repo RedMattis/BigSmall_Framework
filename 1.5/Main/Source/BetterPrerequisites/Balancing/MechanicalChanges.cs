@@ -32,12 +32,13 @@ namespace BigAndSmall
         }
         public static void Postfix(ref float __result, Pawn __instance)
         {
-            int thisTick = Find.TickManager.TicksGame;
-            if (FastAcccess.GetCache(__instance) is BSCache sizeCache)
+            if (HumanoidPawnScaler.GetCacheUltraSpeed(__instance) is BSCache sizeCache)
             {
+                
                 float newScale = __result * sizeCache.healthMultiplier;
                 if (!sizeCache.injuriesRescaled)
                 {
+                    int thisTick = Find.TickManager.TicksGame;
                     if (thisTick != lastTick)
                     {
                         lastTick = thisTick;
@@ -86,7 +87,6 @@ namespace BigAndSmall
                     }
                     sizeCache.injuriesRescaled = true;
                 }
-                lastTick = thisTick;
                 __result = newScale;
             }
 

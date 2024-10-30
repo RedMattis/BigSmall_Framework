@@ -8,10 +8,10 @@
 	</supportedVersions>
 	<modIconPath IgnoreIfNoMatchingField="True">BS_ModIcon</modIconPath>
 	<modDependencies>
-		<li>
+		<!-- <li>
 			<packageId>Ludeon.RimWorld.Biotech</packageId>
 			<displayName>Biotech</displayName>
-		</li>
+		</li> -->
 		<li>
 			<packageId>brrainz.harmony</packageId>
 			<displayName>Harmony</displayName>
@@ -33,42 +33,6 @@
 		<li>oskarpotocki.vanillafactionsexpanded.core</li>
 	</loadBefore>
 	
-	<description>Contains the framework for Better Prerequisites and the Big and Small mods.
-
------------------------
-
-Big and Small adds methods for changing the size of creatures via f.ex. genes and applied a large number of effects to large/small creatures such as altered health, damage, metabolism, production, etc.
-
------------------------
-
-Better Prerequisites is A more robust system for prerequisites, hediffs, etc., than what Vanilla Rim world offers for its genes.
-
-Originally it was just for prerequsities, but the framework now includes f.ex. hediffs that change a pawns genes, or spawn other hediffs.
-Vice versa for genes spawning hediffs.
-
-For any Gene mod authors can specify any number of condition sets that must all be fullfilled for the gene to activate.
-
-Example of how it can look in-game:
-
------------------------
-
-"Supreme Super Snek Ambush"
-Gene Prerequisites:
-
-Any of:
-Snake Tail, Eel tail, Mermaid tail
-
-Any of:
-Strong Melee, Feral Might
-
-All of:
-Venomous Fangs, Coiled Jump
-
-None of:
-Incapable of Violence, Weak Melee
-
------------------------
-
-Unlike the vanilla prerequisite system genes with prerequisites from this mod can still spawn in genepacks or via random gene-generation.
-  </description>
+	<description>This is a framework for adding custom races and greatly extending the ability to do things with Genes and Hediffs.
+The mod is frequently performance-tested and aims to bring bliss even to the Performance Junkies over at Dubs Discord. If you think you've encountered any performance issues during regular play related to this mod please feel free to inform me.</description>
 </ModMetaData>

@@ -10,11 +10,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BSXeno", "..\EarlyPatchProj
 		{F0272DF1-D703-495D-8F95-48D6BAB3A0B9} = {F0272DF1-D703-495D-8F95-48D6BAB3A0B9}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigAndSmall", "..\BigAndSmall\BigAndSmall.csproj", "{B582E8E5-4C2F-459D-A9E5-6CDAF8192CF8}"
-	ProjectSection(ProjectDependencies) = postProject
-		{F0272DF1-D703-495D-8F95-48D6BAB3A0B9} = {F0272DF1-D703-495D-8F95-48D6BAB3A0B9}
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +24,6 @@ Global
 		{632562DC-9399-48D4-95D2-1C9A919C9640}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{632562DC-9399-48D4-95D2-1C9A919C9640}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{632562DC-9399-48D4-95D2-1C9A919C9640}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B582E8E5-4C2F-459D-A9E5-6CDAF8192CF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B582E8E5-4C2F-459D-A9E5-6CDAF8192CF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B582E8E5-4C2F-459D-A9E5-6CDAF8192CF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B582E8E5-4C2F-459D-A9E5-6CDAF8192CF8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
