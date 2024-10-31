@@ -29,7 +29,12 @@ namespace BigAndSmall
         public override void CompPostPostRemoved()
         {
             base.CompPostPostRemoved();
-            RaceMorpher.SwapThingDef(null, parent.pawn, Props.swapTarget, true, force: true);
+
+            BigAndSmallCache.queuedJobs.Enqueue( new Action(() =>
+            {
+                RaceMorpher.SwapThingDef(null, parent.pawn, Props.swapTarget, true, force: true);
+            }));
+            
         }
     }
     public class InstantEffect : HediffWithComps
@@ -153,8 +158,6 @@ namespace BigAndSmall
 
         private static bool ExecuteDefSwap(Pawn pawn, ThingDef swapTarget)
         {
-            Log.Message($"Swapping {pawn?.Name} to {swapTarget?.defName}");
-
             if (pawn?.def == null) return false;
             if (pawn.def == swapTarget) return false;
             bool wasRemovedFromLister = false;
