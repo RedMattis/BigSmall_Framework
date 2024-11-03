@@ -195,10 +195,10 @@ namespace BigAndSmall
                 noArmor = noArmor || other.noArmor,
                 exceptNudistFriendly = exceptNudistFriendly || other.exceptNudistFriendly,
                 //hatsOkay = hatsOkay || other.hatsOkay,
-                thingDefs = thingDefs.MergeLists(other.thingDefs),
-                tags = tags.MergeLists(other.tags),
-                apparelLayers = apparelLayers.MergeLists(other.apparelLayers),
-                bodyPartGroups = bodyPartGroups.MergeLists(other.bodyPartGroups)
+                thingDefs = thingDefs.MergeFilters(other.thingDefs),
+                tags = tags.MergeFilters(other.tags),
+                apparelLayers = apparelLayers.MergeFilters(other.apparelLayers),
+                bodyPartGroups = bodyPartGroups.MergeFilters(other.bodyPartGroups)
             };
             return result;
         }

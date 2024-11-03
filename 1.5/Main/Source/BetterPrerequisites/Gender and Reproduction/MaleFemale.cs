@@ -28,8 +28,6 @@ namespace BigAndSmall.SpecialGenes.Gender
         }
     }
 
-
-    // This is just taken from the Genes mod. Integrated because my users kept complaining about the dependency.
     [HarmonyPatch(typeof(Pawn_GeneTracker), "Notify_GenesChanged")]
     public static class Pawn_GeneTracker__Notify_GenesChanged
     {

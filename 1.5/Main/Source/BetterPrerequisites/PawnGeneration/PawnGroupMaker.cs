@@ -192,11 +192,11 @@ namespace BigAndSmall
             if (member.genes?.Xenotype == null) return;
             if (member.genes.Xenotype.GetModExtension<XenotypeExtension>() is XenotypeExtension xenotypeExt)
             {
-                if (xenotypeExt.forceRaceOnGeneration != null)
+                if (xenotypeExt.setRace != null)
                 {
                     try
                     {
-                        RaceMorpher.SwapThingDef(member.def, member, xenotypeExt.forceRaceOnGeneration, true);
+                        RaceMorpher.SwapThingDef(member, xenotypeExt.setRace, true);
                     }
                     catch (Exception e)
                     {

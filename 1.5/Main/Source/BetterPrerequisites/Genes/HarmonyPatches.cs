@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Text;
 using Verse;
 
@@ -38,16 +39,15 @@ namespace BetterPrerequisites
             bool supressMngrChangeMade = false;
             if (__instance.pawn != null)
             {
-                var HediffName = __instance.def.defName;
                 if (GeneSuppressorManager.supressedGenesPerPawn_Hediff.Keys.Contains(__instance.pawn))
                 {
                     var suppressDict = GeneSuppressorManager.supressedGenesPerPawn_Hediff[__instance.pawn];
                     // Remove the Hediff from the Suppressors in the dictionary list.
                     foreach (var key in suppressDict.Keys)
                     {
-                        if (suppressDict[key].Contains(HediffName))
+                        if (suppressDict[key].Contains(__instance.def))
                         {
-                            suppressDict[key].Remove(HediffName);
+                            suppressDict[key].Remove(__instance.def);
                             supressMngrChangeMade = true;
                         }
                     }
@@ -106,7 +106,7 @@ namespace BetterPrerequisites
                     }
                     HumanoidPawnScaler.GetCache(__instance.pawn, scheduleForce: 1);
                 }
-                
+
             }
         }
     }
@@ -121,7 +121,7 @@ namespace BetterPrerequisites
             if (!respawningAfterLoad)
             {
                 float? foodNeed = __instance?.needs?.food?.CurLevelPercentage;
-                Pawn_PostMapInit.RefreshPawnGenes(__instance, forceRefresh:true);
+                Pawn_PostMapInit.RefreshPawnGenes(__instance, forceRefresh: true);
                 if (foodNeed != null)
                 {
                     __instance.needs.food.CurLevelPercentage = foodNeed.Value;
@@ -151,10 +151,10 @@ namespace BetterPrerequisites
     {
         public static void Postfix(Pawn __instance)
         {
-            RefreshPawnGenes(__instance, forceRefresh:true);
+            RefreshPawnGenes(__instance, forceRefresh: true);
         }
 
-        public static void RefreshPawnGenes(Pawn __instance, bool forceRefresh=true)
+        public static void RefreshPawnGenes(Pawn __instance, bool forceRefresh = true)
         {
             if (__instance != null)
             {
@@ -270,7 +270,7 @@ namespace BetterPrerequisites
         }
     }
 
-    
+
 
     //// When a gene's OverrideBy state changes, remove/add gene effects
     [HarmonyPatch(typeof(Gene), nameof(Gene.OverrideBy))]
@@ -326,7 +326,7 @@ namespace BetterPrerequisites
                 var genes = GeneHelpers.GetAllActiveGenes(__instance.pawn);
 
                 // Check if active. This will trigger the checker for prerequisites.
-                genes.Where(g => g is PGene pGene).Cast<PGene>().ToList().ForEach(pg=>pg.ForceRun = true);
+                genes.Where(g => g is PGene pGene).Cast<PGene>().ToList().ForEach(pg => pg.ForceRun = true);
 
                 foreach (var gene in genes)
                 {
@@ -342,7 +342,7 @@ namespace BetterPrerequisites
         public static Action<Pawn_SkillTracker> dirtyAptitudesDelegate = null;
         public static void GainOrRemovePassion(bool disabled, Gene gene)
         {
-            
+
             if (gene.def.passionMod != null && gene.def.prerequisite == null)
             {
                 if (disabled)
@@ -495,7 +495,7 @@ namespace BetterPrerequisites
                             if (!gene.pawn.RaceProps.body.GetPartsWithDef(bodypart).EnumerableNullOrEmpty()) //  && num <= gene.pawn.RaceProps.body.GetPartsWithDef(bodypart).Count
                             {
                                 var allParts = gene.pawn.RaceProps.body.GetPartsWithDef(bodypart).ToArray();
-                                foreach(var part in allParts)
+                                foreach (var part in allParts)
                                 {
                                     // Use hediffset to check if the part exists
                                     if (notMissingParts.Contains(part))
@@ -767,5 +767,4 @@ namespace BetterPrerequisites
             }
         }
     }
-
 }

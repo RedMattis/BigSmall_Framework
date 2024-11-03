@@ -144,6 +144,51 @@
 			</operations>
 		</match>
 	</Operation>
+
+
+
+
+  
+  <Operation Class="PatchOperationAdd">
+    <success>Always</success>
+    <xpath>Defs/PawnCapacityDef[defName="Metabolism"][not(labelMechanoids)]</xpath>
+    <value>
+      <labelMechanoids>Fuel efficiency</labelMechanoids>
+    </value>
+  </Operation>
+
+	<Operation Class="PatchOperationAdd">
+    <success>Always</success>
+    <xpath>Defs/PawnCapacityDef[defName="Breathing"][not(labelMechanoids)]</xpath>
+    <value>
+      <labelMechanoids>Cooling capacity</labelMechanoids>
+    </value>
+  </Operation>
+
+	<Operation Class="PatchOperationAdd">
+    <success>Always</success>
+    <xpath>Defs/PawnCapacityDef[defName="Eating"][not(labelMechanoids)]</xpath>
+    <value>
+      <labelMechanoids>Refueling Speed</labelMechanoids>
+    </value>
+  </Operation>
+
+	<!-- <Operation Class="PatchOperationAdd">
+    <success>Always</success>
+    <xpath>Defs/StatDef[defName="PainShockThreshold"][not(labelMechanoids)]</xpath>
+    <value>
+      <labelMechanoids>Intake</labelMechanoids>
+    </value>
+  </Operation> -->
+
+	<!-- <Operation Class="PatchOperationAdd">
+    <success>Always</success>
+    <xpath>Defs/PawnCapacityDef[defName="Moving"][not(labelMechanoids)]</xpath>
+    <value>
+      <labelMechanoids>Locomotion</labelMechanoids>
+    </value>
+  </Operation> -->
+	
 </Patch>
 <!-- 
 

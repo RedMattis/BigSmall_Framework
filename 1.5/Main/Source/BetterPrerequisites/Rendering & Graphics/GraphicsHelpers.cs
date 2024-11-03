@@ -73,6 +73,18 @@ namespace BigAndSmall
 
         public class ColorSetting
         {
+            // Hello reader! Feel free to request more triggers if needed.
+            public enum AltTrigger
+            {
+                Colonist,
+                Unconcious,
+                Dead,
+                Rotted,
+                Dessicated,
+                HasForcedSkinColorGene,
+                BiotechDLC
+            }
+
             public const string clrOneKey = "someKeyStringClrOne";
             public const string clrTwoKey = "clrTwoKeyString";
             public static Color playerClr = Color.white; // Literally no change...
@@ -89,17 +101,50 @@ namespace BigAndSmall
             public bool invisibleIfDead = false;
             public bool invisibleIfUnconcious = false;
             public bool apparelColorOrFavorite = false;
+            public bool favoriteColor = false;
             public List<Color> colourRange = null;
             public Color? color = null;
             public float? saturation = null;
             public float? hue = null;
             public float? brightness = null;
+
+            public float? minBrightness = 0;
+            public float? maxBrightness = 1;
+
+            public List<ColorSetting> alts = [];
+            public List<AltTrigger> triggers = [];
+
             //public float? alpha = null;
+
+            public bool AltIsValid(Pawn pawn)
+            {
+                if (triggers.Count == 0) return true;
+                return triggers.Any(x=> x switch
+                {
+                    AltTrigger.Unconcious => pawn.Downed && !pawn.health.CanCrawl,
+                    AltTrigger.Dead => pawn.Dead,
+                    AltTrigger.Rotted => pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Rotting,
+                    AltTrigger.Dessicated => pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Dessicated,
+
+                    AltTrigger.HasForcedSkinColorGene => GeneHelpers.GetAllActiveGenes(pawn).Any(x => x.def.skinColorOverride != null),
+
+                    AltTrigger.BiotechDLC => ModsConfig.BiotechActive,
+                    _ => false,
+                });
+            }
 
             [Unsaved(false)]
             private readonly static Dictionary<string, Color> randomClrPerId = new();
             public Color GetColor(Pawn pawn, Color oldClr, string hashOffset, bool useOldColor=false)
             {
+                foreach (var alt in alts.Where(x=>x.AltIsValid(pawn)))
+                {
+                    if (alt.GetColor(pawn, oldClr, hashOffset, useOldColor) is Color altClr)
+                    {
+                        return altClr;
+                    }
+                }
+
                 if (invisibleIfDead && pawn.Dead)
                 {
                     return new(0, 0, 0, 0);
@@ -124,20 +169,35 @@ namespace BigAndSmall
                         didSet = true;
                     }
                 }
-                if (factionColor && pawn.Faction?.Color is Color fColor)
+                if (factionColor) GetFactionColor(pawn, ref didSet, ref finalClr);
+                if (ideologyColor)
                 {
-                    finalClr *= fColor;
-                    didSet = true;
+                    if (pawn.Ideo?.Color is Color iColor)
+                    {
+                        finalClr *= iColor;
+                        didSet = true;
+                    }
+                    else GetFactionColor(pawn, ref didSet, ref finalClr);
                 }
-                if (ideologyColor && pawn.Ideo?.Color is Color iColor)
+                if (primaryIdeologyColor)
                 {
-                    finalClr *= iColor;
-                    didSet = true;
+                    if (pawn.Faction?.ideos?.PrimaryIdeo?.Color is Color piColor)
+                    {
+                        finalClr *= piColor;
+                        didSet = true;
+                    }
+                    else GetFactionColor(pawn, ref didSet, ref finalClr);
+
                 }
-                if (primaryIdeologyColor && pawn.Faction?.ideos?.PrimaryIdeo?.Color is Color pColor)
+                if (favoriteColor)
                 {
-                    finalClr *= pColor;
-                    didSet = true;
+                    if (pawn.story?.favoriteColor != null)
+                    {
+                        finalClr *= pawn.story.favoriteColor.Value;
+                        didSet = true;
+                    }
+                    else GetHostilityStatus(pawn, ref didSet, ref finalClr);
+                    
                 }
                 if (apparelColorOrFavorite)
                 {
@@ -151,12 +211,12 @@ namespace BigAndSmall
                             var grouppedClrs = allApparenClrs.Aggregate(new Dictionary<Color, int>(), (dict, color) =>
                             {
                                 // Find a key that is indistinguishable from the current color
-                                var match = dict.Keys.FirstOrDefault(existingColor => existingColor.IndistinguishableFrom(color));
+                                Color? match = dict.Keys.Any() ? dict.Keys.FirstOrDefault(existingColor => existingColor.IndistinguishableFrom(color)) : null;
 
                                 if (match != null)
                                 {
                                     // Increment the count for the matching color group
-                                    dict[match]++;
+                                    dict[match.Value]++;
                                 }
                                 else
                                 {
@@ -177,16 +237,90 @@ namespace BigAndSmall
                         finalClr *= pawn.story.favoriteColor.Value;
                         didSet = true;
                     }
-
-                    
-
                 }
                 if (color != null)
                 {
                     finalClr *= color.Value;
                     didSet = true;
                 }
-                if (hostilityStatus)
+                if (hostilityStatus) GetHostilityStatus(pawn, ref didSet, ref finalClr);
+                if (colourRange != null)
+                {
+                    var id = pawn.ThingID;
+                    var clrId = hashOffset + id;
+                    if (randomClrPerId.TryGetValue(clrId, out Color savedClr))
+                    {
+                        finalClr *= savedClr;
+                        didSet = true;
+                    }
+                    else
+                    {
+                        string strToHash = hashOffset + id + id + id + id;
+
+                        // This generates a deterministic value from 0 to 1 based on the id.
+                        float randomValue = Mathf.Abs((strToHash.GetHashCode() % 200) / 200f);
+                        float randomValue2 = Mathf.Abs((strToHash.GetHashCode() % 333) / 333f);
+                        Color rngColor = GraphicsHelpers.GetColorFromColourListRange(colourRange, randomValue, randomValue2);
+                        randomClrPerId[clrId] = rngColor;
+                        finalClr *= rngColor;
+                        didSet = true;
+                    }
+                }
+                //if (forcedSkinColorGene && GeneHelpers.GetAllActiveGenes(pawn) is HashSet<Gene> genes)
+                //{
+                //    foreach(var gene in genes)
+                //    {
+                //        if (gene.def.skinColorOverride != null)
+                //        {
+                //            // Set to inital value.
+                //            //finalClr = useOldColor ? oldClr : Color.white;
+                //            finalClr *= gene.def.skinColorOverride.Value;
+                //            didSet = true;
+                //            break;
+                //        }
+                //    }
+                //}
+
+                if (saturation != null || hue != null || brightness != null || minBrightness != null || maxBrightness != null)
+                {
+                    Color.RGBToHSV(finalClr, out float hue, out float sat, out float val);
+                    if (saturation != null)
+                        sat *= saturation.Value;
+                    if (this.hue != null)
+                        hue = this.hue.Value;
+                    if (brightness != null)
+                        val *= brightness.Value;
+                    if (minBrightness != null)
+                        val = Mathf.Max(minBrightness.Value, val);
+                    if (maxBrightness != null)
+                        val = Mathf.Min(maxBrightness.Value, val);
+
+                    sat = Mathf.Clamp01(sat);
+                    val = Mathf.Clamp01(val);
+
+                    finalClr = Color.HSVToRGB(hue, sat, val);
+                    didSet = true;
+                }
+                
+                if (didSet)
+                {
+                    return finalClr;
+                }
+                else
+                {
+                    return oldClr;
+                }
+
+                static void GetFactionColor(Pawn pawn, ref bool didSet, ref Color finalClr)
+                {
+                    if (pawn.Faction?.Color is Color fColor)
+                    {
+                        finalClr *= fColor;
+                        didSet = true;
+                    }
+                }
+
+                static void GetHostilityStatus(Pawn pawn, ref bool didSet, ref Color finalClr)
                 {
                     var pStatus = pawn.GuestStatus;
                     if (pStatus == GuestStatus.Prisoner)
@@ -214,58 +348,6 @@ namespace BigAndSmall
                         finalClr *= neutralClr;
                         didSet = true;
                     }
-                    //else
-                    //{
-                    //    finalClr *= playerClr;
-                    //    didSet = true;
-                    //}
-                }
-                if (colourRange != null)
-                {
-                    var id = pawn.ThingID;
-                    var clrId = hashOffset + id;
-                    if (randomClrPerId.TryGetValue(clrId, out Color savedClr))
-                    {
-                        finalClr *= savedClr;
-                        didSet = true;
-                    }
-                    else
-                    {
-                        string strToHash = hashOffset + id + id + id + id;
-
-                        // This generates a deterministic value from 0 to 1 based on the id.
-                        float randomValue = Mathf.Abs((strToHash.GetHashCode() % 200) / 200f);
-                        float randomValue2 = Mathf.Abs((strToHash.GetHashCode() % 333) / 333f);
-                        Color rngColor = GraphicsHelpers.GetColorFromColourListRange(colourRange, randomValue, randomValue2);
-                        randomClrPerId[clrId] = rngColor;
-                        finalClr *= rngColor;
-                        didSet = true;
-                    }
-                }
-                if (saturation != null || hue != null || brightness != null)
-                {
-                    Color.RGBToHSV(finalClr, out float hue, out float sat, out float val);
-                    if (saturation != null)
-                        sat *= saturation.Value;
-                    if (this.hue != null)
-                        hue = this.hue.Value;
-                    if (brightness != null)
-                        val *= brightness.Value;
-
-                    sat = Mathf.Clamp01(sat);
-                    val = Mathf.Clamp01(val);
-
-                    finalClr = Color.HSVToRGB(hue, sat, val);
-                    didSet = true;
-                }
-                
-                if (didSet)
-                {
-                    return finalClr;
-                }
-                else
-                {
-                    return oldClr;
                 }
             }
         }

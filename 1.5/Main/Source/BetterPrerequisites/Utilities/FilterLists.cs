@@ -180,13 +180,13 @@ namespace BigAndSmall
 
             public static bool Banned(this FilterResult fResult) => fResult == FilterResult.Banned;
             public static bool Denied(this FilterResult fResult) => fResult == FilterResult.Deny || fResult == FilterResult.Banned;
-            public static bool NotExplicitlyAllowed(this FilterResult fResult) => Denied(fResult) || fResult == FilterResult.Neutral;
+            public static bool NeutralOrWorse(this FilterResult fResult) => Denied(fResult) || fResult == FilterResult.Neutral;
             public static bool Accepted(this FilterResult fResult) => !Denied(fResult);
             public static bool ExplicitlyAllowed(this FilterResult fResult) => fResult == FilterResult.ForceAllow || fResult == FilterResult.Allow;
             public static bool ForceAllowed(this FilterResult fResult) => fResult == FilterResult.ForceAllow;
             public static bool PriorityResult(this FilterResult fResult) => fResult == FilterResult.Banned || fResult == FilterResult.ForceAllow;
 
-            public static FilterListSet<T> MergeLists<T>(this FilterListSet<T> listOne, FilterListSet<T> listTwo)
+            public static FilterListSet<T> MergeFilters<T>(this FilterListSet<T> listOne, FilterListSet<T> listTwo)
             {
                 if (listTwo == null) return listOne;
                 if (listOne == null) return listTwo;
@@ -200,6 +200,9 @@ namespace BigAndSmall
                 };
                 return newList;
             }
+            public static FilterListSet<T> MergeFilters<T>(this IEnumerable<FilterListSet<T>> lists) =>
+                !lists.Any() ? null :
+                lists.Aggregate((x, y) => x.MergeFilters(y));
         }
 
         public class FilterListSet<T>
@@ -219,6 +222,8 @@ namespace BigAndSmall
 
             public IEnumerable<FilterResult> GetFilterResultsFromItemList(List<T> itemList) => Items.GetFilterResultsFromItemList(itemList);
             public FilterResult GetFilterResultFromItemList(List<T> itemList) => Items.GetFilterResultFromItemList(itemList);
+
+            
 
             public void LoadDataFromXmlCustom(XmlNode xmlRoot)
             {

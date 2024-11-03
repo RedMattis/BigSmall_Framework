@@ -16,7 +16,7 @@ namespace BigAndSmall
 {
     public static class Discombobulator
     {
-        public static void Discombobulate(Pawn pawn)
+        public static void Discombobulate(Pawn pawn, bool addComa = true)
         {
             var previousGenes = pawn.genes.Xenogenes.ToList();
             var invalidTags = new List<string> { "VU_", "BS_Corrupted", "BS_Damaged_Genes", "BS_Xenolocked", "Titan" };
@@ -74,9 +74,12 @@ namespace BigAndSmall
                 pawn.genes.AddGene(gene, xenogene: true);
             }
 
-            // Add xenogermination coma
-            var coma = HediffMaker.MakeHediff(HediffDefOf.XenogerminationComa, pawn);
-            pawn.health.AddHediff(coma);
+            if (addComa)
+            { 
+                // Add xenogermination coma
+                var coma = HediffMaker.MakeHediff(HediffDefOf.XenogerminationComa, pawn);
+                pawn.health.AddHediff(coma);
+            }
         }
 
         private static List<GeneDef> GetValidGenes(Pawn pawn, List<string> invalidTags, List<string> exclusionTags)
@@ -147,6 +150,13 @@ namespace BigAndSmall
             if (type == "endo")
             {
                 targetGenes = pawn.genes.Endogenes.ToList();
+            }
+            else if (type == "allAndInactive")
+            {
+                targetGenes = [.. GeneHelpers.GetAllGenes(pawn)];
+
+                // Filter genes from "weird" sources, e.g. Insector.
+                targetGenes = targetGenes.Where(x => pawn.genes.Xenogenes.Contains(x) || pawn.genes.Endogenes.Contains(x)).ToList();
             }
             else if (type == "all")
             {

@@ -1,4 +1,7 @@
-﻿using LudeonTK;
+﻿using BetterPrerequisites;
+using HarmonyLib;
+using LudeonTK;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,14 +26,14 @@ namespace BigAndSmall.Debugging
                 {
                     foreach (Pawn pawn in Find.CurrentMap.thingGrid.ThingsAt(UI.MouseCell()).OfType<Pawn>())
                     {
-                        RaceMorpher.SwapThingDef(def, pawn, def, true, force: true);
+                        RaceMorpher.SwapThingDef(pawn, def, true, force: true);
                     }
                 }));
                 list.Add(new DebugActionNode(def.defName, DebugActionType.ToolMap, delegate
                 {
                     foreach (Pawn pawn in Find.CurrentMap.thingGrid.ThingsAt(UI.MouseCell()).OfType<Pawn>())
                     {
-                        RaceMorpher.SwapThingDef(def, pawn, def, true, force: false);
+                        RaceMorpher.SwapThingDef(pawn, def, true, force: false);
                     }
                 }));
             }
@@ -164,5 +167,6 @@ namespace BigAndSmall.Debugging
         }
     }
 
+    
 
 }

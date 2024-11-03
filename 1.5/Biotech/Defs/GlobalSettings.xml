@@ -1,12 +1,10 @@
 <Defs>
   <BigAndSmall.GeneAutoPatcherSettings>
-    <defName>BS_ProductionGenes</defName>
-    <targetModID>RedMattis.</targetModID>
-    <targetGeneType>Verse.GeneDef</targetGeneType>
-    <targetModExtension>BigAndSmall.ProductionGeneSettings</targetModExtension>
-    <backgroundPathEndogenes>GeneIcons/BS_BackEndogene_Production</backgroundPathEndogenes>
-    <backgroundPathXenogenes>GeneIcons/BS_BackXenogene_Production</backgroundPathXenogenes>
-    <backgroundPathArchite>GeneIcons/BS_BackArchite_1</backgroundPathArchite>
+    <defName>BS_MechanicalVanillaGenes</defName>
+    <mechanical>true</mechanical>
+    <backgroundPathXenogenes>GeneIcons/BS_BackRobotXeno_Vanilla</backgroundPathXenogenes>
+    <backgroundPathEndogenes>GeneIcons/BS_BackRobotEndo_Vanilla</backgroundPathEndogenes>
+    <priority>-10</priority>
   </BigAndSmall.GeneAutoPatcherSettings>
 
   <BigAndSmall.GeneAutoPatcherSettings>
@@ -16,6 +14,18 @@
     <backgroundPathEndogenes>GeneIcons/BS_BackEndogene</backgroundPathEndogenes>
     <backgroundPathXenogenes>GeneIcons/BS_BackXenogene</backgroundPathXenogenes>
     <backgroundPathArchite>GeneIcons/BS_BackArchite_1</backgroundPathArchite>
+    <priority>10</priority>
+  </BigAndSmall.GeneAutoPatcherSettings>
+
+  <BigAndSmall.GeneAutoPatcherSettings>
+    <defName>BS_ProductionGenes</defName>
+    <targetModID>RedMattis.</targetModID>
+    <targetGeneType>Verse.GeneDef</targetGeneType>
+    <targetModExtension>BigAndSmall.ProductionGeneSettings</targetModExtension>
+    <backgroundPathEndogenes>GeneIcons/BS_BackEndogene_Production</backgroundPathEndogenes>
+    <backgroundPathXenogenes>GeneIcons/BS_BackXenogene_Production</backgroundPathXenogenes>
+    <backgroundPathArchite>GeneIcons/BS_BackArchite_1</backgroundPathArchite>
+    <priority>100</priority>
   </BigAndSmall.GeneAutoPatcherSettings>
 
   <BigAndSmall.GeneAutoPatcherSettings>
@@ -24,6 +34,16 @@
     <targetGeneType>VREAndroids.AndroidGeneDef</targetGeneType>
     <backgroundPathXenogenes>GeneIcons/BS_BackAndroidChip</backgroundPathXenogenes>
     <backgroundPathEndogenes>GeneIcons/BS_BackAndroidChip</backgroundPathEndogenes>
+    <priority>900</priority>
+  </BigAndSmall.GeneAutoPatcherSettings>
+
+  <BigAndSmall.GeneAutoPatcherSettings>
+    <defName>BS_MechanicalGenes</defName>
+    <targetModID>RedMattis.</targetModID>
+    <mechanical>true</mechanical>
+    <backgroundPathXenogenes>GeneIcons/BS_BackRobotXeno</backgroundPathXenogenes>
+    <backgroundPathEndogenes>GeneIcons/BS_BackRobotEndo</backgroundPathEndogenes>
+    <priority>1000</priority>
   </BigAndSmall.GeneAutoPatcherSettings>
 
   <BigAndSmall.GlobalSettings>

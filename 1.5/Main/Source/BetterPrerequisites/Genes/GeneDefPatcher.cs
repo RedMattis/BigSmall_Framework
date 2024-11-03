@@ -78,13 +78,71 @@ namespace BigAndSmall
         }
     }
 
+
+    public class GeneUIDrawData
+    {
+        private static Dictionary<string, CachedTexture> cacheTexDict = [];
+        public int architeCost = 0;
+        public string endoBackgroundPath;
+        public string xenoBackgroundPath;
+        public string architeBackgroundPath;
+
+        public string endoBackgroundPath_Mech;
+        public string xenoBackgroundPath_Mech;
+        public string architeBackgroundPath_Mech;
+        public CachedTexture GetCachedTexture(GeneType geneType, CachedTexture fallback = null, BSCache cache = null)
+        {
+            string path = null;
+            if (cache?.isMechanical == true)
+            {
+                if (architeCost > 0)
+                {
+                    path = architeBackgroundPath_Mech;
+                }
+                else
+                {
+                    path = geneType == GeneType.Xenogene ? xenoBackgroundPath_Mech : endoBackgroundPath_Mech;
+                }
+                //Log.Message($"DEBUG: Returning Mech-type path: {path}");
+            }
+            if (path == null)
+            {
+
+                if (architeCost > 0)
+                {
+                    path = architeBackgroundPath;
+                }
+                else
+                {
+                    path = geneType == GeneType.Xenogene ? xenoBackgroundPath : endoBackgroundPath;
+                }
+                if (path == null)
+                {
+                    return fallback;
+                }
+            }
+            // Try get from dict
+            if (cacheTexDict.TryGetValue(path, out var tex))
+            {
+                return tex;
+            }
+            else // Add to dict
+            {
+                var newTex = new CachedTexture(path);
+                cacheTexDict[path] = newTex;
+                return newTex;
+            }
+        }
+    }
     public static class GeneDefPatcher
     {
+        public static Dictionary<GeneDef, GeneUIDrawData> customGeneBackgrounds = [];
+
         private static List<GeneAutoPatcherSettings> patchSettings;
         public static void PatchDefs()
         {
             patchSettings = DefDatabase<GeneAutoPatcherSettings>.AllDefs.ToList();
-            patchSettings.SortBy(x => x.priority);
+            patchSettings.OrderBy(x => x.priority);
             var activeMods = LoadedModManager.RunningMods.ToList();
             patchSettings.ForEach(x => x.Setup(activeMods));
 
@@ -95,7 +153,7 @@ namespace BigAndSmall
                 {
                     if (ShouldPatchWithData(geneDef, patchSetting))
                     {
-                        geneDef.modExtensions ??= new List<DefModExtension>();
+                        geneDef.modExtensions ??= [];
                         AddGeneBackgrounds(geneDef, patchSetting);
                     }
                 }
@@ -114,10 +172,10 @@ namespace BigAndSmall
                     }
                 }
                 // Replace this with a "hide categories" function later.
-                if (geneDef?.displayCategory?.defName == "BS_Metamorph")
-                {
-                    Dialog_CreateXenotypePatches.hiddenGenes.Add(geneDef);
-                }
+                //if (geneDef?.displayCategory?.defName == "BS_Metamorph")
+                //{
+                //    Dialog_CreateXenotypePatches.hiddenGenes.Add(geneDef);
+                //}
             }
         }
 
@@ -144,32 +202,26 @@ namespace BigAndSmall
 
         private static void AddGeneBackgrounds(GeneDef geneDef, GeneAutoPatcherSettings patchData)
         {
-            if (VFEGeneExtensionWrapper.IsVFEActive == false)
+            if (!customGeneBackgrounds.ContainsKey(geneDef))
             {
-                return;
+                customGeneBackgrounds[geneDef] = new GeneUIDrawData { };
             }
-            Type vfegType = VFEGeneExtensionWrapper.GetExtensionType();
-
-            // Check if the gene has the VFEGeneExtension already.
-            DefModExtension existingInstace = geneDef.modExtensions.FirstOrDefault(x => x.GetType() == vfegType);
-
-            var geneExt = new VFEGeneExtensionWrapper(existingInstace);  // If the extension is null it will create a new one.
-            if (geneExt != null)
+            if (customGeneBackgrounds.TryGetValue(geneDef, out var pDat))
             {
-                if (patchData.backgroundPathEndogenes != null && geneExt.BackgroundPathEndogenes.NullOrEmpty())
+                if (patchData.mechanical)  // This could be made more generic if needed.
                 {
-                    geneExt.BackgroundPathEndogenes = patchData.backgroundPathEndogenes;
+                    pDat.endoBackgroundPath_Mech = patchData.backgroundPathEndogenes ?? pDat.endoBackgroundPath_Mech;
+                    pDat.xenoBackgroundPath_Mech = patchData.backgroundPathXenogenes ?? pDat.xenoBackgroundPath_Mech;
+                    pDat.architeBackgroundPath_Mech = patchData.backgroundPathArchite ?? pDat.architeBackgroundPath_Mech;
                 }
-                if (patchData.backgroundPathXenogenes != null && geneExt.BackgroundPathXenogenes.NullOrEmpty())
+                else
                 {
-                    geneExt.BackgroundPathXenogenes = patchData.backgroundPathXenogenes;
+                    pDat.endoBackgroundPath = patchData.backgroundPathEndogenes ?? pDat.endoBackgroundPath;
+                    pDat.xenoBackgroundPath = patchData.backgroundPathXenogenes ?? pDat.xenoBackgroundPath;
+                    pDat.architeBackgroundPath = patchData.backgroundPathArchite ?? pDat.architeBackgroundPath;
                 }
-                if (patchData.backgroundPathArchite != null && geneExt.BackgroundPathArchite.NullOrEmpty())
-                {
-                    geneExt.BackgroundPathArchite = patchData.backgroundPathArchite;
-                }
-                if (existingInstace == null)
-                    geneDef.modExtensions.Add(geneExt.ext);
+
+                pDat.architeCost = geneDef.biostatArc;
             }
         }
     }
@@ -184,6 +236,7 @@ namespace BigAndSmall
         public string backgroundPathEndogenes = null;
         public string backgroundPathXenogenes = null;
         public string backgroundPathArchite = null;
+        public bool mechanical = false;
 
         [Unsaved(true)]
         public List<ModContentPack> targetMods = null;

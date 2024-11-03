@@ -359,7 +359,7 @@ namespace BigAndSmall
                 List<FilterResult> result = food.GetFilterForFoodThing(cache);
 
                 var resultTag = result.Fuse();
-                if (resultTag.Denied())
+                if (resultTag.Denied() && ingester.Faction == Faction.OfPlayerSilentFail)
                 {
                     __result = 0;
                     Log.Warning($"[BigAndSmall] {ingester?.Name} ate {__instance?.def?.defName} which their gene-diet requirements does not permit" +

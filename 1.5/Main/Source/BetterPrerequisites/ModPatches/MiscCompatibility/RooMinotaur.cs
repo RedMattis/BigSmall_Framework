@@ -44,13 +44,12 @@ namespace BigAndSmall
                 MethodInfo methodInfo = AccessTools.Method(methods[i]);
                 if (!(methodInfo == null))
                 {
-                    Log.Message($"Big & Small found Roo's Minotaurs and Postfixed ({methods[i]})");
+                    //Log.Message($"Big & Small found Roo's Minotaurs and Postfixed ({methods[i]})");
                     yield return methodInfo;
                 }
                 else
                 {
                     // Remove these warning later.
-                    //Log.Warning($"DEBUG: Failed to patch method ({methods[i]})");
                 }
             }
         }

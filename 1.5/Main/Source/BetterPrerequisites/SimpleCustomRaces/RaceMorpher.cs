@@ -32,7 +32,7 @@ namespace BigAndSmall
 
             BigAndSmallCache.queuedJobs.Enqueue( new Action(() =>
             {
-                RaceMorpher.SwapThingDef(null, parent.pawn, Props.swapTarget, true, force: true);
+                RaceMorpher.SwapThingDef(parent.pawn, Props.swapTarget, true, force: true);
             }));
             
         }
@@ -47,7 +47,7 @@ namespace BigAndSmall
     {
         public static Dictionary<Pawn, List<Hediff>> hediffsToReapply = [];
         public static bool runningRaceSwap = false;
-        public static void SwapThingDef(object source, Pawn pawn, ThingDef swapTarget, bool state, bool force=false)
+        public static void SwapThingDef(this Pawn pawn, ThingDef swapTarget, bool state, bool force=false, object source=null)
         {
             if (swapTarget == null)
             {

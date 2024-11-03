@@ -44,8 +44,6 @@ namespace BigAndSmall
             {
                 if (HumanoidPawnScaler.GetCache(pawn, scheduleForce:1) is BSCache cache)
                 {
-                    //Log.Message($"DEBUG: Big and Small: Reset cache for {pawn}");
-                    
                 }
             }
         }
@@ -563,13 +561,11 @@ namespace BigAndSmall
                 
                 var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
                 var allPawnExt = ModExtHelper.GetAllExtensions<PawnExtension>(pawn);
-                var racePawnExt = pawn.GetRacePawnExtension();
+                var racePawnExt = pawn.GetRacePawnExtensions();
                 var nonRacePawnExt = ModExtHelper.GetAllExtensions<PawnExtension>(pawn, parentBlacklist: [typeof(RaceTracker)]);
 
                 bool hasSizeAffliction = ScalingMethods.CheckForSizeAffliction(pawn);
                 CalculateSize(dStage, allPawnExt, hasSizeAffliction);
-                
-                ReevaluateGraphics(nonRacePawnExt, racePawnExt);
 
                 if (isHumanlike)
                 {
@@ -580,7 +576,7 @@ namespace BigAndSmall
                     }
                     var activeGenedefs = activeGenes.Select(x => x.def).ToList();
                     newFoodCatAllow = BSDefLibrary.FoodCategoryDefs.Where(x => x.DefaultAcceptPawn(pawn, activeGenedefs, pawnDiet).Fuse(pawnDiet.Select(y => y.AcceptFoodCategory(x))).ExplicitlyAllowed()).ToList();
-                    newFoodCatDeny = BSDefLibrary.FoodCategoryDefs.Where(x => x.DefaultAcceptPawn(pawn, activeGenedefs, pawnDiet).Fuse(pawnDiet.Select(y => y.AcceptFoodCategory(x))).NotExplicitlyAllowed()).ToList();
+                    newFoodCatDeny = BSDefLibrary.FoodCategoryDefs.Where(x => x.DefaultAcceptPawn(pawn, activeGenedefs, pawnDiet).Fuse(pawnDiet.Select(y => y.AcceptFoodCategory(x))).NeutralOrWorse()).ToList();
                     
                     // Log what filtered it
                     //BSDefLibrary.FoodCategoryDefs.ForEach(x =>
@@ -740,6 +736,11 @@ namespace BigAndSmall
                 approximatelyNoChange = bodyRenderSize.Approx(1) && headRenderSize.Approx(1) && bodyPosOffset.Approx(0) &&
                     headPosMultiplier.Approx(1) && headPositionMultiplier.Approx(1) && worldspaceOffset.Approx(0);
 
+                if (isHumanlike)
+                {
+                    ReevaluateGraphics(nonRacePawnExt, racePawnExt);
+                }
+
                 // More stuff should probably be moved here.
                 ScheduleUpdate(1);
             }
@@ -764,37 +765,56 @@ namespace BigAndSmall
             return true;
         }
 
-        public void ReevaluateGraphics(List<PawnExtension> geneExts = null, List<PawnExtension> raceCompProps = null)
+        public void ReevaluateGraphics(List<PawnExtension> otherExts = null, List<PawnExtension> raceCompProps = null)
         {
-            if (geneExts == null || raceCompProps == null)
+            if (otherExts == null || raceCompProps == null)
             {
-                geneExts = ModExtHelper.GetAllExtensions<PawnExtension>(pawn);
+                otherExts = ModExtHelper.GetAllExtensions<PawnExtension>(pawn);
 
-                raceCompProps = pawn.GetRacePawnExtension();
+                raceCompProps = pawn.GetRacePawnExtensions();
             }
-            else
-            {
-                headMaterial = null; bodyMaterial = null; headGraphicPath = null; bodyGraphicPath = null;
-            }
-            var forceFemale = geneExts.Any(x => x.forceFemaleBody) || raceCompProps.Any(x=>x.forceFemaleBody);
+            headMaterial = null; bodyMaterial = null;
+            headGraphicPath = null; bodyGraphicPath = null;
+
+
+            var forceFemale = otherExts.Any(x => x.forceFemaleBody) || raceCompProps.Any(x=>x.forceFemaleBody);
             Gender? fGender = forceFemale ? Gender.Female : null;
 
             int pawnRNGSeed = pawn.thingIDNumber + pawn.def.defName.GetHashCode();
 
-            var bodyGraphicPathList = raceCompProps.SelectMany(x => x.bodyPaths.GetPaths(pawn, forceGender: fGender)).ToList();
-            var geneGraphicPaths = geneExts.SelectMany(x => x.bodyPaths.GetPaths(pawn, forceGender: fGender)).ToList();
-            bodyGraphicPathList = geneGraphicPaths.NullOrEmpty() ? bodyGraphicPathList : geneGraphicPaths;
-            var headGraphicPathList = raceCompProps.SelectMany(x => x.headPaths.GetPaths(pawn, forceGender: fGender)).ToList();
-            var geneHeadGraphicPaths = geneExts.SelectMany(x => x.headPaths.GetPaths(pawn, forceGender: fGender)).ToList();
-            headGraphicPathList = geneHeadGraphicPaths.NullOrEmpty() ? headGraphicPathList : geneHeadGraphicPaths;
+            var extensionsWithHeadPaths = otherExts.Where(x => x.headPaths.ValidFor(this));
 
-            headMaterial = geneExts.FirstOrDefault(x => x.headMaterial != null)?.headMaterial ?? raceCompProps.FirstOrDefault(x => x.headMaterial != null)?.headMaterial;
-            bodyMaterial = geneExts.FirstOrDefault(x => x.bodyMaterial != null)?.bodyMaterial ?? raceCompProps.FirstOrDefault(x => x.bodyMaterial != null)?.bodyMaterial;
-
-            using (new RandBlock(pawnRNGSeed))
+            // Only use  race props if there are no other extensions with head paths.
+            extensionsWithHeadPaths = extensionsWithHeadPaths.EnumerableNullOrEmpty() ? raceCompProps.Where(x => x.headPaths.ValidFor(this)) : extensionsWithHeadPaths;
+            PawnExtension headGfxExt = null;
+            if (extensionsWithHeadPaths.EnumerableNullOrEmpty() == false)
             {
-                bodyGraphicPath = bodyGraphicPathList.NullOrEmpty() == false ? bodyGraphicPathList.RandomElement() : null;
-                headGraphicPath = headGraphicPathList.NullOrEmpty() == false ? headGraphicPathList.RandomElement() : null;
+                using (new RandBlock(pawnRNGSeed))
+                {
+                    headGfxExt = extensionsWithHeadPaths.RandomElement();
+                    headGraphicPath = headGfxExt.headPaths.GetPaths(this, forceGender: fGender).RandomElement();
+                }
+                
+                if (headGfxExt.headMaterial != null) headMaterial = headGfxExt.headMaterial;
+            }
+
+
+            var extensionsWithBodyPaths = otherExts.Where(x => x.bodyPaths.ValidFor(this));
+            extensionsWithBodyPaths = extensionsWithBodyPaths.EnumerableNullOrEmpty() ? raceCompProps.Where(x => x.bodyPaths.ValidFor(this)) : extensionsWithBodyPaths;
+            
+            PawnExtension bodyGfxExt = null;
+            if (extensionsWithBodyPaths.EnumerableNullOrEmpty() == false)
+            {
+                using (new RandBlock(pawnRNGSeed))
+                {
+                    bodyGfxExt = extensionsWithBodyPaths.RandomElement();
+                }
+                if (headGfxExt != null && headGfxExt.bodyPaths.ValidFor(this)) bodyGfxExt = headGfxExt; // Override with the active headGfxExt if it has valid body paths.
+                using (new RandBlock(pawnRNGSeed))
+                {
+                    bodyGraphicPath = bodyGfxExt.bodyPaths.GetPaths(this, forceGender: fGender).RandomElement();
+                }
+                if (bodyGfxExt.bodyMaterial != null) bodyMaterial = bodyGfxExt.bodyMaterial;
             }
         }
 
@@ -821,7 +841,7 @@ namespace BigAndSmall
             if (pawn == null || pawn.Dead) { return; }
             pawn.def.modExtensions?.OfType<RaceExtension>()?.FirstOrDefault()?.ApplyTrackerIfMissing(pawn);
 
-            var racePawnExt = pawn.GetRacePawnExtension();
+            var racePawnExt = pawn.GetRacePawnExtensions();
             var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
             var otherPawnExt = ModExtHelper.GetAllExtensions<PawnExtension>(pawn, parentBlacklist: [typeof(RaceTracker)]);
             //List<PawnExtension> geneExts = activeGenes
@@ -938,7 +958,23 @@ namespace BigAndSmall
                 }
 
             }
-            SimpleRaceUpdate(racePawnExt, otherPawnExt, pawn.GetRaceCompProps());
+            try
+            {
+                SimpleRaceUpdate(racePawnExt, otherPawnExt, pawn.GetRaceCompProps());
+            }
+            catch (Exception e)
+            {
+                if (!BigAndSmallCache.regenerationAttempted)
+                {
+                    Log.Warning($"Issue updating RaceCache of {pawn} ({id}). Cleaing and regenerating cache.");
+                    // Reassigning instead of clearing in case it is null for some reason.
+                    HumanoidPawnScaler.Cache = new ConcurrentDictionary<Pawn, BSCache>();
+                    BigAndSmallCache.scribedCache = [];
+                    BigAndSmallCache.regenerationAttempted = true;
+                }
+                throw;
+            }
+
         }
     }
     public class ApparelCache : IExposable

@@ -229,13 +229,9 @@ namespace BigAndSmall
             return immutableEndogenes.Where(x=>x.exclusionTags != null).SelectMany(x => x.exclusionTags).ToList();
         }
 
-        public bool IsTraitLegal(TraitDef trait) => traitFilters == null || traitFilters.GetFilterResult(trait).Accepted();
-        public bool IsHediffLegal(HediffDef hediff) => hediffFilters == null || hediffFilters.GetFilterResult(hediff).Accepted();
-
         public bool IsGeneLegal(GeneDef gene)
         {
             if (gene == null) return true;
-
             if (AllForcedGenes.Contains(gene)) return true;
             if (geneFilters?.GetFilterResult(gene).Denied() == true) return false;
             if (gene.displayCategory != null &&

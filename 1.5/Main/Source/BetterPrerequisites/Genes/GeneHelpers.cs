@@ -440,6 +440,32 @@ namespace BigAndSmall
             }
         }
 
+        public static void RemoveAllGenesSlow(Pawn pawn)
+        {
+            if (pawn?.genes == null) return;
+            var genes = pawn.genes.GenesListForReading.ToList();
+            for (int idx = genes.Count - 1; idx >= 0; idx--)
+            {
+                Gene gene = genes[idx];
+                pawn.genes.RemoveGene(gene);
+            }
+        }
+
+        public static void RemoveAllGenesSlow_ExceptColor(Pawn pawn)
+        {
+            if (pawn?.genes == null) return;
+            var genes = pawn.genes.GenesListForReading.ToList();
+            for (int idx = genes.Count - 1; idx >= 0; idx--)
+            {
+                Gene gene = genes[idx];
+                if (gene.def.endogeneCategory == EndogeneCategory.Melanin || gene.def.endogeneCategory == EndogeneCategory.HairColor)
+                {
+                    continue;
+                }
+                pawn.genes.RemoveGene(gene);
+            }
+        }
+
         public static void AddAllXenotypeGenes(Pawn pawn, XenotypeDef def, string name = null, bool xenogene = false)
         {
             pawn.genes.SetXenotypeDirect(def);
@@ -542,7 +568,6 @@ namespace BigAndSmall
             var genesToRemove = allGenes.Where(x => x.def.modExtensions != null && x.def.modExtensions.Any(y => y.GetType() == typeof(PawnExtension) && (y as PawnExtension).metamorphTarget == pawn.genes.Xenotype)).ToList();
             foreach (var gene in genesToRemove)
             {
-                Log.Warning($"Removing gene {gene.def.defName} from {pawn.Name} as it targets the current xenotype.");
                 pawn.genes.RemoveGene(gene);
             }
 
@@ -554,30 +579,6 @@ namespace BigAndSmall
             List<Gene> newGenes = allGenesNow.Where(n => !allGenesBefore.Any(b=> b.def == n.def)).ToList();
 
             List<Gene> removedGenes = allGenesBefore.Where(b => !allGenesNow.Any(n => n.def == b.def)).ToList();
-
-
-            //Log.Message($"DEBUG: {pawn.Name}\nRemoved genes: {removedGenes.Join(x => x.def.defName, ", ")}.\nAdded genes: {newGenes.Join(x => x.def.defName, ", ")}\n");
-
-            //Log.Message($"DEBUG: {pawn.Name}\nGenes Before: {allGenesBefore.Join(x => x.def.defName, ", ")}.\nGenes Now: {allGenesNow.Join(x => x.def.defName, ", ")}\n");
-
-            //foreach (var geneDef in defsToNotifyChange.Where(x => activeGeneDefsBefore.Contains(x) == false))
-            //{
-            //    NotifyGenesUpdated(pawn, geneDef);
-            //}
-
-            //var allActiveGenesNow = GetAllActiveGenes(pawn);
-            //// Go over all traits foced by a gene and check so the gene is still active.
-            //for (int tIdx = pawn.story.traits.allTraits.Count - 1; tIdx >= 0; tIdx--)
-            //{
-            //    Trait trait = pawn.story.traits.allTraits[tIdx];
-            //    if (trait.sourceGene != null)
-            //    {
-            //        if (!allActiveGenesNow.Contains(trait.sourceGene) || trait.sourceGene.Active == false)
-            //        {
-            //            pawn.story.traits.allTraits.Remove(trait);
-            //        }
-            //    }
-            //}
 
             RefreshAllGenes(pawn, newGenes, removedGenes);
             pawn.genes.SetXenotypeDirect(targetXenottype);

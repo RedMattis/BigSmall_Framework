@@ -17,11 +17,11 @@ namespace BigAndSmall
 
         private Gender? _gender = null;
         private BodyTypeDef _bodyType = null;
+        private bool isDefault = false;
 
         public BodyTypeDef GetBodyType() { TrySetup(); return _bodyType; }
-        public Gender? GetTGender() { TrySetup(); return _gender; }
-
-        private List<string> SplitTags => tag.Split('_').ToList();
+        public Gender? GetGender() { TrySetup(); return _gender; }
+        public bool IsDefault() { TrySetup(); return isDefault; }
 
         private bool initialized = false;
         private static bool defsLoaded = false;
@@ -35,8 +35,27 @@ namespace BigAndSmall
             }
             if (!initialized)
             {
-                bodyTypeDefs.FirstOrDefault(x => SplitTags.Contains(x.defName));
-                _gender = texturePath.Contains("Male") ? Gender.Male : texturePath.Contains("Female") ? Gender.Female : Gender.None;
+                // Style 1: <Male>Path</Male>
+                _gender = tag == "Male" ? Gender.Male :
+                    tag == "Female" ? Gender.Female :
+                    tag == "None" ? Gender.None :
+                    null;
+
+                if (_gender == null)
+                {
+                    // Style 2: <Body_Male>Path</Body_Male> or <Female_Body_Hulk>Path</Female_Body_Hulk>
+                    _bodyType = bodyTypeDefs.FirstOrDefault(x => tag.Contains("Body_" + x.defName));
+                    _gender =
+                        tag.StartsWith("Female") == true ? Gender.Female :
+                        tag.StartsWith("Male") == true ? Gender.Male :
+                        tag.StartsWith("None") == true ? Gender.None :
+                        null;
+                }
+                else
+                {
+                    isDefault = true;
+                }
+               
                 initialized = true;
             }
         }
@@ -48,11 +67,17 @@ namespace BigAndSmall
         }
     }
 
+
     public class AdaptiveGraphicsCollection : List<AdaptiveGraphicsData>// <T> : List<T> where T : AdaptiveGraphicsData
     {
-        public List<string> GetPaths(Pawn pawn, Gender? forceGender = null)
+        //public static bool didWarn = false;
+
+        public bool ValidFor(BSCache cache) => GetPaths(cache) != null;
+
+        public List<string> GetPaths(BSCache cache, Gender? forceGender = null)
         {
-            if (Count == 0) return [];
+            if (Count == 0) return null;
+            var pawn = cache.pawn;
             
             var targetGender = forceGender == null ? pawn.gender : forceGender.Value;
             
@@ -62,7 +87,13 @@ namespace BigAndSmall
                 if (forceGender == Gender.Female && bt == BodyTypeDefOf.Male) pawn.story.bodyType = BodyTypeDefOf.Female;
                 else if (forceGender == Gender.Male && bt == BodyTypeDefOf.Female) pawn.story.bodyType = BodyTypeDefOf.Male;
             }
-            return this.Where(x => (x.GetBodyType() == null || x.GetBodyType() == pawn.story?.bodyType) && (x.GetTGender() == null || x.GetTGender() == targetGender)).Select(x => x.texturePath).ToList();
+            var result = this.Where(x => (x.GetBodyType() == null || x.GetBodyType() == pawn.story?.bodyType) && (x.GetGender() == null || x.GetGender() == targetGender)).Select(x => x.texturePath).ToList();
+
+            if (!result.Any())
+            {
+                result = this.Where(x => x.IsDefault()).Select(x => x.texturePath).ToList();
+            }
+            return result.Any() ? result : null;
         }
         public void LoadDataFromXmlCustom(XmlNode xmlRoot)
         {

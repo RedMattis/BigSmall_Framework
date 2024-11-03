@@ -67,7 +67,7 @@ namespace BigAndSmall
         {
             if (raceHediff != null)
             {
-                RaceMorpher.SwapThingDef(pawn.def, pawn, pawn.def, false, force: force);
+                RaceMorpher.SwapThingDef(pawn, pawn.def, false, force: force);
             }
             else { Log.Error($"{pawn} has a BigAndSmall.RaceExtension without an associated raceDef!"); }
         }

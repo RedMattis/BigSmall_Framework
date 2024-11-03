@@ -28,10 +28,7 @@ namespace BigAndSmall
             {
                 foreach (var compName in compProps.compNameList)
                 {
-                    //foreach (var c in parent.AllComps)
-                    //{
-                    //    Log.Message($"Comparing {c.GetType().Name} to {compName}: Result {c.GetType().Name == compName}");
-                    //}
+
 
                     if (parent.AllComps.FirstOrDefault(x => x.GetType().Name == compName) is ThingComp comp)
                     {
@@ -42,10 +39,7 @@ namespace BigAndSmall
                 // Wildcard is same, but works on the namespace instead.
                 foreach (var compName in compProps.compNamespaceList)
                 {
-                    //foreach (var c in parent.AllComps)
-                    //{
-                    //    Log.Message($"Comparing {c.GetType().Namespace} to {compName}: Result {c.GetType().Name == compName}");
-                    //}
+
 
                     if (parent.AllComps.FirstOrDefault(x => x.GetType().Namespace == compName) is ThingComp comp)
                     {

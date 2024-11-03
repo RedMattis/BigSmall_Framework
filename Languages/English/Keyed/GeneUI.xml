@@ -1,0 +1,12 @@
+<LanguageData>
+  <BS_MechEndo>System Components</BS_MechEndo>
+  
+  <!-- Hardware -->
+  <BS_MechExo>Xenomodulators</BS_MechExo>
+
+  <BS_VampEndo>Nature</BS_VampEndo>
+  <BS_VampExo>Bloodline</BS_VampExo>
+
+  <BS_SupernaturalEndo>Nature</BS_SupernaturalEndo>
+  <BS_SupernaturalEndo>Transient traits</BS_SupernaturalEndo>
+</LanguageData>

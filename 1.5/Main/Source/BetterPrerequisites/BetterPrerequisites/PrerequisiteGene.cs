@@ -221,7 +221,7 @@ namespace BetterPrerequisites
             if (GeneExt != null && GeneExt.thingDefSwap != null)
             {
                 GeneHelpers.CheckForOverrides(pawn);
-                RaceMorpher.SwapThingDef(this, pawn, GeneExt.thingDefSwap, state);
+                RaceMorpher.SwapThingDef(pawn, GeneExt.thingDefSwap, state, source:this);
             }
         }
         
@@ -309,7 +309,7 @@ namespace BetterPrerequisites
                 }
             }
             // Outside of the loop so it can supress genes which supresses other genes.
-            bool isSupressedByHediff = GeneSuppressorManager.IsSupressedByHediff(def.defName, pawn);
+            bool isSupressedByHediff = GeneSuppressorManager.IsSupressedByHediff(def, pawn);
             result = prerequisitesValid && conditionalsValid && !isSupressedByGene && !isSupressedByHediff;
 
             if (!supressPostfix && !supressPostfix2)

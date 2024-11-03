@@ -22,14 +22,18 @@ namespace BigAndSmall
         {
             return pawn.GetRaceTracker()?.TryGetComp<HediffComp_Race>();
         }
-        public static List<PawnExtension> GetRacePawnExtension(this Pawn pawn)
+        public static List<PawnExtension> GetRacePawnExtensions(this Pawn pawn)
         {
             List<PawnExtension> pawnRaceExts = ModExtHelper.GetAllExtensions<PawnExtension>(pawn, parentWhitelist: [typeof(RaceTracker)]);
+
             if (pawnRaceExts.Count > 0)
             {
                 return pawnRaceExts;
             }
-            else return new List<PawnExtension> { PawnExtension.defaultPawnExtension };
+            else
+            {
+                return [PawnExtension.defaultPawnExtension];
+            }
         }
 
         public static CompProperties_Race GetRaceCompProps(this Pawn pawn)

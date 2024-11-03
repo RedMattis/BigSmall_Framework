@@ -1,4 +1,6 @@
 ﻿using BetterPrerequisites;
+using BigAndSmall.FilteredLists;
+using HarmonyLib;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -11,34 +13,37 @@ namespace BigAndSmall
 {
     public partial class BSCache : IExposable, ICacheable
     {
-        private void SimpleRaceUpdate(List<PawnExtension> raceProps, List<PawnExtension> pawnExtensions, CompProperties_Race raceCompProps)
+        private void SimpleRaceUpdate(List<PawnExtension> raceExts, List<PawnExtension> otherPawnExt, CompProperties_Race raceCompProps)
         {
-            Metamorphosis.HandleMetamorph(pawn, pawnExtensions);
-            List<PawnExtension> allExt = [..raceProps, ..pawnExtensions];
-            foreach (var pawnExt in allExt)
-            {
-                ProcessRaceGeneRequirements(pawnExt);
-                ProcessRaceTraitRequirements(pawnExt);
-                ProcessRaceHediffRequirements(pawnExt);
-            }
+
+            List<PawnExtension> allExt = [.. raceExts, .. otherPawnExt];
+            Metamorphosis.HandleMetamorph(pawn, allExt);
+            ProcessRaceGeneRequirements(raceExts);
+            ProcessRaceTraitRequirements(raceExts);
+            ProcessRaceHediffRequirements(raceExts);
+            ProcessHediffsToRemove(allExt);
             raceCompProps.EnsureCorrectBodyType(pawn);
             raceCompProps.EnsureCorrectHeadType(pawn);
         }
 
-        private void ProcessRaceGeneRequirements(PawnExtension raceProps)
+        private void ProcessRaceGeneRequirements(List<PawnExtension> raceExts)
         {
             if (pawn.genes != null)
             {
-                var endoGenesToRestore = endogenesRemovedByRace.Where(raceProps.IsGeneLegal).ToList();
-                RestoreGenes(raceProps, endoGenesToRestore, false);
-                var xenogenesToRestore = xenoenesRemovedByRace.Where(raceProps.IsGeneLegal).ToList();
-                RestoreGenes(raceProps, xenogenesToRestore, true);
+                // Ensure they are initialized. They could have been scribed an old value.
+                endogenesRemovedByRace ??= [];
+                xenoenesRemovedByRace ??= [];
 
-                int geneCount = pawn.genes.GenesListForReading.Count;
-                raceProps.ForcedEndogenes.Where(g => !pawn.HasGene(g)).ToList().ForEach(g => pawn.genes.AddGene(g, false));
-                raceProps.forcedXenogenes?.Where(g => !pawn.HasGene(g)).ToList().ForEach(g => pawn.genes.AddGene(g, true));
 
-                var xenoGenesToRemove = pawn.genes.Xenogenes.Where(g => !raceProps.IsGeneLegal(g.def)).ToList();
+                var endoGenesToRestore = endogenesRemovedByRace.Where(g=> raceExts.All(ext => ext.IsGeneLegal(g))).ToList();
+                RestoreGenes(endoGenesToRestore, false);
+                var xenogenesToRestore = xenoenesRemovedByRace.Where(g => raceExts.All(ext => ext.IsGeneLegal(g))).ToList();
+                RestoreGenes(xenogenesToRestore, true);
+
+                raceExts.ForEach(ext => ext.ForcedEndogenes.Where(g => !pawn.HasGene(g)).ToList().ForEach(g => pawn.genes.AddGene(g, false)));
+                raceExts.ForEach(ext => ext.forcedXenogenes?.Where(g => !pawn.HasGene(g)).ToList().ForEach(g => pawn.genes.AddGene(g, true)));
+
+                var xenoGenesToRemove = pawn.genes.Xenogenes.Where(g => raceExts.Any(ext => !ext.IsGeneLegal(g.def))).ToList();
                 if (xenoGenesToRemove.Count > 0)
                 {
                     for (int idx = xenoGenesToRemove.Count - 1; idx >= 0; idx--)
@@ -48,7 +53,7 @@ namespace BigAndSmall
                         pawn.genes.RemoveGene(gene);
                     }
                 }
-                var endogenesToRemove = pawn.genes.Endogenes.Where(g => !raceProps.IsGeneLegal(g.def)).ToList();
+                var endogenesToRemove = pawn.genes.Endogenes.Where(g => raceExts.Any(ext => !ext.IsGeneLegal(g.def))).ToList();
                 if (endogenesToRemove.Count > 0)
                 {
                     for (int idx = endogenesToRemove.Count - 1; idx >= 0; idx--)
@@ -60,7 +65,7 @@ namespace BigAndSmall
                 }
             }
 
-            List<GeneDef> RestoreGenes(PawnExtension raceProps, List<GeneDef> genesToRestore, bool xeno)
+            List<GeneDef> RestoreGenes(List<GeneDef> genesToRestore, bool xeno)
             {
                 if (genesToRestore.Count > 0)
                 {
@@ -75,11 +80,12 @@ namespace BigAndSmall
             }
         }
 
-        private void ProcessRaceTraitRequirements(PawnExtension props)
+        private void ProcessRaceTraitRequirements(List<PawnExtension> raceExts)
         {
             if (pawn.story?.traits is TraitSet traits)
             {
-                var traitsToRemove = traits.allTraits.Where(t => !props.IsTraitLegal(t.def)).ToList();
+                FilterListSet<TraitDef> hediffFilter = raceExts.SelectWhere(x => x.traitFilters).MergeFilters();
+                var traitsToRemove = traits.allTraits.Where(t => hediffFilter == null || hediffFilter.GetFilterResult(t.def).Denied()).ToList();
                 if (traitsToRemove.Count > 0)
                 {
                     for (int idx = traitsToRemove.Count - 1; idx >= 0; idx--)
@@ -89,28 +95,36 @@ namespace BigAndSmall
                     }
                 }
 
-                props.forcedTraits?.Where(t => !traits.HasTrait(t)).ToList().ForEach(t => traits.GainTrait(new Trait(t, 0, true)));
+                raceExts.ForEach(ext => ext.forcedTraits?.Where(t => !traits.HasTrait(t)).ToList().ForEach(t => traits.GainTrait(new Trait(t, 0, true))));
             }
         }
 
-        private void ProcessRaceHediffRequirements(PawnExtension props)
+        private void ProcessRaceHediffRequirements(List<PawnExtension> raceExts)
         {
             if (pawn.health?.hediffSet != null)
             {
-                // Ensure forcedHediffs are present.
-                props.forcedHediffs?.Where(h => !pawn.health.hediffSet.HasHediff(h)).ToList().ForEach(h => pawn.health.AddHediff(h));
+                FilterListSet<HediffDef> hediffFilter = raceExts.SelectWhere(x => x.hediffFilters).MergeFilters();
+                HashSet<HediffDef> forcedHediffs = raceExts.SelectManyWhere(x => x.forcedHediffs).ToHashSet();
+                forcedHediffs.Where(h => !pawn.health.hediffSet.HasHediff(h) &&
+                    hediffFilter == null || hediffFilter.GetFilterResult(h).Accepted()).ToList().ForEach(h => pawn.health.AddHediff(h));
+                
+            }
+        }
 
-                List<Hediff> hediffsToRemove = pawn.health.hediffSet.hediffs.Where(h => !props.IsHediffLegal(h.def)).ToList();
-                if (hediffsToRemove.Count > 0)
+        private void ProcessHediffsToRemove(List<PawnExtension> pawnExts)
+        {
+            FilterListSet<HediffDef> hediffFilter = pawnExts.SelectWhere(x => x.hediffFilters).MergeFilters();
+            List<Hediff> hediffsToRemove = pawn.health.hediffSet.hediffs.Where(h => hediffFilter != null && hediffFilter.GetFilterResult(h.def).Denied()).ToList();
+            if (hediffsToRemove.Count > 0)
+            {
+                for (int idx = hediffsToRemove.Count - 1; idx >= 0; idx--)
                 {
-                    for (int idx = hediffsToRemove.Count - 1; idx >= 0; idx--)
-                    {
-                        Hediff hediff = hediffsToRemove[idx];
-                        pawn.health.RemoveHediff(hediff);
-                    }
+                    Hediff hediff = hediffsToRemove[idx];
+                    pawn.health.RemoveHediff(hediff);
                 }
             }
         }
+
         private void ProcessHairFilters(PawnExtension props)
         {
             PawnStyleItemChooser.RandomHairFor(pawn);

@@ -18,8 +18,6 @@ namespace BigAndSmall
         public static void PawnRenderNode_Head_GraphicFor_Patch(PawnRenderNode_Head __instance, Pawn pawn, ref Graphic __result)
         {
             if (__result == null) return;
-            //var debugCache = HumanoidPawnScaler.GetCache(pawn, reevaluateGraphics:true);
-
             if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache && !cache.isDefaultCache && cache.isHumanlike)
             {
                 HeadGraphics.CalculateHeadGraphicsForPawn(pawn, ref __result, cache);
@@ -39,6 +37,7 @@ namespace BigAndSmall
 
                 if (cache.headGraphicPath is string headGraphicPath)
                 {
+                    //Debug.Log("DEBUG! HeadGraphicPath: " + headGraphicPath);
                     __result = GraphicsHelpers.TryGetCustomGraphics(pawn, headGraphicPath, __result.color, __result.colorTwo, __result.drawSize, cache.headMaterial);
                 }
             }
