@@ -34,20 +34,46 @@ namespace BetterPrerequisites
         }
     }
 
+    public class DefAltNamer : Def
+    {
+        public static Dictionary<Def, Rename> renames = DefDatabase<DefAltNamer>.AllDefs
+            .SelectMany(x => x.defRenames
+                .Select(y => (y.def, y))).ToDictionary(x => x.Item1, x => x.Item2);
+        public class Rename
+        {
+            public Def def;
+            public string labelMechanoid = null;
+            public string labelBloodfeeder = null;
+            public string labelFantasy = null;
+        }
+        public List<Rename> defRenames = [];
+    }
+
+    [StaticConstructorOnStartup]
     public class GlobalSettings : Def
     {
-        public List<List<string>> alienGeneGroups = new();
+        public static Dictionary<string, GlobalSettings> globalSettings = DefDatabase<GlobalSettings>.AllDefs.ToDictionary(x => x.defName);
+        public List<List<string>> alienGeneGroups = [];
+        public List<XenotypeChance> returnedXenotypes = [];
+        public List<XenotypeChance> returnedXenotypesColonist = [];
 
         [Unsaved(false)]
         private static List<List<GeneDef>> alienGeneGroupsDefs = null;
+
+        public static XenotypeDef GetRandomReturnedXenotype => globalSettings
+            .Aggregate(new List<XenotypeChance>(), (acc, x) => [.. acc, .. x.Value.returnedXenotypes])
+            .TryRandomElementByWeight(x => x.chance, out var result) ? result.xenotype : null;
+
+        public static XenotypeDef GetRandomReturnedColonistXenotype => globalSettings
+            .Aggregate(new List<XenotypeChance>(), (acc, x) => [.. acc, .. x.Value.returnedXenotypesColonist])
+            .TryRandomElementByWeight(x => x.chance, out var result) ? result.xenotype : null;
 
         public static List<List<GeneDef>> GetAlienGeneGroups()
         {
             if (alienGeneGroupsDefs == null)
             {
                 alienGeneGroupsDefs = new List<List<GeneDef>>();
-                var globalSettings = DefDatabase<GlobalSettings>.AllDefs;
-                foreach(var settings in globalSettings.Where(x=>x.alienGeneGroups != null))
+                foreach (var settings in globalSettings.Values.Where(x=>x.alienGeneGroups != null))
                 {
                     foreach (var group in settings.alienGeneGroups)
                     {

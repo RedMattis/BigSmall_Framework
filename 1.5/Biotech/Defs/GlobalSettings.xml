@@ -77,5 +77,30 @@
       </li>
     </alienGeneGroups>
 
+    <returnedXenotypes>
+      <VU_Returned MayRequire="RedMattis.Undead">0.5</VU_Returned>
+      <VU_Returned_Intact MayRequire="RedMattis.Undead">0.5</VU_Returned_Intact>
+      <VU_Revenant MayRequire="RedMattis.Undead">0.02</VU_Revenant>
+    </returnedXenotypes>
+
+    <returnedXenotypesColonist>
+      <VU_Returned MayRequire="RedMattis.Undead">0.5</VU_Returned>
+      <VU_Returned_Intact MayRequire="RedMattis.Undead">0.5</VU_Returned_Intact>
+      <VU_Revenant MayRequire="RedMattis.Undead">0.20</VU_Revenant>
+    </returnedXenotypesColonist>
   </BigAndSmall.GlobalSettings>
+
+  <BigAndSmall.DefAltNamer>
+    <genes>
+      <li>
+        <defName>BS_PsychicWarrior</defName>
+        <labelBloodfeeder>archite control</labelBloodfeeder>
+        <labelMechanoid>mechanite control</labelMechanoid>
+      </li>
+      <li>
+        <defName>BS_NoFood_Hemogenic</defName>
+        <labelMechanoid>hemogen-fueled</labelMechanoid>
+      </li>
+    </genes>
+  </BigAndSmall.DefAltNamer>
 </Defs>

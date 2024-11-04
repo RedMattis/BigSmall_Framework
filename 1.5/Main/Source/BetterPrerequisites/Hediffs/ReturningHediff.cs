@@ -1,4 +1,5 @@
-﻿using BigAndSmall;
+﻿using BetterPrerequisites;
+using BigAndSmall;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -139,24 +140,31 @@ namespace BigAndSmall
                         pawn.health.RemoveHediff(this);
 
                         // Apply Xenotype
-                        string targetXenotype = "VU_Returned";
-                        string targetPrefix = "Returned ";
+                        var returnedXeno = GlobalSettings.GetRandomReturnedXenotype;
 
-                        float chanceOfRevenant = (pawn.Faction == Faction.OfPlayerSilentFail) ? 0.2f : 0.02f;
-                        if (Rand.Chance(chanceOfRevenant))
+                        //string targetXenotype = "VU_Returned";
+                        //string targetPrefix = "Returned ";
+
+                        //float chanceOfRevenant = (pawn.Faction == Faction.OfPlayerSilentFail) ? 0.2f : 0.02f;
+                        //if (Rand.Chance(chanceOfRevenant))
+                        //{
+                        //    targetXenotype = "VU_Revenant";
+                        //    targetPrefix = "Revenant ";
+                        //}
+                        if (pawn.Faction == Faction.OfPlayerSilentFail)
                         {
-                            targetXenotype = "VU_Revenant";
-                            targetPrefix = "Revenant ";
+                            returnedXeno = GlobalSettings.GetRandomReturnedColonistXenotype;
                         }
+                        GeneHelpers.AddAllXenotypeGenes(pawn, returnedXeno, name: $"{returnedXeno.label} {pawn.genes.XenotypeLabel}");
 
 
-                        foreach (var def in DefDatabase<XenotypeDef>.AllDefsListForReading.Where(x => x.defName == targetXenotype))
-                        {
+                        //foreach (var def in DefDatabase<XenotypeDef>.AllDefsListForReading.Where(x => x.defName == targetXenotype))
+                        //{
 
-                            // Set pawn xenotype to the target xenotype
-                            GeneHelpers.AddAllXenotypeGenes(pawn, def, name: targetPrefix + pawn.genes.XenotypeLabel);
-                            break;
-                        }
+                        //    // Set pawn xenotype to the target xenotype
+                        //    GeneHelpers.AddAllXenotypeGenes(pawn, def, name: targetPrefix + pawn.genes.XenotypeLabel);
+                        //    break;
+                        //}
                     }
                     else
                     {

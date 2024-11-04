@@ -2,11 +2,14 @@
   <BS_MechEndo>System Components</BS_MechEndo>
   
   <!-- Hardware -->
-  <BS_MechExo>Xenomodulators</BS_MechExo>
+  <!-- <BS_MechExo>Xenomodulators</BS_MechExo> -->
+  <BS_MechXeno>Mechanites</BS_MechXeno>
 
   <BS_VampEndo>Nature</BS_VampEndo>
-  <BS_VampExo>Bloodline</BS_VampExo>
+  <BS_VampXeno>Bloodline</BS_VampXeno>
 
-  <BS_SupernaturalEndo>Nature</BS_SupernaturalEndo>
-  <BS_SupernaturalEndo>Transient traits</BS_SupernaturalEndo>
+  <!-- <BS_SupernaturalEndo>Nature</BS_SupernaturalEndo> -->
+  <BS_SupernaturalEndo>Origin</BS_SupernaturalEndo>
+  <!-- <BS_SupernaturalEndo>Transient traits</BS_SupernaturalEndo> -->
+  <BS_FantasyXeno>Transient forces</BS_FantasyXeno>
 </LanguageData>

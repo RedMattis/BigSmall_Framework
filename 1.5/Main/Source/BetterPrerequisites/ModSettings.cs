@@ -195,6 +195,9 @@ namespace BigAndSmall
         public static readonly bool defaultPreventUndead = false;
         public bool preventUndead = defaultPreventUndead;
 
+        public static readonly bool defaultUseFantasyNaming = false;
+        public bool useFantasyNames = defaultUseFantasyNaming;
+
         public override void ExposeData()
         {
             Scribe_Values.Look(ref generateDefs, "generateDefs", defaultGenerateDefs);
@@ -213,6 +216,7 @@ namespace BigAndSmall
             Scribe_Values.Look(ref offsetBodyPos, "offsetBodyPos", defaultOffsetBodyPos);
             Scribe_Values.Look(ref patchPlayerFactions, "patchPlayerFactions", defaultPatchPlayerFactions);
             Scribe_Values.Look(ref preventUndead, "preventUndead", defaultPreventUndead);
+            Scribe_Values.Look(ref useFantasyNames, "useFantasyNames", defaultUseFantasyNaming);
             base.ExposeData();
         }
 
@@ -233,6 +237,7 @@ namespace BigAndSmall
             offsetBodyPos = defaultOffsetBodyPos;
             patchPlayerFactions = defaultPatchPlayerFactions;
             preventUndead = defaultPreventUndead;
+            useFantasyNames = defaultUseFantasyNaming;
         }
     }
 }

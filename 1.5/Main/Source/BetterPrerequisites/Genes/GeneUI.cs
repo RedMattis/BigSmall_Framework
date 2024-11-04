@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 using UnityEngine;
+using BetterPrerequisites;
 
 namespace BigAndSmall
 {
@@ -18,11 +19,12 @@ namespace BigAndSmall
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
+            bool backgroundPatched = false;
             List<CodeInstruction> codes = instructions.ToList();
-            for (int idx = 0; idx < codes.Count; idx++)
+            for (int idx = 1; idx < codes.Count; idx++)
             {
                 CodeInstruction code = codes[idx];
-                bool runBackgroundPatch = idx > 3 && idx < codes.Count - 2 &&
+                bool runBackgroundPatch = !backgroundPatched && idx > 3 && idx < codes.Count - 2 &&
                     //(codes[idx - 1].opcode == OpCodes.Ldloc_2) &&
                     codes[idx].IsLdloc() && codes[idx].operand is LocalBuilder lb && lb.LocalIndex == 4 &&
                     //(codes[idx].IsLdloc() && codes[idx].LocalIndex() == 4) &&
@@ -30,6 +32,7 @@ namespace BigAndSmall
 
                 if (runBackgroundPatch)
                 {
+                    backgroundPatched = true;
                     List<CodeInstruction> newInstructions =
                     [
                         new CodeInstruction(OpCodes.Ldarg_0), // Load Gene.
@@ -39,9 +42,27 @@ namespace BigAndSmall
                         new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(DrawGene), nameof(GetGeneBackground))),
                     ];
                     codes.InsertRange(idx+1, newInstructions);
-                    break;
                 }
+
+                //// If previous command was the LabelCap call, insert a call to GetCustomLabel.
+                //if (codes[idx-1].opcode ==OpCodes.Callvirt && codes[idx-1].OperandIs(typeof(Def).GetMethod("get_LabelCap")))
+                //{
+                //    // Stack should now have the label on top.
+                //    List<CodeInstruction> newInstructions =
+                //    [
+                //        new CodeInstruction(OpCodes.Ldarg_0), // Load Gene.
+                //        new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(DrawGene), nameof(GetCustomLabel))),
+                //    ];
+                //    codes.InsertRange(idx, newInstructions);
+                //}
             }
+
+            //for (int idx = 0; idx < codes.Count; idx++)
+            //{
+            //    CodeInstruction code = codes[idx];
+            //    Log.Message($"{idx}: {code}");
+            //}
+
             return codes;
 
         }
@@ -53,6 +74,26 @@ namespace BigAndSmall
             }
             return previous;
 
+        }
+        public static string GetCustomLabel(string label, GeneDef gene)
+        {
+            if (!label.NullOrEmpty() && DefAltNamer.renames.TryGetValue(gene, out var renamer) && DrawGeneSection.pCache is BSCache pCache)
+            {
+                if (pCache.isMechanical && renamer.labelMechanoid is string labelMechanoid)
+                {
+                    label = labelMechanoid;
+                }
+                else if (pCache.isBloodFeeder && renamer.labelBloodfeeder is string labelBloodFeeder)
+                {
+                    label = labelBloodFeeder;
+                }
+                else if (BigSmallMod.settings.useFantasyNames && renamer.labelFantasy is string labelFantasy)
+                {
+                    label = labelFantasy;
+                }
+                label = label.CapitalizeFirst();
+            }
+            return label;
         }
     }
 
@@ -95,7 +136,7 @@ namespace BigAndSmall
                 bool endo = label == "Endogenes";
                 if (pCache.isMechanical)
                 {
-                    return endo ? "BS_MechEndo" : "BS_MechExo";
+                    return endo ? "BS_MechEndo" : "BS_MechXeno";
                 }
             }
             return label;

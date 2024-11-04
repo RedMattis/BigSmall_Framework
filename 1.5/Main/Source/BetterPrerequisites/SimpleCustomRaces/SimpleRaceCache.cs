@@ -84,8 +84,9 @@ namespace BigAndSmall
         {
             if (pawn.story?.traits is TraitSet traits)
             {
-                FilterListSet<TraitDef> hediffFilter = raceExts.SelectWhere(x => x.traitFilters).MergeFilters();
-                var traitsToRemove = traits.allTraits.Where(t => hediffFilter == null || hediffFilter.GetFilterResult(t.def).Denied()).ToList();
+                var forcedTraits = raceExts.SelectMany(ext => ext.forcedTraits?.Where(t => !traits.HasTrait(t))).ToList();
+                FilterListSet <TraitDef> traitFilter = raceExts.SelectWhere(x => x.traitFilters).MergeFilters();
+                var traitsToRemove = traits.allTraits.Where(t => traitFilter != null && !forcedTraits.Any(ft => ft == t.def) && traitFilter.GetFilterResult(t.def).Denied()).ToList();
                 if (traitsToRemove.Count > 0)
                 {
                     for (int idx = traitsToRemove.Count - 1; idx >= 0; idx--)
@@ -95,7 +96,10 @@ namespace BigAndSmall
                     }
                 }
 
-                raceExts.ForEach(ext => ext.forcedTraits?.Where(t => !traits.HasTrait(t)).ToList().ForEach(t => traits.GainTrait(new Trait(t, 0, true))));
+                if (forcedTraits.Count > 0)
+                {
+                    forcedTraits.Where(t => !traits.HasTrait(t)).ToList().ForEach(t => traits.GainTrait(new Trait(t, 0, true)));
+                }
             }
         }
 
