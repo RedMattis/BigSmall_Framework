@@ -107,6 +107,8 @@ namespace BigAndSmall
             listStd.Label("BS_GameMechanics".Translate().AsTipTitle());
             CreateSettingCheckbox(listStd, "BS_ScaleAnimals".Translate(), ref settings.scaleAnimals);
             CreateSettingCheckbox(listStd, "BS_PreventUndead".Translate(), ref settings.preventUndead);
+            CreateSettingsSlider(listStd, "BS_InflitratorChance".Translate(), ref settings.inflitratorChance, 0f, 1f, (f) => $"{f:P4}");
+            CreateSettingsSlider(listStd, "BS_InflitratorRaidChance".Translate(), ref settings.inflitratorRaidChance, 0f, 1f, (f) => $"{f:P4}");
             listStd.GapLine();
             listStd.Label("BS_LowestUsed".Translate());
 
@@ -198,6 +200,12 @@ namespace BigAndSmall
         public static readonly bool defaultUseFantasyNaming = false;
         public bool useFantasyNames = defaultUseFantasyNaming;
 
+        public static readonly float inflitratorChanceDefault = 0.01f;
+        public float inflitratorChance = inflitratorChanceDefault;
+
+        public static readonly float inflitratorRaidChanceDefault = 0.005f;
+        public float inflitratorRaidChance = inflitratorRaidChanceDefault;
+
         public override void ExposeData()
         {
             Scribe_Values.Look(ref generateDefs, "generateDefs", defaultGenerateDefs);
@@ -217,6 +225,8 @@ namespace BigAndSmall
             Scribe_Values.Look(ref patchPlayerFactions, "patchPlayerFactions", defaultPatchPlayerFactions);
             Scribe_Values.Look(ref preventUndead, "preventUndead", defaultPreventUndead);
             Scribe_Values.Look(ref useFantasyNames, "useFantasyNames", defaultUseFantasyNaming);
+            Scribe_Values.Look(ref inflitratorChance, "inflitratorChance", inflitratorChanceDefault);
+            Scribe_Values.Look(ref inflitratorRaidChance, "inflitratorRaidChance", inflitratorRaidChanceDefault);
             base.ExposeData();
         }
 
@@ -238,6 +248,8 @@ namespace BigAndSmall
             patchPlayerFactions = defaultPatchPlayerFactions;
             preventUndead = defaultPreventUndead;
             useFantasyNames = defaultUseFantasyNaming;
+            inflitratorChance = inflitratorChanceDefault;
+            inflitratorRaidChance = inflitratorRaidChanceDefault;
         }
     }
 }

@@ -109,8 +109,8 @@ namespace BigAndSmall
                     if (HumanoidPawnScaler.GetCache(member, forceRefresh: true) is BSCache cache)
                     {
                         changed = true;
-                        try { TryThingDefSwap(member); }
-                        catch (Exception e) { Log.Warning($"BigAndSmall (GeneratePawns): Failed to swap thingdef for {member.Name} ({member.Label}): + {e.Message}"); }
+                        try { TryModifyPawn(member); }
+                        catch (Exception e) { Log.Warning($"BigAndSmall (GeneratePawns): Failed the TryModifyPawn for {member.Name} ({member.Label}): + {e.Message}"); }
                         try { RemoveInvalidThings(member); }
                         catch (Exception e) { Log.Warning($"BigAndSmall (GeneratePawns): Failed to remove invalid apparel for {member.Name} ({member.Label}): + {e.Message}"); }
                     }
@@ -186,7 +186,7 @@ namespace BigAndSmall
             return changed;
         }
 
-        private static void TryThingDefSwap(Pawn member)
+        private static void TryModifyPawn(Pawn member)
         {
             if (member?.RaceProps?.Humanlike != true) return;
             if (member.genes?.Xenotype == null) return;
@@ -200,8 +200,39 @@ namespace BigAndSmall
                     }
                     catch (Exception e)
                     {
-                        Log.Error($"BigAndSmall: Error swapping thingdef for {member.Name}: {e.Message}");
+                        Log.Error($"BigAndSmall: Error swapping thingdef for {member?.Name}: {e.Message}. Skipping.");
                     }
+                }
+            }
+            bool soloInfiltrator = Rand.Chance(BigSmallMod.settings.inflitratorChance);
+            bool infiltratorRaid = BigSmallMod.settings.inflitratorRaidChance > BigAndSmallCache.globalRandNum;
+            if (soloInfiltrator || infiltratorRaid)
+            {
+                try
+                {
+                    bool isEndogeneHuman = (member.genes?.Xenotype?.inheritable == true || member.genes.Xenotype == XenotypeDefOf.Baseliner) && 
+                        member.def == ThingDefOf.Human;
+
+                    int seed = infiltratorRaid ? (int)(BigAndSmallCache.globalRandNum*10000) : Rand.Range(0, 1000000);
+                    (var xenotype, var infiltratorData) = GlobalSettings.GetRandomInfiltratorReplacementXenotype(member, seed, forceNeeded:!isEndogeneHuman, isFullRaid: !soloInfiltrator);
+                    if (xenotype != null)
+                    {
+                        var prevXenotype = member.genes.Xenotype;
+                        member.genes.SetXenotype(xenotype);
+                        member.TrySwapToXenotypeThingDef();
+                        if (infiltratorData.disguised)
+                        {
+                            member.genes.SetXenotype(prevXenotype);  // So they still show up as the previous xenotype.
+                        }
+                        if (infiltratorData.ideologyOf != null && ModsConfig.IdeologyActive && Find.FactionManager.AllFactions.Where(x => x.def == infiltratorData.ideologyOf).FirstOrDefault() is Faction firstMatchingFaction)
+                        {
+                            member.ideo?.SetIdeo(firstMatchingFaction.ideos.PrimaryIdeo);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Error($"BigAndSmall: Error swapping {member?.Name} to infiltrator: {e.Message}. Skipping.");
                 }
             }
 

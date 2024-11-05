@@ -12,9 +12,10 @@ using System.Runtime;
 using BigAndSmall;
 using System.Diagnostics.Eventing.Reader;
 using RimWorld.BaseGen;
+using BigAndSmall.FilteredLists;
 //using VariedBodySizes;
 
-namespace BetterPrerequisites
+namespace BigAndSmall
 {
     [StaticConstructorOnStartup]
     public static class BSCore
@@ -25,37 +26,63 @@ namespace BetterPrerequisites
         {
             patchType = typeof(BSCore);
             harmony.PatchAll();
+
+            // These should probably all be reloaded when the HotReload button is pressed.
             PregnancyPatches.ApplyPatches();
             GeneDefPatcher.PatchDefs();
             XenotypeDefPatcher.PatchDefs();
             ModDefPatcher.PatchDefs();
             HumanPatcher.PatchRecipes();
             NewFoodCategory.SetupFoodCategories();
+
+            GlobalSettings.Initialize();
+            DefAltNamer.Initialize();
         }
     }
 
     public class DefAltNamer : Def
     {
-        public static Dictionary<Def, Rename> renames = DefDatabase<DefAltNamer>.AllDefs
+        public static Dictionary<GeneDef, RenameGene> geneRenames = DefDatabase<DefAltNamer>.AllDefs
             .SelectMany(x => x.defRenames
                 .Select(y => (y.def, y))).ToDictionary(x => x.Item1, x => x.Item2);
-        public class Rename
+        public abstract class Rename
         {
-            public Def def;
             public string labelMechanoid = null;
             public string labelBloodfeeder = null;
             public string labelFantasy = null;
         }
-        public List<Rename> defRenames = [];
+        public class RenameGene : Rename { public GeneDef def = null; }
+
+        public static void Initialize()
+        {
+            geneRenames = DefDatabase<DefAltNamer>.AllDefs
+                .SelectMany(x => x.defRenames
+                    .Select(y => (y.def, y))).ToDictionary(x => x.Item1, x => x.Item2);
+        }
+
+        public List<RenameGene> defRenames = [];
+    }
+    public class InfiltratorData
+    {
+        public FilterListSet<FactionDef> factionFilter = null;
+        public List<XenotypeChance> doubleXenotypes = [];
+        public FilterListSet<XenotypeDef> xenoFilter = null;
+        public FilterListSet<ThingDef> thingFilter = null;
+        public bool canSwapXeno = false;
+        public bool disguised = false;
+        public FactionDef ideologyOf = null;
+        public bool canBeFullRaid = false;
+
+        public float TotalChance => doubleXenotypes.Sum(x => x.chance);
     }
 
-    [StaticConstructorOnStartup]
     public class GlobalSettings : Def
     {
         public static Dictionary<string, GlobalSettings> globalSettings = DefDatabase<GlobalSettings>.AllDefs.ToDictionary(x => x.defName);
         public List<List<string>> alienGeneGroups = [];
         public List<XenotypeChance> returnedXenotypes = [];
         public List<XenotypeChance> returnedXenotypesColonist = [];
+        public List<InfiltratorData> infiltratorTypes = [];
 
         [Unsaved(false)]
         private static List<List<GeneDef>> alienGeneGroupsDefs = null;
@@ -68,11 +95,44 @@ namespace BetterPrerequisites
             .Aggregate(new List<XenotypeChance>(), (acc, x) => [.. acc, .. x.Value.returnedXenotypesColonist])
             .TryRandomElementByWeight(x => x.chance, out var result) ? result.xenotype : null;
 
+
+        public static void Initialize()
+        {
+            globalSettings = DefDatabase<GlobalSettings>.AllDefs.ToDictionary(x => x.defName);
+        }
+
+        public static (XenotypeDef def, InfiltratorData data) GetRandomInfiltratorReplacementXenotype(Pawn pawn, int seed, bool forceNeeded, bool isFullRaid)
+        {
+            List<InfiltratorData> allValidInfiltratorData = globalSettings.Values.SelectMany(x => x.infiltratorTypes).ToList();
+            if (pawn.Faction != null)
+            {
+                allValidInfiltratorData = allValidInfiltratorData.Where(x =>
+                    (x.doubleXenotypes.Any()) &&
+                    (!isFullRaid || x.canBeFullRaid) &&
+                    (!forceNeeded || x.canSwapXeno) &&
+                    (x.factionFilter == null || x.factionFilter.GetFilterResult(pawn.Faction.def).Accepted()) &&
+                    (x.thingFilter == null || x.thingFilter.GetFilterResult(pawn.def).Accepted()) &&
+                    (x.xenoFilter == null || (pawn.genes?.Xenotype is XenotypeDef pXDef && x.xenoFilter.GetFilterResult(pXDef).Accepted()))
+                    ).ToList();
+            }
+            if (allValidInfiltratorData.Count == 0) return (null, null);
+            // Return xenotype based on chance.
+
+            InfiltratorData data;
+            using (new RandBlock(seed)) // Ensure we're getting infiltrators from the same "group". Mostly to avoid stupid results like succubi mixed with synths.
+            {
+                data = allValidInfiltratorData.RandomElementByWeight(x => x.TotalChance);
+            }
+            XenotypeDef resultXeno = allValidInfiltratorData.SelectMany(x => x.doubleXenotypes).ToList().RandomElementByWeight(x => x.chance).xenotype;
+
+            return (resultXeno, allValidInfiltratorData.First(x => x.doubleXenotypes.Any(y => y.xenotype == resultXeno)));
+        }
+
         public static List<List<GeneDef>> GetAlienGeneGroups()
         {
             if (alienGeneGroupsDefs == null)
             {
-                alienGeneGroupsDefs = new List<List<GeneDef>>();
+                alienGeneGroupsDefs = [];
                 foreach (var settings in globalSettings.Values.Where(x=>x.alienGeneGroups != null))
                 {
                     foreach (var group in settings.alienGeneGroups)

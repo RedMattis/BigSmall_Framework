@@ -18,7 +18,8 @@ namespace BigAndSmall
         [HarmonyPostfix]
         public static void GenerateGenes_Postfix(Pawn pawn, XenotypeDef xenotype, PawnGenerationRequest request)
         {
-            if (xenotype.GetForcedRace() is (ThingDef forcedRace, bool force))
+            
+            if (ModsConfig.BiotechActive && xenotype.GetForcedRace() is (ThingDef forcedRace, bool force))
             {
                 try
                 {

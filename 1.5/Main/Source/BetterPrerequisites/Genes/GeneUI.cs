@@ -35,26 +35,24 @@ namespace BigAndSmall
                     backgroundPatched = true;
                     List<CodeInstruction> newInstructions =
                     [
-                        new CodeInstruction(OpCodes.Ldarg_0), // Load Gene.
+                        new CodeInstruction(OpCodes.Ldarg_0), // Load GeneDef
                         new CodeInstruction(OpCodes.Ldarg_2), // Load GeneType.
-
-
                         new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(DrawGene), nameof(GetGeneBackground))),
                     ];
                     codes.InsertRange(idx+1, newInstructions);
                 }
 
-                //// If previous command was the LabelCap call, insert a call to GetCustomLabel.
-                //if (codes[idx-1].opcode ==OpCodes.Callvirt && codes[idx-1].OperandIs(typeof(Def).GetMethod("get_LabelCap")))
-                //{
-                //    // Stack should now have the label on top.
-                //    List<CodeInstruction> newInstructions =
-                //    [
-                //        new CodeInstruction(OpCodes.Ldarg_0), // Load Gene.
-                //        new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(DrawGene), nameof(GetCustomLabel))),
-                //    ];
-                //    codes.InsertRange(idx, newInstructions);
-                //}
+                // If previous command was the LabelCap call, insert a call to GetCustomLabel.
+                if (codes[idx].opcode ==OpCodes.Callvirt && codes[idx].OperandIs(typeof(Def).GetMethod("get_LabelCap")))
+                {
+                    // Stack should now have the label on top.
+                    List<CodeInstruction> newInstructions =
+                    [
+                        new CodeInstruction(OpCodes.Ldarg_0), // Load GeneDef.
+                        new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(DrawGene), nameof(GetCustomLabel))),
+                    ];
+                    codes.InsertRange(idx+1, newInstructions);
+                }
             }
 
             //for (int idx = 0; idx < codes.Count; idx++)
@@ -75,23 +73,22 @@ namespace BigAndSmall
             return previous;
 
         }
-        public static string GetCustomLabel(string label, GeneDef gene)
+        public static TaggedString GetCustomLabel(TaggedString label, GeneDef gene)
         {
-            if (!label.NullOrEmpty() && DefAltNamer.renames.TryGetValue(gene, out var renamer) && DrawGeneSection.pCache is BSCache pCache)
+            if (!label.NullOrEmpty() && DefAltNamer.geneRenames.TryGetValue(gene, out var renamer))
             {
-                if (pCache.isMechanical && renamer.labelMechanoid is string labelMechanoid)
+                if (DrawGeneSection.pCache.isMechanical && renamer.labelMechanoid is string labelMechanoid)
                 {
-                    label = labelMechanoid;
+                    return labelMechanoid.CapitalizeFirst();
                 }
-                else if (pCache.isBloodFeeder && renamer.labelBloodfeeder is string labelBloodFeeder)
+                else if (DrawGeneSection.pCache.isBloodFeeder && renamer.labelBloodfeeder is string labelBloodFeeder)
                 {
-                    label = labelBloodFeeder;
+                    return labelBloodFeeder.CapitalizeFirst();
                 }
-                else if (BigSmallMod.settings.useFantasyNames && renamer.labelFantasy is string labelFantasy)
-                {
-                    label = labelFantasy;
-                }
-                label = label.CapitalizeFirst();
+                //else if (BigSmallMod.settings.useFantasyNames && renamer.labelFantasy is string labelFantasy)
+                //{
+                //    return labelFantasy.CapitalizeFirst();
+                //}
             }
             return label;
         }
@@ -108,6 +105,10 @@ namespace BigAndSmall
             if (target is Pawn p && HumanoidPawnScaler.GetCacheUltraSpeed(p) is BSCache cache)
             {
                 pCache = cache;
+            }
+            else
+            {
+                pCache = BSCache.defaultCache;
             }
         }
 

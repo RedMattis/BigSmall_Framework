@@ -88,19 +88,78 @@
       <VU_Returned_Intact MayRequire="RedMattis.Undead">0.5</VU_Returned_Intact>
       <VU_Revenant MayRequire="RedMattis.Undead">0.20</VU_Revenant>
     </returnedXenotypesColonist>
+
+    <infiltratorTypes>
+      <li MayRequire="Ludeon.Rimworld.Biotech">
+        <disguised>true</disguised>
+        <canBeFullRaid>true</canBeFullRaid>
+        <factionFilter>
+          <blacklist>
+            <li MayRequire="RedMattis.Heaven">BS_Heaven</li>
+            <li MayRequire="RedMattis.Heaven">BS_Hell</li>
+            <li MayRequire="RedMattis.Heaven">BS_Outcasts</li>
+            <li MayRequire="RedMattis.Undead">VU_Roaming_Undead</li>
+            <li MayRequire="RedMattis.BSSlimes">BS_SlimeFaction</li>
+            <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_HostileAndroids</li>
+            <li MayRequire="Ludeon.Rimworld.Anomaly">HoraxCult</li>
+          </blacklist>
+        </factionFilter>
+        <ideologyOf MayRequire="RedMattis.LamiasAndOtherSnakes">LoS_ViperFamily</ideologyOf>
+        <thingFilter>
+          <blacklist>
+            <li>CreepJoiner</li>
+          </blacklist>
+        </thingFilter>
+        <doubleXenotypes>
+          <BS_SynthSpy MayRequire="RedMattis.BigSmall.SimpleAndroids">1</BS_SynthSpy>
+          <BS_SynthSpyDerp MayRequire="RedMattis.BigSmall.SimpleAndroids">1</BS_SynthSpyDerp>
+        </doubleXenotypes>
+      </li>
+      <li MayRequire="Ludeon.Rimworld.Biotech">
+        <disguised>true</disguised>
+        <canBeFullRaid>false</canBeFullRaid>
+        <factionFilter>
+          <whitelist>
+            <li MayRequire="RedMattis.Heaven">BS_Heaven</li>
+            <li MayRequire="RedMattis.Heaven">BS_Hell</li>
+            <li MayRequire="RedMattis.Heaven">BS_Outcasts</li>
+            <li MayRequire="RedMattis.Undead">VU_Roaming_Undead</li>
+            <li MayRequire="Ludeon.Rimworld.Anomaly">HoraxCult</li>
+          </whitelist>
+        </factionFilter>
+        <ideologyOf MayRequire="RedMattis.LamiasAndOtherSnakes">LoS_ViperFamily</ideologyOf>
+        <thingFilter>
+          <blacklist>
+            <li>CreepJoiner</li>
+          </blacklist>
+        </thingFilter>
+        <doubleXenotypes>
+          <BS_SynthSpy MayRequire="RedMattis.BigSmall.SimpleAndroids">1</BS_SynthSpy>
+        </doubleXenotypes>
+      </li>
+      <li MayRequire="Ludeon.Rimworld.Biotech">
+        <canSwapXeno>true</canSwapXeno>
+        <canBeFullRaid>false</canBeFullRaid>
+        <factionFilter>
+          <whitelist>
+            <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_HostileAndroids</li>
+          </whitelist>
+        </factionFilter>
+        <xenoFilter>
+          <whitelist>
+            <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_CommandoAndroidAutomata</li>
+            <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_CommandoAndroid</li>
+          </whitelist>
+        </xenoFilter>
+        <doubleXenotypes>
+          <BS_Hemohunter MayRequire="RedMattis.BigSmall.SimpleAndroids">1</BS_Hemohunter>
+        </doubleXenotypes>
+      </li>
+    </infiltratorTypes>
   </BigAndSmall.GlobalSettings>
 
-  <BigAndSmall.DefAltNamer>
-    <genes>
-      <li>
-        <defName>BS_PsychicWarrior</defName>
-        <labelBloodfeeder>archite control</labelBloodfeeder>
-        <labelMechanoid>mechanite control</labelMechanoid>
-      </li>
-      <li>
-        <defName>BS_NoFood_Hemogenic</defName>
-        <labelMechanoid>hemogen-fueled</labelMechanoid>
-      </li>
-    </genes>
-  </BigAndSmall.DefAltNamer>
+  
+
+    
+  
 </Defs>

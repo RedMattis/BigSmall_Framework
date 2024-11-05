@@ -31,6 +31,8 @@ namespace BigAndSmall
         public static Dictionary<int, HashSet<BSCache>> scheduleFullUpdate = [];
         public static HashSet<BSCache> currentlyQueued = new(); // Ensures we never queue the same cache twice.
 
+        public static float globalRandNum = 0;
+
         public BigAndSmallCache(Game game)
         {
             this.game = game;
@@ -108,6 +110,7 @@ namespace BigAndSmall
             {
                 return;
             }
+            globalRandNum = Rand.Value;
 
             // If the queue is empty, enqueue the HumanoidPawnScaler.Cache.
             if (refreshQueue.Count == 0)
@@ -962,7 +965,7 @@ namespace BigAndSmall
             {
                 SimpleRaceUpdate(racePawnExt, otherPawnExt, pawn.GetRaceCompProps());
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 if (!BigAndSmallCache.regenerationAttempted)
                 {

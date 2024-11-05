@@ -34,7 +34,7 @@ namespace BigAndSmall.Debugging
             List<FloatMenuOption> list =
             [
                 
-                new FloatMenuOption("SET xenotype. (also sets race)", delegate
+                new FloatMenuOption("Set to exact xenotype (also sets race)", delegate
                 {
                     List<DebugMenuOption> xenotypeLister = [];
                     foreach (XenotypeDef allDef in DefDatabase<XenotypeDef>.AllDefs)
@@ -99,17 +99,36 @@ namespace BigAndSmall.Debugging
                     }
                 }),
 
+                new FloatMenuOption("Remove all Endogenes", delegate
+                {
+                    var endoGenes = pawn.genes.Endogenes.Select(g => g).ToList();
+                    foreach (var geneDef in endoGenes)
+                    {
+                        pawn.genes.RemoveGene(geneDef);
+                    }
+                }),
+
+                new FloatMenuOption("Remove all Xenogenes", delegate
+                {
+                    var xenoGenes = pawn.genes.Xenogenes.Select(g => g).ToList();
+                    foreach (var geneDef in xenoGenes)
+                    {
+                        pawn.genes.RemoveGene(geneDef);
+                    }
+                }),
+
                 new FloatMenuOption("Discombobulate", delegate
                 {
                     Discombobulator.Discombobulate(pawn);
                 }),
 
-                new FloatMenuOption("Set to random xenotype.", delegate
+                new FloatMenuOption("Set to random xenotype", delegate
                 {
                     GeneHelpers.RemoveAllGenesSlow_ExceptColor(pawn);
                     pawn.genes.SetXenotype(DefDatabase<XenotypeDef>.AllDefs.RandomElement());
                     pawn.TrySwapToXenotypeThingDef();
                 }),
+
 
 
 
