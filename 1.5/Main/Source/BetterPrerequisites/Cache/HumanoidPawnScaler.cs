@@ -377,6 +377,11 @@ namespace BigAndSmall
         public bool slowBleeding = false;
         public bool deathlike = false;
         public bool isMechanical = false;
+
+        /// <summary>
+        /// Banns addictions that are not whitelisted or better.
+        /// </summary>
+        public bool banAddictions = false;
         public bool willBeUndead = false;
         public bool unarmedOnly = false;
         public bool succubusUnbonded = false;
@@ -714,7 +719,7 @@ namespace BigAndSmall
                 bleedRate = bleedState;
                 deathlike = animalUndead || allPawnExt.Any(x => x.isDeathlike);
 
-                unarmedOnly = unarmedOnly || allPawnExt.Any(x => x.unarmedOnly || x.forceUnarmed) ||
+                unarmedOnly = allPawnExt.Any(x => x.unarmedOnly || x.forceUnarmed) ||
                                 activeGenes.Any(x => new List<string> { "BS_UnarmedOnly", "BS_NoEquip", "BS_UnarmedOnly_Android" }.Contains(x.def.defName));
 
                 
@@ -844,9 +849,10 @@ namespace BigAndSmall
             if (pawn == null || pawn.Dead) { return; }
             pawn.def.modExtensions?.OfType<RaceExtension>()?.FirstOrDefault()?.ApplyTrackerIfMissing(pawn);
 
-            var racePawnExt = pawn.GetRacePawnExtensions();
+            var racePawnExts = pawn.GetRacePawnExtensions();
             var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
-            var otherPawnExt = ModExtHelper.GetAllExtensions<PawnExtension>(pawn, parentBlacklist: [typeof(RaceTracker)]);
+            var otherPawnExts = ModExtHelper.GetAllExtensions<PawnExtension>(pawn, parentBlacklist: [typeof(RaceTracker)]);
+            List<PawnExtension> allPawnExts = [..racePawnExts, ..otherPawnExts];
             //List<PawnExtension> geneExts = activeGenes
             //    .Where(x => x?.def?.modExtensions != null && x.def.modExtensions.Any(y => y.GetType() == typeof(PawnExtension)))?
             //    .Select(x => x.def.GetModExtension<PawnExtension>()).ToList();
@@ -961,9 +967,11 @@ namespace BigAndSmall
                 }
 
             }
+            banAddictions = allPawnExts.Any(x => x.banAddictionsByDefault);
+
             try
             {
-                SimpleRaceUpdate(racePawnExt, otherPawnExt, pawn.GetRaceCompProps());
+                SimpleRaceUpdate(racePawnExts, otherPawnExts, pawn.GetRaceCompProps());
             }
             catch (Exception)
             {

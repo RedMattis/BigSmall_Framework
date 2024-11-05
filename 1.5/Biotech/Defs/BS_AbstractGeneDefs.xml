@@ -1,0 +1,13 @@
+<Defs>
+  <GeneDef Abstract="True" Name="BS_BodySwitch">
+    <customEffectDescriptions>
+			<li>Switches the character's "Race" for another one (if human).</li>
+		</customEffectDescriptions>
+    <displayCategory>BS_BodySwap</displayCategory>
+    <geneClass>BetterPrerequisites.PGene</geneClass>
+    <exclusionTags>
+      <!-- Ensure no other body-swap genes can be active at the same time. -->
+      <li>BS_BodySwap</li>
+    </exclusionTags>
+  </GeneDef>
+</Defs>

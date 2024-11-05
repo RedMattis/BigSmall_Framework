@@ -574,7 +574,7 @@ namespace BetterPrerequisites
 
         private static void AddHediffToPawn(bool activate, ref bool changeMade, Gene gene, PawnExtension extension)
         {
-            List<HediffToBody> toRemove = new List<HediffToBody>();
+            List<HediffToBody> toRemove = [];
             if (extension.applyBodyHediff != null)
             {
                 foreach (HediffToBody item in extension.applyBodyHediff)

@@ -93,6 +93,7 @@ namespace BigAndSmall
         public CachedTexture GetCachedTexture(GeneType geneType, CachedTexture fallback = null, BSCache cache = null)
         {
             string path = null;
+            if (cache == null) return fallback;
             if (cache?.isMechanical == true)
             {
                 if (architeCost > 0)

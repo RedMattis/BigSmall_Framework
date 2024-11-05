@@ -43,6 +43,12 @@ namespace BigAndSmall
             public int priority = priority;
         }
 
+        public static List<T> ExtensionsOnDef<T>(this Def def, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) where T : DefModExtension
+        {
+            List<ModExtWrapper<T>> matches = GetAllMatchingExtensions<T>(def, def.GetType());
+            return GetFilteredResult(matches, parentWhitelist, parentBlacklist, doSort);
+        }
+
         private static List<T> GetFilteredResult<T>(List<ModExtWrapper<T>> matches, List<Type> parentWhitelist=null, List<Type> parentBlacklist = null, bool doSort=true) where T : DefModExtension
         {
             List<T> extensions = [];
@@ -84,7 +90,7 @@ namespace BigAndSmall
         private static List<ModExtWrapper<T>> GetAllMatchingExtensions<T>(Def def, Type source) where T : DefModExtension
         {
             List<ModExtWrapper<T>> extensions = [];
-            if (def.modExtensions == null) return extensions;
+            if (def?.modExtensions == null) return extensions;
             foreach (DefModExtension extension in def.modExtensions)
             {
                 if (extension is T t)

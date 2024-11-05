@@ -180,7 +180,7 @@ namespace BigAndSmall
 
             public static bool Banned(this FilterResult fResult) => fResult == FilterResult.Banned;
             public static bool Denied(this FilterResult fResult) => fResult == FilterResult.Deny || fResult == FilterResult.Banned;
-            public static bool NeutralOrWorse(this FilterResult fResult) => Denied(fResult) || fResult == FilterResult.Neutral;
+            public static bool NeutralOrWorse(this FilterResult fResult) => Denied(fResult) || fResult == FilterResult.Neutral || fResult == FilterResult.None;
             public static bool Accepted(this FilterResult fResult) => !Denied(fResult);
             public static bool ExplicitlyAllowed(this FilterResult fResult) => fResult == FilterResult.ForceAllow || fResult == FilterResult.Allow;
             public static bool ForceAllowed(this FilterResult fResult) => fResult == FilterResult.ForceAllow;
@@ -193,7 +193,8 @@ namespace BigAndSmall
                 var newList = new FilterListSet<T>
                 {
                     allowlist = ListHelpers.UnionNullableLists(listOne.allowlist, listTwo.allowlist) as Allowlist<T>,
-                    whitelist = ListHelpers.IntersectNullableLists(listOne.whitelist, listTwo.whitelist) as Whitelist<T>,
+                    whitelist = ListHelpers.UnionNullableLists(listOne.whitelist, listTwo.whitelist) as Whitelist<T>,
+                    //whitelist = ListHelpers.IntersectNullableLists(listOne.whitelist, listTwo.whitelist) as Whitelist<T>,
                     blacklist = ListHelpers.UnionNullableLists(listOne.blacklist, listTwo.blacklist) as Blacklist<T>,
                     banlist = ListHelpers.UnionNullableLists(listOne.banlist, listTwo.banlist) as Banlist<T>,
                     acceptlist = ListHelpers.UnionNullableLists(listOne.acceptlist, listTwo.acceptlist) as AcceptList<T>
@@ -215,7 +216,7 @@ namespace BigAndSmall
 
             protected List<FilterList<T>> items = null;
             public List<FilterList<T>> Items => items ??= new List<FilterList<T>> { allowlist, whitelist, blacklist, banlist, acceptlist }.Where(x => x != null).ToList();
-            public bool Empty => Items.Count == 0;
+            public bool IsEmpty() => Items.Count == 0;
 
             public IEnumerable<FilterResult> GetFilterResults(T item) => Items.GetFilterResults(item);
             public FilterResult GetFilterResult(T item) => Items.GetFilterResult(item);

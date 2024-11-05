@@ -26,6 +26,30 @@ namespace BigAndSmall
             PatchCustomBodyPartDefs();
         }
 
+        private static List<RecipeDef> AllHumanRecipes()
+        {
+            var tDef = ThingDefOf.Human;
+            List<RecipeDef> allHumanRecipes = [];
+
+            if (tDef.recipes != null)
+            {
+                for (int i = 0; i < tDef.recipes.Count; i++)
+                {
+                    allHumanRecipes.Add(tDef.recipes[i]);
+                }
+            }
+
+            List<RecipeDef> allDefsListForReading = DefDatabase<RecipeDef>.AllDefsListForReading;
+            for (int j = 0; j < allDefsListForReading.Count; j++)
+            {
+                if (allDefsListForReading[j].recipeUsers != null && allDefsListForReading[j].recipeUsers.Contains(tDef))
+                {
+                    allHumanRecipes.Add(allDefsListForReading[j]);
+                }
+            }
+            return allHumanRecipes;
+        }
+
         private static void MigrateHumanRecipes()
         {
             List<(ThingDef thing, RaceExtension raceExt)> thingsWithRaceExtension = DefDatabase<ThingDef>.AllDefs
@@ -38,7 +62,7 @@ namespace BigAndSmall
             List<ThingDef> allHumanlikeThings = [.. humanLikes.SelectMany(x => x.thingList), 
                 .. thingsWithRaceExtension
                     .Where(x => x.raceExt?.raceHediff?.GetModExtension<PawnExtension>()?.surgeryRecipes == null).Select(x => x.thing)];
-            var humanRecipes = ThingDefOf.Human.recipes;
+            var humanRecipes = AllHumanRecipes();
             foreach (var thing in allHumanlikeThings)
             {
                 foreach (var recipe in humanRecipes.Where(x => !thing.recipes.Contains(x)))

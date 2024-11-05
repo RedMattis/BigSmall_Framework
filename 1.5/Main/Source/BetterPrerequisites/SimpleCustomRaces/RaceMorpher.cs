@@ -59,7 +59,7 @@ namespace BigAndSmall
                 Log.Error($"SwapThingDef called on a null pawn with swapTarget {swapTarget}.");
                 return;
             }
-            if (runningRaceSwap || pawn?.genes == null || pawn.def == swapTarget) return;
+            if (runningRaceSwap || pawn?.genes == null || (pawn.def == swapTarget && state)) return;
 
             hediffsToReapply.Clear();
             try
@@ -71,8 +71,6 @@ namespace BigAndSmall
                 var genesWithThingDefSwaps = pawn.genes.GenesListForReading
                     .Where(x => x != source && x is PGene pg && pg.GetPawnExt() != null && (x as PGene).GetPawnExt().thingDefSwap != null)
                     .Select(x => (PGene)x).ToList();
-
-                
 
                 // Check if the ThingDef we CURRENTLY are is among the genesWithThingDefSwaps
                 //var geneWithThingDef = Enumerable.Where<PGene>(genesWithThingDefSwaps, (Func<PGene, bool>)(x => x.GeneExt().thingDefSwap.defName == pawn.def.defName));
@@ -102,11 +100,12 @@ namespace BigAndSmall
                 else if (!state && pawn.def.defName == swapTarget.defName)
                 {
                     ThingDef target = ThingDefOf.Human;
-                    if (HumanoidPawnScaler.GetCacheUltraSpeed(pawn, canRegenerate: false) is BSCache cache && cache.originalThing != null)
+                    if (HumanoidPawnScaler.GetCacheUltraSpeed(pawn, canRegenerate: false) is BSCache cache && cache.originalThing != null &&
+                        cache.originalThing != pawn.def)
                     {
                         target = cache.originalThing;
                     }
-                    if (activeGenesWithSwap.Count > 0) { target = activeGenesWithSwap.RandomElement().GetPawnExt().thingDefSwap; }
+                    if (activeGenesWithSwap.Count > 0) { target = activeGenesWithSwap.Where(x=>x != source).RandomElement().GetPawnExt().thingDefSwap; }
 
                     didSwap = ExecuteDefSwap(pawn, target);
                 }
@@ -164,7 +163,7 @@ namespace BigAndSmall
             //var pos = pawn.Position;
             var map = pawn.Map;
 
-            if (!hediffsToReapply.ContainsKey(pawn)) hediffsToReapply[pawn] = new List<Hediff>();
+            if (!hediffsToReapply.ContainsKey(pawn)) hediffsToReapply[pawn] = [];
             try
             {
                 if (map != null)
@@ -246,8 +245,6 @@ namespace BigAndSmall
             {
                 Log.Message($"Error when registering in regions: {e.Message}");
             }
-
-
 
             RestoreMatchingHediffs(pawn, pawn.def);
             //pawn.Drawer.renderer.SetAllGraphicsDirty();

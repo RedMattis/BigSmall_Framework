@@ -35,15 +35,21 @@ namespace BigAndSmall
                 xenoenesRemovedByRace ??= [];
 
 
-                var endoGenesToRestore = endogenesRemovedByRace.Where(g=> raceExts.All(ext => ext.IsGeneLegal(g))).ToList();
+                List<GeneDef> endoGenesToRestore = endogenesRemovedByRace.Where(g => raceExts
+                    .Select(ext => ext.IsGeneLegal(g))
+                    .Aggregate((a, b) => a.Fuse(b)).Accepted()).ToList();
+
                 RestoreGenes(endoGenesToRestore, false);
-                var xenogenesToRestore = xenoenesRemovedByRace.Where(g => raceExts.All(ext => ext.IsGeneLegal(g))).ToList();
+                List<GeneDef> xenogenesToRestore = xenoenesRemovedByRace.Where(g => raceExts
+                    .Select(ext => ext.IsGeneLegal(g))
+                    .Aggregate((a, b) => a.Fuse(b)).Accepted()).ToList();
                 RestoreGenes(xenogenesToRestore, true);
 
                 raceExts.ForEach(ext => ext.ForcedEndogenes.Where(g => !pawn.HasGene(g)).ToList().ForEach(g => pawn.genes.AddGene(g, false)));
                 raceExts.ForEach(ext => ext.forcedXenogenes?.Where(g => !pawn.HasGene(g)).ToList().ForEach(g => pawn.genes.AddGene(g, true)));
 
-                var xenoGenesToRemove = pawn.genes.Xenogenes.Where(g => raceExts.Any(ext => !ext.IsGeneLegal(g.def))).ToList();
+                List<Gene> xenoGenesToRemove = pawn.genes.Xenogenes.Where(g => raceExts.Select(ext => ext.IsGeneLegal(g.def))
+                    .Aggregate((a, b) => a.Fuse(b)).Denied()).ToList();
                 if (xenoGenesToRemove.Count > 0)
                 {
                     for (int idx = xenoGenesToRemove.Count - 1; idx >= 0; idx--)
@@ -53,7 +59,8 @@ namespace BigAndSmall
                         pawn.genes.RemoveGene(gene);
                     }
                 }
-                var endogenesToRemove = pawn.genes.Endogenes.Where(g => raceExts.Any(ext => !ext.IsGeneLegal(g.def))).ToList();
+                List<Gene> endogenesToRemove = pawn.genes.Endogenes.Where(g => raceExts.Select(ext => ext.IsGeneLegal(g.def))
+                    .Aggregate((a, b) => a.Fuse(b)).Denied()).ToList();
                 if (endogenesToRemove.Count > 0)
                 {
                     for (int idx = endogenesToRemove.Count - 1; idx >= 0; idx--)
@@ -85,7 +92,7 @@ namespace BigAndSmall
             if (pawn.story?.traits is TraitSet traits)
             {
                 var forcedTraits = raceExts.SelectMany(ext => ext.forcedTraits?.Where(t => !traits.HasTrait(t))).ToList();
-                FilterListSet <TraitDef> traitFilter = raceExts.SelectWhere(x => x.traitFilters).MergeFilters();
+                FilterListSet <TraitDef> traitFilter = raceExts.Where(x => x.traitFilters != null).Select(x => x.traitFilters).MergeFilters();
                 var traitsToRemove = traits.allTraits.Where(t => traitFilter != null && !forcedTraits.Any(ft => ft == t.def) && traitFilter.GetFilterResult(t.def).Denied()).ToList();
                 if (traitsToRemove.Count > 0)
                 {
@@ -107,8 +114,8 @@ namespace BigAndSmall
         {
             if (pawn.health?.hediffSet != null)
             {
-                FilterListSet<HediffDef> hediffFilter = raceExts.SelectWhere(x => x.hediffFilters).MergeFilters();
-                HashSet<HediffDef> forcedHediffs = raceExts.SelectManyWhere(x => x.forcedHediffs).ToHashSet();
+                FilterListSet<HediffDef> hediffFilter = raceExts.Where(x => x.hediffFilters != null).Select(x=>x.hediffFilters).MergeFilters();
+                HashSet<HediffDef> forcedHediffs = raceExts.SelectMany(x => x.forcedHediffs ?? []).ToHashSet();
                 forcedHediffs.Where(h => !pawn.health.hediffSet.HasHediff(h) &&
                     hediffFilter == null || hediffFilter.GetFilterResult(h).Accepted()).ToList().ForEach(h => pawn.health.AddHediff(h));
                 
@@ -117,14 +124,33 @@ namespace BigAndSmall
 
         private void ProcessHediffsToRemove(List<PawnExtension> pawnExts)
         {
-            FilterListSet<HediffDef> hediffFilter = pawnExts.SelectWhere(x => x.hediffFilters).MergeFilters();
-            List<Hediff> hediffsToRemove = pawn.health.hediffSet.hediffs.Where(h => hediffFilter != null && hediffFilter.GetFilterResult(h.def).Denied()).ToList();
+            FilterListSet<HediffDef> hediffFilter = pawnExts.Where(x=>x.hediffFilters != null).Select(x => x.hediffFilters).MergeFilters();
+
+            List<Hediff> hediffsToRemove = [];
+            if (hediffFilter == null || hediffFilter.IsEmpty())
+            {
+               if (banAddictions)
+                {
+                    hediffsToRemove = pawn.health.hediffSet.hediffs.Where(h => h is Hediff_Addiction).ToList();
+                }
+            }
+            else
+            {
+                hediffsToRemove = pawn.health.hediffSet.hediffs.Where(h => 
+                    hediffFilter.GetFilterResult(h.def).Denied() ||
+                    // If a chemical dependency and not whitelisted, remove it.
+                    (h is Hediff_Addiction hd && banAddictions && hediffFilter.GetFilterResult(h.def).NeutralOrWorse())
+
+                ).ToList();
+            }
+            
             if (hediffsToRemove.Count > 0)
             {
                 for (int idx = hediffsToRemove.Count - 1; idx >= 0; idx--)
                 {
                     Hediff hediff = hediffsToRemove[idx];
                     pawn.health.RemoveHediff(hediff);
+                    
                 }
             }
         }

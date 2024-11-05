@@ -107,7 +107,7 @@
         <ideologyOf MayRequire="RedMattis.LamiasAndOtherSnakes">LoS_ViperFamily</ideologyOf>
         <thingFilter>
           <blacklist>
-            <li>CreepJoiner</li>
+            <li MayRequire="Ludeon.Rimworld.Anomaly">CreepJoiner</li>
           </blacklist>
         </thingFilter>
         <doubleXenotypes>
@@ -130,7 +130,7 @@
         <ideologyOf MayRequire="RedMattis.LamiasAndOtherSnakes">LoS_ViperFamily</ideologyOf>
         <thingFilter>
           <blacklist>
-            <li>CreepJoiner</li>
+            <li MayRequire="Ludeon.Rimworld.Anomaly">CreepJoiner</li>
           </blacklist>
         </thingFilter>
         <doubleXenotypes>

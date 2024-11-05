@@ -125,6 +125,7 @@
     <Compile Include="BetterPrerequisites\TransformHediff.cs" />
     <Compile Include="AI\AICombat.cs" />
     <Compile Include="SimpleCustomRaces\RaceMorpher.cs" />
+    <Compile Include="SimpleCustomRaces\ThoughtDefPatcher.cs" />
     <Compile Include="SizeChange\SizeMethods.cs" />
     <Compile Include="SizeChange\StatWorker_Size.cs" />
     <Compile Include="Social\AlienApperance.cs" />

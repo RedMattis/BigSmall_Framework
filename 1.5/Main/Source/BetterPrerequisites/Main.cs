@@ -13,6 +13,7 @@ using BigAndSmall;
 using System.Diagnostics.Eventing.Reader;
 using RimWorld.BaseGen;
 using BigAndSmall.FilteredLists;
+using BigAndSmall.SimpleCustomRaces;
 //using VariedBodySizes;
 
 namespace BigAndSmall
@@ -24,6 +25,7 @@ namespace BigAndSmall
         public static Harmony harmony = new("RedMattis.BetterPrerequisites");
         static BSCore()
         {
+
             patchType = typeof(BSCore);
             harmony.PatchAll();
 
@@ -34,6 +36,7 @@ namespace BigAndSmall
             ModDefPatcher.PatchDefs();
             HumanPatcher.PatchRecipes();
             NewFoodCategory.SetupFoodCategories();
+            ThoughtDefPatcher.PatchDefs();
 
             GlobalSettings.Initialize();
             DefAltNamer.Initialize();

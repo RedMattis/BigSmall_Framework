@@ -16,23 +16,23 @@ namespace BigAndSmall
             (list1 != null && list2 != null) ? list1.Union(list2).ToList() : list1 ?? list2;
 
         // Runs Where and Select in sequence.
-        public static IEnumerable<TResult> SelectWhere<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector)
-        {
-            foreach (var item in source.Where(x=>x is TResult))
-            {
-                yield return selector(item);
-            }
-        }
-        public static IEnumerable<TResult> SelectManyWhere<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, IEnumerable<TResult>> selector)
-        {
-            foreach (var item in source.Where(x => x is TResult))
-            {
-                foreach (var subItem in selector(item))
-                {
-                    yield return subItem;
-                }
-            }
-        }
+        //public static IEnumerable<TResult> SelectWhere<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector)
+        //{
+        //    foreach (var item in source.Where(x=>x is TResult))
+        //    {
+        //        yield return selector(item);
+        //    }
+        //}
+        //public static IEnumerable<TResult> SelectManyWhere<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, IEnumerable<TResult>> selector)
+        //{
+        //    foreach (var item in source.Where(x => x is TResult))
+        //    {
+        //        foreach (var subItem in selector(item))
+        //        {
+        //            yield return subItem;
+        //        }
+        //    }
+        //}
     }
 
     public static class MathHelpers

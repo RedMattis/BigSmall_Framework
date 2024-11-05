@@ -77,12 +77,18 @@ namespace BigAndSmall
             public enum AltTrigger
             {
                 Colonist,
+                SlaveOfColony,
+                PrisonerOfColony,
+                SlaveOrPrisoner,
+                OfColony,
                 Unconcious,
                 Dead,
                 Rotted,
                 Dessicated,
                 HasForcedSkinColorGene,
-                BiotechDLC
+                BiotechDLC,
+                IdeologyDLC,
+                AnomalyDLC,
             }
 
             public const string clrOneKey = "someKeyStringClrOne";
@@ -119,16 +125,21 @@ namespace BigAndSmall
             public bool AltIsValid(Pawn pawn)
             {
                 if (triggers.Count == 0) return true;
-                return triggers.Any(x=> x switch
+                return triggers.All(x=> x switch
                 {
+                    AltTrigger.Colonist => pawn.Faction == Faction.OfPlayer,
+                    AltTrigger.SlaveOfColony => pawn.HostFaction == Faction.OfPlayer && pawn.IsSlave,
+                    AltTrigger.PrisonerOfColony => pawn.HostFaction == Faction.OfPlayer && pawn.IsPrisoner,
+                    AltTrigger.SlaveOrPrisoner => pawn.IsSlave || pawn.IsPrisoner,
+                    AltTrigger.OfColony => pawn.HostFaction == Faction.OfPlayer || pawn.Faction == Faction.OfPlayer,
                     AltTrigger.Unconcious => pawn.Downed && !pawn.health.CanCrawl,
                     AltTrigger.Dead => pawn.Dead,
                     AltTrigger.Rotted => pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Rotting,
                     AltTrigger.Dessicated => pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Dessicated,
-
                     AltTrigger.HasForcedSkinColorGene => GeneHelpers.GetAllActiveGenes(pawn).Any(x => x.def.skinColorOverride != null),
-
                     AltTrigger.BiotechDLC => ModsConfig.BiotechActive,
+                    AltTrigger.IdeologyDLC => ModsConfig.IdeologyActive,
+                    AltTrigger.AnomalyDLC => ModsConfig.AnomalyActive,
                     _ => false,
                 });
             }
@@ -237,6 +248,7 @@ namespace BigAndSmall
                         finalClr *= pawn.story.favoriteColor.Value;
                         didSet = true;
                     }
+                    else GetHostilityStatus(pawn, ref didSet, ref finalClr);
                 }
                 if (color != null)
                 {
@@ -246,7 +258,7 @@ namespace BigAndSmall
                 if (hostilityStatus) GetHostilityStatus(pawn, ref didSet, ref finalClr);
                 if (colourRange != null)
                 {
-                    var id = pawn.ThingID;
+                    var id = pawn.thingIDNumber;
                     var clrId = hashOffset + id;
                     if (randomClrPerId.TryGetValue(clrId, out Color savedClr))
                     {

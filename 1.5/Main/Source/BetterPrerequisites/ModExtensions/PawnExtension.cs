@@ -50,6 +50,8 @@ namespace BigAndSmall
 
         public List<GeneDef> hiddenGenes = [];
 
+        public List<ThoughtDef> nullsThoughts = null;
+
         public ApparelRestrictions apparelRestrictions = null;
 
         public TransformationGene transformGene = null;
@@ -97,6 +99,8 @@ namespace BigAndSmall
         public bool isMechanical = false;
         public bool isBloodfeeder = false;
 
+        public bool banAddictionsByDefault = false;
+
 
         // Metamorph Stuff.
         public XenotypeDef metamorphTarget = null;
@@ -129,7 +133,7 @@ namespace BigAndSmall
         public List<HediffDef> forcedHediffs = [];
         #endregion
 
-        public List<TraitDef> forcedTraits = new List<TraitDef>();
+        public List<TraitDef> forcedTraits = [];
 
         #region Biotech
         public List<GeneDef> forcedEndogenes = null;
@@ -229,24 +233,25 @@ namespace BigAndSmall
             return immutableEndogenes.Where(x=>x.exclusionTags != null).SelectMany(x => x.exclusionTags).ToList();
         }
 
-        public bool IsGeneLegal(GeneDef gene)
+        public FilterResult IsGeneLegal(GeneDef gene)
         {
-            if (gene == null) return true;
-            if (AllForcedGenes.Contains(gene)) return true;
-            if (geneFilters?.GetFilterResult(gene).Denied() == true) return false;
-            if (gene.displayCategory != null &&
-                geneCategoryFilters?.GetFilterResult(gene.displayCategory).Denied() == true) return false;
-            if (gene.exclusionTags != null && gene.exclusionTags.Count > 1 &&
-                geneTagFilters?.GetFilterResultFromItemList(gene.exclusionTags).Denied() == true) return false;
+            if (gene == null) return FilterResult.ForceAllow;
+            if (AllForcedGenes.Contains(gene)) return FilterResult.ForceAllow;
+            
             if (immutableEndogenes != null && !AllForcedGenes.Contains(gene))
             {
                 var forcedTags = GetImmutableEndoGeneExclusionTags();
-                if (!forcedTags.NullOrEmpty() && !gene.exclusionTags.NullOrEmpty())
+                if (!forcedTags.NullOrEmpty() && !gene.exclusionTags.NullOrEmpty() && gene.exclusionTags.Any(forcedTags.Contains))
                 {
-                    return !gene.exclusionTags.Any(forcedTags.Contains);
+                    return FilterResult.Banned;
                 }
             }
-            return true;
+            List<FilterResult> results = [FilterResult.Neutral];
+            results.Add(geneFilters?.GetFilterResult(gene) ?? FilterResult.Neutral);
+            if (gene.displayCategory != null) results.Add(geneCategoryFilters?.GetFilterResult(gene.displayCategory) ?? FilterResult.Neutral);
+            if (gene.exclusionTags != null) results.Add(geneTagFilters?.GetFilterResultFromItemList(gene.exclusionTags) ?? FilterResult.Neutral);
+            return results.Fuse();
+            //return true;
         }
 
         public List<GeneDef> ForcedEndogenes => [.. (forcedEndogenes ?? []), .. (immutableEndogenes ?? [])];
