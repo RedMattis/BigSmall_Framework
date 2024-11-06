@@ -119,11 +119,23 @@ namespace BigAndSmall
 
             public List<ColorSetting> alts = [];
             public List<AltTrigger> triggers = [];
+            public float? chanceTrigger = null;
 
             //public float? alpha = null;
 
             public bool AltIsValid(Pawn pawn)
             {
+                if (chanceTrigger != null)
+                {
+                    using (new RandBlock(pawn.thingIDNumber + pawn.def.defName.GetHashCode()))
+                    {
+                        if (Rand.Value > chanceTrigger.Value)
+                        {
+                            return false;
+                        }
+                    }
+                }
+
                 if (triggers.Count == 0) return true;
                 return triggers.All(x=> x switch
                 {

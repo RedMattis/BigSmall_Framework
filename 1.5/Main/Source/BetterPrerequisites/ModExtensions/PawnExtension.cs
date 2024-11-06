@@ -34,113 +34,264 @@ namespace BigAndSmall
         // Used for race-defaults.
         public static PawnExtension defaultPawnExtension = new();
 
-
+        /// <summary>
+        /// The order in which this extension is applied.
+        /// Higher numbers are applied later, which means they can in some cases overwrite earlier extensions.
+        /// </summary>
         public int priority = 0;
-        //public HediffDef applyBodyHediff;
+
+        /// <summary>
+        /// Used by PGenes. If it evaluates to False the gene will disable itself.
+        /// Useful for werewolf-like beaviour, or genes that deactivate if not drunk or something.
+        /// </summary>
         public List<ConditionalStatAffecter> conditionals;
+        /// <summary>
+        /// Used by the above. Inverts the conditional
+        /// </summary>
         public bool? invert;
+        /// <summary>
+        /// Turns off the zoomed-out render cache for the pawn. Useful if your pawn graphics might otherwise get cut off.
+        /// </summary>
         public bool renderCacheOff = false;
 
+        /// <summary>
+        /// Used by Genes. When the gene is added/activated it will apply these hediffs to the pawn.
+        /// </summary>
         public List<HediffToBody> applyBodyHediff;
+        /// <summary>
+        /// Same as above but applies to specific bodyparts.
+        /// </summary>
         public List<HediffToBodyparts> applyPartHediff;
 
+        /// <summary>
+        /// This is the magic thing that makes the pawn swap to a different ThingDef. E.g. "Race".
+        /// </summary>
         public ThingDef thingDefSwap = null;
+        /// <summary>
+        /// Forces the swap to the ThingDef. If false, it will be cautious to avoid accidentally turning robots into
+        /// biological snake-people, etc. If in doubt, leave this as false.
+        /// </summary>
         public bool forceThingDefSwap = false;
-        //public bool oneTimeSwap = true;
 
+        /// <summary>
+        /// Used by Genes. A bit of a miseleading name.
+        /// The listed genes will be added to the pawn when this gene is added.
+        /// When removed the genes will be removed as well.
+        /// 
+        /// It was originally used to make genes with multiple sets of graphics, but it can be used nowadays to "bundle" genes.
+        /// </summary>
         public List<GeneDef> hiddenGenes = [];
-
+        /// <summary>
+        /// All the listed thoughts will be nulled.
+        /// 
+        /// It is suggested to not add too many of these to a gene since they WILL show in the tooltip. Hediffs don't have this issue.
+        /// </summary>
         public List<ThoughtDef> nullsThoughts = null;
 
+        /// <summary>
+        /// Sets what apparel the pawn can wear. Check in the class for more details.
+        /// </summary>
         public ApparelRestrictions apparelRestrictions = null;
 
+        /// <summary>
+        /// Transforms the pawn into a specific xenotype under some conditions.
+        /// Currently used by the hidden Grigori gene to trigger potential Nephilim transformation in hybrid kids.
+        /// </summary>
         public TransformationGene transformGene = null;
+
+        /// <summary>
+        /// Applies a size curve to the age of the pawn. Can be used to change how big they are at different ages.
+        /// </summary>
+        /// 
         public SimpleCurve sizeByAge = null;
+        /// <summary>
+        /// Same as above, but multiplies the size by the curve.
+        /// </summary>
         public SimpleCurve sizeByAgeMult = null;
 
+        /// <summary>
+        /// Works about the same as Rimworld's aptitudes. Let's you add skill-offsets to genes/hediffs/races.
+        /// </summary>
         public List<Aptitude> aptitudes = null;
 
         #region Rendering
+        /// <summary>
+        /// Sets a custom material for the body. Highly versatile.
+        /// </summary>
         public CustomMaterial bodyMaterial = null;
+        /// <summary>
+        /// Sets a custom material for the head. Highly versatile.
+        /// </summary>
         public CustomMaterial headMaterial = null;
+        /// <summary>
+        /// Sets the path(s) of the body. Can be per body type, gender, etc.
+        /// You can for example set a list of paths to be used by male hulks only.
+        /// </summary>
         public AdaptiveGraphicsCollection bodyPaths = [];
+        /// <summary>
+        /// Same as above.
+        /// </summary>
         public AdaptiveGraphicsCollection headPaths = [];
         public bool hideBody = false;
         public bool hideHead = false;
+        /// <summary>
+        /// Makes the pawn consider the pawn female for rendering purposes.
+        /// Useful for compatibility. Despite the name, it also affects the head.
+        /// </summary>
         public bool forceFemaleBody = false;
         #endregion
 
+        /// <summary>
+        /// Set what the pawn can eat. By default assumes human diet.
+        /// </summary>
         public PawnDiet pawnDiet = null;
+        /// <summary>
+        /// If true this will make the race's "PawnDiet" be ignored in favor of other diets.
+        /// 
+        /// </summary>
         public bool pawnDietRacialOverride = false;
 
         #region Birth
+        /// <summary>
+        /// How many babies the pawn will give birth to. If null, it will use normal counts.
+        /// Note that this is better than the vanilla options since it will re-randomize the gene list for each additional
+        /// baby instead of making them clones.
+        /// </summary>
         public List<int> babyBirthCount = null;
+        /// <summary>
+        /// What "practical" age the baby born at. Creatures that give birth to less helpless offspring may want to start at 3.
+        /// Insects that are born fully formed could start at 10, 13, or even 20.
+        /// Consider combining with sizeByAgeMult to make the babies a plausible size.
+        /// </summary>
         public int? babyStartAge = null;
+        /// <summary>
+        /// How fast pregnancy progresses. 1 is normal, 0.5 is half speed, 2 is double speed.
+        /// </summary>
         public float pregnancySpeedMultiplier = 1;
         #endregion
 
-
+        /// <summary>
+        /// Offsets the entire pawn's body up or down.
+        /// </summary>
         public float bodyPosOffset = 0f;
+        /// <summary>
+        /// Offsets the head up or down relative to the body.
+        /// </summary>
         public float headPosMultiplier = 0f; // Actually an offset to the multiplier
         public bool preventDisfigurement = false;
+        /// <summary>
+        /// Lets the pawn walk on VFE's creep. Only works on genes.
+        /// </summary>
         public bool canWalkOnCreep = false;
 
+        /// <summary>
+        /// Makes colonists care less about the pawn's death, and the pawn care less about death in general.
+        /// </summary>
         public bool isDrone = false;
+
+        /// <summary>
+        /// Can hold melee weapons, but will only use natural/bionic attacks.
+        /// </summary>
         public bool forceUnarmed = false;
 
         public bool hideInGenePicker = false;
-        public bool hideInXenotypeUI = false; // Obsolete. Remove this later. Just here for a bit while I update the defs.
+        public bool hideInXenotypeUI = false;
 
+        /// <summary>
+        /// Trigger the soul-consume effect on hit.
+        /// </summary>
         public ConsumeSoul consumeSoulOnHit = null;
 
-        //public bool isMechanical = false;
+        /// <summary>
+        /// Pawn will be considered a ...
+        /// </summary>
         public bool isUnliving = false;
         public bool isDeathlike = false;
         public bool isMechanical = false;
         public bool isBloodfeeder = false;
 
+        /// <summary>
+        /// If set to true the pawn will default to blocking additctions unless white/allowlisted.
+        /// </summary>
         public bool banAddictionsByDefault = false;
 
-
         // Metamorph Stuff.
+
+        /// <summary>
+        /// Target to (possibly) morph to.
+        /// </summary>
         public XenotypeDef metamorphTarget = null;
+        /// <summary>
+        /// Same as above, but for morphing "backwards". Currently only used for juvenlie forms based on age.
+        /// E.g. Queens giving birth to drones.
+        /// </summary>
         public XenotypeDef retromorphTarget = null;
+        /// <summary>
+        /// Trigger Metamorph at this age.
+        /// </summary>
         public int? metamorphAtAge = null;
+        /// <summary>
+        /// Trigger Retromorph if less than this age.
+        /// </summary>
         public int? retromorphUnderAge = null;
         public bool metamorphIfPregnant = false;
         public bool metamorphIfNight = false;
         public bool metamorphIfDay = false;
 
         // Locked Needs.
+        /// <summary>
+        /// Lock a Needbar at a certain level. Often more compatible than just removing them.
+        /// </summary>
         public List<BetterPrerequisites.LockedNeedClass> lockedNeeds;
-        //
 
-        public Shader geneShader = null;
-        public FacialAnimDisabler facialDisabler = null;
 
+        /// <summary>
+        /// Disable Nal's facial animations on the pawn and restore their original head.
+        /// </summary>
         public bool disableFacialAnimations = false;
 
+        /// <summary>
+        /// More granular version of the above. Currently not working after a Nal's update.
+        /// </summary>
+        public FacialAnimDisabler facialDisabler = null;
 
 
         #region Obsolete
         public bool unarmedOnly = false;    // Still plugged in, but the name was kind of bad. Use forceUnarmed instead.
         #endregion
 
-        // The below are only used for races at the moment. They could be ported over, but at the moment they are not
-        // Invoked outside of that context.
         #region Some of these are RACE ONLY. Use elsewhere at your own risk.
+
         #region
+        /// <summary>
+        /// Force-adds these hediffs. Removes when raec is removed.
+        /// </summary>
         public List<HediffDef> forcedHediffs = [];
         #endregion
 
+        /// <summary>
+        /// Force-adds these traits.
+        /// </summary>
         public List<TraitDef> forcedTraits = [];
 
         #region Biotech
+        /// <summary>
+        /// Adds endogenes to the pawn. Ensures they are always present.
+        /// </summary>
         public List<GeneDef> forcedEndogenes = null;
+        /// <summary>
+        /// Same as above, but also removes anything that would overwrite them
+        /// </summary>
         public List<GeneDef> immutableEndogenes = null;
+        /// <summary>
+        /// Adds xenogenes to the pawn. Ensures they are always present.
+        /// </summary>
         public List<GeneDef> forcedXenogenes = null;
         #endregion
 
+        /// <summary>
+        /// Filters (removes) based on filtering settings
+        /// </summary>
         #region White, Black, and Allow-lists.
         public FilterListSet<GeneDef> geneFilters = null;
         public FilterListSet<GeneCategoryDef> geneCategoryFilters = null;
@@ -154,12 +305,12 @@ namespace BigAndSmall
         //public AllowListHolder<ThingDef> allowedFood = null;  // Not yet implemented. Easy enough, just not needed yet.
         #endregion
 
-        public float headPosMultiplierOffset = 0f;
-
-        // These are just for generating pawns. They are most useful on custom races, not on genes/hediffs.
-        // Don't forget that is also inherits the props from "CompProperties_ColorAndFur".
-        // E.g. skinColorOverride, hairColorOverride, etc.
-        public List<GeneDef> randomHairGenes = null;
+        /// <summary>
+        /// These are just for generating pawns. They are most useful on custom races, not on genes/hediffs.
+        /// Don't forget that is also inherits the props from "CompProperties_ColorAndFur".
+        /// 
+        /// Should work even without biotech
+        /// </summary>;
         public List<GeneDef> randomSkinGenes = null;
 
         #region tags

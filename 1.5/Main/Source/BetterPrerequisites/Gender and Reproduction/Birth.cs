@@ -56,7 +56,7 @@ namespace BigAndSmall
             // Get the gene mod extension
             var activeGenes = GeneHelpers.GetAllActiveGenes(geneticMother);
             List<PawnExtension> geneExts = activeGenes
-                    .Where(x => x?.def?.modExtensions != null && x.def.modExtensions.Any(y => y.GetType() == typeof(PawnExtension)))?
+                    .Where(x => x?.def?.modExtensions != null && x.def.modExtensions.Any(y => y is PawnExtension))?
                     .Select(x => x.def.GetModExtension<PawnExtension>()).ToList();
 
             // If there are no gene extensions, just let the regular method run.

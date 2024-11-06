@@ -854,7 +854,7 @@ namespace BigAndSmall
             var otherPawnExts = ModExtHelper.GetAllExtensions<PawnExtension>(pawn, parentBlacklist: [typeof(RaceTracker)]);
             List<PawnExtension> allPawnExts = [..racePawnExts, ..otherPawnExts];
             //List<PawnExtension> geneExts = activeGenes
-            //    .Where(x => x?.def?.modExtensions != null && x.def.modExtensions.Any(y => y.GetType() == typeof(PawnExtension)))?
+            //    .Where(x => x?.def?.modExtensions != null && x.def.modExtensions.Any(y => y is PawnExtension))?
             //    .Select(x => x.def.GetModExtension<PawnExtension>()).ToList();
 
 
