@@ -62,4 +62,7 @@
 
   <BS_StatsReport_BodySize>Multiplier for body size change {0}</BS_StatsReport_BodySize>
 
+  <BS_And>and</BS_And>
+  <BS_With>with</BS_With>
+
 </LanguageData>

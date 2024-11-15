@@ -1,0 +1,128 @@
+<Defs>
+
+  <BigAndSmall.BodyDefFusion>
+    <defName>BS_DefaultFusions</defName>
+
+    <!-- If the pawn gets more organs than the base pawn,
+     walk from the bottom and remove until at a reasonable level.
+     This is intended to avoid issues with characters with organs in strange places
+     getting a bunch of extra of hearts, brains, etc.-->
+    <bodyPartToSkip>
+      <li>Brain</li>
+      <li>Heart</li>
+      <li>Lung</li>
+      <li>Liver</li>
+      <li>Kidney</li>
+      <li>Stomach</li>
+    </bodyPartToSkip>
+
+    <substitutions>
+      <!-- Note that these target only BodyDefs, not ThingDefs. -->
+      <li>
+        <!-- Freely replace with whatever. -->
+        <target isNull="True"/>
+        <bodyDefs>
+          <li MayRequire="RedMattis.BigSmall.Core">BS_Glutton</li>
+        </bodyDefs>
+      </li>
+      <li>
+        <target>BS_FourArmedHuman</target>
+        <bodyDefs>
+          <li MayRequire="RedMattis.BigSmall.Bugs">BS_InsectoidHumanoid_FourArmedBody</li>
+        </bodyDefs>
+      </li>
+    </substitutions>
+
+    <mergableBody>
+      <li>
+        <bodyDef>Human</bodyDef>
+        <thingDef>Human</thingDef>
+        <priority>-100000</priority>
+        <canBeFusionOne>false</canBeFusionOne>
+        <fuse>false</fuse>
+      </li>
+      <li>
+        <bodyDef>BS_FourArmedHuman</bodyDef>
+        <thingDef>BS_HumanFouramed</thingDef>
+        <overrideDefNamer>FourArm</overrideDefNamer>
+        <priority>-100</priority>
+        <prefixLabel>four-armed humanlike</prefixLabel>
+        <suffixLabel>four arms</suffixLabel>
+        <exclusionTags>
+          <li>ExtraArms</li>
+        </exclusionTags>
+      </li>
+      <li>
+        <bodyDef>BS_HumanoidWithTail_Body</bodyDef>
+        <thingDef>BS_HumanoidWithTail</thingDef>
+        <overrideDefNamer>Tailed</overrideDefNamer>
+        <priority>-100</priority>
+        <prefixLabel>tailed humanlike</prefixLabel>
+        <suffixLabel>a tail</suffixLabel>
+        <fuseAll>true</fuseAll>
+        <exclusionTags><li>Tail</li></exclusionTags>
+      </li>
+      <li>
+        <bodyDef>BS_HumanoidWithWings_Body</bodyDef>
+        <thingDef>BS_HumanoidWithWings</thingDef>
+        <overrideDefNamer>Winged</overrideDefNamer>
+        <priority>-100</priority>
+        <prefixLabel>winged humanlike</prefixLabel>
+        <suffixLabel>wings</suffixLabel>
+        <fuseAll>true</fuseAll>
+        <exclusionTags>
+          <li>Wings</li>
+        </exclusionTags>
+      </li>
+      <li>
+        <bodyDef>BS_SnakeHuman</bodyDef>
+        <thingDef>BS_Naga</thingDef>
+        <overrideDefNamer>Snek</overrideDefNamer>
+        <priority>100</priority>
+        <prefixLabel>serpent-like</prefixLabel>
+        <exclusionTags>
+          <li>Tail</li>
+          <li>Abdomen</li>
+        </exclusionTags>
+        <removesParts>
+          <li>Pelvis</li>
+          <li>Leg</li>
+        </removesParts>
+      </li>
+      <li>
+        <bodyDef>BS_SpiderHybrid</bodyDef>
+        <thingDef>BS_SpiderPersonRace</thingDef>
+        <overrideDefNamer>Spooder</overrideDefNamer>
+        <priority>100</priority>
+        <prefixLabel>spider-like</prefixLabel>
+        <exclusionTags>
+          <li>Tail</li>
+          <li>Abdomen</li>
+        </exclusionTags>
+        <removesParts>
+          <li>Pelvis</li>
+        </removesParts>
+      </li>
+    </mergableBody>
+  </BigAndSmall.BodyDefFusion>
+
+  <BigAndSmall.SimilarParts>
+    <defName>Arm</defName>
+    <parts>
+      <!-- Loads as string. No MayRequire needed. -->
+      <li>Arm</li>
+      <li>BS_MechanicalArm</li>
+    </parts>
+  </BigAndSmall.SimilarParts>
+  <BigAndSmall.SimilarParts>
+    <defName>Leg</defName>
+    <parts>
+      <li>Leg</li>
+      <li>BS_MechanicalLeg</li>
+    </parts>
+  </BigAndSmall.SimilarParts>
+  <BigAndSmall.SimilarParts>
+    <defName>Pelvis</defName>
+    <parts> <li>Pelvis</li> </parts>
+  </BigAndSmall.SimilarParts>
+</Defs>

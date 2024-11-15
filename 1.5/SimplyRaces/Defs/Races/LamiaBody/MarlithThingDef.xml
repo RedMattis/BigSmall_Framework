@@ -1,0 +1,45 @@
+<Defs>
+
+  <ThingDef ParentName="Human" BS_Alt="ThingDef_AlienRace">
+    <defName>BS_Marlith</defName>
+    <label>six-armed snake-person</label>
+    <description>A humanlike being with a six arms and a snake tail instead of legs.</description>
+    <statBases>
+      <MarketValue>2000</MarketValue>
+      <MoveSpeed>4.6</MoveSpeed>
+      <Flammability>1.0</Flammability>
+      <ComfyTemperatureMin>16</ComfyTemperatureMin>
+      <ComfyTemperatureMax>26</ComfyTemperatureMax>
+      <LeatherAmount>100</LeatherAmount>
+      <RoyalFavorValue>3</RoyalFavorValue>
+    </statBases>
+    <race>
+      <thinkTreeMain>Humanlike</thinkTreeMain>
+      <thinkTreeConstant>HumanlikeConstant</thinkTreeConstant>
+      <intelligence>Humanlike</intelligence>
+      <makesFootprints>true</makesFootprints>
+      <lifeExpectancy>81</lifeExpectancy>
+      <nameCategory>HumanStandard</nameCategory>
+      <body>BS_Marlith</body>
+      <baseBodySize>1</baseBodySize>
+      <baseHealthScale>1</baseHealthScale>
+      <gestationPeriodDays>18</gestationPeriodDays>
+
+      <useMeatFrom>Human</useMeatFrom>
+      <useLeatherFrom>Cobra</useLeatherFrom>
+      
+      <manhunterOnDamageChance>0.30</manhunterOnDamageChance>
+      <manhunterOnTameFailChance>0.05</manhunterOnTameFailChance>
+
+      <soundMeleeHitPawn>Pawn_Melee_Punch_HitPawn</soundMeleeHitPawn>
+      <soundMeleeHitBuilding>Pawn_Melee_Punch_HitBuilding_Generic</soundMeleeHitBuilding>
+      <soundMeleeMiss>Pawn_Melee_Punch_Miss</soundMeleeMiss>
+      <!--Just for testing.-->
+    </race>
+    <modExtensions>
+      <li Class="BigAndSmall.RaceExtension">
+        <raceHediff>BS_Naga_Race</raceHediff>
+      </li>
+    </modExtensions>
+  </ThingDef>
+</Defs>

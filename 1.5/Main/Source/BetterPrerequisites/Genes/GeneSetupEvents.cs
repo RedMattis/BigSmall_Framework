@@ -23,7 +23,7 @@ namespace BigAndSmall
             {
                 try
                 {
-                    pawn.SwapThingDef(forcedRace, state: true, force: force);
+                    pawn.SwapThingDef(forcedRace, state: true, targetPriority: 0, force: force);
                 }
                 catch (Exception e)
                 {

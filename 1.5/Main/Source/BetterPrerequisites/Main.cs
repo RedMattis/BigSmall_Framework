@@ -1,19 +1,12 @@
 ﻿
-using System.Linq;
-
-using RimWorld;
-using Verse;
-using HarmonyLib;
-using UnityEngine;
-using System.Reflection;
-using System;
-using System.Collections.Generic;
-using System.Runtime;
-using BigAndSmall;
-using System.Diagnostics.Eventing.Reader;
-using RimWorld.BaseGen;
 using BigAndSmall.FilteredLists;
 using BigAndSmall.SimpleCustomRaces;
+using HarmonyLib;
+using RimWorld;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Verse;
 //using VariedBodySizes;
 
 namespace BigAndSmall
@@ -38,6 +31,11 @@ namespace BigAndSmall
             NewFoodCategory.SetupFoodCategories();
             ThoughtDefPatcher.PatchDefs();
 
+            if (BigSmallMod.settings.experimental)
+            {
+                RaceFuser.CreateMergedBodyTypes();
+            }
+
             GlobalSettings.Initialize();
             DefAltNamer.Initialize();
         }
@@ -45,8 +43,8 @@ namespace BigAndSmall
 
     public class DefAltNamer : Def
     {
-        public static Dictionary<GeneDef, RenameGene> geneRenames = DefDatabase<DefAltNamer>.AllDefs
-            .SelectMany(x => x.defRenames
+        public static Dictionary<GeneDef, RenameGene> allGeneRenames = DefDatabase<DefAltNamer>.AllDefs
+            .SelectMany(x => x.geneRenames
                 .Select(y => (y.def, y))).ToDictionary(x => x.Item1, x => x.Item2);
         public abstract class Rename
         {
@@ -58,12 +56,12 @@ namespace BigAndSmall
 
         public static void Initialize()
         {
-            geneRenames = DefDatabase<DefAltNamer>.AllDefs
-                .SelectMany(x => x.defRenames
+            allGeneRenames = DefDatabase<DefAltNamer>.AllDefs
+                .SelectMany(x => x.geneRenames
                     .Select(y => (y.def, y))).ToDictionary(x => x.Item1, x => x.Item2);
         }
 
-        public List<RenameGene> defRenames = [];
+        public List<RenameGene> geneRenames = [];
     }
     public class InfiltratorData
     {

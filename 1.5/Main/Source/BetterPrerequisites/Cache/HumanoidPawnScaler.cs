@@ -327,7 +327,7 @@ namespace BigAndSmall
         public bool approximatelyNoChange = true;
         public bool hideHead = false;
         public bool hideBody = false;
-        public bool forceFemaleBody = false;
+        public Gender? apparentGender = null;
         public string bodyGraphicPath = null;
         public string headGraphicPath = null;
         public CustomMaterial bodyMaterial = null;
@@ -356,6 +356,12 @@ namespace BigAndSmall
         public float headSizeMultiplier = 1;
         public float headPositionMultiplier = 1;
         public float worldspaceOffset = 0;
+
+        /// <summary>
+        /// If populated should always have 4 items, one for each rotation.
+        /// </summary>
+        public List<Vector3> headOffsets = null;
+        public List<Vector3> bodyOffsets = null;
 
         /// <summary>
         /// This one returns true on stuff like bloodless pawns just so they can't have blood drained from them.
@@ -465,7 +471,7 @@ namespace BigAndSmall
 
             Scribe_Values.Look(ref hideHead, "BS_HideHead", false);
             Scribe_Values.Look(ref hideBody, "BS_HideBody", false);
-            Scribe_Values.Look(ref forceFemaleBody, "BS_ForceFemaleBody", false);
+            Scribe_Values.Look(ref apparentGender, "BS_ApparentGender", null);
 
             //Scribe_Deep.Look(ref apparelRestrictions, "BS_ApparelRestrictions");
 
@@ -565,12 +571,12 @@ namespace BigAndSmall
                 }
                 isHumanlike = pawn.RaceProps?.Humanlike == true;
                 originalThing ??= pawn.def;
-                var raceTracker = pawn.GetRaceTracker();
+                var raceTrackers = pawn.GetRaceTrackers();
                 
                 var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
-                var allPawnExt = ModExtHelper.GetAllExtensions<PawnExtension>(pawn);
-                var racePawnExt = pawn.GetRacePawnExtensions();
-                var nonRacePawnExt = ModExtHelper.GetAllExtensions<PawnExtension>(pawn, parentBlacklist: [typeof(RaceTracker)]);
+                var allPawnExt = ModExtHelper.GetAllPawnExtensions(pawn);
+                var racePawnExts = pawn.GetRacePawnExtensions();
+                var nonRacePawnExt = ModExtHelper.GetAllPawnExtensions(pawn, parentBlacklist: [typeof(RaceTracker)]);
 
                 bool hasSizeAffliction = ScalingMethods.CheckForSizeAffliction(pawn);
                 CalculateSize(dStage, allPawnExt, hasSizeAffliction);
@@ -578,9 +584,9 @@ namespace BigAndSmall
                 if (isHumanlike)
                 {
                     pawnDiet = nonRacePawnExt.Where(x => x.pawnDiet != null).Select(x => x.pawnDiet).ToList();
-                    if (racePawnExt.Any(x=>x.pawnDiet != null) && !nonRacePawnExt.Any(x => x.pawnDietRacialOverride))
+                    if (racePawnExts.Any(x=>x.pawnDiet != null) && !nonRacePawnExt.Any(x => x.pawnDietRacialOverride))
                     {
-                        pawnDiet.AddRange(racePawnExt.Where(x=>x.pawnDiet != null).Select(x=>x.pawnDiet));
+                        pawnDiet.AddRange(racePawnExts.Where(x=>x.pawnDiet != null).Select(x=>x.pawnDiet));
                     }
                     var activeGenedefs = activeGenes.Select(x => x.def).ToList();
                     newFoodCatAllow = BSDefLibrary.FoodCategoryDefs.Where(x => x.DefaultAcceptPawn(pawn, activeGenedefs, pawnDiet).Fuse(pawnDiet.Select(y => y.AcceptFoodCategory(x))).ExplicitlyAllowed()).ToList();
@@ -662,7 +668,7 @@ namespace BigAndSmall
                                                   : slowBleeding ? BleedRateState.SlowBleeding
                                                   : BleedRateState.Unchanged;
 
-                if (raceTracker?.CurStage != null && raceTracker.CurStage.totalBleedFactor == 0)
+                if (raceTrackers.Any(x=>x.CurStage is HediffStage hs && hs.totalBleedFactor == 0))
                 {
                     bleedState = BleedRateState.NoBleeding;
                 }
@@ -681,7 +687,8 @@ namespace BigAndSmall
                 isMechanical = allPawnExt.Any(x => x.isMechanical);
                 bool everFertile = activeGenes.Any(x => x.def.defName == "BS_EverFertile");
                 animalFriend = pawn.story?.traits?.allTraits.Any(x => !x.Suppressed && x.def.defName == "BS_AnimalFriend") == true || isMechanical;
-                forceFemaleBody = allPawnExt.Any(x => x.forceFemaleBody);
+
+                GetSetApparentGender(nonRacePawnExt, racePawnExts);
 
                 //facialAnimationDisabled = activeGenes.Any(x => x.def == BSDefs.BS_FacialAnimDisabled);
                 facialAnimationDisabled = allPawnExt.Any(x => x.disableFacialAnimations || x.facialDisabler != null)
@@ -740,13 +747,17 @@ namespace BigAndSmall
                 CalculateHeadOffset();
                 SetWorldOffset();
 
+                headOffsets = allPawnExt.Select(x => x.headDrawData).Where(x => x != null).ToList().GetCombinedOffsetsByRot();
+                bodyOffsets = allPawnExt.Select(x => x.bodyDrawData).Where(x => x != null).ToList().GetCombinedOffsetsByRot();
+
                 // Check if the body size, head size, body offset, or head position has changed. If not set approximatelyNoChange to false.
                 approximatelyNoChange = bodyRenderSize.Approx(1) && headRenderSize.Approx(1) && bodyPosOffset.Approx(0) &&
-                    headPosMultiplier.Approx(1) && headPositionMultiplier.Approx(1) && worldspaceOffset.Approx(0);
+                    headPosMultiplier.Approx(1) && headPositionMultiplier.Approx(1) && worldspaceOffset.Approx(0) &&
+                    headOffsets == null && bodyOffsets == null;
 
                 if (isHumanlike)
                 {
-                    ReevaluateGraphics(nonRacePawnExt, racePawnExt);
+                    ReevaluateGraphics(nonRacePawnExt, racePawnExts);
                 }
 
                 // More stuff should probably be moved here.
@@ -773,43 +784,49 @@ namespace BigAndSmall
             return true;
         }
 
-        public void ReevaluateGraphics(List<PawnExtension> otherExts = null, List<PawnExtension> raceCompProps = null)
+        private Gender? GetSetApparentGender(List<PawnExtension> otherExts = null, List<PawnExtension> raceExts = null)
         {
-            if (otherExts == null || raceCompProps == null)
+            apparentGender = otherExts.FirstOrDefault(x => x.ApparentGender != null)?.ApparentGender ??
+                raceExts.FirstOrDefault(x => x.ApparentGender != null)?.ApparentGender;
+            return apparentGender;
+        }
+
+        public void ReevaluateGraphics(List<PawnExtension> otherExts = null, List<PawnExtension> raceExts = null)
+        {
+            if (otherExts == null || raceExts == null)
             {
                 otherExts = ModExtHelper.GetAllExtensions<PawnExtension>(pawn);
 
-                raceCompProps = pawn.GetRacePawnExtensions();
+                raceExts = pawn.GetRacePawnExtensions();
             }
             headMaterial = null; bodyMaterial = null;
             headGraphicPath = null; bodyGraphicPath = null;
 
+            //apparentGender = allPawnExt.FirstOrDefault(x => x.ApparentGender != null)?.ApparentGender;
+            Gender? apparentGender = GetSetApparentGender(otherExts, raceExts);
 
-            var forceFemale = otherExts.Any(x => x.forceFemaleBody) || raceCompProps.Any(x=>x.forceFemaleBody);
-            Gender? fGender = forceFemale ? Gender.Female : null;
-
-            int pawnRNGSeed = pawn.thingIDNumber + pawn.def.defName.GetHashCode();
+            int pawnRNGSeed = pawn.GetPawnRNGSeed();
 
             var extensionsWithHeadPaths = otherExts.Where(x => x.headPaths.ValidFor(this));
 
             // Only use  race props if there are no other extensions with head paths.
-            extensionsWithHeadPaths = extensionsWithHeadPaths.EnumerableNullOrEmpty() ? raceCompProps.Where(x => x.headPaths.ValidFor(this)) : extensionsWithHeadPaths;
+            extensionsWithHeadPaths = extensionsWithHeadPaths.EnumerableNullOrEmpty() ? raceExts.Where(x => x.headPaths.ValidFor(this)) : extensionsWithHeadPaths;
             PawnExtension headGfxExt = null;
             if (extensionsWithHeadPaths.EnumerableNullOrEmpty() == false)
             {
                 using (new RandBlock(pawnRNGSeed))
                 {
                     headGfxExt = extensionsWithHeadPaths.RandomElement();
-                    headGraphicPath = headGfxExt.headPaths.GetPaths(this, forceGender: fGender).RandomElement();
+                    headGraphicPath = headGfxExt.headPaths.GetPaths(this, forceGender: apparentGender).RandomElement();
                 }
-                
+
                 if (headGfxExt.headMaterial != null) headMaterial = headGfxExt.headMaterial;
             }
 
 
             var extensionsWithBodyPaths = otherExts.Where(x => x.bodyPaths.ValidFor(this));
-            extensionsWithBodyPaths = extensionsWithBodyPaths.EnumerableNullOrEmpty() ? raceCompProps.Where(x => x.bodyPaths.ValidFor(this)) : extensionsWithBodyPaths;
-            
+            extensionsWithBodyPaths = extensionsWithBodyPaths.EnumerableNullOrEmpty() ? raceExts.Where(x => x.bodyPaths.ValidFor(this)) : extensionsWithBodyPaths;
+
             PawnExtension bodyGfxExt = null;
             if (extensionsWithBodyPaths.EnumerableNullOrEmpty() == false)
             {
@@ -820,11 +837,16 @@ namespace BigAndSmall
                 if (headGfxExt != null && headGfxExt.bodyPaths.ValidFor(this)) bodyGfxExt = headGfxExt; // Override with the active headGfxExt if it has valid body paths.
                 using (new RandBlock(pawnRNGSeed))
                 {
-                    bodyGraphicPath = bodyGfxExt.bodyPaths.GetPaths(this, forceGender: fGender).RandomElement();
+                    bodyGraphicPath = bodyGfxExt.bodyPaths.GetPaths(this, forceGender: apparentGender).RandomElement();
                 }
                 if (bodyGfxExt.bodyMaterial != null) bodyMaterial = bodyGfxExt.bodyMaterial;
             }
+
+            // Set body/hair/etc. from mostly other sources.
+            GenderMethods.UpdateBodyHeadAndBeardPostGenderChange(this);
         }
+
+        
 
         public void ScheduleUpdate(int delayTicks)
         {

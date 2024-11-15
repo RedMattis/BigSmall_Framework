@@ -1,0 +1,17 @@
+<Defs>
+  <ThingDef ParentName="Human" BS_Alt="ThingDef_AlienRace">
+    <defName>BS_SpiderPersonRace</defName>
+    <label>spider-person</label>
+    <description>A humanlike being with a spider-like abdomen.</description>
+    <statBases>
+    </statBases>
+    <race>
+      <body>BS_SpiderHybrid</body>
+      <useMeatFrom>Megaspider</useMeatFrom>
+      <useLeatherFrom>Megaspider</useLeatherFrom>
+    </race>
+    <modExtensions>
+      <li Class="BigAndSmall.RaceExtension"> <raceHediff>BS_SpiderPersonRace</raceHediff> </li>
+    </modExtensions>
+  </ThingDef>
+</Defs>

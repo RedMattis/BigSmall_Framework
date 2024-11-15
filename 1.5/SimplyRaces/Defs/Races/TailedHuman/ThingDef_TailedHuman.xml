@@ -1,0 +1,15 @@
+<Defs>
+  <ThingDef ParentName="Human" BS_Alt="ThingDef_AlienRace">
+    <defName>BS_HumanoidWithTail</defName>
+    <label>tailed humanoid</label>
+    <description>The inclusion of a tail statistically improves the sense of balance of the specimen uwu.</description>
+    <statBases>
+    </statBases>
+    <race>
+      <body>BS_HumanoidWithTail_Body</body>
+    </race>
+    <modExtensions>
+      <li Class="BigAndSmall.RaceExtension"> <raceHediff>BS_HumanoidWithTailRace</raceHediff> </li>
+    </modExtensions>
+  </ThingDef>
+</Defs>

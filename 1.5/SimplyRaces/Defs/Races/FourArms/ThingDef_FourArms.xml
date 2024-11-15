@@ -1,0 +1,12 @@
+<Defs>
+  <ThingDef ParentName="Human" BS_Alt="ThingDef_AlienRace">
+    <defName>BS_HumanFouramed</defName>
+    <label>Four Armed Human</label>
+    <description>A humanlike being with a great forearms, no, wait FOUR great arms.</description>
+    <statBases>
+    </statBases>
+    <race>
+      <body>BS_FourArmedHuman</body>
+    </race>
+  </ThingDef>
+</Defs>

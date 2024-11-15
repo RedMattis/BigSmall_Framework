@@ -127,18 +127,21 @@ namespace BigAndSmall
         /// Sets the path(s) of the body. Can be per body type, gender, etc.
         /// You can for example set a list of paths to be used by male hulks only.
         /// </summary>
-        public AdaptiveGraphicsCollection bodyPaths = [];
+        public AdaptivePathPathList bodyPaths = [];
         /// <summary>
         /// Same as above.
         /// </summary>
-        public AdaptiveGraphicsCollection headPaths = [];
+        public AdaptivePathPathList headPaths = [];
         public bool hideBody = false;
         public bool hideHead = false;
         /// <summary>
         /// Makes the pawn consider the pawn female for rendering purposes.
         /// Useful for compatibility. Despite the name, it also affects the head.
         /// </summary>
-        public bool forceFemaleBody = false;
+        private bool forceFemaleBody = false;
+
+        protected Gender? apparentGender = null;
+        public Gender? ApparentGender => forceFemaleBody ? Gender.Female : apparentGender;
         #endregion
 
         /// <summary>
@@ -178,6 +181,13 @@ namespace BigAndSmall
         /// Offsets the head up or down relative to the body.
         /// </summary>
         public float headPosMultiplier = 0f; // Actually an offset to the multiplier
+
+        /// <summary>
+        /// Only the basic offsets will be respected at the moment. Supporting all is a performance hit.
+        /// </summary>
+        public BSDrawData headDrawData = null;
+        public BSDrawData bodyDrawData = null;
+
         public bool preventDisfigurement = false;
         /// <summary>
         /// Lets the pawn walk on VFE's creep. Only works on genes.
@@ -312,10 +322,11 @@ namespace BigAndSmall
         /// Should work even without biotech
         /// </summary>;
         public List<GeneDef> randomSkinGenes = null;
+        public List<GeneDef> randomHairGenes = null;
 
         #region tags
 
-        
+
         #endregion
         #endregion
 

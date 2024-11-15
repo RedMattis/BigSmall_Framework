@@ -154,11 +154,11 @@ namespace BigAndSmall
         {
             if (added)
             {
-                Gene_PostAddPatch.Postfix(gene);
+                NotifyGenesChanges.Gene_PostAddPatch(gene);
             }
             else
             {
-                Gene_PostRemovePatch.Postfix(gene);
+                NotifyGenesChanges.Gene_PostRemovePatch(gene);
             }
         }
 

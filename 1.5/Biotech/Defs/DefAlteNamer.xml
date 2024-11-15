@@ -1,7 +1,7 @@
 <Defs>
   <BigAndSmall.DefAltNamer>
-    <defName>BS_DefaultRenamer</defName>
-    <defRenames>
+    <defName>BS_GeneRenamer</defName>
+    <geneRenames>
       <li MayRequire="RedMattis.BigSmall.Core">
         <def>BS_PsychicWarrior</def>
         <labelBloodfeeder>archite control</labelBloodfeeder>
@@ -116,6 +116,6 @@
         <def>BS_NaturalArmor_Great</def>
         <labelMechanoid>nanomanifold materials</labelMechanoid>
       </li>
-    </defRenames>
+    </geneRenames>
   </BigAndSmall.DefAltNamer>
 </Defs>

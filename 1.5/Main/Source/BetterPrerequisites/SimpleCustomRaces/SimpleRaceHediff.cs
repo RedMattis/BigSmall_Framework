@@ -12,15 +12,9 @@ using Verse;
 
 namespace BigAndSmall
 {
-    public static class RaceDebugActions
-    {
-        
-    }
-    
-
     public class RaceTracker : HediffWithComps
     {
-        public override bool Visible => true; //base.Visible;
+        public override bool Visible => true;
 
         public override void PostAdd(DamageInfo? info)
         {

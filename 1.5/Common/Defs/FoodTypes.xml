@@ -42,6 +42,7 @@
       </whitelist>
     </foodFilters>
     <newFoodCategoryFilters>
+      <!-- Also ONLY the listed... -->
       <whitelist>
         <li>BS_ChemfuelLike</li>
       </whitelist>
@@ -53,12 +54,8 @@
     <alwaysAcceptProcessed>true</alwaysAcceptProcessed>
     <alwaysAcceptNonIngestible>true</alwaysAcceptNonIngestible>
     <alwaysAcceptNutrientPaste>true</alwaysAcceptNutrientPaste>
-    <!-- <foodFilters>
-      <acceptlist>
-        <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_AndroidFuel</li>
-      </acceptlist>
-    </foodFilters> -->
     <newFoodCategoryFilters>
+      <!-- Also everything normal, but also allows the normally restricted... -->
       <allowlist>
         <li>BS_ChemfuelLike</li>
       </allowlist>

@@ -14,13 +14,20 @@ namespace BigAndSmall
 {
     public static partial class RaceHelper
     {
-        public static RaceTracker GetRaceTracker(this Pawn pawn)
+        public static List<RaceTracker> GetRaceTrackers(this Pawn pawn)
         {
-            return pawn.health.hediffSet.hediffs.FirstOrDefault(h => h is RaceTracker) as RaceTracker;
+            return pawn.health.hediffSet.hediffs.Where(h => h is RaceTracker).Cast<RaceTracker>().ToList();
         }
-        private static HediffComp_Race GetRaceComp(this Pawn pawn)
+        public static List<RaceExtension> GetRaceExtensions(this ThingDef def)
         {
-            return pawn.GetRaceTracker()?.TryGetComp<HediffComp_Race>();
+            return def.ExtensionsOnDef<RaceExtension, ThingDef>();
+        }
+
+        private static List<HediffComp_Race> GetRaceComps(this Pawn pawn)
+        {
+            return pawn.GetRaceTrackers()
+                .Select(x => x.TryGetComp<HediffComp_Race>() ?? null)
+                .Where(x=>x!=null).ToList();
         }
         public static List<PawnExtension> GetRacePawnExtensions(this Pawn pawn)
         {
@@ -36,13 +43,11 @@ namespace BigAndSmall
             }
         }
 
-        public static CompProperties_Race GetRaceCompProps(this Pawn pawn)
+        public static List<CompProperties_Race> GetRaceCompProps(this Pawn pawn)
         {
-            if (GetRaceComp(pawn)?.Props is CompProperties_Race raceCompProps)
-            {
-                return raceCompProps;
-            }
-            else return CompProperties_Race.defaultMissingProps;
+            var raceCompPropList = GetRaceComps(pawn).Where(x => x.Props is not null).Select(x => x.Props).ToList();
+            if (raceCompPropList.Any()) { return raceCompPropList; }
+            return [CompProperties_Race.defaultMissingProps];
         }
     }
 
@@ -68,7 +73,7 @@ namespace BigAndSmall
         {
             //if (pawn.GetRacePawnExtension().randomSkinGenes == null) return;
             List<GeneDef> skinGenes = [];
-            foreach (var skinGeneSet in ModExtHelper.GetAllPawnExtensions(pawn)
+            foreach (var skinGeneSet in pawn.GetAllPawnExtensions()
                 .Where(x => x.randomSkinGenes != null).Select(x=>x.randomSkinGenes))
             {
                 skinGenes.AddRange(skinGeneSet);
@@ -103,6 +108,39 @@ namespace BigAndSmall
         }
     }
 
+    public static class CompProperties_Race_Extensions
+    {
+        public static void EnsureValidBodyType(this List<CompProperties_Race> comps, BSCache cache)
+        {
+            var pawn = cache.pawn;
+            var gender = cache.apparentGender ?? pawn.gender;
+            List<BodyTypeDef> validBodyTypeDefs = comps.SelectMany(x => x.BodyTypeDefs(gender)).ToList();
+            if (validBodyTypeDefs.Any() && validBodyTypeDefs.Contains(pawn.story?.bodyType) == false)
+            {
+                using (new RandBlock(pawn.GetPawnRNGSeed()))
+                {
+                    pawn.story.bodyType = validBodyTypeDefs.RandomElement();
+                    Log.Message($"Changed body type to {pawn.story.bodyType.defName}. Valid options were {string.Join(", ", validBodyTypeDefs.Select(x => x?.defName))}.");
+                }
+            }
+        }
+
+        public static void EnsureValidHeadType(this List<CompProperties_Race> comps, BSCache cache)
+        {
+            var pawn = cache.pawn;
+            var gender = cache.apparentGender ?? pawn.gender;
+            List<HeadTypeDef> validHeadTypeDefs = comps.SelectMany(x => x.HeadTypeDefs(gender)).ToList();
+            if (validHeadTypeDefs.Any() && validHeadTypeDefs.Contains(pawn.story?.headType) == false)
+            {
+                using (new RandBlock(pawn.GetPawnRNGSeed()))
+                {
+                    pawn.story.headType = validHeadTypeDefs.RandomElement();
+                    Log.Message($"Changed head type to {pawn.story.headType.defName}. Valid options were {string.Join(", ", validHeadTypeDefs.Select(x => x?.defName))}.");
+                }
+            }
+        }
+    }
+
     public class CompProperties_Race : CompProperties_ColorAndFur
     {
         public CompProperties_Race()
@@ -119,22 +157,6 @@ namespace BigAndSmall
         /// If you want genes that change the body shape to work then this is advised.
         /// </summary>
         public bool canSwapAwayFrom = true;
-
-
-        public void EnsureCorrectBodyType(Pawn pawn)
-        {
-            if (BodyTypeDef(pawn) != null && pawn.story.bodyType != BodyTypeDef(pawn))
-            {
-                pawn.story.bodyType = BodyTypeDef(pawn);
-            }
-        }
-        public void EnsureCorrectHeadType(Pawn pawn)
-        {
-            if (HeadTypeDef(pawn) != null && pawn.story.headType != HeadTypeDef(pawn))
-            {
-                pawn.story.headType = HeadTypeDef(pawn);
-            }
-        }
     }
 
     //public class BaseRaceOverrides

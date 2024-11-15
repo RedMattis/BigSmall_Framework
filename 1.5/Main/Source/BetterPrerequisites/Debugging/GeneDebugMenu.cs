@@ -5,6 +5,7 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -33,7 +34,25 @@ namespace BigAndSmall.Debugging
 
             List<FloatMenuOption> list =
             [
-                
+                new FloatMenuOption("Force-Set RaceDef", delegate
+                {
+                    List<DebugMenuOption> list = [];
+                    foreach (var def in DefDatabase<ThingDef>.AllDefs.Where(x => x?.race?.intelligence == Intelligence.Humanlike && !x.IsCorpse))
+                    {
+                        list.Add(new DebugMenuOption(def.defName + " (force)", DebugMenuOptionMode.Action, delegate
+                        {
+                            RaceMorpher.SwapThingDef(pawn, def, true, targetPriority: 999, force: true, permitFusion:false);
+                        }));
+                    }
+                    foreach (var def in DefDatabase<ThingDef>.AllDefs.Where(x => x?.race?.intelligence == Intelligence.Humanlike && !x.IsCorpse))
+                    {
+                        list.Add(new DebugMenuOption(def.defName, DebugMenuOptionMode.Action, delegate
+                        {
+                            RaceMorpher.SwapThingDef(pawn, def, true, targetPriority: 100, force: false);
+                        }));
+                    }
+                    Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
+                }),
                 new FloatMenuOption("Set to exact xenotype (also sets race)", delegate
                 {
                     List<DebugMenuOption> xenotypeLister = [];
@@ -71,7 +90,7 @@ namespace BigAndSmall.Debugging
 
                 new FloatMenuOption("Reapply Genes", delegate
                 {
-                    List<DebugMenuOption> xenotypeLister = [];
+                    //List<DebugMenuOption> xenotypeLister = [];
                     foreach (XenotypeDef allDef in DefDatabase<XenotypeDef>.AllDefs)
                     {
                         var endoGeneDefs = pawn.genes.Endogenes.Select(g => g.def).ToList();
@@ -87,7 +106,7 @@ namespace BigAndSmall.Debugging
                         }
 
                     }
-                    Find.WindowStack.Add(new Dialog_DebugOptionListLister(xenotypeLister));
+                    //Find.WindowStack.Add(new Dialog_DebugOptionListLister(xenotypeLister));
                 }),
 
                 new FloatMenuOption("Remove overriden genes", delegate
@@ -119,7 +138,7 @@ namespace BigAndSmall.Debugging
 
                 new FloatMenuOption("Discombobulate", delegate
                 {
-                    Discombobulator.Discombobulate(pawn);
+                    Discombobulator.Discombobulate(pawn, addComa:false);
                 }),
 
                 new FloatMenuOption("Set to random xenotype", delegate

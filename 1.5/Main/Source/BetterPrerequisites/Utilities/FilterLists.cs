@@ -1,13 +1,10 @@
-﻿using HarmonyLib;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
 using UnityEngine;
 using Verse;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace BigAndSmall
 {
@@ -50,13 +47,13 @@ namespace BigAndSmall
                 {
                     return a == b;
                 }
-                if (a is string && b is string)
+                if (a is string aStr && b is string bStr)
                 {
-                    return a == b;
+                    return string.Equals(aStr, bStr, StringComparison.OrdinalIgnoreCase);
                 }
-                string strA = (a is Def aDef) ? aDef.defName : a.ToString();
-                string strB = (b is Def bDef) ? bDef.defName : b.ToString();
-                return strA.Contains(strB);
+                string aAsStr = (a is Def aDef) ? aDef.defName : a.ToString();
+                string bAsStr = (b is Def bDef) ? bDef.defName : b.ToString();
+                return string.Equals(aAsStr, bAsStr, StringComparison.OrdinalIgnoreCase);
             }
             public FilterResult GetFilterResult(T item)
             {
@@ -72,7 +69,6 @@ namespace BigAndSmall
             }
 
             public bool AnyMatch(T item) => this.Any(t => Match(item, t));
-
 
             public void LoadDataFromXmlCustom(XmlNode xmlRoot)
             {
@@ -142,22 +138,22 @@ namespace BigAndSmall
             // From single item.
             public static FilterResult GetFilterResult<T>(this IEnumerable<FilterList<T>> filterList, T item)
             {
-                return filterList.Select(x => x.GetFilterResult(item)).Fuse();
+                return filterList.AsParallel().Select(x => x.GetFilterResult(item)).Fuse();
             }
 
             public static IEnumerable<FilterResult> GetFilterResults<T>(this IEnumerable<FilterList<T>> filterList, T item)
             {
-                return filterList.Select(x => x.GetFilterResult(item));
+                return filterList.AsParallel().Select(x => x.GetFilterResult(item));
             }
 
             // From List of items.
             public static IEnumerable<FilterResult> GetFilterResultsFromItemList<T>(this IEnumerable<FilterList<T>> filterList, List<T> itemList)
             {
-                return filterList.SelectMany(x => itemList.Select(y => x.GetFilterResult(y)));
+                return filterList.SelectMany(x => itemList.AsParallel().Select(y => x.GetFilterResult(y)));
             }
             public static FilterResult GetFilterResultFromItemList<T>(this IEnumerable<FilterList<T>> filterList, List<T> itemList)
             {
-                return filterList.SelectMany(x=> itemList.Select(y => x.GetFilterResult(y))).Fuse(); 
+                return filterList.SelectMany(x=> itemList.AsParallel().Select(y => x.GetFilterResult(y))).Fuse(); 
             }
 
             // Status Check.
@@ -199,6 +195,7 @@ namespace BigAndSmall
                     banlist = ListHelpers.UnionNullableLists(listOne.banlist, listTwo.banlist) as Banlist<T>,
                     acceptlist = ListHelpers.UnionNullableLists(listOne.acceptlist, listTwo.acceptlist) as AcceptList<T>
                 };
+
                 return newList;
             }
             public static FilterListSet<T> MergeFilters<T>(this IEnumerable<FilterListSet<T>> lists) =>
@@ -216,15 +213,21 @@ namespace BigAndSmall
 
             protected List<FilterList<T>> items = null;
             public List<FilterList<T>> Items => items ??= new List<FilterList<T>> { allowlist, whitelist, blacklist, banlist, acceptlist }.Where(x => x != null).ToList();
-            public bool IsEmpty() => Items.Count == 0;
+            public bool IsEmpty() => !Items.Any();
+            public bool AnyItems() => Items.Any();
 
             public IEnumerable<FilterResult> GetFilterResults(T item) => Items.GetFilterResults(item);
             public FilterResult GetFilterResult(T item) => Items.GetFilterResult(item);
 
-            public IEnumerable<FilterResult> GetFilterResultsFromItemList(List<T> itemList) => Items.GetFilterResultsFromItemList(itemList);
             public FilterResult GetFilterResultFromItemList(List<T> itemList) => Items.GetFilterResultFromItemList(itemList);
 
-            
+            public List<T> GetAllItermsInAnyFilter() => Items.SelectMany(x => x).ToList();
+
+            public bool AnyContains(T obj)
+            {
+                return Items.Any(x => x.AnyMatch(obj));
+            }
+
 
             public void LoadDataFromXmlCustom(XmlNode xmlRoot)
             {

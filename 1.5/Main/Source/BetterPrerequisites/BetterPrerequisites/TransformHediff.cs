@@ -17,18 +17,29 @@ namespace BetterPrerequisites
         public FurDef furskinOverride = null;
         public bool skinIsHairColor = false;
         
-        public BodyTypeDef bodyDefOverride = null;
-        public BodyTypeDef bodyDefOverride_Female = null;
-        public HeadTypeDef headDefOverride = null;
-        public HeadTypeDef headDefOverride_Female = null;
+        protected BodyTypeDef bodyDefOverride = null;
+        protected BodyTypeDef bodyDefOverride_Female = null;
+        protected List<BodyTypeDef> bodyDefOverrideList = [];
+        protected List<BodyTypeDef> bodyDefOverrideList_Female = [];
+        
+        protected HeadTypeDef headDefOverride = null;
+        protected HeadTypeDef headDefOverride_Female = null;
+        protected List<HeadTypeDef> headDefOverrideList = [];
+        protected List<HeadTypeDef> headDefOverrideList_Female = [];
+
         public bool disableFacialAnims = false;
         public bool disableBeards = false;
         public bool disableHair = false;
         public bool hideHead = false;
         public bool hideBody = false;
 
-        public BodyTypeDef BodyTypeDef(Pawn pawn) => (pawn.gender == Gender.Female && bodyDefOverride_Female != null) ? bodyDefOverride_Female : bodyDefOverride;
-        public HeadTypeDef HeadTypeDef(Pawn pawn) => (pawn.gender == Gender.Female && headDefOverride_Female != null) ? headDefOverride_Female : headDefOverride;
+        private List<BodyTypeDef> BodyDefs => bodyDefOverride == null ? bodyDefOverrideList : [.. bodyDefOverrideList, bodyDefOverride];
+        private List<BodyTypeDef> BodyDefsFemale => bodyDefOverride_Female == null ? bodyDefOverrideList_Female : [.. bodyDefOverrideList_Female, bodyDefOverride_Female];
+        private List<HeadTypeDef> HeadDefs => headDefOverride == null ? headDefOverrideList : [.. headDefOverrideList, headDefOverride];
+        private List<HeadTypeDef> HeadDefsFemale => headDefOverride_Female == null ? headDefOverrideList_Female : [.. headDefOverrideList_Female, headDefOverride_Female];
+
+        public List<BodyTypeDef> BodyTypeDefs(Gender targetGender) => (targetGender == Gender.Female && BodyDefsFemale.Any()) ? BodyDefsFemale : BodyDefs;
+        public List<HeadTypeDef> HeadTypeDefs(Gender targetGender) => (targetGender == Gender.Female && HeadDefsFemale.Any()) ? HeadDefsFemale : HeadDefs;
 
 
         // If the body is hidden, we simply set the colors to fully transparent
@@ -62,6 +73,7 @@ namespace BetterPrerequisites
                     cache.savedHeadDef = pawn.story?.headType?.defName;
                     cache.savedBeardDef = pawn.style?.beardDef?.defName;
                 }
+                var targetGender = cache.apparentGender ?? pawn.gender;
                 if (CRProps.HairColorOverride != null)
                 {
                     if (cache.randomPickHairColor == null || cache.randomPickHairColor >= CRProps.HairColorOverride.Count - 1)
@@ -89,13 +101,21 @@ namespace BetterPrerequisites
                     }
                     pawn.story.skinColorOverride = CRProps.SkinColorOverride[cache.randomPickSkinColor.Value];
                 }
-                if (CRProps.BodyTypeDef(pawn) != null)
+                var bodyTypes = CRProps.BodyTypeDefs(targetGender);
+                if (pawn.story != null && bodyTypes.Any() && !bodyTypes.Contains(pawn.story.bodyType))
                 {
-                    pawn.story.bodyType = CRProps.BodyTypeDef(pawn);
+                    using (new RandBlock(pawn.thingIDNumber))
+                    {
+                        pawn.story.bodyType = bodyTypes.RandomElement();
+                    }
                 }
-                if (CRProps.HeadTypeDef(pawn) != null)
+                var headTypes = CRProps.HeadTypeDefs(targetGender);
+                if (pawn.story != null && headTypes.Any() && !headTypes.Contains(pawn.story.headType))
                 {
-                    pawn.story.headType = CRProps.HeadTypeDef(pawn);
+                    using (new RandBlock(pawn.thingIDNumber))
+                    {
+                        pawn.story.headType = headTypes.RandomElement();
+                    }
                 }
                 
                 if (CRProps.furskinOverride != null)

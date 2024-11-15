@@ -221,7 +221,7 @@ namespace BetterPrerequisites
             if (GeneExt != null && GeneExt.thingDefSwap != null)
             {
                 GeneHelpers.CheckForOverrides(pawn);
-                RaceMorpher.SwapThingDef(pawn, GeneExt.thingDefSwap, state, source:this);
+                RaceMorpher.SwapThingDef(pawn, GeneExt.thingDefSwap, state, targetPriority:0, source:this);
             }
         }
         

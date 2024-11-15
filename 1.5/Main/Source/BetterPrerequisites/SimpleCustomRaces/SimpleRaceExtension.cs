@@ -11,16 +11,62 @@ using Verse;
 
 namespace BigAndSmall
 {
+
     public class RaceExtension : DefModExtension
     {
         // Can be used to whitelist/blacklist recipes.
         // Note that they still need to have the valid parts.
 
 
-        public HediffDef raceHediff = null;
-        //public SimpleRaceProperties properties = new();
-        //public List<Aptitude> aptitudes = [];
-        //public List<PawnRenderNodeProperties> renderNodeProperties = [];
+        protected HediffDef raceHediff = null;
+
+        // The list version was made for "merged" races, but either can be used.
+        private List<HediffDef> raceHediffList = [];
+        public float? femaleGenderChance = null;
+
+        public List<ThingDef> isFusionOf = null;
+
+        //public List<HediffDef> RaceHediffs => raceHediff == null ? raceHediffList : [.. raceHediffList, raceHediff];
+
+        // Get Set
+        public List<HediffDef> RaceHediffs
+        {
+            get => raceHediff == null ? raceHediffList : [.. raceHediffList, raceHediff];
+            private set
+            {
+                if (value.Count > 0)
+                {
+                    raceHediff = null;
+                    raceHediffList = value;
+                }
+                else
+                {
+                    raceHediff = null;
+                    raceHediffList = [];
+                }
+            }
+        }
+
+        public List<PawnExtension> PawnExtensionOnRace => ModExtHelper.ExtensionsOnDefList<PawnExtension, HediffDef>(RaceHediffs);
+
+        // Merge with FilterListSet<T> MergeFilters<T>'s extension methods.
+        public FilterListSet<RecipeDef> SurgeryRecipes => PawnExtensionOnRace
+            .Where(pe => pe.surgeryRecipes != null)
+            .Select(pe => pe.surgeryRecipes)
+            .Aggregate(new FilterListSet<RecipeDef>(), (acc, x) => acc.MergeFilters(x));
+        //.SelectMany(pe => pe.surgeryRecipes).ToList();
+
+        public RaceExtension() { }
+        public RaceExtension(List<RaceExtension> sources)
+        {
+            if (sources.Count > 0)
+            {
+                RaceHediffs = sources.Where(other=>other.RaceHediffs != null).SelectMany(other => other.RaceHediffs).ToList();
+                
+                var fGenderChance = sources.Where(other => other.femaleGenderChance != null).Select(other => other.femaleGenderChance).ToList();
+                if (fGenderChance.Count > 0) { femaleGenderChance = fGenderChance.Average(); }
+            }
+        }
 
         public void ApplyTrackerIfMissing(Pawn pawn)
         {
@@ -31,31 +77,42 @@ namespace BigAndSmall
         }
         public bool TrackerMissing(Pawn pawn)
         {
+            var raceHediffList = new List<HediffDef>();
+            foreach (var raceExtensions in pawn.def.GetRaceExtensions())
+            {
+                raceHediffList.AddRange(raceExtensions.RaceHediffs);
+            }
+            if (raceHediffList.Count == 0) return false;
+
+            return raceHediffList.Any(rh => !pawn.health.hediffSet.HasHediff(rh));
+
             // Check if the raceHediff is not null and if the pawn has the raceHediff.
-            return raceHediff != null && !pawn.health.hediffSet.HasHediff(raceHediff);
+            //return raceHediff != null && !pawn.health.hediffSet.HasHediff(raceHediff);
         }
         private void ApplyHediffToPawn(Pawn pawn)
         {
-            if (raceHediff != null)
+            if (RaceHediffs.Count > 0)
             {
                 // Remove all other RaceTracker Hediffs
                 RemoveOldRaceTrackers(pawn);
 
                 // Ensure the raceDef is of the "RaceTracker" class or a subclass thereof.
-                if (raceHediff.hediffClass == typeof(RaceTracker))
+                foreach (var raceHediff in RaceHediffs)
                 {
+                    if (raceHediff.hediffClass == typeof(RaceTracker))
+                    {
+                        pawn.health.AddHediff(raceHediff);
+                    }
+                    else
+                    {
+                        Log.Error($"{pawn}'s raceDef needs to be a {nameof(RaceTracker)} or subclass thereof.");
+                    }
+                    // Ensure the Hediff has a RaceCompProps component
+                    if (raceHediff.HasComp(typeof(HediffComp_Race))) { }
+                    else { Log.Error($"{pawn}'s raceDef needs to have a {nameof(HediffComp_Race)} component."); }
+
                     pawn.health.AddHediff(raceHediff);
                 }
-                else
-                {
-                    Log.Error($"{pawn}'s raceDef needs to be a {nameof(RaceTracker)} or subclass thereof.");
-                }
-
-                // Ensure the Hediff has a RaceCompProps component
-                if (raceHediff.HasComp(typeof(HediffComp_Race))) { }
-                else { Log.Error($"{pawn}'s raceDef needs to have a {nameof(HediffComp_Race)} component."); }
-
-                pawn.health.AddHediff(raceHediff);
             }
             else
             {
@@ -63,14 +120,14 @@ namespace BigAndSmall
             }
         }
 
-        public void SwapToThisRace(Pawn pawn, bool force = false)
-        {
-            if (raceHediff != null)
-            {
-                RaceMorpher.SwapThingDef(pawn, pawn.def, false, force: force);
-            }
-            else { Log.Error($"{pawn} has a BigAndSmall.RaceExtension without an associated raceDef!"); }
-        }
+        //public void SwapToThisRace(Pawn pawn, bool force = false)
+        //{
+        //    if (RaceHediffs.Count > 0)
+        //    {
+        //        RaceMorpher.SwapThingDef(pawn, pawn.def, false, force: force, priority: 100);
+        //    }
+        //    else { Log.Error($"{pawn} has a BigAndSmall.RaceExtension without an associated raceDef!"); }
+        //}
 
         public static void RemoveOldRaceTrackers(Pawn pawn)
         {

@@ -13,7 +13,7 @@ namespace BigAndSmall
 {
     public partial class BSCache : IExposable, ICacheable
     {
-        private void SimpleRaceUpdate(List<PawnExtension> raceExts, List<PawnExtension> otherPawnExt, CompProperties_Race raceCompProps)
+        private void SimpleRaceUpdate(List<PawnExtension> raceExts, List<PawnExtension> otherPawnExt, List<CompProperties_Race> raceCompProps)
         {
 
             List<PawnExtension> allExt = [.. raceExts, .. otherPawnExt];
@@ -22,8 +22,8 @@ namespace BigAndSmall
             ProcessRaceTraitRequirements(raceExts);
             ProcessRaceHediffRequirements(raceExts);
             ProcessHediffsToRemove(allExt);
-            raceCompProps.EnsureCorrectBodyType(pawn);
-            raceCompProps.EnsureCorrectHeadType(pawn);
+            raceCompProps.EnsureValidBodyType(this);
+            raceCompProps.EnsureValidHeadType(this);
         }
 
         private void ProcessRaceGeneRequirements(List<PawnExtension> raceExts)

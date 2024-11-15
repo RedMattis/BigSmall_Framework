@@ -26,14 +26,17 @@ namespace BigAndSmall.Debugging
                 {
                     foreach (Pawn pawn in Find.CurrentMap.thingGrid.ThingsAt(UI.MouseCell()).OfType<Pawn>())
                     {
-                        RaceMorpher.SwapThingDef(pawn, def, true, force: true);
+                        RaceMorpher.SwapThingDef(pawn, def, true, targetPriority: 999, force: true, permitFusion:false);
                     }
                 }));
+            }
+            foreach (var def in DefDatabase<ThingDef>.AllDefs.Where(x => x?.race?.intelligence == Intelligence.Humanlike && !x.IsCorpse))
+            {
                 list.Add(new DebugActionNode(def.defName, DebugActionType.ToolMap, delegate
                 {
                     foreach (Pawn pawn in Find.CurrentMap.thingGrid.ThingsAt(UI.MouseCell()).OfType<Pawn>())
                     {
-                        RaceMorpher.SwapThingDef(pawn, def, true, force: false);
+                        RaceMorpher.SwapThingDef(pawn, def, true, targetPriority: 100, force: false);
                     }
                 }));
             }

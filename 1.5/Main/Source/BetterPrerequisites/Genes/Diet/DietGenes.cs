@@ -213,7 +213,8 @@ namespace BigAndSmall
 
             if (foodFilters != null)
             {
-                result = result.Fuse(foodFilters.GetFilterResult(foodDef));
+                var filterResult = foodFilters.GetFilterResult(foodDef);
+                result = result.Fuse(filterResult);
             }
             return result;
         }

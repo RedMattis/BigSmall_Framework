@@ -99,6 +99,9 @@ namespace BigAndSmall
                 settings.ResetToDefault();
             }
 
+            listStd.Label("BS_ActivateExperimental".Translate().AsTipTitle());
+            CreateSettingCheckbox(listStd, "BS_BodyDefFusions".Translate(), ref settings.experimental);
+            listStd.GapLine();
 
             listStd.Label("BS_GenesSpecific".Translate().AsTipTitle());
             CreateSettingCheckbox(listStd, "BS_DoDefGeneration".Translate(), ref settings.generateDefs);
@@ -155,6 +158,9 @@ namespace BigAndSmall
         private static readonly bool defaultGenerateDefs = true;
         public bool generateDefs = defaultGenerateDefs;
 
+        private static readonly bool defaultExperimental = true;
+        public bool experimental = defaultExperimental;
+
         private static readonly float defaultVisualLargerMult = 1f;
         public float visualLargerMult = defaultVisualLargerMult;
         
@@ -208,6 +214,7 @@ namespace BigAndSmall
 
         public override void ExposeData()
         {
+            Scribe_Values.Look(ref experimental, "experimental", defaultExperimental);
             Scribe_Values.Look(ref generateDefs, "generateDefs", defaultGenerateDefs);
             Scribe_Values.Look(ref visualLargerMult, "visualLargerMult", defaultVisualLargerMult);
             Scribe_Values.Look(ref visualSmallerMult, "visualSmallerMult", defaultVisualSmallerMult);

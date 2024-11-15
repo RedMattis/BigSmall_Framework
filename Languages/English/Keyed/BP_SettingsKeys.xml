@@ -33,4 +33,8 @@
   <BS_PreventUndead>Prevent random undead</BS_PreventUndead>
   <BS_InflitratorChance>Chance of infiltrators</BS_InflitratorChance>
   <BS_InflitratorRaidChance>Chance of infiltrator raid</BS_InflitratorRaidChance>
+
+  <!-- Experimental -->
+  <BS_ActivateExperimental>Experimental Features (Require Restart)</BS_ActivateExperimental>
+  <BS_BodyDefFusions>Dynamically generated races</BS_BodyDefFusions>
 </LanguageData>

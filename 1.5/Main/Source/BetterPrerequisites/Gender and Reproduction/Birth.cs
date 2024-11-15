@@ -55,18 +55,16 @@ namespace BigAndSmall
             }
             // Get the gene mod extension
             var activeGenes = GeneHelpers.GetAllActiveGenes(geneticMother);
-            List<PawnExtension> geneExts = activeGenes
-                    .Where(x => x?.def?.modExtensions != null && x.def.modExtensions.Any(y => y is PawnExtension))?
-                    .Select(x => x.def.GetModExtension<PawnExtension>()).ToList();
+            var pawnExtensions = ModExtHelper.GetAllPawnExtensions(geneticMother).ToList();
 
             // If there are no gene extensions, just let the regular method run.
-            if (geneExts == null || geneExts.Count == 0)
+            if (pawnExtensions == null || pawnExtensions.Count == 0)
             {
                 return true;
             }
 
             // Check if the mother has the gene that makes her give birth to multiple children (babyBirthCount).
-            List<int> babyCountList = geneExts.FirstOrDefault(x => x.babyBirthCount != null)?.babyBirthCount;
+            List<int> babyCountList = pawnExtensions.FirstOrDefault(x => x.babyBirthCount != null)?.babyBirthCount;
             int babiesToSpawn = 1;
             if (babyCountList != null)
             {
@@ -75,7 +73,7 @@ namespace BigAndSmall
 
             disableBirthPatch = true;
 
-            babyStartAge = geneExts.FirstOrDefault(x => x.babyStartAge != null)?.babyStartAge ?? null;
+            babyStartAge = pawnExtensions.FirstOrDefault(x => x.babyStartAge != null)?.babyStartAge ?? null;
 
             parents = new List<Pawn> { geneticMother, father }.Where(x=>x != null).ToList();
             for (int i = 0; i < babiesToSpawn; i++)

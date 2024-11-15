@@ -32,7 +32,7 @@ namespace BigAndSmall
 
             BigAndSmallCache.queuedJobs.Enqueue( new Action(() =>
             {
-                RaceMorpher.SwapThingDef(parent.pawn, Props.swapTarget, true, force: true);
+                RaceMorpher.SwapThingDef(parent.pawn, Props.swapTarget, true, force: true, targetPriority: 100);
             }));
             
         }
@@ -45,9 +45,16 @@ namespace BigAndSmall
 
     public static class RaceMorpher
     {
+        public const int forcePriority = 9001;
+        public const int irremovablePriority = 900;
+        public const int withoutSourcePriority = 200; // Means it is probably from surgery or something. High priority.
+        public const int hediffPriority = 100;
+        public const int genePriority = 0;
+        public const int racePriority = -100;
+        public const int inactiveGenePriority = -200;
         public static Dictionary<Pawn, List<Hediff>> hediffsToReapply = [];
         public static bool runningRaceSwap = false;
-        public static void SwapThingDef(this Pawn pawn, ThingDef swapTarget, bool state, bool force=false, object source=null)
+        public static void SwapThingDef(this Pawn pawn, ThingDef swapTarget, bool state, int targetPriority, bool force=false, object source=null, bool permitFusion=true)
         {
             if (swapTarget == null)
             {
@@ -65,8 +72,18 @@ namespace BigAndSmall
             try
             {
                 runningRaceSwap = true;
-                var currentProps = pawn.GetRaceCompProps();
+                
                 bool wasDead = pawn.health?.Dead == true;
+
+                if (force)
+                {
+                    targetPriority = forcePriority;
+                }
+
+                var thingDefHediffs = ModExtHelper.GetAllPawnExtensions(pawn, parentBlacklist: [typeof(RaceTracker)]).Where(x => x.thingDefSwap != null).Select(x => x.thingDefSwap).ToList();
+                
+                // Uh... I'm not sure when we'd ever want a race to trigger a swap. Best not do this, I think.
+                // var thingDefRace = pawn.GetRacePawnExtensions().Where(x => x.thingDefSwap != null).Select(x => x.thingDefSwap).ToList();
 
                 var genesWithThingDefSwaps = pawn.genes.GenesListForReading
                     .Where(x => x != source && x is PGene pg && pg.GetPawnExt() != null && (x as PGene).GetPawnExt().thingDefSwap != null)
@@ -77,49 +94,128 @@ namespace BigAndSmall
                 bool didSwap = false;
                 
                 var activeGenesWithSwap = genesWithThingDefSwaps.Where(x => !x.Overridden).ToList();
+                var activeGenesThingDefs = genesWithThingDefSwaps.Select(x => x.GetPawnExt().thingDefSwap).ToList();
+                var allGenesThingDefs = genesWithThingDefSwaps.Select(x => x.GetPawnExt().thingDefSwap).ToList();
 
-                // Check if the pawn is a human, or came from a gene.
-                // This is mostly to prevent accidentally swapping from say, a HAR-based robot to a human.
-                bool souceDefIsValid = pawn.def == ThingDefOf.Human || force || currentProps.canSwapAwayFrom;
-                if (!souceDefIsValid)
-                {
-                    souceDefIsValid = genesWithThingDefSwaps.Any(x => x.GetPawnExt().thingDefSwap == pawn.def);
-                }
+                List<(int priority, ThingDef thing)> thingsToTryFusionWith = [];
 
-                if (souceDefIsValid && state)
+
+                List<ThingDef> unwrappedPawnThingdef = pawn.def.GetRaceExtensions()?.Where(x => x.isFusionOf != null)?.SelectMany(x => x.isFusionOf).ToList();
+                unwrappedPawnThingdef = unwrappedPawnThingdef.NullOrEmpty() ? [pawn.def] : unwrappedPawnThingdef;
+
+                bool removingCurrent = swapTarget == pawn.def && state == false;
+                var finalTarget = swapTarget;
+
+                if (!removingCurrent)
                 {
-                    // Don't swap to a thingDef that is already active.
-                    if (pawn.def.defName != swapTarget.defName)
+                    //List<(ThingDef, RaceTracker)> trackerOnRace = 
+
+                    foreach ((var tDef, List<HediffDef> rTracker) in unwrappedPawnThingdef
+                        .Select(x => (x, x.ExtensionsOnDef<RaceExtension, ThingDef>()?
+                            .SelectMany(x => x.RaceHediffs).Where(x => x != null).ToList())))
                     {
-                        // Change the pawn's thingDef to the one specified in the GeneExtension.
-                        didSwap = ExecuteDefSwap(pawn, swapTarget);
+                        if (tDef == ThingDefOf.Human)
+                            continue;
+
+                        var props = rTracker.SelectMany(x=>x.comps.Select(x => x as CompProperties_Race).Where(x => x != null)).ToList();
+                        int priority = withoutSourcePriority;
+                        
+                        if (thingDefHediffs.Any(x => x == pawn.def))
+                            priority = hediffPriority;
+                        else if (genesWithThingDefSwaps.Any(x => x.GetPawnExt().thingDefSwap == tDef))
+                            priority = genePriority;
+                        else if (tDef != ThingDefOf.Human && props.Any(x => x.canSwapAwayFrom == false))
+                            priority = irremovablePriority;
+
+                        thingsToTryFusionWith.Add((priority, tDef));
+                    }
+                }
+                if (state == true)
+                {
+                    thingsToTryFusionWith.Add((targetPriority, swapTarget));
+                }
+                
+
+                // We're removing the current def. Find another base def.
+                if (state == false && pawn.def.defName == swapTarget.defName) 
+                {
+                    bool foundNewDefault = false;
+                    if (thingDefHediffs.Count > 0)
+                    {
+                        thingsToTryFusionWith.AddRange(thingDefHediffs.Select(x => (hediffPriority, x)));
+                        foundNewDefault = true;
+                    }
+                    if (activeGenesWithSwap.Count > 0)
+                    {
+                        thingsToTryFusionWith.AddRange(activeGenesWithSwap.Select(x => (genePriority, x.GetPawnExt().thingDefSwap)));
+                        foundNewDefault = true;
+                    }
+                    if (!foundNewDefault)
+                    {
+                        var originalThing = ThingDefOf.Human;
+                        if (HumanoidPawnScaler.GetCacheUltraSpeed(pawn, canRegenerate: false) is BSCache cache && cache.originalThing != pawn.def)
+                        {
+                            originalThing = cache.originalThing;
+                        }
+                        thingsToTryFusionWith.Add((racePriority, originalThing));
+                    }
+
+                }
+                if (permitFusion)
+                {
+                    // Priority 1: Hediffs.
+                    thingsToTryFusionWith.AddRange(thingDefHediffs.Select(x=> (hediffPriority, x)));
+                    // Priority 2: Active genes.
+                    thingsToTryFusionWith.AddRange(activeGenesWithSwap
+                        .Where(x => x.GetPawnExt().thingDefSwap is ThingDef tds && tds != swapTarget).Select(x => (genePriority, x.GetPawnExt().thingDefSwap)));
+                    // Priority 4: Inactive genes.
+                    thingsToTryFusionWith.AddRange(genesWithThingDefSwaps
+                        .Where(x => x.GetPawnExt().thingDefSwap is ThingDef tds && tds != swapTarget).Select(x => (inactiveGenePriority, x.GetPawnExt().thingDefSwap)));
+
+                    thingsToTryFusionWith = [.. thingsToTryFusionWith.Distinct().OrderByDescending(x=>x.priority)];
+
+                    var allPossibleBodies = thingsToTryFusionWith.Select(x => x.thing.race.body).ToList();
+
+                    if (state == false)
+                    {
+                        // Remove the target from all lists.
+                        thingsToTryFusionWith.RemoveAll(x => x.thing == swapTarget);
+                    }
+                    //Log.Message($"[DEBUG] Starting Fusion attempst for {pawn} to {finalTarget} (original {swapTarget}) with" +
+                    //    $"{string.Join(", ", allPossibleBodies.Select(x => x.defName))} for a total of {allPossibleBodies.Count} possible bodies.");
+
+                    while (allPossibleBodies.Count > 1)
+                    {
+                        //Log.Message($"[DEBUG] Trying to fuse {pawn} to {swapTarget} with" +
+                        //    $"{string.Join(", ", allPossibleBodies.Select(x => x.defName))} for a total of {allPossibleBodies.Count} possible bodies.");
+                        var fusedBody = FusedBody.TryGetBody([.. allPossibleBodies]);
+                        if (fusedBody != null)
+                        {
+                            finalTarget = fusedBody.thing;
+                            break;
+                        }
+                        else if (FusedBody.TryGetNonFused([.. allPossibleBodies]) is BodyDef nonFusedBody &&
+                            thingsToTryFusionWith.FirstOrDefault(x => x.thing.race.body == nonFusedBody) is (int, ThingDef) nonFuse)
+                        {
+                            finalTarget = nonFuse.thing;
+                            break;
+                        }
+                        allPossibleBodies.RemoveAt(allPossibleBodies.Count - 1);
+                        if (allPossibleBodies.Count == 1)
+                        {
+                            finalTarget = thingsToTryFusionWith[0].thing;
+                        }
                     }
                 }
 
-                // Check if we're turning off this ThingDef and would want to swap to another.
-                else if (!state && pawn.def.defName == swapTarget.defName)
+                // Don't swap to a thingDef that is already active.
+                if (pawn.def.defName != finalTarget.defName)
                 {
-                    ThingDef target = ThingDefOf.Human;
-                    if (HumanoidPawnScaler.GetCacheUltraSpeed(pawn, canRegenerate: false) is BSCache cache && cache.originalThing != null &&
-                        cache.originalThing != pawn.def)
-                    {
-                        target = cache.originalThing;
-                    }
-                    if (activeGenesWithSwap.Count > 0) { target = activeGenesWithSwap.Where(x=>x != source).RandomElement().GetPawnExt().thingDefSwap; }
+                    //Log.Message($"[DEBUG] Running defswap on {pawn} to {finalTarget} (original target: {swapTarget.defName}) with state {state} and force {force}.");
 
-                    didSwap = ExecuteDefSwap(pawn, target);
+                    // Change the pawn's thingDef to the one specified in the GeneExtension.
+                    didSwap = ExecuteDefSwap(pawn, finalTarget);
                 }
-                //try
-                //{
-                    
-                //    //if (pawn.Spawned)
-                //    //{
-                //    //    pawn.DeSpawn();
-                //    //    GenPlace.TryPlaceThing(pawn, pos, map, ThingPlaceMode.Direct);
-                //    //}
-                    
-                //}
-                //catch { }
 
                 if (didSwap)
                 {
@@ -129,7 +225,7 @@ namespace BigAndSmall
                     }
 
                     pawn.VerbTracker.InitVerbsFromZero();
-                    if (pawn.def.GetModExtension<RaceExtension>() is RaceExtension raceExtension)
+                    if (pawn.def.GetRaceExtensions()?.FirstOrDefault() is RaceExtension raceExtension)
                     {
                         raceExtension.ApplyTrackerIfMissing(pawn);
                     }
@@ -138,11 +234,11 @@ namespace BigAndSmall
             }
             catch (Exception e)
             {
-                Log.Message($"Error trying to in SwapThingDef of {pawn} to {swapTarget} (if this happend during world gen it is likely harmless):\n{e.Message}");
+                Log.Message($"Error trying to in SwapThingDef of {pawn} to {swapTarget} (if this happend during world gen it is likely harmless):\n{e.Message}\n{e.StackTrace}");
             }
             finally
             {
-                //Log.Message($"[DEBUG] Running defswap without Catch.");
+                //Log.Warning($"[DEBUG] Running defswap without Catch.");
                 runningRaceSwap = false;
                 HumanoidPawnScaler.GetCache(pawn, forceRefresh: true);
 
@@ -152,7 +248,6 @@ namespace BigAndSmall
                     stat.stat.Worker.ClearCacheForThing(pawn);
                 }
             }
-            
         }
 
         private static bool ExecuteDefSwap(Pawn pawn, ThingDef swapTarget)

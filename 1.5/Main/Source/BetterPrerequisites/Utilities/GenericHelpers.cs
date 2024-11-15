@@ -15,6 +15,21 @@ namespace BigAndSmall
         public static List<T> UnionNullableLists<T>(this List<T> list1, List<T> list2) =>
             (list1 != null && list2 != null) ? list1.Union(list2).ToList() : list1 ?? list2;
 
+        public static IEnumerable<TResult> FilterAndTransform<TSource, TResult>(
+            this IEnumerable<TSource> source,
+            Func<TSource, TResult?> selector)
+            where TResult : struct
+        {
+            foreach (var item in source)
+            {
+                var result = selector(item);
+                if (result.HasValue)
+                {
+                    yield return result.Value;
+                }
+            }
+        }
+
         // Runs Where and Select in sequence.
         //public static IEnumerable<TResult> SelectWhere<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector)
         //{
@@ -44,6 +59,14 @@ namespace BigAndSmall
         public static bool Approx(this float f1, float f2, float tolerance = 0.01f)
         {
             return ApproximatelyEquals(f1, f2, tolerance);
+        }
+    }
+
+    public static class PawnHelpers
+    {
+        public static int GetPawnRNGSeed(this Pawn pawn)
+        {
+            return pawn.thingIDNumber + pawn.def.defName.GetHashCode();
         }
     }
 }

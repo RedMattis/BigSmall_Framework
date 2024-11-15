@@ -1,0 +1,17 @@
+<Defs>
+
+  <ThingDef ParentName="Human" BS_Alt="ThingDef_AlienRace">
+    <defName>BS_Naga</defName>
+    <label>snake-person</label>
+    <description>A humanlike being with a snake tail instead of legs.</description>
+    <statBases>
+    </statBases>
+    <race>
+      <body>BS_SnakeHuman</body>
+      <useLeatherFrom>Cobra</useLeatherFrom>
+    </race>
+    <modExtensions>
+      <li Class="BigAndSmall.RaceExtension"> <raceHediff>BS_Naga_Race</raceHediff> </li>
+    </modExtensions>
+  </ThingDef>
+</Defs>

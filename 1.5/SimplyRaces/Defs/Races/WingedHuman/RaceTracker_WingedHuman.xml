@@ -1,0 +1,238 @@
+<Defs>
+
+  <HediffDef ParentName="BS_DefaultRaceTracker">
+    <defName>BS_HumanoidWithWings_Race</defName>
+    <description>Winged Humanoid</description>
+    <label>winged humanoid</label>
+    <comps>
+      <li Class="BigAndSmall.CompProperties_Race">
+        <canSwapAwayFrom>true</canSwapAwayFrom>
+      </li>
+    </comps>
+    <renderNodeProperties>
+      <!-- Righthand side -->
+      <li Class="BigAndSmall.PawnRenderingProps_Ultimate">
+        <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
+        <parentTagDef>Body</parentTagDef>
+        <conditionalGraphics>
+          <texturePaths><default>RaceDefaults/Wings/BS_FeatheredWingFront</default></texturePaths>
+          <colorA>
+            <hairColor>true</hairColor> <brightness>0.8</brightness> <saturation>1.06</saturation>
+            <!-- Only triggers for the Default look. -->
+            <alts>
+              <li>
+                <triggers><li>Rotted</li></triggers> <hairColor>true</hairColor> <color>(0.4, 0.3, 0.20)</color> <saturation>0.5</saturation>
+              </li>
+            </alts>
+          </colorA>
+          <alts>
+            <li>
+              <!-- Hide the wings if we have a wing-gene. No ColorA/B specified since, well, nothing to show.-->
+              <triggerGeneTag> <acceptlist><li>Wing</li><li>Wings</li></acceptlist> </triggerGeneTag>
+              <texturePaths><default>BS_Blank</default></texturePaths>
+            </li>
+            <li>
+              <triggerBodyPart> <li> <bodyPartDef>BS_Wing</bodyPartDef><mirrored>false</mirrored> <partMissing>true</partMissing> </li> </triggerBodyPart>
+              <texturePaths><default>BS_Blank</default></texturePaths>
+            </li>
+          </alts>
+        </conditionalGraphics>
+        <drawSize>(1.24,1.24)</drawSize>
+        <visibleFacing> <li>South</li> <li>East</li> </visibleFacing>
+        <drawData> <defaultData> <layer>91</layer> </defaultData> <dataNorth> <layer>91</layer> </dataNorth> </drawData>
+      </li>
+
+      <li Class="BigAndSmall.PawnRenderingProps_Ultimate">
+        <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
+        <parentTagDef>Body</parentTagDef>
+        <conditionalGraphics>
+          <texturePaths><default>RaceDefaults/Wings/BS_FeatheredWing</default></texturePaths>
+          <colorA>
+            <hairColor>true</hairColor>
+            <alts>
+              <li>
+                <triggers><li>Rotted</li></triggers>
+                <hairColor>true</hairColor> <color>(0.4, 0.3, 0.20)</color> <saturation>0.5</saturation>
+              </li>
+            </alts>
+          </colorA>
+          <colorB>
+            <hairColor>true</hairColor> <brightness>0.85</brightness> <saturation>1.1</saturation>
+            <alts>
+              <li>
+                <triggers><li>Rotted</li></triggers>
+                <hairColor>true</hairColor> <color>(0.4, 0.3, 0.20)</color> <saturation>0.5</saturation>
+              </li>
+            </alts>
+          </colorB>
+          <alts>
+            <li>
+              <triggerGeneTag> <acceptlist><li>Wing</li><li>Wings</li></acceptlist> </triggerGeneTag>
+              <texturePaths><default>BS_Blank</default></texturePaths>
+            </li>
+            <li>
+              <triggerBodyPart> <li> <bodyPartDef>BS_Wing</bodyPartDef> <mirrored>false</mirrored> <partMissing>true</partMissing> </li> </triggerBodyPart>
+              <texturePaths> <default>BS_Blank</default> </texturePaths>
+            </li>
+          </alts>
+        </conditionalGraphics>
+        <drawSize>(1.24,1.24)</drawSize>
+        <visibleFacing> <li>South</li> <li>East</li> <li>North</li></visibleFacing>
+        <drawData>
+          <defaultData> <layer>10</layer> </defaultData>
+          <dataSouth>   <layer>-1</layer> </dataSouth>
+          <dataNorth>   <layer>90</layer> <flip>true</flip></dataNorth>
+        </drawData>
+      </li>
+
+      <li Class="BigAndSmall.PawnRenderingProps_Ultimate">
+        <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
+        <parentTagDef>Body</parentTagDef>
+        <conditionalGraphics>
+          <texturePaths><default>RaceDefaults/Wings/BS_FeatheredWingBack</default></texturePaths>
+          <colorA>
+            <hairColor>true</hairColor> <brightness>0.95</brightness> <saturation>1.06</saturation>
+            <alts>
+              <li>
+                <triggers><li>Rotted</li></triggers> <hairColor>true</hairColor> <color>(0.4, 0.3, 0.20)</color> <saturation>0.5</saturation>
+              </li>
+            </alts>
+          </colorA>
+          <colorB>
+            <hairColor>true</hairColor> <brightness>0.85</brightness> <saturation>1.1</saturation>
+            <alts>
+              <li>
+                <triggers><li>Rotted</li></triggers>  <hairColor>true</hairColor> <color>(0.4, 0.3, 0.20)</color> <saturation>0.5</saturation>
+              </li>
+            </alts>
+          </colorB>
+          <alts>
+            <li>
+              <triggerGeneTag> <acceptlist><li>Wing</li><li>Wings</li></acceptlist> </triggerGeneTag>
+              <texturePaths><default>BS_Blank</default></texturePaths>
+            </li>
+            <li>
+              <triggerBodyPart> <li> <bodyPartDef>BS_Wing</bodyPartDef> <mirrored>false</mirrored> <partMissing>true</partMissing> </li> </triggerBodyPart>
+              <texturePaths> <default>BS_Blank</default> </texturePaths>
+            </li>
+          </alts>
+        </conditionalGraphics>
+        <drawSize>(1.24,1.24)</drawSize>
+        
+        <!-- <invertEastWest>true</invertEastWest> -->
+        <visibleFacing> <li>West</li> </visibleFacing>
+        <drawData> <defaultData> <layer>-2</layer> </defaultData> <dataEast><flip>true</flip></dataEast> </drawData>
+      </li>
+
+      <!-- Lefthand Side -->
+      <li Class="BigAndSmall.PawnRenderingProps_Ultimate">
+        <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
+        <parentTagDef>Body</parentTagDef>
+        <conditionalGraphics>
+          <texturePaths><default>RaceDefaults/Wings/BS_FeatheredWingFront</default></texturePaths>
+          <colorA>
+            <hairColor>true</hairColor> <brightness>0.8</brightness> <saturation>1.06</saturation>
+            <alts>
+              <li>
+                <triggers><li>Rotted</li></triggers> <hairColor>true</hairColor> <color>(0.4, 0.3, 0.20)</color> <saturation>0.5</saturation>
+              </li>
+            </alts>
+          </colorA>
+          <alts>
+            <li>
+              <triggerGeneTag> <acceptlist><li>Wing</li><li>Wings</li></acceptlist> </triggerGeneTag>
+              <texturePaths><default>BS_Blank</default></texturePaths>
+            </li>
+            <li>
+              <triggerBodyPart> <li> <bodyPartDef>BS_Wing</bodyPartDef><mirrored>true</mirrored> <partMissing>true</partMissing> </li> </triggerBodyPart>
+              <texturePaths><default>BS_Blank</default></texturePaths>
+            </li>
+          </alts>
+        </conditionalGraphics>
+        <drawSize>(1.24,1.24)</drawSize>
+        <visibleFacing> <li>South</li> <li>West</li> </visibleFacing>
+        <drawData> <defaultData> <layer>91</layer> </defaultData> <dataNorth> <layer>91</layer> <flip>true</flip></dataNorth> <dataSouth><layer>91</layer><flip>true</flip></dataSouth></drawData>
+      </li>
+
+      <li Class="BigAndSmall.PawnRenderingProps_Ultimate">
+        <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
+        <parentTagDef>Body</parentTagDef>
+        <conditionalGraphics>
+          <texturePaths><default>RaceDefaults/Wings/BS_FeatheredWing</default></texturePaths>
+          <colorA>
+            <hairColor>true</hairColor>
+            <alts>
+              <li>
+                <triggers><li>Rotted</li></triggers> <hairColor>true</hairColor> <color>(0.4, 0.3, 0.20)</color> <saturation>0.5</saturation>
+              </li>
+            </alts>
+          </colorA>
+          <colorB>
+            <hairColor>true</hairColor> <brightness>0.85</brightness> <saturation>1.1</saturation>
+            <alts>
+              <li>
+                <triggers><li>Rotted</li></triggers> <hairColor>true</hairColor> <color>(0.4, 0.3, 0.20)</color> <saturation>0.5</saturation>
+              </li>
+            </alts>
+          </colorB>
+          <alts>
+            <li>
+              <triggerGeneTag> <acceptlist><li>Wing</li><li>Wings</li></acceptlist> </triggerGeneTag>
+              <texturePaths><default>BS_Blank</default></texturePaths>
+            </li>
+            <li>
+              <triggerBodyPart> <li> <bodyPartDef>BS_Wing</bodyPartDef> <mirrored>true</mirrored> <partMissing>true</partMissing> </li> </triggerBodyPart>
+              <texturePaths> <default>BS_Blank</default> </texturePaths>
+            </li>
+          </alts>
+        </conditionalGraphics>
+        <drawSize>(1.24,1.24)</drawSize>
+        
+        <visibleFacing> <li>West</li> <li>South</li> <li>North</li></visibleFacing>
+        <drawData>
+          <defaultData> <layer>10</layer> </defaultData>
+          <dataSouth>   <layer>-1</layer> <flip>true</flip></dataSouth>
+          <dataNorth>   <layer>90</layer> <flip>false</flip></dataNorth>
+        </drawData>
+      </li>
+
+      <li Class="BigAndSmall.PawnRenderingProps_Ultimate">
+        <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
+        <parentTagDef>Body</parentTagDef>
+        <conditionalGraphics>
+          <texturePaths><default>RaceDefaults/Wings/BS_FeatheredWingBack</default></texturePaths>
+          <colorA>
+            <hairColor>true</hairColor> <brightness>0.95</brightness> <saturation>1.06</saturation>
+            <alts>
+              <li>
+                <triggers><li>Rotted</li></triggers> <hairColor>true</hairColor> <color>(0.4, 0.3, 0.20)</color> <saturation>0.5</saturation>
+              </li>
+            </alts>
+          </colorA>
+          <colorB>
+            <hairColor>true</hairColor> <brightness>0.85</brightness> <saturation>1.1</saturation>
+            <alts>
+              <li>
+                <triggers><li>Rotted</li></triggers> <hairColor>true</hairColor> <color>(0.4, 0.3, 0.20)</color> <saturation>0.5</saturation>
+              </li>
+            </alts>
+          </colorB>
+          <alts>
+            <li>
+              <triggerGeneTag> <acceptlist><li>Wing</li><li>Wings</li></acceptlist> </triggerGeneTag>
+              <texturePaths><default>BS_Blank</default></texturePaths>
+            </li>
+            <li>
+              <triggerBodyPart> <li> <bodyPartDef>BS_Wing</bodyPartDef> <mirrored>true</mirrored> <partMissing>true</partMissing> </li> </triggerBodyPart>
+              <texturePaths> <default>BS_Blank</default> </texturePaths>
+            </li>
+          </alts>
+        </conditionalGraphics>
+        <drawSize>(1.24,1.24)</drawSize>
+        <!-- <invertEastWest>true</invertEastWest> -->
+        <visibleFacing> <li>East</li></visibleFacing>
+        <drawData> <defaultData> <layer>-2</layer> </defaultData> </drawData>
+      </li>
+    </renderNodeProperties>
+  </HediffDef>
+</Defs>

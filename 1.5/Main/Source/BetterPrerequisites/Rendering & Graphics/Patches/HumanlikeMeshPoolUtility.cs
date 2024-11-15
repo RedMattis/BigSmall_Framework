@@ -63,14 +63,18 @@ namespace BigAndSmall
             public bool approxNoChange;
             public bool cachingDisabled;
             public bool doOffset;
+            public bool doComplexBodyOffset;
+            public bool doComplexHeadOffset;
             public bool spawned;
+            public Rot4 lastRot;
+            public int lastRotAsInt;
         }
         [ThreadStatic]
         static PGPRRCache threadStaticCache;
 
         public static bool skipOffset = false;
 
-        public static void Prefix(PawnRenderer __instance, ref Vector3 drawLoc, Rot4 rotOverride, bool neverAimWeapon, ref bool disableCache, Pawn ___pawn)
+        public static void Prefix(PawnRenderer __instance, ref Vector3 drawLoc, Rot4? rotOverride, bool neverAimWeapon, ref bool disableCache, Pawn ___pawn)
         {
             if (___pawn == null) return;
 
@@ -81,9 +85,14 @@ namespace BigAndSmall
                 threadStaticCache.approxNoChange = threadStaticCache.cache.approximatelyNoChange;
                 if (!threadStaticCache.approxNoChange)
                 {
+                    var posture = ___pawn.GetPosture();
                     threadStaticCache.cachingDisabled = (!disableCache && BigSmallMod.settings.disableTextureCaching) &&
                         (threadStaticCache.cache.totalSizeOffset > 0 || threadStaticCache.cache.scaleMultiplier.linear > 1 || threadStaticCache.cache.renderCacheOff);
                     threadStaticCache.doOffset = !skipOffset && BigSmallMod.settings.offsetBodyPos && ___pawn.GetPosture() == PawnPosture.Standing && ___pawn.RaceProps?.Humanlike == true;
+                    threadStaticCache.doComplexHeadOffset = threadStaticCache.cache.headOffsets != null;
+                    threadStaticCache.doComplexBodyOffset = threadStaticCache.cache.bodyOffsets != null;
+                    threadStaticCache.lastRot = rotOverride ?? ((posture == PawnPosture.Standing || ___pawn.Crawling) ? ___pawn.Rotation : __instance.LayingFacing());
+                    threadStaticCache.lastRotAsInt = threadStaticCache.lastRot.AsInt;
                     threadStaticCache.spawned = ___pawn.Spawned;
                 }
             }
@@ -98,6 +107,14 @@ namespace BigAndSmall
             if (threadStaticCache.doOffset)
             {
                 drawLoc.z += threadStaticCache.cache.worldspaceOffset;
+            }
+            if (threadStaticCache.doComplexBodyOffset)
+            {
+                drawLoc += threadStaticCache.cache.bodyOffsets[threadStaticCache.lastRotAsInt];
+            }
+            if (threadStaticCache.doComplexHeadOffset)
+            {
+                drawLoc += threadStaticCache.cache.headOffsets[threadStaticCache.lastRotAsInt];
             }
         }
     }
@@ -238,9 +255,6 @@ namespace BigAndSmall
         [ThreadStatic]
         static PerThreadMiniCache threadStaticCache;
 
-        //static readonly ConcurrentDictionary<int, PerThreadMiniCache> threadDictCache = [];
-        //static readonly ThreadLocal<PerThreadMiniCache> threadLocalCache = new(() => new PerThreadMiniCache());
-        // This WORKS, but maybe it is a bit too aggresive since it patches everything? Using it for the time being just so it is the same as VEF.
         [HarmonyPatch(typeof(PawnRenderNodeWorker), nameof(PawnRenderNodeWorker.ScaleFor))]
         [HarmonyPostfix]
         public static void ScaleForPatch(ref Vector3 __result, PawnRenderNode node, PawnDrawParms parms)
@@ -248,7 +262,6 @@ namespace BigAndSmall
             var pawn = parms.pawn;
             if (pawn == null)
             {
-                //Log.Error($"PawnRenderNodeWorker.ScaleFor was called with a null pawn! {parms}");
                 return;
             }
             if (threadStaticCache.pawn != pawn)

@@ -1,0 +1,227 @@
+<Defs>
+  <RedHealth.HealthAspect>
+    <defName>RED_CardiHealth</defName>
+    <label>cardiac rating</label>
+    <description>Cardiovascular health is a measure of how well the heart and blood vessels are functioning. It is a key indicator of overall health and fitness.</description>
+    <associatedPartsTags><li>BloodPumpingSource</li></associatedPartsTags>
+    <nullifyIfPartsReplacedBetterThanNatural>true</nullifyIfPartsReplacedBetterThanNatural>
+    <thresholds>
+      <li>
+        <label>good</label>
+        <description>No notable issues</description>
+        <labelColor>(128,255,128)</labelColor>
+      </li>
+      <li>
+        <threshold>0.4</threshold>
+        <label>decent</label>
+        <description>some cardiovascular issues.</description>
+        <labelColor>(255,255,128)</labelColor>
+        <odds>0.0016</odds> <!--0.04% chance per day, or 2.4% per year-->
+        <effects>
+          <li>
+            <hediff>HeartArteryBlockage</hediff>
+            <weight>0.5</weight>
+            <partsToAffect>
+              <li>Heart</li>
+            </partsToAffect>
+          </li>
+          <li>
+            <hediff>HeartAttack</hediff>
+            <weight>0.5</weight>
+            <partsToAffect>
+              <li>Heart</li>
+            </partsToAffect>
+          </li>
+          <li>
+            <hediff>HeartAttack</hediff>
+            <severityRange>0~0.3</severityRange>
+            <weight>0.1</weight>
+            <killWorldPawn>true</killWorldPawn>
+            <partsToAffect>
+              <li>Heart</li>
+            </partsToAffect>
+          </li>
+        </effects>
+      </li>
+      <li>
+        <threshold>0.6</threshold>
+        <label>bad</label>
+        <description>Moderate cardiovascular issues.</description>
+        <labelColor>(255,200,0)</labelColor>
+        <odds>0.01</odds> <!--0.25% chance per day, or 15% per year-->
+        <effects>
+          <li>
+            <hediff>HeartArteryBlockage</hediff>
+            <severityRange>0~0.8</severityRange>
+            <weight>0.5</weight>
+            <partsToAffect>
+              <li>Heart</li>
+            </partsToAffect>
+          </li>
+          <li>
+            <hediff>HeartAttack</hediff>
+            <weight>0.5</weight>
+            <partsToAffect>
+              <li>Heart</li>
+            </partsToAffect>
+          </li>
+          <li>
+            <hediff>HeartAttack</hediff>
+            <severityRange>0~0.3</severityRange>
+            <weight>0.1</weight>
+            <killWorldPawn>true</killWorldPawn>
+            <partsToAffect>
+              <li>Heart</li>
+            </partsToAffect>
+          </li>
+          <li>
+            <hediff>RED_OrganFailure</hediff>
+            <weight>0.05</weight>
+            <partsToAffect>
+              <li>Heart</li>
+            </partsToAffect>
+            <killWorldPawn>true</killWorldPawn>
+          </li>
+        </effects>
+      </li>
+      <li>
+        <threshold>0.8</threshold>
+        <label>severe</label>
+        <description>severe cardiovascular issues.</description>
+        <labelColor>(255,165,0)</labelColor>
+        <odds>0.08</odds> <!--Average of 1.2 per year -->
+        <effects>
+          <li>
+            <hediff>HeartArteryBlockage</hediff>
+            <severityRange>0~0.1</severityRange>
+            <weight>0.5</weight>
+            <partsToAffect>
+              <li>Heart</li>
+            </partsToAffect>
+          </li>
+          <li>
+            <hediff>HeartAttack</hediff>
+            <weight>0.5</weight>
+            <partsToAffect>
+              <li>Heart</li>
+            </partsToAffect>
+          </li>
+          <li>
+            <hediff>RED_OrganFailure</hediff>
+            <weight>0.2</weight>
+            <partsToAffect>
+              <li>Heart</li>
+            </partsToAffect>
+            <killWorldPawn>true</killWorldPawn>
+          </li>
+          <li>
+            <hediff>HeartAttack</hediff>
+            <severityRange>0~0.4</severityRange>
+            <weight>0.1</weight>
+            <killWorldPawn>true</killWorldPawn>
+            <partsToAffect>
+              <li>Heart</li>
+            </partsToAffect>
+          </li>
+        </effects>
+      </li>
+      <li>
+        <threshold>0.90</threshold> <!--RIP-->
+        <label>critical</label>
+        <description>extreme cardiovascular issues.</description>
+        <labelColor>(255,0,0)</labelColor>
+        <odds>0.32</odds> <!--Average 4.8 events per year.-->
+        <effects>
+          <li>
+            <hediff>RED_OrganFailure</hediff>
+            <weight>0.5</weight>
+            <partsToAffect>
+              <li>Heart</li>
+            </partsToAffect>
+            <killWorldPawn>true</killWorldPawn>
+          </li>
+          <li>
+            <hediff>HeartArteryBlockage</hediff>
+            <severityRange>0~0.9</severityRange>
+            <weight>0.5</weight>
+            <partsToAffect>
+              <li>Heart</li>
+            </partsToAffect>
+          </li>
+          <li>
+            <hediff>HeartAttack</hediff>
+            <weight>0.5</weight>
+            <partsToAffect>
+              <li>Heart</li>
+            </partsToAffect>
+          </li>
+          <li>
+            <hediff>HeartAttack</hediff>
+            <severityRange>0~0.8</severityRange>
+            <weight>0.2</weight>
+            <killWorldPawn>true</killWorldPawn>
+            <partsToAffect>
+              <li>Heart</li>
+            </partsToAffect>
+          </li>
+        </effects>
+      </li>
+      <li>
+        <threshold>1</threshold> <!--The "Just Die Already Tier"-->
+        <label>terminal</label>
+        <description>critical cardiovascular issues.</description>
+        <labelColor>(255,0,0)</labelColor>
+        <odds>0.5</odds> <!--Average 1 event per 5 days.-->
+        <maxMeanTime>300000</maxMeanTime> <!--Every 2.5 days on average-->
+        <effects>
+          <li>
+            <hediff>RED_BrainFailure</hediff>
+            <severityRange>0.1~0.3</severityRange>
+            <weight>1</weight>
+            <partsToAffect>
+              <li>Brain</li>
+            </partsToAffect>
+            <killWorldPawn>true</killWorldPawn>
+          </li>
+          <li>
+            <hediff>RED_OrganFailure</hediff>
+            <weight>0.5</weight>
+            <severityRange>0~0.2</severityRange>
+            <severityPerDayRange>0.05~0.5</severityPerDayRange>
+            <partsToAffect>
+              <li>Heart</li>
+            </partsToAffect>
+            <killWorldPawn>true</killWorldPawn>
+          </li>
+          <li>
+            <hediff>HeartArteryBlockage</hediff>
+            <severityRange>0~0.9</severityRange>
+            <weight>0.5</weight>
+            <partsToAffect>
+              <li>Heart</li>
+            </partsToAffect>
+            <killWorldPawn>true</killWorldPawn>
+          </li>
+          <li>
+            <hediff>HeartAttack</hediff>
+            <severityRange>0.2~1.2</severityRange>
+            <weight>0.2</weight>
+            <partsToAffect>
+              <li>Heart</li>
+            </partsToAffect>
+            <killWorldPawn>true</killWorldPawn>
+          </li>
+          <!-- <li>
+            <hediff>RED_FailingOrganDamage</hediff> <
+            <severityRange>0.5~0.95</severityRange>
+            <partsToAffect>
+              <li>Heart</li>
+            </partsToAffect>
+            <weight>1</weight>
+            <killWorldPawn>true</killWorldPawn>
+          </li> -->
+        </effects>
+      </li>
+    </thresholds>
+  </RedHealth.HealthAspect>
+</Defs>

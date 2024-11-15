@@ -1,0 +1,23 @@
+<Defs>
+  <!-- <RedHealth.HealthAspect>
+    <defName>RED_ImmuneSystemPower</defName>
+    <label>immune-system health</label>
+    <description>cell-stability health and ability to deal with cancer<</description>
+    <associatedPartsTags>
+      <li>BloodFiltrationSource</li>
+    </associatedPartsTags>
+    <nullifyIfPartsReplacedBetterThanNatural>true</nullifyIfPartsReplacedBetterThanNatural>
+    <oddsMultipliedByStat>CancerRate</oddsMultipliedByStat>
+  </RedHealth.HealthAspect> -->
+
+  
+  <!-- <RedHealth.HealthAspect>
+    <defName>RED_ImmuneSystemStability</defName>
+    <label>immune system stability</label>
+    <description>A meassure of how well the natural immune system is working. Low values can result in auto-immune diseases</description>
+    <associatedPartsTags>
+      <li>BloodFiltrationSource</li>
+    </associatedPartsTags>
+    <nullifyIfPartsReplacedBetterThanNatural>true</nullifyIfPartsReplacedBetterThanNatural>
+  </RedHealth.HealthAspect> -->
+</Defs>

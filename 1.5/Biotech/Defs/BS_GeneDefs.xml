@@ -33,7 +33,7 @@
   <GeneDef> <!-- ParentName="GeneBodyBase" -->
     <defName>Body_Androgynous</defName>
     <label>Androgynous</label>
-    <description>Carriers of this gene tend to appear Androgynous. A person can have more than one body type gene; one body type will be chosen among those that are allowed.\n\nNote that some mods will unfortunately override this, in which case you may need to use the Character Editor to "fix" it.</description>
+    <description>Carriers of this gene tend to appear what can be percieved femenine-androgynous. A person can have more than one body type gene; one body type will be chosen among those that are allowed.\n\nNote that some mods will unfortunately override this, in which case you may need to use the Character Editor to "fix" it.</description>
     <iconPath>GeneIcons/BS_Androgynous</iconPath>
     <exclusionTags>
     </exclusionTags>
@@ -43,7 +43,11 @@
     <iconColor>(0.75, 0.75, 0.75)</iconColor>
     <displayOrderInCategory>1</displayOrderInCategory>
     <selectionWeight>0.0</selectionWeight>
-    <!-- <bodyType>Standard</bodyType> -->
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <apparentGender>Female</apparentGender>
+      </li>
+    </modExtensions>
   </GeneDef>
 
     <TraitDef>

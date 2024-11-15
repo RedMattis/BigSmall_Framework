@@ -24,9 +24,7 @@ namespace BigAndSmall
                 {
                     return;
                 }
-                bool forceFemaleBody = cache.forceFemaleBody;
-
-                bool femaleBody = pawn.gender != Gender.Male || forceFemaleBody;
+                bool femaleBody = cache.apparentGender == Gender.Female || pawn.gender == Gender.Female;
 
                 if (femaleBody && bodyNakedGraphicPath != null && !bodyNakedGraphicPath.Contains("_Female") && (bodyNakedGraphicPath.Contains("_Thin") || bodyNakedGraphicPath.Contains("_Fat") || bodyNakedGraphicPath.Contains("_Hulk")))
                 {
@@ -52,34 +50,42 @@ namespace BigAndSmall
             }
         }
 
-        public static GeneticBodyType BodyTypeToGeneticBodyType(this BodyTypeDef bodyType)
+        //public static GeneticBodyType BodyTypeToGeneticBodyType(this BodyTypeDef bodyType)
+        //{
+        //    return bodyType.defName switch
+        //    {
+        //        "Fat" => GeneticBodyType.Fat,
+        //        "Hulk" => GeneticBodyType.Hulk,
+        //        "Thin" => GeneticBodyType.Thin,
+        //        _ => GeneticBodyType.Standard,
+        //    };
+        //}
+
+        public static bool IsBodyStandard(this BodyTypeDef bodyType)
         {
-            if (bodyType == BodyTypeDefOf.Fat)
-            {
-                return GeneticBodyType.Fat;
-            }
-            else if (bodyType == BodyTypeDefOf.Hulk)
-            {
-                return GeneticBodyType.Hulk;
-            }
-            else if (bodyType == BodyTypeDefOf.Thin)
-            {
-                return GeneticBodyType.Thin;
-            }
-            else
-            {
-                return GeneticBodyType.Standard;
-            }
+            return bodyType == BodyTypeDefOf.Female || bodyType == BodyTypeDefOf.Male;
         }
 
         public static void UpdateBodyHeadAndBeardPostGenderChange(Pawn pawn, bool banNarrow = false)
         {
             if (pawn?.story?.headType?.gender == null)
             {
-                Log.Warning($"Tried to update body, head and beard for {pawn} but pawn?.story?.headType?.gender was null.");
+                Log.Warning($"Tried to update body, head and beard for {pawn} but pawn?.story?.headType?.gender was null.\n" +
+                    $"{pawn},{pawn?.story},{pawn?.story?.headType}, {pawn?.story?.headType?.gender}\n" +
+                    $"Traceback {Environment.StackTrace}");
                 return;
             }
-            bool headNeedsChange = pawn.story.headType.gender != 0 && pawn.story.headType.gender != pawn.gender;
+            if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache)
+            {
+                UpdateBodyHeadAndBeardPostGenderChange(cache, banNarrow);
+            }
+        }
+
+        public static void UpdateBodyHeadAndBeardPostGenderChange(BSCache cache, bool banNarrow = false)
+        {
+            Pawn pawn = cache.pawn;
+            Gender apparentGender = cache.GetApparentGender();
+            bool headNeedsChange = pawn.story.headType.gender != 0 && pawn.story.headType.gender != apparentGender;
 
             var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
             // Set body type.
@@ -100,19 +106,13 @@ namespace BigAndSmall
                 pawn.story.bodyType = PawnGenerator.GetBodyTypeFor(pawn);//.BodyTypeToGeneticBodyType().ToBodyType(pawn);
             }
 
-
             // If we have a head gene we don't want to use a randomchosen head.
             var headGenes = activeGenes.Where(x => !x.def.forcedHeadTypes.NullOrEmpty());
             var possibleHeads = headGenes.SelectMany(x => x.def.forcedHeadTypes).ToList();
-            bool forceFemaleBody = HumanoidPawnScaler.GetCache(pawn) is BSCache cache && cache.forceFemaleBody;
 
             if (possibleHeads.Count > 0)
             {
-                Gender targetGender = pawn.gender;
-                if (forceFemaleBody)
-                {
-                    targetGender = Gender.Female;
-                }
+                Gender targetGender = apparentGender;
                 var validHeads = possibleHeads.Where(x => headGenes.All(ag => ag.def.forcedHeadTypes.Contains(x))).Where(x => x.gender == Gender.None || x.gender == targetGender).ToList();
                 if (banNarrow)
                 {
@@ -144,30 +144,64 @@ namespace BigAndSmall
             }
         }
 
-
-        public static float GetCompatibilityWith(this Pawn pawn, Pawn otherPawn, float defaultValue=0)
+        /// <summary>
+        /// Some old crappy method to clean up broken pawns. Probably best to leave it alone for now...
+        /// </summary>
+        /// <param name="pawn"></param>
+        public static void UpdatePawnHairAndHeads(Pawn pawn)
         {
-            float ConstantPerPawnsPairCompatibilityOffset(int otherPawnID)
+            try
             {
-                Rand.PushState();
-                Rand.Seed = (pawn.thingIDNumber ^ otherPawnID) * 37;
-                float result = Rand.GaussianAsymmetric(0.3f, 1f, 1.4f);
-                Rand.PopState();
-                return result;
-            }
-            if (HumanoidPawnScaler.GetCacheUltraSpeed(pawn) is BSCache cache && HumanoidPawnScaler.GetCacheUltraSpeed(otherPawn) is BSCache cacheTwo)
-            {
-                if (pawn.def != otherPawn.def || pawn == otherPawn)
+                // Get all active genes
+                var genes = GeneHelpers.GetAllActiveGenes(pawn);
+                if (genes.Count == 0) return;
+
+                // Get style whitelist for hair
+                List<string> hairStyleWhitelist = genes.Where(x => x.def.hairTagFilter != null && x.def.hairTagFilter.whitelist).Select(x => x.def.hairTagFilter.tags).SelectMany(x => x).ToList();
+
+                if (hairStyleWhitelist.Count > 0)
                 {
-                    return 0f;
+                    // Check if the current hairstyle has a matching tag
+                    if (pawn?.story?.hairDef?.styleTags.Any(x => hairStyleWhitelist.Contains(x)) == false)
+                    {
+                        // Get all hairdefs that match the whitelist
+                        var hairDefs = DefDatabase<HairDef>.AllDefs.Where(x => x.styleTags.Any(st => hairStyleWhitelist.Contains(st))).ToList();
+
+                        // And gene whitelist
+                        hairDefs = hairDefs.Where(x => x.requiredGene == null || genes.Any(g => g.def == x.requiredGene)).ToList();
+
+                        // And required mutants
+                        hairDefs = hairDefs.Where(x => x.requiredMutant == null || pawn?.mutant?.Def == x.requiredMutant).ToList();
+
+                        if (hairDefs.Count > 0)
+                        {
+                            // Get a random hairdef from the whitelist
+                            var newHair = hairDefs.RandomElement();
+                            pawn.story.hairDef = newHair;
+
+                            //Log.Message(pawn.Name.ToStringShort + " has a new hairdef: " + newHair.defName);
+                        }
+                        else
+                        {
+                            //Log.Message(pawn.Name.ToStringShort + " has no valid hairs");
+                        }
+                    }
+                    else
+                    {
+                        //Log.Message(pawn.Name.ToStringShort + $" has a valid hair ({pawn?.story?.hairDef}, with tags {string.Join(", ", pawn?.story?.hairDef?.styleTags?.ToArray())})");
+                    }
                 }
-                
-                float x = Mathf.Abs(cache.apparentAge - cacheTwo.apparentAge);
-                float num = Mathf.Clamp(GenMath.LerpDouble(0f, 20f, 0.45f, -0.45f, x), -0.45f, 0.45f);
-                float num2 = ConstantPerPawnsPairCompatibilityOffset(otherPawn.thingIDNumber);
-                return num + num2;
+                else
+                {
+                }
             }
-            return defaultValue;
+            catch
+            {
+
+            }
+
+            // Get head whitelist
+            // TODO...
         }
 
     }

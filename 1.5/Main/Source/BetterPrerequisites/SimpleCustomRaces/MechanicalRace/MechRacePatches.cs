@@ -35,5 +35,19 @@ namespace BigAndSmall
             }
             return true;
         }
+
+        [HarmonyPatch(typeof(CompRottable), nameof(CompRottable.Active), MethodType.Getter)]
+        [HarmonyPriority(int.MaxValue)]
+        public static bool Deactivate_CompRottable(CompRottable __instance, ref bool __result)
+        {
+            if (__instance.parent is Corpse corpse &&
+                HumanoidPawnScaler.GetCacheUltraSpeed(corpse.InnerPawn) is BSCache cache && cache.isMechanical)
+            {
+                __result = false;
+                return false;
+            }
+            return true;
+        }
+        
     }
 }
