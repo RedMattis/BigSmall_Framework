@@ -28,7 +28,7 @@ namespace BigAndSmall
     {
             public static void CalculateHeadGraphicsForPawn(Pawn pawn, ref Graphic __result, BSCache cache)
             {
-                if (cache.hideHead) { __result = GraphicsHelpers.GetBlankMaterial(pawn); return; }
+                if (cache.hideHead) { __result = GraphicsHelper.GetBlankMaterial(pawn); return; }
 
                 if (cache.headMaterial?.overrideDesiccated != true && pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Dessicated)
                 {
@@ -38,7 +38,7 @@ namespace BigAndSmall
                 if (cache.headGraphicPath is string headGraphicPath)
                 {
                     //Debug.Log("DEBUG! HeadGraphicPath: " + headGraphicPath);
-                    __result = GraphicsHelpers.TryGetCustomGraphics(pawn, headGraphicPath, __result.color, __result.colorTwo, __result.drawSize, cache.headMaterial);
+                    __result = GraphicsHelper.TryGetCustomGraphics(pawn, headGraphicPath, __result.color, __result.colorTwo, __result.drawSize, cache.headMaterial);
                 }
             }
         }

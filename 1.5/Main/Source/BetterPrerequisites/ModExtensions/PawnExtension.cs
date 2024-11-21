@@ -4,19 +4,26 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 using Verse;
+using Verse.Noise;
 using static BigAndSmall.RaceHelper;
+using static RimWorld.ColonistBar;
 
 namespace BetterPrerequisites
 {
     // GeneExtension is literally just here to avoid breaking old XML refering to it by the old name.
     public class GeneExtension : PawnExtension { }
 }
+
 namespace BigAndSmall
 {
+    public class DefTag : Def { }
 
     public class FacialAnimDisabler
     {
@@ -27,6 +34,194 @@ namespace BigAndSmall
         public string eyeballName = "NOT_";
         public string mouthName = "NOT_";
         public string browName = "NOT_";
+    }
+
+    public static class PawnExtensionExtension
+    {
+
+        private class TooltipSection
+        {
+            public string Header { get; }
+            public List<string> Entries { get; }
+            public TooltipSection(string header, IEnumerable<string> entries = null)
+            {
+                Header = header;
+                Entries = entries?.Where(e => !string.IsNullOrWhiteSpace(e)).ToList() ?? new List<string>();
+            }
+
+            public override string ToString()
+            {
+                if (Entries.Count == 0) return string.Empty;
+
+                var sb = new StringBuilder();
+                bool isOneLiner = Entries.First() == "SKIP";
+
+                if (!string.IsNullOrWhiteSpace(Header))
+                {
+                    if (isOneLiner)
+                    {
+                        sb.AppendLine(Header.Colorize(ColoredText.TipSectionTitleColor).CapitalizeFirst());
+                    }
+                    else
+                    {
+                        sb.AppendLine(Header.Colorize(ColoredText.TipSectionTitleColor).CapitalizeFirst() + ":");
+                    }
+                }
+                if (!isOneLiner)
+                {
+
+                    foreach (var entry in Entries)
+                    {
+                        if (entry.StartsWith("  - "))
+                        {
+                            sb.AppendLine(entry);
+                        }
+                        else
+                        {
+                            sb.AppendLine($"  - {entry}");
+                        }
+                    }
+                }
+                return sb.ToString();
+            }
+
+
+        }
+        public static bool TryGetDescription(this List<PawnExtension> extList, out string content)
+        {
+            StringBuilder sb = new();
+            List<TooltipSection> sections =
+            [
+                // General/Important Attributes
+                CreateListSection("BS_Aptitudes".Translate(), extList, ext => ext.AptitudeDescription),
+                CreateListSection("BS_ConditionalDescription".Translate(), extList, ext => ext.ConditionalDescription),
+                CreateListSection("BS_SizeByAgeOffset".Translate(), extList, ext => ext.SizeByAgeDescription),
+                CreateListSection("BS_SizeByAgeOffset".Translate(), extList, ext => ext.SizeByAgeMultDescription),
+                // Health and Body Modifications
+                CreateListSection("BS_Applies".Translate(), extList, ext => ext.ApplyBodyHediffDescription),
+                CreateListSection("BS_Applies".Translate(), extList, ext => ext.RaceForcedHediffsDesc),
+                CreateListSection("BS_Applies".Translate(), extList, ext => ext.ApplyPartHediffDescription),
+                CreateListSection("BS_ThingDefSwap".Translate(), extList, ext => ext.ThingDefSwapDescription),
+                CreateIndividualSection("BS_ForceUnarmed".Translate(), extList, ext => ext.ForceUnarmedDescription),
+                CreateIndividualSection("BS_PreventDisfigurement".Translate(), extList, ext => ext.PreventDisfigurementDescription),
+                CreateIndividualSection("BS_CanWalkOnCreep".Translate(), extList, ext => ext.CanWalkOnCreepDescription),
+                // Traits and Genetics
+                CreateIndividualSection("ForcedTraits".Translate(), extList, ext => ext.forcedTraits ?? Enumerable.Empty<object>()),
+                CreateIndividualSection("BS_FocedEndoImmutable".Translate(), extList, ext => ext.immutableEndogenes?.Select(e => e.LabelCap)),
+                CreateIndividualSection("BS_FocedEndo".Translate(), extList, ext => ext.forcedEndogenes?.Select(e => e.LabelCap)),
+                CreateIndividualSection("BS_FocedXeno".Translate(), extList, ext => ext.forcedXenogenes?.Select(e => e.LabelCap)),
+                // Needs and Diet
+                CreateIndividualSection("BS_PawnDiet".Translate(), extList, ext => ext.PawnDietDescription),
+                CreateIndividualSection("BS_LockedNeeds".Translate(), extList, ext => ext.LockedNeedsDescription),
+                CreateIndividualSection("BS_ConsumeSoulOnHit".Translate(), extList, ext => ext.ConsumeSoulOnHitDescription),
+                // Apparel and Restrictions
+                CreateIndividualSection("BS_HasApparelRestrictions".Translate(), extList, ext => ext.apparelRestrictions != null ? "BS_HasApparelRestrictions".Translate() : null),
+                // Thoughts and Relationships
+                CreateAggregatedSection("BS_HasNullThoughtsCount", extList.Where(x=>x.nullsThoughts != null).ToList(), ext => ext.nullsThoughts?.Count ?? 0, counts => counts.Sum().ToString()),
+                CreateListSection("BS_RomanceTags".Translate(), extList, ext => ext.RomanceTagsDescription),
+                CreateIndividualSection("BS_CreatureTag".Translate(), extList, ext => ext.TagDescriptions)
+            ];
+
+            // Process all sections and append to the StringBuilder
+            foreach (var section in sections.Where(x=>x != null))
+            {
+                sb.Append(section.ToString());
+            }
+
+            content = RemoveDuplicateLines(sb).ToString();
+
+            bool hasContent = !string.IsNullOrWhiteSpace(content);
+            // Remove duplicate lines and return the final description
+            return hasContent; 
+
+            // --- Helper Methods ---
+            TooltipSection CreateAggregatedSection<T>(
+                string untranslatedString,
+                List<PawnExtension> list,
+                Func<PawnExtension, T> selector,
+                Func<IEnumerable<T>, string> aggregateFormatter)
+            {
+                var selectedData = list
+                    .Select(selector)
+                    .Where(data => !NoData(data));
+
+                if (!selectedData.Any())
+                    return null;
+
+                // Use the aggregateFormatter to process the aggregation
+                string aggregatedText = aggregateFormatter(selectedData);
+
+                return new TooltipSection(untranslatedString.Translate($"  - {aggregatedText}"), ["SKIP"]);
+            }
+
+            TooltipSection CreateIndividualSection(string header, List<PawnExtension> list, Func<PawnExtension, object> selector)
+            {
+                var entries = list
+                    .Select(selector)
+                    .Where(entry => !NoData(entry))
+                    .Select(FormatIndividualEntry)
+                    .ToList();
+
+                return new TooltipSection(header, entries);
+            }
+
+            static string FormatIndividualEntry(object entry)
+            {
+                return entry switch
+                {
+                    Def def => def.LabelCap,
+                    string str => str.CapitalizeFirst(),
+                    TaggedString taggedStr => taggedStr.CapitalizeFirst(),
+                    IEnumerable<Def> defList => string.Join(", ", defList.Select(d => d.LabelCap)),
+                    IEnumerable<string> strList => string.Join(", ", strList.Select(s => s.CapitalizeFirst())),
+                    IEnumerable<TaggedString> taggedStrList => string.Join(", ", taggedStrList.Select(ts => ts.CapitalizeFirst())),
+                    _ => entry.ToString()
+                };
+            }
+
+            TooltipSection CreateListSection(string header, List<PawnExtension> list, Func<PawnExtension, object> selector)
+            {
+                var entries = list
+                    .Select(selector)
+                    .Where(entry => !NoData(entry))
+                    .Select(FormatListSections)
+                    .ToList();
+
+                return new TooltipSection(header, entries);
+            }
+
+            // Makes newlines with " -  " and capitalizes the items
+            static string FormatListSections(object entry)
+            {
+                return entry switch
+                {
+                    IEnumerable<string> strList => strList.ToLineList("  - ", capitalizeItems: true),
+                    IEnumerable<TaggedString> taggedStrList => taggedStrList.Select(ts => ts.ToString()).ToLineList("  - ", capitalizeItems: true),
+                    IEnumerable<object> objList => objList.Select(o => o.ToString()).ToLineList("  - ", capitalizeItems: true),
+                    _ => entry.ToString()
+                };
+            }
+
+            static bool NoData(object entry)
+            {
+                return entry == null ||
+                       entry is bool ||
+                       (entry is string str && string.IsNullOrWhiteSpace(str)) ||
+                       (entry is TaggedString tStr && string.IsNullOrWhiteSpace(tStr)) ||
+                       (entry is IEnumerable<object> enumerable && !enumerable.Cast<object>().Any());
+            }
+
+            static StringBuilder RemoveDuplicateLines(StringBuilder sb)
+            {
+                var uniqueLines = new HashSet<string>(sb.ToString().Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
+                sb.Clear();
+                foreach (var line in uniqueLines)
+                {
+                    sb.AppendLine(line);
+                }
+                return sb;
+            }
+        }
     }
 
     public class PawnExtension : DefModExtension
@@ -45,6 +240,11 @@ namespace BigAndSmall
         /// Useful for werewolf-like beaviour, or genes that deactivate if not drunk or something.
         /// </summary>
         public List<ConditionalStatAffecter> conditionals;
+        public string ConditionalDescription =>
+                conditionals?.Select(x => $"{x.Label}:\n" +
+                $"{x.statFactors?.Select(y => y.ToString()).ToLineList("  - ", capitalizeItems: true)}" +
+                $"{x.statOffsets?.Select(y => y.ToString()).ToLineList("  - ", capitalizeItems: true)}").ToLineList();
+
         /// <summary>
         /// Used by the above. Inverts the conditional
         /// </summary>
@@ -58,15 +258,21 @@ namespace BigAndSmall
         /// Used by Genes. When the gene is added/activated it will apply these hediffs to the pawn.
         /// </summary>
         public List<HediffToBody> applyBodyHediff;
+        public List<string> ApplyBodyHediffDescription => applyBodyHediff?.Where(x=>x.conditionals == null)?
+            .Select(x => (string)"BS_ApplyBodyHediff".Translate(x.hediff.LabelCap)).ToList();
         /// <summary>
         /// Same as above but applies to specific bodyparts.
         /// </summary>
         public List<HediffToBodyparts> applyPartHediff;
+        public List<string> ApplyPartHediffDescription => applyPartHediff?.Where(x => x.conditionals == null)?
+            .Select(x => (string)"BS_ApplyPartHediff".Translate(x.hediff.LabelCap, string.Join(", ", x.bodyparts))).ToList();
 
         /// <summary>
         /// This is the magic thing that makes the pawn swap to a different ThingDef. E.g. "Race".
         /// </summary>
         public ThingDef thingDefSwap = null;
+        public string ThingDefSwapDescription => thingDefSwap == null ? null : $"BS_ThingDefSwapDesc".Translate(thingDefSwap.LabelCap);
+
         /// <summary>
         /// Forces the swap to the ThingDef. If false, it will be cautious to avoid accidentally turning robots into
         /// biological snake-people, etc. If in doubt, leave this as false.
@@ -104,15 +310,19 @@ namespace BigAndSmall
         /// </summary>
         /// 
         public SimpleCurve sizeByAge = null;
+        public string SizeByAgeDescription => sizeByAge?.Select((CurvePoint pt) => "PeriodYears".Translate(pt.x).ToString() + ": +" + pt.y.ToString()).ToLineList("  - ", capitalizeItems: true);
+
         /// <summary>
         /// Same as above, but multiplies the size by the curve.
         /// </summary>
         public SimpleCurve sizeByAgeMult = null;
+        public string SizeByAgeMultDescription => sizeByAgeMult?.Select((CurvePoint pt) => "PeriodYears".Translate(pt.x).ToString() + ": x" + pt.y.ToString()).ToLineList("  - ", capitalizeItems: true);
 
         /// <summary>
         /// Works about the same as Rimworld's aptitudes. Let's you add skill-offsets to genes/hediffs/races.
         /// </summary>
         public List<Aptitude> aptitudes = null;
+        public List<string> AptitudeDescription => aptitudes?.Select((Aptitude x) => x.skill.LabelCap.ToString() + " " + x.level.ToStringWithSign()).ToList();
 
         #region Rendering
         /// <summary>
@@ -128,10 +338,42 @@ namespace BigAndSmall
         /// You can for example set a list of paths to be used by male hulks only.
         /// </summary>
         public AdaptivePathPathList bodyPaths = [];
+        public AdaptivePathPathList bodyDessicatedPaths = [];
+        // Gets based on index at the moment. This is a bit lazy. I'll rewrite it properly later.
+        public string GetDessicatedFromBodyPath(string path)
+        {
+            int indexOf = bodyPaths.FindIndex(x => x.texturePath == path);
+            if (!bodyDessicatedPaths.NullOrEmpty())
+            {
+                if (indexOf >= 0 && indexOf < bodyDessicatedPaths.Count)
+                {
+                    return bodyDessicatedPaths[indexOf].texturePath;
+                }
+                else return bodyDessicatedPaths.First().texturePath;
+            }
+            return null;
+        }
         /// <summary>
         /// Same as above.
         /// </summary>
         public AdaptivePathPathList headPaths = [];
+        public AdaptivePathPathList headDessicatedPaths = [];
+
+        public string GetDessicatedFromHeadPath(string path)
+        {
+            int indexOf = headPaths.FindIndex(x => x.texturePath == path);
+            if (!headDessicatedPaths.NullOrEmpty())
+            {
+                if (indexOf >= 0 && indexOf < headDessicatedPaths.Count)
+                {
+                    return headDessicatedPaths[indexOf].texturePath;
+                }
+                else return headDessicatedPaths.First().texturePath;
+            }
+            return null;
+        }
+
+
         public bool hideBody = false;
         public bool hideHead = false;
         /// <summary>
@@ -148,6 +390,7 @@ namespace BigAndSmall
         /// Set what the pawn can eat. By default assumes human diet.
         /// </summary>
         public PawnDiet pawnDiet = null;
+        public string PawnDietDescription => pawnDiet?.LabelCap;
         /// <summary>
         /// If true this will make the race's "PawnDiet" be ignored in favor of other diets.
         /// 
@@ -189,20 +432,21 @@ namespace BigAndSmall
         public BSDrawData bodyDrawData = null;
 
         public bool preventDisfigurement = false;
+        public string PreventDisfigurementDescription => preventDisfigurement ? "BS_PreventDisfigurementDesc".Translate() : null;
         /// <summary>
         /// Lets the pawn walk on VFE's creep. Only works on genes.
         /// </summary>
         public bool canWalkOnCreep = false;
+        public string CanWalkOnCreepDescription => canWalkOnCreep ? "BS_CanWalkOnCreepDesc".Translate() : null;
 
-        /// <summary>
-        /// Makes colonists care less about the pawn's death, and the pawn care less about death in general.
-        /// </summary>
-        public bool isDrone = false;
+        public RomanceTags romanceTags = null;
+        public List<string> RomanceTagsDescription => romanceTags?.GetDescriptions();
 
         /// <summary>
         /// Can hold melee weapons, but will only use natural/bionic attacks.
         /// </summary>
         public bool forceUnarmed = false;
+        public string ForceUnarmedDescription => forceUnarmed ? "BS_ForceUnarmedDesc".Translate() : null;
 
         public bool hideInGenePicker = false;
         public bool hideInXenotypeUI = false;
@@ -211,6 +455,7 @@ namespace BigAndSmall
         /// Trigger the soul-consume effect on hit.
         /// </summary>
         public ConsumeSoul consumeSoulOnHit = null;
+        public string ConsumeSoulOnHitDescription => consumeSoulOnHit == null ? null : "BS_ConsumeSoulOnHitDesc".Translate($"{100 * consumeSoulOnHit.gainMultiplier:f0}%");
 
         /// <summary>
         /// Pawn will be considered a ...
@@ -219,6 +464,18 @@ namespace BigAndSmall
         public bool isDeathlike = false;
         public bool isMechanical = false;
         public bool isBloodfeeder = false;
+        /// <summary>
+        /// Makes colonists care less about the pawn's death, and the pawn care less about death in general.
+        /// </summary>
+        public bool isDrone = false;
+        public string DroneDescription => isDrone ? "BS_DroneDesc".Translate() : null;
+        private string UnlivingDescription => isUnliving ? "BS_UnlivingDesc".Translate() : null;
+        private string DeathlikeDescription => isDeathlike ? "BS_DeathlikeDesc".Translate() : null;
+        private string MechanicalDescription => isMechanical ? "BS_MechanicalDesc".Translate() : null;
+        private string BloodfeederDescription => isBloodfeeder ? "BS_BloodfeederDesc".Translate() : null;
+        public List<string> TagDescriptions => new List<string> { UnlivingDescription, DeathlikeDescription, MechanicalDescription, BloodfeederDescription, DroneDescription }
+                .Where(x => x != null).ToList();
+
 
         /// <summary>
         /// If set to true the pawn will default to blocking additctions unless white/allowlisted.
@@ -253,6 +510,7 @@ namespace BigAndSmall
         /// Lock a Needbar at a certain level. Often more compatible than just removing them.
         /// </summary>
         public List<BetterPrerequisites.LockedNeedClass> lockedNeeds;
+        public string LockedNeedsDescription => lockedNeeds?.Select(x => x.GetLabel()).ToLineList("  - ", capitalizeItems: true);
 
 
         /// <summary>
@@ -265,26 +523,26 @@ namespace BigAndSmall
         /// </summary>
         public FacialAnimDisabler facialDisabler = null;
 
-
         #region Obsolete
         public bool unarmedOnly = false;    // Still plugged in, but the name was kind of bad. Use forceUnarmed instead.
         #endregion
 
-        #region Some of these are RACE ONLY. Use elsewhere at your own risk.
+        // Some of these are RACE ONLY. Use elsewhere at your own risk.
 
         #region
         /// <summary>
-        /// Force-adds these hediffs. Removes when raec is removed.
+        /// Force-adds these hediffs. Removes when race is removed.
         /// </summary>
         public List<HediffDef> forcedHediffs = [];
-        #endregion
+        public List<string> RaceForcedHediffsDesc => forcedHediffs.NullOrEmpty() ? null :
+            forcedHediffs?.Select(x => (string)"BS_ApplyBodyHediff".Translate(x.LabelCap)).ToList();
 
         /// <summary>
         /// Force-adds these traits.
         /// </summary>
         public List<TraitDef> forcedTraits = [];
 
-        #region Biotech
+        public List<TraitDef> traitsDependentOnRace = [];
         /// <summary>
         /// Adds endogenes to the pawn. Ensures they are always present.
         /// </summary>
@@ -297,6 +555,8 @@ namespace BigAndSmall
         /// Adds xenogenes to the pawn. Ensures they are always present.
         /// </summary>
         public List<GeneDef> forcedXenogenes = null;
+
+        public List<GeneDef> genesDependentOnRace = [];
         #endregion
 
         /// <summary>
@@ -328,7 +588,6 @@ namespace BigAndSmall
 
 
         #endregion
-        #endregion
 
         public float GetSizeFromSizeByAge(float? age)
         {
@@ -351,7 +610,7 @@ namespace BigAndSmall
 
         public StringBuilder GetAllEffectorDescriptions()
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
             if (applyBodyHediff != null)
             {
                 foreach (var hdiffToBody in applyBodyHediff)
@@ -364,7 +623,7 @@ namespace BigAndSmall
                         stringBuilder.AppendLine(($"\"{hdiffLbl.CapitalizeFirst()}\" {"BS_ActiveIf".Translate()}:").Colorize(ColoredText.TipSectionTitleColor));
                         foreach (var conditional in hdiffToBody.conditionals)
                         {
-                            stringBuilder.AppendLine($"• {conditional.Label}");
+                            stringBuilder.AppendLine($"  - {conditional.Label}");
                         }
                     }
                 }
@@ -381,7 +640,7 @@ namespace BigAndSmall
                         stringBuilder.AppendLine(($"\"{hdiffLbl.CapitalizeFirst()}\" {"BS_ActiveIf".Translate()}:").Colorize(ColoredText.TipSectionTitleColor));
                         foreach (var conditional in hdiffToParts.conditionals)
                         {
-                            stringBuilder.AppendLine($"• {conditional.Label}");
+                            stringBuilder.AppendLine($"  - {conditional.Label}");
                         }
                     }
                 }
@@ -412,6 +671,8 @@ namespace BigAndSmall
             results.Add(geneFilters?.GetFilterResult(gene) ?? FilterResult.Neutral);
             if (gene.displayCategory != null) results.Add(geneCategoryFilters?.GetFilterResult(gene.displayCategory) ?? FilterResult.Neutral);
             if (gene.exclusionTags != null) results.Add(geneTagFilters?.GetFilterResultFromItemList(gene.exclusionTags) ?? FilterResult.Neutral);
+            if (gene.descriptionHyperlinks != null) results.Add(geneTagFilters?.GetFilterResultFromItemList(gene.descriptionHyperlinks
+                .Where(x=>x.def is DefTag).Select(x=>x.def.defName).ToList()) ?? FilterResult.Neutral);
             return results.Fuse();
             //return true;
         }
@@ -464,11 +725,11 @@ namespace BigAndSmall
 
     public class TransformationGene
     {
-        public List<string> genesRequired = new List<string>();
-        public List<string> genesForbidden = new List<string>();
-        public List<string> genesToAdd = new List<string>();
+        public List<string> genesRequired = [];
+        public List<string> genesForbidden = [];
+        public List<string> genesToAdd = [];
         public string xenotypeToAdd = null;
-        public List<string> genesToRemove = new List<string>();
+        public List<string> genesToRemove = [];
 
         public bool TryTransform(Pawn pawn, Gene parentGene)
         {

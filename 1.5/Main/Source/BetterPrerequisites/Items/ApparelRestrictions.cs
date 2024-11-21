@@ -13,17 +13,9 @@ namespace BigAndSmall
     public class ApparelRestrictions// : IExposable
     {
         public bool absolutelyNothing = false;
-        //public bool noOverHead = false;
-        //public bool noOuterLayer = false;
-        //public bool noMidLayer = false;
-        //public bool noInnerLayer = false;
         public bool noClothes = false;
         public bool noArmor = false;
-        //public bool noFootgear = false;
-        //public bool noPants = false;
         public bool exceptNudistFriendly = false;
-        //public bool hatsOkay = false;
-        //public bool noHelmets = false;
         public FilterListSet<ThingDef> thingDefs = null;
         public FilterListSet<string> tags = null;
         /// <summary>

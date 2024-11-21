@@ -25,6 +25,7 @@ namespace BigAndSmall
         public float? femaleGenderChance = null;
 
         public List<ThingDef> isFusionOf = null;
+        public RomanceTags romanceTags = null;
 
         //public List<HediffDef> RaceHediffs => raceHediff == null ? raceHediffList : [.. raceHediffList, raceHediff];
 
@@ -146,6 +147,8 @@ namespace BigAndSmall
                 }
             }
 
+            List<GeneDef> genesThatCanBeRemoved = extensions.SelectMany(x => x.genesDependentOnRace).ToList();
+            List<TraitDef> traitsThatCanBeRemoved = extensions.SelectMany(x => x.traitsDependentOnRace).ToList();
             // Remove all forced traits, hediffs and genes.
             foreach (var ext in extensions)
             {
@@ -159,21 +162,18 @@ namespace BigAndSmall
                         }
                     }
                 }
-                if (ext.forcedEndogenes != null)
-                {
-                    HashSet<GeneDef> genesToRemove = [.. ext.forcedEndogenes ?? ([]), .. ext.forcedXenogenes ?? ([]), .. ext.immutableEndogenes ?? ([])];
+                HashSet<GeneDef> genesToRemove = [.. ext.forcedEndogenes ?? ([]), .. ext.forcedXenogenes ?? ([]), .. ext.immutableEndogenes ?? ([])];
 
-                    foreach (var gene in genesToRemove)
+                foreach (var gene in genesToRemove.Where(genesThatCanBeRemoved.Contains))
+                {
+                    if (pawn.genes.GenesListForReading.Any(g => g.def == gene))
                     {
-                        if (pawn.genes.GenesListForReading.Any(g => g.def == gene))
-                        {
-                            pawn.genes.RemoveGene(pawn.genes.GenesListForReading.First(g => g.def == gene));
-                        }
+                        pawn.genes.RemoveGene(pawn.genes.GenesListForReading.First(g => g.def == gene));
                     }
                 }
                 if (ext.forcedTraits != null)
                 {
-                    foreach (var trait in ext.forcedTraits)
+                    foreach (var trait in ext.forcedTraits.Where(traitsThatCanBeRemoved.Contains))
                     {
                         if (pawn.story.traits.HasTrait(trait))
                         {

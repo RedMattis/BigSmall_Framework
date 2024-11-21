@@ -101,11 +101,15 @@ namespace BigAndSmall
 
             listStd.Label("BS_ActivateExperimental".Translate().AsTipTitle());
             CreateSettingCheckbox(listStd, "BS_BodyDefFusions".Translate(), ref settings.experimental);
+            //CreateSettingCheckbox(listStd, "BS_PathRacesFromOtherMods".Translate(), ref settings.pathRacesFromOtherMods);
             listStd.GapLine();
 
             listStd.Label("BS_GenesSpecific".Translate().AsTipTitle());
             CreateSettingCheckbox(listStd, "BS_DoDefGeneration".Translate(), ref settings.generateDefs);
             listStd.GapLine();
+
+            listStd.Label("BS_ToggleFeatures".Translate().AsTipTitle());
+            CreateSettingCheckbox(listStd, "BS_Surgery".Translate(), ref settings.surgeryAndBionics);
 
             listStd.Label("BS_GameMechanics".Translate().AsTipTitle());
             CreateSettingCheckbox(listStd, "BS_ScaleAnimals".Translate(), ref settings.scaleAnimals);
@@ -140,7 +144,15 @@ namespace BigAndSmall
             listStd.GapLine();
             CreateSettingCheckbox(listStd, "BS_NormalizeBodyType".Translate(), ref settings.scaleBodyTypes);
 
-            
+            // Check if in dev-mode
+            if (Prefs.DevMode)
+            {
+                listStd.GapLine();
+                listStd.Label("BS_DevSettings".Translate().AsTipTitle());
+                CreateSettingCheckbox(listStd, "BS_JesusMode".Translate(), ref settings.jesusMode);
+            }
+
+
 
             listStd.End();
             Widgets.EndScrollView();
@@ -158,8 +170,14 @@ namespace BigAndSmall
         private static readonly bool defaultGenerateDefs = true;
         public bool generateDefs = defaultGenerateDefs;
 
+        private static readonly bool defaultPathRacesFromOtherMods = true;
+        public bool pathRacesFromOtherMods = defaultPathRacesFromOtherMods;
+
         private static readonly bool defaultExperimental = true;
         public bool experimental = defaultExperimental;
+
+        private static readonly bool defaultSurgeryAndBionics = true;
+        public bool surgeryAndBionics = defaultSurgeryAndBionics;
 
         private static readonly float defaultVisualLargerMult = 1f;
         public float visualLargerMult = defaultVisualLargerMult;
@@ -212,10 +230,16 @@ namespace BigAndSmall
         public static readonly float inflitratorRaidChanceDefault = 0.005f;
         public float inflitratorRaidChance = inflitratorRaidChanceDefault;
 
+        // DEV Settings
+        public static readonly bool defaultJesusMode = false;
+        public bool jesusMode = defaultJesusMode;
+
         public override void ExposeData()
         {
             Scribe_Values.Look(ref experimental, "experimental", defaultExperimental);
+            Scribe_Values.Look(ref pathRacesFromOtherMods, "pathRacesFromOtherMods", defaultPathRacesFromOtherMods);
             Scribe_Values.Look(ref generateDefs, "generateDefs", defaultGenerateDefs);
+            Scribe_Values.Look(ref surgeryAndBionics, "surgeryAndBionics", defaultSurgeryAndBionics);
             Scribe_Values.Look(ref visualLargerMult, "visualLargerMult", defaultVisualLargerMult);
             Scribe_Values.Look(ref visualSmallerMult, "visualSmallerMult", defaultVisualSmallerMult);
             Scribe_Values.Look(ref headPowLarge, "headPowLarge", defaultHeadPowLarge);
@@ -234,6 +258,10 @@ namespace BigAndSmall
             Scribe_Values.Look(ref useFantasyNames, "useFantasyNames", defaultUseFantasyNaming);
             Scribe_Values.Look(ref inflitratorChance, "inflitratorChance", inflitratorChanceDefault);
             Scribe_Values.Look(ref inflitratorRaidChance, "inflitratorRaidChance", inflitratorRaidChanceDefault);
+
+            // Scribe Dev Settings
+            Scribe_Values.Look(ref jesusMode, "jesusMode", defaultJesusMode);
+
             base.ExposeData();
         }
 
@@ -257,6 +285,8 @@ namespace BigAndSmall
             useFantasyNames = defaultUseFantasyNaming;
             inflitratorChance = inflitratorChanceDefault;
             inflitratorRaidChance = inflitratorRaidChanceDefault;
+            jesusMode = defaultJesusMode;
+
         }
     }
 }

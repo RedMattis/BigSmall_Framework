@@ -98,6 +98,7 @@ namespace BigAndSmall
         public static ThingDef Lung;
         public static ThingDef Kidney;
         public static ThingDef Liver;
+        public static ThingDef Filth_MachineBits;
 
         // Capacity
         public static PawnCapacityDef Metabolism;
@@ -113,6 +114,13 @@ namespace BigAndSmall
 
         // BodyPartGroupDefs
         public static BodyPartGroupDef Feet;
+
+        // BodyParts
+        public static BodyPartDef Tail;
+        public static BodyPartDef BS_Wing;
+
+        //public static ThingDef BS_MechHuman;
+        //public static HediffDef BS_MechHumanRace;
 
 
 

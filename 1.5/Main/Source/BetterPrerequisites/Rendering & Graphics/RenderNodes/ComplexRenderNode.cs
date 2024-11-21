@@ -4,7 +4,7 @@ using static BigAndSmall.RenderingLib;
 
 namespace BigAndSmall
 {
-    public class PawnComplexRenderingProps : PawnRenderNodeProperties
+    public class PawnComplexRenderingProps : PawnRenderNode_SimpleSwitchesProps
     {
         public ShaderTypeDef shader = null;
         public ColorSetting colorA = new();
@@ -17,7 +17,7 @@ namespace BigAndSmall
         public bool isFurskin = false;
     }
 
-    public class PawnRenderNode_Complex : PawnRenderNode
+    public class PawnRenderNode_Complex : PawnRenderNode_SimpleSwitches
     {
         PawnComplexRenderingProps ComplexProps => (PawnComplexRenderingProps)props;
         public PawnRenderNode_Complex(Pawn pawn, PawnComplexRenderingProps props, PawnRenderTree tree)

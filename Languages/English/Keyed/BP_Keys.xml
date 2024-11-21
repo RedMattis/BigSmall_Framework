@@ -64,5 +64,44 @@
 
   <BS_And>and</BS_And>
   <BS_With>with</BS_With>
+  <BS_Right>right</BS_Right>
+  <BS_Left>left</BS_Left>
+  <BS_Mech>robotic</BS_Mech>
 
+  <!-- PatchExtensions -->
+  <BS_Applies>applies</BS_Applies>
+
+  <BS_ApplyBodyHediff>{0}</BS_ApplyBodyHediff>
+  <BS_ApplyPartHediff>applies {0} to {1}</BS_ApplyPartHediff>
+  <BS_ThingDefSwap>applies race/hybrid race</BS_ThingDefSwap>
+  <BS_ThingDefSwapDesc>set to {0}</BS_ThingDefSwapDesc>
+  <BS_DroneDesc>is a drone (less affected by death, ...)</BS_DroneDesc>
+  <BS_ForceUnarmed>unarmed fighter</BS_ForceUnarmed>
+  <BS_ForceUnarmedDesc>uses bionic or unarmed melee attacks</BS_ForceUnarmedDesc>
+  <BS_ConsumeSoulOnHit>consumes soul energy on kill</BS_ConsumeSoulOnHit>
+  <BS_ConsumeSoulOnHitDesc>efficiency {0}</BS_ConsumeSoulOnHitDesc>
+  <BS_PawnDiet>pawn diet</BS_PawnDiet>
+  <BS_UnlivingDesc>considered unliving</BS_UnlivingDesc>
+  <BS_DeathlikeDesc>death-affinity</BS_DeathlikeDesc>
+  <BS_MechanicalDesc>considered mechanical</BS_MechanicalDesc>
+  <BS_BloodfeederDesc>considered bloodfeeder</BS_BloodfeederDesc>
+  <BS_HasApparelRestrictions>alters apparel options</BS_HasApparelRestrictions>
+  <BS_HasNullThoughts>disables thoughts</BS_HasNullThoughts>
+  <BS_HasNullThoughtsCount>thoughts disabled: {0}</BS_HasNullThoughtsCount>
+
+  <BS_ConditionalDescription>required conditions to activate</BS_ConditionalDescription>
+  <BS_Aptitudes>Aptitudes</BS_Aptitudes>
+  <BS_CreatureTag>classification</BS_CreatureTag>
+  <BS_RomanceTags>romance compatibility</BS_RomanceTags>
+
+  <BS_FocedEndoImmutable>forced endogenes (immutable)</BS_FocedEndoImmutable>
+  <BS_FocedEndo>forced endogenes</BS_FocedEndo>
+  <BS_FocedXeno>forced xenogene</BS_FocedXeno>
+  <BS_SizeByAgeOffset>Size offset at age</BS_SizeByAgeOffset>
+  <BS_SizeByAgeOffset>Size multiplier at age</BS_SizeByAgeOffset>
+
+  <BS_PreventDisfigurementDesc>prevents disfigurement</BS_PreventDisfigurementDesc>
+  <BS_CanWalkOnCreepDesc>can walk on creep</BS_CanWalkOnCreepDesc>
+
+  <BS_Priority>priority {0}</BS_Priority>
 </LanguageData>

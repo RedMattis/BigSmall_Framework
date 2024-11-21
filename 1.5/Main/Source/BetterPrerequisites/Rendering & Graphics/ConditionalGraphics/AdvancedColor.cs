@@ -179,7 +179,7 @@ namespace BigAndSmall
                     // This generates a deterministic value from 0 to 1 based on the id.
                     float randomValue = Mathf.Abs((strToHash.GetHashCode() % 200) / 200f);
                     float randomValue2 = Mathf.Abs((strToHash.GetHashCode() % 333) / 333f);
-                    Color rngColor = GraphicsHelpers.GetColorFromColourListRange(colourRange, randomValue, randomValue2);
+                    Color rngColor = GraphicsHelper.GetColorFromColourListRange(colourRange, randomValue, randomValue2);
                     randomClrPerId[clrId] = rngColor;
                     //finalClr *= rngColor;
                     colorsAdded.Add(rngColor);

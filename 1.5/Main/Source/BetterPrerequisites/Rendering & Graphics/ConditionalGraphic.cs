@@ -56,11 +56,12 @@ namespace BigAndSmall
         {
             if (triggerBodyPart.Count > 0)
             {
-                bool success = false;
-                bool partFound = false;
+                
                 var allParts = pawn.RaceProps.body.AllParts;
                 foreach (var partRequire in triggerBodyPart)
                 {
+                    bool requirementValid = false;
+                    bool partFound = false;
                     if (partRequire.bodyPartDef == null) throw new Exception("PartRecord is missing a part definition.");
                     foreach (var hediff in pawn.health.hediffSet.hediffs.Where(x=>x?.Part?.def == partRequire.bodyPartDef && x.Part?.flipGraphic == partRequire.mirrored))
                     {
@@ -76,19 +77,17 @@ namespace BigAndSmall
 
                         if (partValid)
                         {
-                            success = true;
+                            requirementValid = true;
                         }
                     }
                     if (partRequire.partMissing && !partFound && !allParts.Any(x => x.def == partRequire.bodyPartDef))
                     {
-                        success = true;
-                        //Log.WarningOnce($"[DEBUG] Looking for a lost part, but didn't find it at all in the pawn's bodyDef.\n" +
-                        //    $"Treating it as a missing part.\n{partRequire.bodyPartDef} on {pawn}.", pawn.thingIDNumber);
+                        requirementValid = true;
                     }
-                }
-                if (!success)
-                {
-                    return false;
+                    if (!requirementValid)
+                    {
+                        return false;
+                    }
                 }
             }
             if (HasGeneTriggers)

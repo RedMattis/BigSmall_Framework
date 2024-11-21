@@ -230,7 +230,7 @@ namespace BigAndSmall
         public static void Postfix(FiringIncident __instance)
         {
             // Finalise stranger in black pawn kind
-            if (__instance.def == BSDefs.StrangerInBlackJoin)
+            if (__instance.def == BSDefs.StrangerInBlackJoin && BigSmall.BSGenesActive)
             {
                 // Check the player wealth
                 float playerWealth = Find.AnyPlayerHomeMap.wealthWatcher.WealthTotal;

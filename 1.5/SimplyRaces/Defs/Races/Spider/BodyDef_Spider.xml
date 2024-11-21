@@ -1,11 +1,5 @@
 <Defs>
-  <BodyPartDef>
-    <defName>BS_SpiderAbdomen</defName>
-    <label>spider abdomen</label>
-    <hitPoints>60</hitPoints>
-    <skinCovered>true</skinCovered>
-    <canScarify>true</canScarify>
-  </BodyPartDef>
+  
 
   <BodyDef>
     <defName>BS_SpiderHybrid</defName>

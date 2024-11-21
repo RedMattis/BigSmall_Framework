@@ -31,6 +31,19 @@
         </bodyDefOverrideList_Female> -->
       </li>
     </comps>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <romanceTags>
+          <Snake>1.0</Snake>
+          <Humanlike>0.65</Humanlike>
+        </romanceTags>
+        <bodyPosOffset>0.6</bodyPosOffset>
+        <renderCacheOff>true</renderCacheOff>
+      </li> 
+      <li MayRequire="pathfinding.framework" Class="PathfindingFramework.MovementExtension">
+        <movementDef>PF_Movement_Flying</movementDef>
+      </li>
+    </modExtensions>
     <renderNodeProperties>
       <!-- Righthand side -->
       <li Class="BigAndSmall.PawnRenderingProps_Ultimate">
@@ -40,6 +53,7 @@
         <rotDrawMode>Fresh, Rotting</rotDrawMode>
         <colorType>Skin</colorType>
         <shader>CutoutComplex</shader>
+        
         <conditionalGraphics>
           <texturePaths>
             <Body_Hulk>RaceDefaults/Snek/bp_hulk</Body_Hulk>
@@ -87,10 +101,8 @@
             <li>
               <!-- Poor snek lost its tail. -->
               <triggerBodyPart>
-                <li>
-                  <bodyPartDef>BS_SnakeBody</bodyPartDef>
-                  <partMissing>true</partMissing>
-                </li>
+                <li> <bodyPartDef>BS_SnakeBody</bodyPartDef> <partMissing>true</partMissing> </li>
+                <li> <bodyPartDef>BS_Mech_SnakeBody</bodyPartDef> <partMissing>true</partMissing> </li>
               </triggerBodyPart>
               <texturePaths><default>BS_Blank</default></texturePaths>
             </li>
@@ -117,16 +129,6 @@
           </dataWest>
         </drawData>
       </li>
-
     </renderNodeProperties>
-    <modExtensions>
-      <li Class="BigAndSmall.PawnExtension">
-        <bodyPosOffset>0.6</bodyPosOffset>
-        <renderCacheOff>true</renderCacheOff>
-      </li> 
-      <li MayRequire="pathfinding.framework" Class="PathfindingFramework.MovementExtension">
-        <movementDef>PF_Movement_Flying</movementDef>
-      </li>
-    </modExtensions>
   </HediffDef>
 </Defs>

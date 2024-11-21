@@ -6,7 +6,7 @@
     <!-- This is basically the main component and not an aspect, so don't add it automatically. -->
     <addAutomatically>false</addAutomatically> 
     <nullifyingGenes>
-      <li>DiseaseFree</li>
+      <li MayRequire="Ludeon.RimWorld.Biotech">DiseaseFree</li>
     </nullifyingGenes>
     <nullifyingHediffs>
       <li MayRequire="Ludeon.RimWorld.Anomaly">Ghoul</li>

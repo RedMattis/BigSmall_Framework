@@ -1,0 +1,163 @@
+<Defs>
+
+  <!-- Suitable  for the mechanical kind of robot blatantly made from steel and bolts.
+
+  It doesn't include stuff like custom graphics on its own though.
+  -->
+  <HediffDef Name="BS_UrbRobotRace" ParentName="BS_DefaultRaceTracker">
+    <defName>BS_UrbMech_Race</defName>
+    <label>mechanical</label>
+    <description>This creature is largely composed of highly ruggedized machinery.</description>
+    <defaultLabelColor>(0.5, 1.0, 1.0)</defaultLabelColor>
+    <abilities>
+    </abilities>
+    <disablesNeeds>
+      <!-- <li>Comfort</li> -->
+      <li>Outdoors</li>
+      <li MayRequire="Dubwise.DubsBadHygiene">DBHThirst</li>
+      <li MayRequire="Dubwise.DubsBadHygiene">Bladder</li>
+			<li MayRequire="Dubwise.DubsBadHygiene">Hygiene</li>
+      <!-- <li>FoodVariety</li> -->
+    </disablesNeeds>
+    <comps>
+      <li Class="BigAndSmall.CompProperties_Race">
+        <canSwapAwayFrom>true</canSwapAwayFrom>
+      </li>
+    </comps>
+    <stages Inherit="False">
+      <li>
+        <painFactor>0.5</painFactor>
+        <totalBleedFactor>0</totalBleedFactor>
+        <statFactors>
+        </statFactors>
+        <statOffsets>
+        </statOffsets>
+        <damageFactors>
+          <Frostbite>0</Frostbite>
+        </damageFactors>
+        <makeImmuneTo>
+          <li>Flu</li>
+          <li>Malaria</li>
+          <li>SleepingSickness</li>
+          <li>Plague</li>
+          <li>WoundInfection</li>
+          <li>LungRot</li>
+          <li>GutWorms</li>
+          <li>MuscleParasites</li>
+          <li>OrganDecay</li>
+          <li>LungRot</li>
+          <li>FoodPoisoning</li>
+        </makeImmuneTo>
+        <!-- <blocksSleeping>true</blocksSleeping> -->
+      </li>
+		</stages>
+    <renderNodeProperties Inherit="False">
+    </renderNodeProperties>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <isMechanical>true</isMechanical>
+        <pawnDiet>BS_ChemRobotDiet</pawnDiet>
+        <banAddictionsByDefault>true</banAddictionsByDefault>
+        <romanceTags>
+          <Mech>1.0</Mech>
+          <Android>0.75</Android>
+          <Humanlike>0.5</Humanlike>
+        </romanceTags>
+        <aptitudes>
+          <Construction>2</Construction>
+        </aptitudes>
+        <traitFilters>
+          <blacklist>
+            <li>Wimp</li>
+            <!-- <li>BodyPurist</li> -->
+          </blacklist>
+        </traitFilters>
+        <hediffFilters>
+          <banlist>
+            <li>Flu</li>
+            <li>Malaria</li>
+            <li>SleepingSickness</li>
+            <li>Plague</li>
+            <li>WoundInfection</li>
+            <li>LungRot</li>
+            <li>GutWorms</li>
+            <li>MuscleParasites</li>
+            <li>OrganDecay</li>
+            <li>FoodPoisoning</li>
+
+            <li>Carcinoma</li>
+            <li>HeartAttack</li>
+            <li>BadBack</li>
+            <li>Frail</li>
+            <li>Cataract</li>
+            <li>Dementia</li>
+            <li>Alzheimers</li>
+            <li>Asthma</li>
+            <li>HeartArteryBlockage</li>
+            <li>Anesthetic</li>
+
+            <li MayRequire="vanillaracesexpanded.fungoid">VRE_GeneInfection</li>
+          </banlist>
+        </hediffFilters>
+        <geneCategoryFilters>
+          <blacklist>
+            <!-- <li MayRequire="Ludeon.Rimworld.Biotech">Pain</li> -->
+            <li MayRequire="Ludeon.Rimworld.Biotech">Reproduction</li>
+          </blacklist>
+        </geneCategoryFilters>
+        <nullsThoughts>
+          <li>Pain</li>
+          <li>MissingTongue</li>
+          <li>RotStink</li>
+          <li>RotStinkLingering</li>
+          <li>SharedBed</li>
+          <li>MasochistPain</li>
+          <li>ProsthophobeUnhappy</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">AgeReversalReceived</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">AgeReversalDemanded</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinUncovered_Disapproved_Male</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinUncovered_Disapproved_Social_Male</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinOrChestUncovered_Disapproved_Male</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinOrChestUncovered_Disapproved_Social_Male</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinChestOrHairUncovered_Disapproved_Male</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinChestOrHairUncovered_Disapproved_Social_Male</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinUncovered_Disapproved_Female</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinUncovered_Disapproved_Social_Female</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinOrChestUncovered_Disapproved_Female</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinOrChestUncovered_Disapproved_Social_Female</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinChestOrHairUncovered_Disapproved_Female</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinChestOrHairUncovered_Disapproved_Social_Female</li>
+          <li>Naked</li>
+        </nullsThoughts>
+        <!-- <apparelRestrictions>
+          <apparelLayers>
+            <blacklist>
+              <li>OnSkin</li>
+            </blacklist>
+          </apparelLayers>
+        </apparelRestrictions> -->
+        <surgeryRecipes>
+          <blacklist>
+            <li>InstallNaturalLiver</li>
+            <li>InstallNaturalLung</li>
+            <li>InstallNaturalKidney</li>
+            <li>InstallNaturalHeart</li>
+            <li MayRequire="Ludeon.RimWorld.Royalty">InstallStoneskinGland</li>
+            <li MayRequire="Ludeon.RimWorld.Royalty">InstallArmorskinGland</li>
+            <li MayRequire="Ludeon.RimWorld.Royalty">InstallToughskinGland</li>
+            <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_AndroidConversion</li>
+          </blacklist>
+          <allowlist>
+            <li>BS_RepairAndroidBrain</li>
+            <li>BS_RepairAndroidReactor</li>
+            <li>BS_RepairAndroidOrgan</li>
+            <li>BS_RepairAndroidMinorOrganPart</li>
+            <li>BS_RepairAndroidPart</li>
+            <li>BS_RepairAndroidPartSmall</li>
+          </allowlist>
+        </surgeryRecipes>
+        <babyStartAge>20</babyStartAge>
+      </li>
+    </modExtensions>
+  </HediffDef>
+</Defs>

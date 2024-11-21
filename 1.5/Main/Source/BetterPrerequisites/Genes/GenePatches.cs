@@ -175,29 +175,36 @@ namespace BetterPrerequisites
 
             if (__instance.HasModExtension<PawnExtension>())
             {
-                var geneExt = __instance.GetModExtension<PawnExtension>();
+                var pawnExt = __instance.GetModExtension<PawnExtension>();
 
                 StringBuilder stringBuilder = new();
                 stringBuilder.AppendLine(__result);
 
-                if (geneExt.conditionals != null)
+                if (PawnExtensionExtension.TryGetDescription([pawnExt], out string description))
                 {
                     stringBuilder.AppendLine();
-                    stringBuilder.AppendLine(("BP_ActiveOnCondition".Translate() + ":").Colorize(ColoredText.TipSectionTitleColor));
-                    foreach (var conditional in geneExt.conditionals)
-                    {
-                        stringBuilder.AppendLine(" - " + conditional.Label);
-                    }
-                }
-                if (geneExt.sizeByAge != null)
-                {
-                    stringBuilder.AppendLine();
-                    stringBuilder.AppendLineTagged(("SizeOffsetByAge".Translate().CapitalizeFirst() + ":").Colorize(ColoredText.TipSectionTitleColor));
-                    stringBuilder.AppendLine(geneExt.sizeByAge.Select((CurvePoint pt) => "PeriodYears".Translate(pt.x).ToString() + ": +" + pt.y.ToString()).ToLineList("  - ", capitalizeItems: true));
+                    stringBuilder.AppendLine(description);
                 }
 
-                var effectorB = geneExt.GetAllEffectorDescriptions();
-                stringBuilder.Append(effectorB);
+
+                //if (geneExt.conditionals != null)
+                //{
+                //    stringBuilder.AppendLine();
+                //    stringBuilder.AppendLine(("BP_ActiveOnCondition".Translate() + ":").Colorize(ColoredText.TipSectionTitleColor));
+                //    foreach (var conditional in geneExt.conditionals)
+                //    {
+                //        stringBuilder.AppendLine(" - " + conditional.Label);
+                //    }
+                //}
+                //if (geneExt.sizeByAge != null)
+                //{
+                //    stringBuilder.AppendLine();
+                //    stringBuilder.AppendLineTagged(("SizeOffsetByAge".Translate().CapitalizeFirst() + ":").Colorize(ColoredText.TipSectionTitleColor));
+                //    stringBuilder.AppendLine(geneExt.sizeByAge.Select((CurvePoint pt) => "PeriodYears".Translate(pt.x).ToString() + ": +" + pt.y.ToString()).ToLineList("  - ", capitalizeItems: true));
+                //}
+
+                //var effectorB = geneExt.GetAllEffectorDescriptions();
+                //stringBuilder.Append(effectorB);
 
 
 

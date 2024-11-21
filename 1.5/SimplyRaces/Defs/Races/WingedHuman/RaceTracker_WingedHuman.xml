@@ -32,14 +32,17 @@
               <texturePaths><default>BS_Blank</default></texturePaths>
             </li>
             <li>
-              <triggerBodyPart> <li> <bodyPartDef>BS_Wing</bodyPartDef><mirrored>false</mirrored> <partMissing>true</partMissing> </li> </triggerBodyPart>
+              <triggerBodyPart>
+                <li> <bodyPartDef>BS_Wing</bodyPartDef><mirrored>false</mirrored> <partMissing>true</partMissing> </li>
+                <li> <bodyPartDef>BS_Mech_Wing</bodyPartDef><mirrored>false</mirrored> <partMissing>true</partMissing> </li>
+              </triggerBodyPart>
               <texturePaths><default>BS_Blank</default></texturePaths>
             </li>
           </alts>
         </conditionalGraphics>
         <drawSize>(1.24,1.24)</drawSize>
         <visibleFacing> <li>South</li> <li>East</li> </visibleFacing>
-        <drawData> <defaultData> <layer>91</layer> </defaultData> <dataNorth> <layer>91</layer> </dataNorth> </drawData>
+        <drawData> <defaultData> <layer>91</layer> </defaultData> </drawData>
       </li>
 
       <li Class="BigAndSmall.PawnRenderingProps_Ultimate">
@@ -71,7 +74,10 @@
               <texturePaths><default>BS_Blank</default></texturePaths>
             </li>
             <li>
-              <triggerBodyPart> <li> <bodyPartDef>BS_Wing</bodyPartDef> <mirrored>false</mirrored> <partMissing>true</partMissing> </li> </triggerBodyPart>
+              <triggerBodyPart>
+                <li> <bodyPartDef>BS_Wing</bodyPartDef><mirrored>false</mirrored> <partMissing>true</partMissing> </li>
+                <li> <bodyPartDef>BS_Mech_Wing</bodyPartDef><mirrored>false</mirrored> <partMissing>true</partMissing> </li>
+              </triggerBodyPart>
               <texturePaths> <default>BS_Blank</default> </texturePaths>
             </li>
           </alts>
@@ -81,7 +87,7 @@
         <drawData>
           <defaultData> <layer>10</layer> </defaultData>
           <dataSouth>   <layer>-1</layer> </dataSouth>
-          <dataNorth>   <layer>90</layer> <flip>true</flip></dataNorth>
+          <dataNorth>   <layer>92</layer> <flip>true</flip></dataNorth>
         </drawData>
       </li>
 
@@ -112,7 +118,10 @@
               <texturePaths><default>BS_Blank</default></texturePaths>
             </li>
             <li>
-              <triggerBodyPart> <li> <bodyPartDef>BS_Wing</bodyPartDef> <mirrored>false</mirrored> <partMissing>true</partMissing> </li> </triggerBodyPart>
+              <triggerBodyPart>
+                <li> <bodyPartDef>BS_Wing</bodyPartDef><mirrored>false</mirrored> <partMissing>true</partMissing> </li>
+                <li> <bodyPartDef>BS_Mech_Wing</bodyPartDef><mirrored>false</mirrored> <partMissing>true</partMissing> </li>
+              </triggerBodyPart>
               <texturePaths> <default>BS_Blank</default> </texturePaths>
             </li>
           </alts>
@@ -144,7 +153,10 @@
               <texturePaths><default>BS_Blank</default></texturePaths>
             </li>
             <li>
-              <triggerBodyPart> <li> <bodyPartDef>BS_Wing</bodyPartDef><mirrored>true</mirrored> <partMissing>true</partMissing> </li> </triggerBodyPart>
+              <triggerBodyPart>
+                <li> <bodyPartDef>BS_Wing</bodyPartDef><mirrored>true</mirrored> <partMissing>true</partMissing> </li>
+                <li> <bodyPartDef>BS_Mech_Wing</bodyPartDef><mirrored>true</mirrored> <partMissing>true</partMissing> </li>
+              </triggerBodyPart>
               <texturePaths><default>BS_Blank</default></texturePaths>
             </li>
           </alts>
@@ -181,7 +193,10 @@
               <texturePaths><default>BS_Blank</default></texturePaths>
             </li>
             <li>
-              <triggerBodyPart> <li> <bodyPartDef>BS_Wing</bodyPartDef> <mirrored>true</mirrored> <partMissing>true</partMissing> </li> </triggerBodyPart>
+              <triggerBodyPart>
+                <li> <bodyPartDef>BS_Wing</bodyPartDef><mirrored>true</mirrored> <partMissing>true</partMissing> </li>
+                <li> <bodyPartDef>BS_Mech_Wing</bodyPartDef><mirrored>true</mirrored> <partMissing>true</partMissing> </li>
+              </triggerBodyPart>
               <texturePaths> <default>BS_Blank</default> </texturePaths>
             </li>
           </alts>
@@ -192,7 +207,7 @@
         <drawData>
           <defaultData> <layer>10</layer> </defaultData>
           <dataSouth>   <layer>-1</layer> <flip>true</flip></dataSouth>
-          <dataNorth>   <layer>90</layer> <flip>false</flip></dataNorth>
+          <dataNorth>   <layer>92</layer> <flip>false</flip></dataNorth>
         </drawData>
       </li>
 
@@ -223,7 +238,10 @@
               <texturePaths><default>BS_Blank</default></texturePaths>
             </li>
             <li>
-              <triggerBodyPart> <li> <bodyPartDef>BS_Wing</bodyPartDef> <mirrored>true</mirrored> <partMissing>true</partMissing> </li> </triggerBodyPart>
+              <triggerBodyPart>
+                <li> <bodyPartDef>BS_Wing</bodyPartDef><mirrored>false</mirrored> <partMissing>true</partMissing> </li>
+                <li> <bodyPartDef>BS_Mech_Wing</bodyPartDef><mirrored>false</mirrored> <partMissing>true</partMissing> </li>
+              </triggerBodyPart>
               <texturePaths> <default>BS_Blank</default> </texturePaths>
             </li>
           </alts>

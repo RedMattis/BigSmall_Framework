@@ -1,0 +1,20 @@
+<Defs>
+  <ResearchProjectDef>
+    <defName>BS_AndroidConversion</defName>
+    <label>android conversion</label>
+    <description>Learn how to replace all that weak flesh with superior plasteel. Required for most type of conversions of biological characters into machines.</description>
+    <baseCost>1337</baseCost>
+    <techLevel>Ultra</techLevel>
+		<requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
+    <prerequisites>
+      <li>Bionics</li>
+    </prerequisites>
+    <requiredResearchFacilities>
+			<li>MultiAnalyzer</li>
+		</requiredResearchFacilities>
+    <researchViewX>4</researchViewX>
+    <researchViewY>5</researchViewY>
+    <tab>big_and_small</tab>
+  </ResearchProjectDef>
+
+</Defs>

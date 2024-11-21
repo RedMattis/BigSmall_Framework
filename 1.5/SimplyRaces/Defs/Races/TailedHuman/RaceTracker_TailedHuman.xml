@@ -2,7 +2,7 @@
 
   <HediffDef ParentName="BS_DefaultRaceTracker">
     <defName>BS_HumanoidWithTailRace</defName>
-    <description>a humanoid with a tail!</description>
+    <description>A humanoid... with a tail!</description>
     <label>tailed humanoid</label>
 
     <comps>

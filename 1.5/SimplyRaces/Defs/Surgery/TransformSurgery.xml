@@ -1,0 +1,89 @@
+<Defs>
+  <RecipeDef ParentName="SurgeryFlesh" Name="BS_TransformSurgery" Abstract="True">
+    <workerClass>Recipe_AddHediff</workerClass>
+    <humanlikeOnly>true</humanlikeOnly>
+    <hideBodyPartNames>true</hideBodyPartNames>
+    <targetsBodyPart>false</targetsBodyPart>
+    <isViolation>true</isViolation>
+    <surgerySuccessChanceFactor>2</surgerySuccessChanceFactor>
+    <deathOnFailedSurgeryChance>0.1</deathOnFailedSurgeryChance>
+    <workAmount>16000</workAmount>
+    <uiIconPath>Icons/BS_AndroidFaction</uiIconPath>
+    <!-- <appliedOnFixedBodyParts>
+      <li>Torso</li>
+    </appliedOnFixedBodyParts> -->
+  </RecipeDef>
+
+  <!-- So it can be enabled in other mods... -->
+  <RecipeDef ParentName="BS_TransformSurgery" Abstract="True" Name="BS_MechConversion">
+    <!-- <defName>BS_MechConversion</defName> -->
+    <label>make fully bionic</label>
+    <description>Build an android body and convert the brain into a superior synthetic form.</description>
+    <uiIconPath>Icons/BS_CommandoHead</uiIconPath>
+    <jobString>Go go gadget dental floss!</jobString>
+    <skillRequirements>
+      <Medicine>10</Medicine>
+      <Crafting>10</Crafting>
+    </skillRequirements>
+    <recipeUsers Inherit="False">
+      <li>Human</li>
+      <li MayRequire="Ludeon.RimWorld.Anomaly">CreepJoiner</li>
+    </recipeUsers>
+    <researchPrerequisite>
+      <li>BS_AndroidConversion</li>
+    </researchPrerequisite>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>ComponentSpacer</li>
+          </thingDefs>
+        </filter>
+        <count>3</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>ComponentIndustrial</li>
+          </thingDefs>
+        </filter>
+        <count>12</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Hyperweave</li>
+          </thingDefs>
+        </filter>
+        <count>60</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Plasteel</li>
+          </thingDefs>
+        </filter>
+        <count>160</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>ComponentSpacer</li>
+        <li>ComponentIndustrial</li>
+        <li>Hyperweave</li>
+        <li>Plasteel</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <addsHediff>BS_BasicMech_Morph</addsHediff>
+  </RecipeDef>
+  <HediffDef>
+    <defName>BS_BasicMech_Morph</defName>
+    <label>BS_BasicMech_Morph</label><description>blank</description>
+    <hediffClass>BigAndSmall.InstantEffect</hediffClass>
+    <comps>
+      <li Class="BigAndSmall.SwapRaceHediffCompProperties">
+        <swapTarget>BS_UrbMech</swapTarget>
+      </li>
+    </comps>
+  </HediffDef>
+</Defs>

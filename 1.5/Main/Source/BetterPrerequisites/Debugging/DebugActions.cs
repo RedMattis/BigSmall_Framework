@@ -19,17 +19,6 @@ namespace BigAndSmall.Debugging
         public static List<DebugActionNode> TransformToRace()
         {
             List<DebugActionNode> list = [];
-
-            foreach (var def in DefDatabase<ThingDef>.AllDefs.Where(x => x?.race?.intelligence == Intelligence.Humanlike && !x.IsCorpse))
-            {
-                list.Add(new DebugActionNode(def.defName + " (force)", DebugActionType.ToolMap, delegate
-                {
-                    foreach (Pawn pawn in Find.CurrentMap.thingGrid.ThingsAt(UI.MouseCell()).OfType<Pawn>())
-                    {
-                        RaceMorpher.SwapThingDef(pawn, def, true, targetPriority: 999, force: true, permitFusion:false);
-                    }
-                }));
-            }
             foreach (var def in DefDatabase<ThingDef>.AllDefs.Where(x => x?.race?.intelligence == Intelligence.Humanlike && !x.IsCorpse))
             {
                 list.Add(new DebugActionNode(def.defName, DebugActionType.ToolMap, delegate
@@ -37,6 +26,16 @@ namespace BigAndSmall.Debugging
                     foreach (Pawn pawn in Find.CurrentMap.thingGrid.ThingsAt(UI.MouseCell()).OfType<Pawn>())
                     {
                         RaceMorpher.SwapThingDef(pawn, def, true, targetPriority: 100, force: false);
+                    }
+                }));
+            }
+            foreach (var def in DefDatabase<ThingDef>.AllDefs.Where(x => x?.race?.intelligence == Intelligence.Humanlike && !x.IsCorpse))
+            {
+                list.Add(new DebugActionNode(def.defName + " (force)", DebugActionType.ToolMap, delegate
+                {
+                    foreach (Pawn pawn in Find.CurrentMap.thingGrid.ThingsAt(UI.MouseCell()).OfType<Pawn>())
+                    {
+                        RaceMorpher.SwapThingDef(pawn, def, true, targetPriority: 999, force: true, permitFusion: false);
                     }
                 }));
             }

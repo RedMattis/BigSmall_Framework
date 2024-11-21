@@ -140,7 +140,7 @@ namespace BigAndSmall
         public static Dictionary<GeneDef, GeneUIDrawData> customGeneBackgrounds = [];
 
         private static List<GeneAutoPatcherSettings> patchSettings;
-        public static void PatchDefs()
+        public static void PatchExistingDefs()
         {
             patchSettings = DefDatabase<GeneAutoPatcherSettings>.AllDefs.ToList();
             patchSettings.OrderBy(x => x.priority);

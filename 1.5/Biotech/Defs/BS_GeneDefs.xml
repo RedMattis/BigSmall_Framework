@@ -5,6 +5,10 @@
     <displayPriorityInXenotype>401</displayPriorityInXenotype>
   </GeneCategoryDef>
 
+  <GeneDef Name="BS_MechanicalTagged" Abstract="True">
+    <descriptionHyperlinks> <BigAndSmall.DefTag>BS_MechanicalDef</BigAndSmall.DefTag> </descriptionHyperlinks>
+  </GeneDef>
+
   <GeneDef Name="BM_MaleAndFemaleBase" Abstract="True">
     <displayCategory>ForcedSex</displayCategory>
     <exclusionTags>

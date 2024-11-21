@@ -10,6 +10,7 @@
   <v1.5>
     <li>/</li>
     <li>1.5/Common</li>
+    <li>1.5/SelfPatches</li>
     <li IfModActive="Ludeon.Rimworld.Biotech">1.5/Biotech</li>
     <li>1.5/Main</li>
     <li IfModActive="erdelf.HumanoidAlienRaces">1.5/HAR</li>

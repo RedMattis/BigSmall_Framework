@@ -56,6 +56,7 @@ namespace BigAndSmall
     [HarmonyPatch(typeof(PawnRenderer), "ParallelGetPreRenderResults")]
     public static class ParallelGetPreRenderResults_Patch
     {
+        static readonly int maxUses = 1000;
         public struct PGPRRCache
         {
             public Pawn pawn;
@@ -68,6 +69,7 @@ namespace BigAndSmall
             public bool spawned;
             public Rot4 lastRot;
             public int lastRotAsInt;
+            public int uses;
         }
         [ThreadStatic]
         static PGPRRCache threadStaticCache;
@@ -78,7 +80,7 @@ namespace BigAndSmall
         {
             if (___pawn == null) return;
 
-            if (threadStaticCache.pawn != ___pawn)
+            if (threadStaticCache.pawn != ___pawn || threadStaticCache.uses > maxUses)
             {
                 threadStaticCache.cache = HumanoidPawnScaler.GetCacheUltraSpeed(___pawn, canRegenerate: false);
                 threadStaticCache.pawn = ___pawn;
@@ -94,10 +96,13 @@ namespace BigAndSmall
                     threadStaticCache.lastRot = rotOverride ?? ((posture == PawnPosture.Standing || ___pawn.Crawling) ? ___pawn.Rotation : __instance.LayingFacing());
                     threadStaticCache.lastRotAsInt = threadStaticCache.lastRot.AsInt;
                     threadStaticCache.spawned = ___pawn.Spawned;
+                    threadStaticCache.uses = 0;
                 }
             }
             if (threadStaticCache.approxNoChange || !threadStaticCache.spawned) return;
 
+
+            threadStaticCache.uses++;
             // If caching disabled...
             if (threadStaticCache.cachingDisabled)
             {

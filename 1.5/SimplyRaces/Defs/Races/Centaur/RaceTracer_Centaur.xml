@@ -1,0 +1,161 @@
+<Defs>
+
+  <HediffDef ParentName="BS_DefaultRaceTracker">
+    <defName>BS_CentaurRace</defName>
+    <description>This is a quadrupedeal creature with a humanoid torso.</description>
+    <label>centauroid</label>
+
+    <stages Inherit="False">
+      <li>
+        <statFactors>
+          <MaxNutrition>2.0</MaxNutrition>
+          <CarryingCapacity>2</CarryingCapacity>
+          <VEF_MassCarryCapacity MayRequire="OskarPotocki.VanillaFactionsExpanded.Core">3</VEF_MassCarryCapacity>
+        </statFactors>
+      </li>
+    </stages>
+    <comps>
+      <li Class="BigAndSmall.CompProperties_Race">
+        <canSwapAwayFrom>true</canSwapAwayFrom>
+      </li>
+    </comps>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <romanceTags>
+          <Centaur>1.0</Centaur>
+          <Humanlike>0.35</Humanlike>
+        </romanceTags>
+        <renderCacheOff>true</renderCacheOff>
+        <applyBodyHediff MayRequire="OskarPotocki.VanillaFactionsExpanded.Core">
+          <li>
+            <hediff MayRequire="OskarPotocki.VanillaFactionsExpanded.Core">BS_Stride</hediff>
+          </li>
+        </applyBodyHediff>
+        <bodyPosOffset>0.6</bodyPosOffset>
+      </li> 
+    </modExtensions>
+    <renderNodeProperties>
+      <li Class="BigAndSmall.PawnRenderingProps_Ultimate">
+        <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
+        <workerClass>BigAndSmall.PawnRenderNodeWorker_LazyCentaur</workerClass>
+        <parentTagDef>Body</parentTagDef>
+        <rotDrawMode>Fresh, Rotting</rotDrawMode>
+        <conditionalGraphics>
+          <texturePaths>
+            <li>RaceDefaults/Centaur/BS_Centaur</li>
+          </texturePaths>
+          <colorA>
+            <!-- <skinColor>true</skinColor> -->
+            <hairColor>true</hairColor>
+            <brightness>0.95</brightness>
+            <alts>
+              <li>
+                <triggers><li>Dead</li></triggers>
+                <hairColor>true</hairColor>
+                <skinColor>true</skinColor> 
+                <saturation>0.6</saturation>
+              </li>
+            </alts>
+          </colorA>
+          <colorB>
+            <hairColor>true</hairColor>
+            <skinColor>true</skinColor>
+          </colorB>
+          <alts>
+            <li>
+              <triggerGeneTag>
+                <acceptlist>
+                  <li>taur</li>
+                </acceptlist>
+              </triggerGeneTag>
+              <texturePaths><default>BS_Blank</default></texturePaths>
+            </li>
+          </alts>
+        </conditionalGraphics>
+        <drawSize>(1.3,1.3)</drawSize>
+        
+        <drawData>
+          <bodyTypeScales>
+            <Fat>1.35</Fat>
+            <Hulk>1.1</Hulk>
+            <Thin>0.85</Thin>
+            <Child MayRequire="Ludeon.Rimworld.Ideology">0.85</Child>
+            <Baby MayRequire="Ludeon.Rimworld.Ideology">0.70</Baby>
+          </bodyTypeScales>
+          <dataNorth>
+            <offset>(0, 0.000, -0.48 )</offset>
+            <layer>89.5</layer>
+          </dataNorth>
+          <dataSouth>
+            <offset>(0, -0.000, 0.08)</offset>
+            <layer>89.5</layer>
+          </dataSouth>
+          <dataEast>
+            <offset>(-0.44, 0.0, -0.2)</offset>
+            <layer>89.5</layer>
+          </dataEast>
+          <dataWest>
+            <offset>(0.44, 0.0, -0.2)</offset>
+            <layer>89.5</layer>
+          </dataWest>
+        </drawData>
+      </li>
+
+      <li Class="BigAndSmall.PawnRenderingProps_Ultimate">
+        <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
+        <workerClass>BigAndSmall.PawnRenderNodeWorker_LazyCentaur</workerClass>
+        <parentTagDef>Body</parentTagDef>
+        <rotDrawMode>Fresh, Rotting</rotDrawMode>
+        <!-- <shader>Cutout</shader> -->
+        <conditionalGraphics>
+          <texturePaths>
+            <li>RaceDefaults/Centaur/BS_CentaurBack</li>
+          </texturePaths>
+          <colorA>
+            <!-- <skinColor>true</skinColor> -->
+            <hairColor>true</hairColor>
+            <brightness>0.95</brightness>
+            <alts>
+              <li>
+                <triggers><li>Dead</li></triggers>
+                <hairColor>true</hairColor>
+                <skinColor>true</skinColor> 
+                <saturation>0.6</saturation>
+              </li>
+            </alts>
+          </colorA>
+          <colorB>
+            <hairColor>true</hairColor>
+            <skinColor>true</skinColor>
+          </colorB>
+          <alts>
+            <li>
+              <triggerGeneTag>
+                <acceptlist>
+                  <li>taur</li>
+                </acceptlist>
+              </triggerGeneTag>
+              <texturePaths><default>BS_Blank</default></texturePaths>
+            </li>
+          </alts>
+        </conditionalGraphics>
+        <drawSize>(1.3,1.3)</drawSize>
+        <visibleFacing> <li>South</li> </visibleFacing>
+        <drawData>
+          <bodyTypeScales>
+            <Fat>1.35</Fat>
+            <Hulk>1.1</Hulk>
+            <Thin>0.85</Thin>
+            <Child MayRequire="Ludeon.Rimworld.Ideology">0.85</Child>
+            <Baby MayRequire="Ludeon.Rimworld.Ideology">0.70</Baby>
+          </bodyTypeScales>
+          <dataSouth>
+            <offset>(0, 0.000, 0.08)</offset>
+            <layer>-4</layer>
+          </dataSouth>
+        </drawData>
+      </li>
+    </renderNodeProperties>
+    
+  </HediffDef>
+</Defs>

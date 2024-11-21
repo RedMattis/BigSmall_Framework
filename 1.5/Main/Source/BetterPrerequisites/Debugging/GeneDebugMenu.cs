@@ -34,21 +34,22 @@ namespace BigAndSmall.Debugging
 
             List<FloatMenuOption> list =
             [
-                new FloatMenuOption("Force-Set RaceDef", delegate
+                new FloatMenuOption("Apply/Append RaceDef", delegate
                 {
                     List<DebugMenuOption> list = [];
-                    foreach (var def in DefDatabase<ThingDef>.AllDefs.Where(x => x?.race?.intelligence == Intelligence.Humanlike && !x.IsCorpse))
-                    {
-                        list.Add(new DebugMenuOption(def.defName + " (force)", DebugMenuOptionMode.Action, delegate
-                        {
-                            RaceMorpher.SwapThingDef(pawn, def, true, targetPriority: 999, force: true, permitFusion:false);
-                        }));
-                    }
+                    
                     foreach (var def in DefDatabase<ThingDef>.AllDefs.Where(x => x?.race?.intelligence == Intelligence.Humanlike && !x.IsCorpse))
                     {
                         list.Add(new DebugMenuOption(def.defName, DebugMenuOptionMode.Action, delegate
                         {
                             RaceMorpher.SwapThingDef(pawn, def, true, targetPriority: 100, force: false);
+                        }));
+                    }
+                    foreach (var def in DefDatabase<ThingDef>.AllDefs.Where(x => x?.race?.intelligence == Intelligence.Humanlike && !x.IsCorpse))
+                    {
+                        list.Add(new DebugMenuOption(def.defName + " (force)", DebugMenuOptionMode.Action, delegate
+                        {
+                            RaceMorpher.SwapThingDef(pawn, def, true, targetPriority: 999, force: true, permitFusion:false);
                         }));
                     }
                     Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));

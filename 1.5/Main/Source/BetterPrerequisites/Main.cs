@@ -18,26 +18,43 @@ namespace BigAndSmall
         public static Harmony harmony = new("RedMattis.BetterPrerequisites");
         static BSCore()
         {
-
             patchType = typeof(BSCore);
             harmony.PatchAll();
 
-            // These should probably all be reloaded when the HotReload button is pressed.
             PregnancyPatches.ApplyPatches();
-            GeneDefPatcher.PatchDefs();
+            RunDefPatchesWithHotReload(hotReload: false);
             XenotypeDefPatcher.PatchDefs();
             ModDefPatcher.PatchDefs();
             HumanPatcher.PatchRecipes();
             NewFoodCategory.SetupFoodCategories();
             ThoughtDefPatcher.PatchDefs();
 
-            if (BigSmallMod.settings.experimental)
-            {
-                RaceFuser.CreateMergedBodyTypes();
-            }
+            
 
             GlobalSettings.Initialize();
             DefAltNamer.Initialize();
+            
+        }
+
+        public static void RunDefPatchesWithHotReload(bool hotReload)
+        {
+            // These should probably all be reloaded when the HotReload button is pressed?
+            GeneDefPatcher.PatchExistingDefs();
+            if (BigSmallMod.settings.experimental)
+            {
+                RaceFuser.CreateMergedBodyTypes(hotReload);
+            }
+        }
+    }
+    [Harmony]
+    public static class ReloadPatches
+    {
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(DefGenerator), nameof(DefGenerator.GenerateImpliedDefs_PreResolve))]
+        public static void LoadAllActiveModsPostfix()
+        {
+            BSCore.RunDefPatchesWithHotReload(hotReload: true);
+            
         }
     }
 

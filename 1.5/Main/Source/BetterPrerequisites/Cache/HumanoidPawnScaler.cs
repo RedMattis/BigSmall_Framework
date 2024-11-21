@@ -130,6 +130,18 @@ namespace BigAndSmall
                     HumanoidPawnScaler.GetCache(cachedPawn, forceRefresh: true);
                 }
             }
+            if (currentTick % 1000 != 0)
+            {
+                if (BigSmallMod.settings.jesusMode)
+                {
+                    // Set all needs to full, and mood to max for testing purposes.
+                    var allPawns = PawnsFinder.AllMapsAndWorld_Alive;
+                    foreach (var pawn in allPawns.Where(x => x != null && !x.Discarded && !x.Destroyed))
+                    {
+                        pawn.needs?.AllNeeds?.ForEach(x => x.CurLevel = x.MaxLevel);
+                    }
+                }
+            }
 
             //if (currentTick % 500 == 0)
             //{
@@ -329,7 +341,9 @@ namespace BigAndSmall
         public bool hideBody = false;
         public Gender? apparentGender = null;
         public string bodyGraphicPath = null;
+        public string bodyDessicatedGraphicPath = null;
         public string headGraphicPath = null;
+        public string headDessicatedGraphicPath = null;
         public CustomMaterial bodyMaterial = null;
         public CustomMaterial headMaterial = null;
 
@@ -371,6 +385,7 @@ namespace BigAndSmall
         public float attackSpeedMultiplier = 1;
         public float attackSpeedUnarmedMultiplier = 1;
         public float alcoholmAmount = 0;
+        public RomanceTags romanceTags = null;
 
         public ApparelRestrictions apparelRestrictions = null;
         //public bool canWearApparel = true;
@@ -728,10 +743,13 @@ namespace BigAndSmall
 
                 unarmedOnly = allPawnExt.Any(x => x.unarmedOnly || x.forceUnarmed) ||
                                 activeGenes.Any(x => new List<string> { "BS_UnarmedOnly", "BS_NoEquip", "BS_UnarmedOnly_Android" }.Contains(x.def.defName));
-
                 
                 this.succubusUnbonded = succubusUnbonded;
-                // Multiply the prengnacy multipliers.
+                romanceTags = allPawnExt.Select(x => x.romanceTags).Where(x => x != null)?.GetMerged();
+                if (romanceTags == null && HumanLikes.Humanlikes.Contains(pawn?.def) || racePawnExts.All(x => x.romanceTags == null))
+                {
+                    romanceTags = RomanceTags.simpleRaceDefault;
+                }
                 pregnancySpeed = allPawnExt.Aggregate(1f, (acc, x) => acc * x.pregnancySpeedMultiplier);
                 this.everFertile = everFertile;
                 renderCacheOff = allPawnExt.Any(x => x.renderCacheOff);
@@ -819,8 +837,8 @@ namespace BigAndSmall
                     headGfxExt = extensionsWithHeadPaths.RandomElement();
                     headGraphicPath = headGfxExt.headPaths.GetPaths(this, forceGender: apparentGender).RandomElement();
                 }
-
                 if (headGfxExt.headMaterial != null) headMaterial = headGfxExt.headMaterial;
+                headDessicatedGraphicPath = headGfxExt.GetDessicatedFromHeadPath(headGraphicPath);
             }
 
 
@@ -840,10 +858,15 @@ namespace BigAndSmall
                     bodyGraphicPath = bodyGfxExt.bodyPaths.GetPaths(this, forceGender: apparentGender).RandomElement();
                 }
                 if (bodyGfxExt.bodyMaterial != null) bodyMaterial = bodyGfxExt.bodyMaterial;
+                bodyDessicatedGraphicPath = bodyGfxExt.GetDessicatedFromBodyPath(bodyGraphicPath);
             }
 
+
             // Set body/hair/etc. from mostly other sources.
-            GenderMethods.UpdateBodyHeadAndBeardPostGenderChange(this);
+            if (this != BSCache.defaultCache && pawn?.story?.bodyType != null && pawn?.story?.headType != null)
+            {
+                GenderMethods.UpdateBodyHeadAndBeardPostGenderChange(this);
+            }
         }
 
         

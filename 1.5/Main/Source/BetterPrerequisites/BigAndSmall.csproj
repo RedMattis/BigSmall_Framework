@@ -110,6 +110,7 @@
     <Compile Include="Hediffs\TakeDamage.cs" />
     <Compile Include="Items\ApparelRestrictions.cs" />
     <Compile Include="ModExtensions\ModExtHelper.cs" />
+    <Compile Include="Path Operations\SettingsBasedPatches.cs" />
     <Compile Include="Pawn\PawnGeneration\GenerateNewPawnInternal.cs" />
     <Compile Include="Pawn\PawnPatches.cs" />
     <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\AdvancedColor.cs" />
@@ -121,13 +122,15 @@
     <Compile Include="Rendering &amp; Graphics\Patches\HumanlikeMeshPoolUtility.cs" />
     <Compile Include="Rendering &amp; Graphics\Patches\PawnRenderNode_Body_Patches.cs" />
     <Compile Include="Rendering &amp; Graphics\Patches\PawnRenderNode_Head_Patches.cs" />
-    <Compile Include="Rendering &amp; Graphics\GraphicsHelpers.cs" />
+    <Compile Include="Rendering &amp; Graphics\GraphicsHelper.cs" />
     <Compile Include="Rendering &amp; Graphics\BSDrawData.cs" />
+    <Compile Include="Rendering &amp; Graphics\RenderNodes\PawnRenderNode_SimpleSwitches.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\UltimateRenderNode.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\ComplexRenderNode.cs" />
     <Compile Include="SimpleCustomRaces\LifeStageWorker_FullyFormedHumanlike.cs" />
     <Compile Include="SimpleCustomRaces\MechanicalRace\FuelNeed.cs" />
     <Compile Include="SimpleCustomRaces\MechanicalRace\MechRacePatches.cs" />
+    <Compile Include="SimpleCustomRaces\RomanceTags.cs" />
     <Compile Include="SimpleCustomRaces\SimpleRaceCache.cs" />
     <Compile Include="SimpleCustomRaces\SimpleRaceHediff.cs" />
     <Compile Include="SimpleCustomRaces\SimpleRace.cs" />

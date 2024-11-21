@@ -31,16 +31,29 @@
           <li MayRequire="RedMattis.BigSmall.Bugs">BS_InsectoidHumanoid_FourArmedBody</li>
         </bodyDefs>
       </li>
+      <li>
+        <target>BS_FourArmedHuman</target>
+        <bodyDefs>
+          <li MayRequire="RedMattis.BigSmall.Bugs">BS_InsectoidHumanoid_FourArmedBody</li>
+        </bodyDefs>
+      </li>
+      <li>
+        <target>BS_StandardAndroid</target>
+        <bodyDefs>
+          <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_TVAndroid</li>
+        </bodyDefs>
+      </li>
     </substitutions>
 
     <mergableBody>
-      <li>
+      <!-- <li>
         <bodyDef>Human</bodyDef>
         <thingDef>Human</thingDef>
+        <overrideDefNamer>BS_Human</overrideDefNamer>
         <priority>-100000</priority>
         <canBeFusionOne>false</canBeFusionOne>
         <fuse>false</fuse>
-      </li>
+      </li> -->
       <li>
         <bodyDef>BS_FourArmedHuman</bodyDef>
         <thingDef>BS_HumanFouramed</thingDef>
@@ -80,6 +93,7 @@
         <overrideDefNamer>Snek</overrideDefNamer>
         <priority>100</priority>
         <prefixLabel>serpent-like</prefixLabel>
+        <suffixLabel>serpent-like tail</suffixLabel>
         <exclusionTags>
           <li>Tail</li>
           <li>Abdomen</li>
@@ -95,6 +109,7 @@
         <overrideDefNamer>Spooder</overrideDefNamer>
         <priority>100</priority>
         <prefixLabel>spider-like</prefixLabel>
+        <suffixLabel>spider-like abdomen</suffixLabel>
         <exclusionTags>
           <li>Tail</li>
           <li>Abdomen</li>
@@ -102,6 +117,40 @@
         <removesParts>
           <li>Pelvis</li>
         </removesParts>
+      </li>
+      <li>
+        <bodyDef>BS_Centaur_Body</bodyDef>
+        <thingDef>BS_Centaur</thingDef>
+        <overrideDefNamer>Centaur</overrideDefNamer>
+        <priority>100</priority>
+        <prefixLabel>centauroid</prefixLabel>
+        <suffixLabel>four legs</suffixLabel>
+        <exclusionTags>
+          <li>Tail</li>
+          <li>Abdomen</li>
+        </exclusionTags>
+        <removesParts>
+          <li>Toe</li>
+        </removesParts>
+      </li>
+
+      <li>
+        <bodyDef>BS_StandardAndroid</bodyDef>
+        <thingDef>BS_UrbMech</thingDef>
+        <overrideDefNamer>Mecha</overrideDefNamer>
+        <priority>-10000</priority>
+        <prefixLabel>mecha</prefixLabel>
+        <suffixLabel>mech</suffixLabel>
+        <isMechanical>true</isMechanical>
+
+        <!-- If a pawn doesn't find a valid fusion and would otherwise become a "Human" they will instead
+         pick the first available option with this enabled. -->
+        <defaultMechanical>true</defaultMechanical>
+
+        <!-- Will be fused with everything above and generations of it, but not other fuseSets.
+         Use this if you want to make a race able to get multiple limbs.-->
+        <fuseSet>true</fuseSet>
+
       </li>
     </mergableBody>
   </BigAndSmall.BodyDefFusion>
@@ -122,7 +171,20 @@
     </parts>
   </BigAndSmall.SimilarParts>
   <BigAndSmall.SimilarParts>
+    <defName>Shoulder</defName>
+    <parts>
+      <!-- Loads as string. No MayRequire needed. -->
+      <li>Shoulder</li>
+      <li>BS_MechanicalShoulder</li>
+    </parts>
+  </BigAndSmall.SimilarParts>
+  <BigAndSmall.SimilarParts>
     <defName>Pelvis</defName>
     <parts> <li>Pelvis</li> </parts>
   </BigAndSmall.SimilarParts>
+  <BigAndSmall.SimilarParts>
+    <defName>Toe</defName>
+    <parts> <li>Toe</li> </parts>
+  </BigAndSmall.SimilarParts>
+  
 </Defs>

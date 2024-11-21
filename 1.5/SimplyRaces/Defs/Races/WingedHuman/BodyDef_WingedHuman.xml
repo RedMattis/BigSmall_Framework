@@ -1,17 +1,5 @@
 <Defs>
-  <BodyPartDef>
-    <defName>BS_Wing</defName>
-    <label>BS_Wing</label>
-    <hitPoints>35</hitPoints>
-    <tags>
-      <li>Mirrored</li>
-    </tags>
-    <modExtensions>
-      <li Class="BigAndSmall.BodyPartExtension">
-        <importAllRecipesFrom><li>Elytra</li></importAllRecipesFrom>
-      </li>
-    </modExtensions>
-  </BodyPartDef>
+  
 
   <BodyDef>
     <defName>BS_HumanoidWithWings_Body</defName>

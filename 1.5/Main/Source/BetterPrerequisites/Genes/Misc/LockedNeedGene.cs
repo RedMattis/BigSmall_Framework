@@ -20,6 +20,11 @@ namespace BetterPrerequisites
         public NeedDef need;
         public float value;
         public bool minValue = false;
+
+        public string GetLabel()
+        {
+            return need.LabelCap + (minValue ? " Min" : "");
+        }
     }
         
     public class LockedNeedGene : PGene

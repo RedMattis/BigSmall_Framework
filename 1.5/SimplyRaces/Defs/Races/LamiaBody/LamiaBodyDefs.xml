@@ -1,25 +1,5 @@
 <Defs>
-  <BodyPartDef>
-    <defName>BS_SnakeBody</defName>
-    <label>snake body</label>
-    <hitPoints>70</hitPoints>
-    <skinCovered>true</skinCovered>
-    <canScarify>true</canScarify>
-  </BodyPartDef>
-
-  <BodyPartDef>
-    <defName>BS_SnakeSpine</defName>
-    <label>Spine (snake body)</label>
-    <hitPoints>30</hitPoints>
-    <tags>
-      <li>MovingLimbCore</li>
-    </tags>
-    <modExtensions>
-      <li Class="BigAndSmall.BodyPartExtension">
-        <importAllRecipesFrom><li>Spine</li></importAllRecipesFrom>
-      </li>
-    </modExtensions>
-  </BodyPartDef>
+  
 
   <BodyDef>
     <defName>BS_SnakeHuman</defName>

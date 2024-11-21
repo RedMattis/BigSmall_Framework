@@ -1,0 +1,129 @@
+<Defs>
+  <!-- Suitable for the mechanical kind of robot blatantly made from steel and bolts. Basically a Diet Soda version of the steel Enforcer-->
+  <ThingDef ParentName="BS_DefaultHumanlike" BS_Alt="ThingDef_AlienRace">
+    <defName>BS_UrbMech</defName>
+    <label>mech</label>
+    <description>This is a creature largely composed of highly ruggedized machinery.</description>
+    <descriptionHyperlinks>
+      <BigAndSmall.DefTag>BS_MechanicalDef</BigAndSmall.DefTag>
+      <BigAndSmall.DefTag>BS_MechanicalDescription</BigAndSmall.DefTag>
+    </descriptionHyperlinks>
+    <statBases>
+      <!-- <MarketValue>3000</MarketValue> -->
+      <MarketValue>2500</MarketValue>
+      <MoveSpeed>4.6</MoveSpeed>
+      <PsychicSensitivity>0.75</PsychicSensitivity>
+      <ToxicResistance>1</ToxicResistance>
+      <Flammability>0</Flammability>
+      <Fertility MayRequire="Ludeon.Rimworld.Biotech"> 0</Fertility>
+      <ComfyTemperatureMin>10</ComfyTemperatureMin>
+      <ComfyTemperatureMax>40</ComfyTemperatureMax>
+      <SM_FlirtChance>0.5</SM_FlirtChance>
+      <GlobalLearningFactor>1.2</GlobalLearningFactor>
+      <MeatAmount>0</MeatAmount>
+      <LeatherAmount>0</LeatherAmount>
+      <RoyalFavorValue>3</RoyalFavorValue>
+      <MaxNutrition>1.5</MaxNutrition>
+      <CarryingCapacity>80</CarryingCapacity>
+      <VEF_MassCarryCapacity MayRequire="OskarPotocki.VanillaFactionsExpanded.Core">100</VEF_MassCarryCapacity>
+
+      <!-- <SM_HeadSize_Cosmetic>1.05</SM_HeadSize_Cosmetic>
+      <SM_BodySizeMultiplier>1.15</SM_BodySizeMultiplier> -->
+      <ArmorRating_Heat>2.00</ArmorRating_Heat>
+      <ArmorRating_Blunt>0.25</ArmorRating_Blunt>
+      <ArmorRating_Sharp>0.53</ArmorRating_Sharp>
+    </statBases>
+    <race>
+      <!-- <thinkTreeMain>Mechanoid</thinkTreeMain>-->
+      <thinkTreeMain>Humanlike</thinkTreeMain>
+      <thinkTreeConstant>HumanlikeConstant</thinkTreeConstant>
+      <intelligence>Humanlike</intelligence>
+      <makesFootprints>true</makesFootprints>
+      <lifeExpectancy>8000</lifeExpectancy>
+      <nameCategory>HumanStandard</nameCategory>
+      <body>BS_StandardAndroid</body>
+      <baseBodySize>1</baseBodySize>
+      <baseHealthScale>1</baseHealthScale>
+
+      <gestationPeriodDays>18</gestationPeriodDays>
+
+      <canBecomeShambler>false</canBecomeShambler>
+
+      <useMeatFrom IsNull="True"/>
+      <leatherDef IsNull="True"/>
+      <bloodSmearDef IsNull="True"/>
+      <bloodDef>Filth_MachineBits</bloodDef>
+      
+      <manhunterOnDamageChance>0.5</manhunterOnDamageChance>
+      <manhunterOnTameFailChance>0.05</manhunterOnTameFailChance>
+
+      <soundMeleeHitPawn>Pawn_Melee_MechanoidBash_HitPawn</soundMeleeHitPawn>
+      <soundMeleeHitBuilding>Pawn_Melee_MechanoidBash_HitBuilding</soundMeleeHitBuilding>
+      <soundMeleeMiss>Pawn_Melee_MechanoidBash_Miss</soundMeleeMiss>
+      
+      <!-- <soundCallIntervalRange>1000~2000</soundCallIntervalRange> -->
+
+      <lifeStageWorkSettings Inherit="False"/>
+      <hediffGiverSets Inherit="False"/>
+      
+      <lifeStageAges Inherit="False">
+        <!-- We're not using custom defs because some Rimworld stuff is hardcoded to look for certain defs.
+         Better from a compatibility standpoint to simply make the stages exist but not be active. -->
+        <li>
+          <def>HumanlikeBaby</def>
+          <minAge>0</minAge>
+          <soundWounded>Pawn_Mech_Scyther_Wounded</soundWounded>
+          <soundDeath>Pawn_Mech_Scyther_Death</soundDeath>
+          <soundCall>Pawn_Mech_Scyther_Call</soundCall>
+        </li>
+        <li>
+          <def>HumanlikeChild</def>
+          <minAge>3</minAge>
+          <soundWounded>Pawn_Mech_Scyther_Wounded</soundWounded>
+          <soundDeath>Pawn_Mech_Scyther_Death</soundDeath>
+          <soundCall>Pawn_Mech_Scyther_Call</soundCall>
+        </li>
+        <li MayRequire="Ludeon.RimWorld.Biotech">
+          <def>HumanlikePreTeenager</def>
+          <minAge>9</minAge>
+          <soundWounded>Pawn_Mech_Scyther_Wounded</soundWounded>
+          <soundDeath>Pawn_Mech_Scyther_Death</soundDeath>
+          <soundCall>Pawn_Mech_Scyther_Call</soundCall>
+        </li>
+        <li>
+          <def>HumanlikeTeenager</def>
+          <minAge>13</minAge>
+          <soundWounded>Pawn_Mech_Scyther_Wounded</soundWounded>
+          <soundDeath>Pawn_Mech_Scyther_Death</soundDeath>
+          <soundCall>Pawn_Mech_Scyther_Call</soundCall>
+        </li>
+        <li>
+          <def>HumanlikeAdult</def>
+          <minAge>18</minAge>
+          <soundWounded>Pawn_Mech_Scyther_Wounded</soundWounded>
+          <soundDeath>Pawn_Mech_Scyther_Death</soundDeath>
+          <soundCall>Pawn_Mech_Scyther_Call</soundCall>
+        </li>
+      </lifeStageAges>
+      <ageGenerationCurve>
+        <points>
+          <li>(20,0)</li>
+          <li>(21,100)</li>
+          <li>(90,100)</li>
+          <li>(300,0)</li>
+        </points>
+      </ageGenerationCurve>
+    </race>
+    <butcherProducts Inherit="False">
+      <Plasteel>25</Plasteel>
+    </butcherProducts>
+    <ingredient Inherit="False"/>
+    <modExtensions>
+      <li Class="BigAndSmall.RaceExtension"><raceHediff>BS_UrbMech_Race</raceHediff> </li>
+    </modExtensions>
+  </ThingDef>
+
+  
+
+  
+</Defs>

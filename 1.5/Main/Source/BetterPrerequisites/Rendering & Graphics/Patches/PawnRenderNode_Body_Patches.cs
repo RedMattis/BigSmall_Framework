@@ -29,7 +29,7 @@ namespace BigAndSmall
     {
         public static void CalculateBodyGraphicsForPawn(PawnRenderNode_Body __instance, Pawn pawn, ref Graphic __result, BSCache cache)
         {
-            if (cache.hideBody) { __result = GraphicsHelpers.GetBlankMaterial(pawn); return; }
+            if (cache.hideBody) { __result = GraphicsHelper.GetBlankMaterial(pawn); return; }
 
             if (cache.bodyMaterial?.overrideDesiccated != true && pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Dessicated)
             {
@@ -38,7 +38,7 @@ namespace BigAndSmall
 
             if (cache.bodyGraphicPath is string bodyGraphicPath)
             {
-                __result = GraphicsHelpers.TryGetCustomGraphics(pawn, bodyGraphicPath, __result.color, __result.colorTwo, __result.drawSize, cache.bodyMaterial);
+                __result = GraphicsHelper.TryGetCustomGraphics(pawn, bodyGraphicPath, __result.color, __result.colorTwo, __result.drawSize, cache.bodyMaterial);
                 return;
             }
 

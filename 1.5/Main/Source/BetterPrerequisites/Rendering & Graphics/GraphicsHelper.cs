@@ -10,7 +10,7 @@ using static BigAndSmall.RenderingLib;
 
 namespace BigAndSmall
 {
-    public static class GraphicsHelpers
+    public static class GraphicsHelper
     {
         public static Graphic GetBlankMaterial(Pawn pawn) => GraphicDatabase.Get<Graphic_Multi>("UI/EmptyImage", ShaderUtility.GetSkinShader(pawn), Vector2.one, pawn.story.SkinColor);
 
@@ -41,6 +41,26 @@ namespace BigAndSmall
             {
                 return GetCachableGraphics(path, drawSize, ShaderTypeDefOf.Cutout, colorOne, colorTwo);
             }
+        }
+
+        public static int GetPartsWithHediff(Pawn pawn, int count, BodyPartDef targetPart, HediffDef hediffDef, bool? mirrored = null)
+        {
+            if (mirrored == true)
+            {
+                return pawn.health.hediffSet.hediffs.Sum(hediff => hediff.def == hediffDef &&
+                    hediff.Part.def == targetPart && hediff.Part.flipGraphic == mirrored ? 1 : 0);
+            }
+            return pawn.health.hediffSet.hediffs.Sum(hediff => hediff.def == hediffDef && hediff.Part.def == targetPart ? 1 : 0);
+        }
+           
+        public static int GetPartsReplaced(Pawn pawn, int count, BodyPartDef targetPart, bool? mirrored = null)
+        {
+            if (mirrored == true)
+            {
+                return pawn.health.hediffSet.hediffs.Sum(hediff => hediff.Part.def == targetPart
+                    && hediff is Hediff_AddedPart && hediff.Part.flipGraphic == mirrored ? 1 : 0);
+            }
+            return pawn.health.hediffSet.hediffs.Sum(hediff => hediff.Part.def == targetPart && hediff is Hediff_AddedPart ? 1 : 0);
         }
     }
     

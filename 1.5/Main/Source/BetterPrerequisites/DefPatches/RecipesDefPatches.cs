@@ -17,6 +17,8 @@ namespace BigAndSmall
     /// </summary>
     public class HumanLikes : Def
     {
+        private static List<ThingDef> _humanlikes = null;
+        public static List<ThingDef> Humanlikes => _humanlikes ??= DefDatabase<HumanLikes>.AllDefs.SelectMany(x=>x.thingList).ToList();
         public List<ThingDef> thingList = [];
     }
     public static class HumanPatcher
@@ -53,17 +55,15 @@ namespace BigAndSmall
 
         private static void MigrateHumanRecipes()
         {
-            List<(ThingDef thing, RaceExtension raceExt)> thingsWithRaceExtension = DefDatabase<ThingDef>.AllDefs
-                .Where(x => x.modExtensions != null && x.modExtensions.Any(y => y is RaceExtension))
-                .Select(td => (td, td.modExtensions.FirstOrDefault(x => x is RaceExtension) as RaceExtension)).ToList();
+            List<(ThingDef thing, List<RaceExtension> raceExts)> thingsWithRaceExtension = DefDatabase<ThingDef>.AllDefs
+                .Where(x => x.GetRaceExtensions().Any()).Select(td => (td, td.GetRaceExtensions())).ToList();
 
-            var humanLikes = DefDatabase<HumanLikes>.AllDefs;
+            var humanLikes = HumanLikes.Humanlikes;
 
 
             // Migrate all recipes for stuff without a PawnExtension and Tracking Hediff instructing on what to transfer.
-            List<ThingDef> allHumanlikeThings = [.. humanLikes.SelectMany(x => x.thingList), 
-                .. thingsWithRaceExtension
-                    .Where(x => x.raceExt?.SurgeryRecipes.AnyItems() != true).Select(x => x.thing)];
+            List<ThingDef> allHumanlikeThings = [.. thingsWithRaceExtension
+                    .Where(x => x.raceExts.All(sr => sr.SurgeryRecipes.AnyItems() == false)).Select(x => x.thing)];
             var humanRecipes = AllHumanRecipes();
             foreach (var thing in allHumanlikeThings)
             {
@@ -76,15 +76,18 @@ namespace BigAndSmall
 
             var allRecipes = DefDatabase<RecipeDef>.AllDefs;
             
-            foreach((ThingDef thing, RaceExtension raceExt) in thingsWithRaceExtension.Where(x=>x.raceExt.SurgeryRecipes.AnyItems()))
+            foreach((ThingDef thing, List<RaceExtension> raceExts) in thingsWithRaceExtension.Where(x=>x.raceExts.Any(r => r.SurgeryRecipes.AnyItems())))
             {
-                var rFilter = raceExt.SurgeryRecipes;
-                if (rFilter == null) continue;
-                var recipesFromHuman = humanRecipes.Where(x => rFilter.GetFilterResult(x).Accepted());
-                var recipesFromAll = allRecipes.Where(x => rFilter.GetFilterResult(x).ExplicitlyAllowed());  
-                thing.recipes.AddRange(recipesFromHuman);
-                thing.recipes.AddRange(recipesFromAll);
-                thing.recipes = thing.recipes.Distinct().ToList();
+                foreach (var raceExt in raceExts)
+                {
+                    var rFilter = raceExt.SurgeryRecipes;
+                    if (rFilter == null) continue;
+                    var recipesFromHuman = humanRecipes.Where(x => rFilter.GetFilterResult(x).Accepted());
+                    var recipesFromAll = allRecipes.Where(x => rFilter.GetFilterResult(x).ExplicitlyAllowed());
+                    thing.recipes.AddRange(recipesFromHuman);
+                    thing.recipes.AddRange(recipesFromAll);
+                    thing.recipes = thing.recipes.Distinct().ToList();
+                }
             }
         }
 
@@ -124,6 +127,7 @@ namespace BigAndSmall
     public class BodyPartExtension : DefModExtension
     {
         public List<BodyPartDef> importAllRecipesFrom = [];
+        public List<BodyPartDef> mechanicalVersionOf = [];
     }
 
 }

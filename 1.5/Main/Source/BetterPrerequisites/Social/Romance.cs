@@ -16,7 +16,8 @@ namespace BigAndSmall
     [HarmonyPatch]
     public static class RomancePatches
     {
-        public static StatDef flirtChanceDef;
+        private static StatDef _flirtChanceDef;
+        public static StatDef FlirtChanceDef = _flirtChanceDef ??= DefDatabase<StatDef>.GetNamed("SM_FlirtChance");
 
         [HarmonyPatch(typeof(InteractionWorker_RomanceAttempt), nameof(InteractionWorker_RomanceAttempt.RandomSelectionWeight), MethodType.Normal)]
         [HarmonyPostfix]
@@ -36,18 +37,15 @@ namespace BigAndSmall
                 }
             }
 
-            if (flirtChanceDef == null)
-            {
-                flirtChanceDef = DefDatabase<StatDef>.GetNamed("SM_FlirtChance");
-            }
+            
 
             // If recipient has no flirt chance, set result to 0. They are probably something that cannot be romanced.
-            if (recipient.GetStatValue(flirtChanceDef) == 0)
+            if (recipient.GetStatValue(FlirtChanceDef, cacheStaleAfterTicks:1000) == 0)
             {
                 __result = 0;
             }
 
-            __result *= initiator.GetStatValue(flirtChanceDef);
+            __result *= initiator.GetStatValue(FlirtChanceDef, cacheStaleAfterTicks: 1000);
         }
 
         [HarmonyPatch(typeof(InteractionWorker_MarriageProposal), nameof(InteractionWorker_MarriageProposal.RandomSelectionWeight), MethodType.Normal)]
@@ -74,7 +72,42 @@ namespace BigAndSmall
         }
 
 
+        [HarmonyPatch(typeof(Pawn_RelationsTracker), nameof(Pawn_RelationsTracker.CompatibilityWith))]
+        [HarmonyPostfix]
+        public static void CompatibilityWith_Postfix(ref float __result, Pawn_RelationsTracker __instance, Pawn otherPawn, Pawn ___pawn)
+        {
+            __result = GetCompatibilityWith(___pawn, otherPawn, __result);
+
+        }
+        public static float GetCompatibilityWith(this Pawn pawn, Pawn otherPawn, float defaultValue = 0)
+        {
+            float ConstantPerPawnsPairCompatibilityOffset(int otherPawnID)
+            {
+                Rand.PushState();
+                Rand.Seed = (pawn.thingIDNumber ^ otherPawnID) * 37;
+                float result = Rand.GaussianAsymmetric(0.3f, 1f, 1.4f);
+                Rand.PopState();
+                return result;
+            }
+            if (HumanoidPawnScaler.GetCacheUltraSpeed(pawn) is BSCache cache && HumanoidPawnScaler.GetCacheUltraSpeed(otherPawn) is BSCache cacheTwo)
+            {
+                if (pawn == otherPawn) return 0;
+
+                float? compatibility = RomanceTagsExtensions.GetHighestSharedTag(cache, cacheTwo);
+
+                if (pawn.GetStatValue(FlirtChanceDef, cacheStaleAfterTicks: 1000) == 0 || otherPawn.GetStatValue(FlirtChanceDef, cacheStaleAfterTicks: 1000) == 0)
+                    return 0;
+                if (compatibility == null && pawn.def != otherPawn.def)
+                {
+                    return defaultValue;
+                }
+
+                float x = Mathf.Abs(cache.apparentAge - cacheTwo.apparentAge);
+                float num = Mathf.Clamp(GenMath.LerpDouble(0f, 20f, 0.45f, -0.45f, x), -0.45f, 0.45f);
+                float num2 = ConstantPerPawnsPairCompatibilityOffset(otherPawn.thingIDNumber);
+                return (num + num2) * compatibility.Value;
+            }
+            return defaultValue;
+        }
     }
-
-
 }

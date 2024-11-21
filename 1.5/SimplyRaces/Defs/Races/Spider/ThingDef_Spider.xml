@@ -4,6 +4,7 @@
     <label>spider-person</label>
     <description>A humanlike being with a spider-like abdomen.</description>
     <statBases>
+      
     </statBases>
     <race>
       <body>BS_SpiderHybrid</body>

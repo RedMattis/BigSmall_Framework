@@ -15,6 +15,8 @@ namespace BigAndSmall
     public class RaceTracker : HediffWithComps
     {
         public override bool Visible => true;
+        private List<PawnExtension> pawnExtensions = null;
+        public List<PawnExtension> PawnExtensions => pawnExtensions ??= def.ExtensionsOnDef<PawnExtension, HediffDef>();
 
         public override void PostAdd(DamageInfo? info)
         {
@@ -39,6 +41,33 @@ namespace BigAndSmall
         /// Add a new Hediff instead if you want to use stages.
         /// </summary>
         //public override HediffStage CurStage { get { return null; } }
+
+        public override string Description
+        {
+            get
+            {
+                var baseDesc = base.Description;
+
+                try
+                {
+                    if (PawnExtensionExtension.TryGetDescription(PawnExtensions, out string pawnDesc))
+                    {
+                        baseDesc += $"\n\n{pawnDesc}";
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    Log.Error($"Error generating RaceTracker.Description: {e}");
+                }
+                finally
+                {
+                    
+                }
+
+                return baseDesc;
+            }
+        }
     }
 
 }

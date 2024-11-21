@@ -1,7 +1,7 @@
 <Defs>
   <GeneDef Abstract="True" Name="BS_BodySwitch">
     <customEffectDescriptions>
-			<li>Switches the character's "Race" for another one (if human).</li>
+			<li>Switches the character's "Race" for another one if possible.</li>
 		</customEffectDescriptions>
     <displayCategory>BS_BodySwap</displayCategory>
     <geneClass>BetterPrerequisites.PGene</geneClass>

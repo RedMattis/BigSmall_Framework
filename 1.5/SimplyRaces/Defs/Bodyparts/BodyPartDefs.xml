@@ -1,0 +1,112 @@
+<Defs>
+  <BodyPartDef>
+    <defName>BS_Wing</defName>
+    <label>wing</label>
+    <hitPoints>35</hitPoints>
+    <tags>
+      <li>Mirrored</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Elytra</li></importAllRecipesFrom>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_SpiderAbdomen</defName>
+    <label>spider abdomen</label>
+    <hitPoints>60</hitPoints>
+    <skinCovered>true</skinCovered>
+    <canScarify>true</canScarify>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_SnakeBody</defName>
+    <label>snake body</label>
+    <hitPoints>70</hitPoints>
+    <skinCovered>true</skinCovered>
+    <canScarify>true</canScarify>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_SnakeSpine</defName>
+    <label>Spine (snake body)</label>
+    <hitPoints>30</hitPoints>
+    <tags>
+      <li>MovingLimbCore</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Spine</li></importAllRecipesFrom>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+
+  <BodyPartDef>
+    <defName>BS_Mech_Wing</defName>
+    <label>mecha wing</label>
+    <hitPoints>35</hitPoints>
+    <skinCovered>false</skinCovered>
+    <bleedRate>0</bleedRate>
+    <alive>false</alive>
+    <tags>
+      <li>Mirrored</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Elytra</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>BS_Wing</li><li>Elytra</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_Mech_SpiderAbdomen</defName>
+    <label>octoleg-abdomen</label>
+    <hitPoints>60</hitPoints>
+    <skinCovered>false</skinCovered>
+    <bleedRate>0</bleedRate>
+    <alive>false</alive>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>BS_SpiderAbdomen</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>BS_SpiderAbdomen</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_Mech_SnakeBody</defName>
+    <label>mecha-snake body</label>
+    <hitPoints>70</hitPoints>
+    <skinCovered>false</skinCovered>
+    <bleedRate>0</bleedRate>
+    <alive>false</alive>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>BS_SnakeBody</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>BS_SnakeBody</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_Mech_SnakeSpine</defName>
+    <label>extended mechanical spine</label>
+    <hitPoints>35</hitPoints>
+    <skinCovered>false</skinCovered>
+    <bleedRate>0</bleedRate>
+    <alive>false</alive>
+    <tags>
+      <li>MovingLimbCore</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Spine</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>BS_SnakeSpine</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+</Defs>

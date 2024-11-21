@@ -1,0 +1,17 @@
+<Defs>
+  <ThingDef ParentName="Human" BS_Alt="ThingDef_AlienRace">
+    <defName>BS_Centaur</defName>
+    <label>centauroid</label>
+    <description>The subject is quadrupedeal with a humanoid torso.</description>
+    <statBases>
+      <SM_BodySizeMultiplier>1.15</SM_BodySizeMultiplier>
+      <SM_Cosmetic_BodySizeMultiplier>0.86956521</SM_Cosmetic_BodySizeMultiplier>
+    </statBases>
+    <race>
+      <body>BS_Centaur_Body</body>
+    </race>
+    <modExtensions>
+      <li Class="BigAndSmall.RaceExtension"> <raceHediff>BS_CentaurRace</raceHediff> </li>
+    </modExtensions>
+  </ThingDef>
+</Defs>

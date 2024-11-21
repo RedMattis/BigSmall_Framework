@@ -1,0 +1,72 @@
+<Patch>
+  <Operation Class="BigAndSmall.PatchOp_AddBionics"><match Class="PatchOperationAdd"><xpath>Defs</xpath><value>
+
+    <HediffDef ParentName="AddedBodyPartBase">
+      <defName>BS_BionicStriderLeg</defName>
+      <label>bionic strider leg</label>
+      <labelNoun>a bionic striger leg</labelNoun>
+      <description>An installed bionic strider leg. With its biogel nerve-link, powerful mini-servos, and lattice-dust healing system. This version is usually somewhat inferior to the bionic leg for baseline humans, but is slightly better for beings with more than two legs.</description>
+      <descriptionHyperlinks><ThingDef>BS_BionicStriderLeg</ThingDef></descriptionHyperlinks>
+      <spawnThingOnRemoved>BS_BionicStriderLeg</spawnThingOnRemoved>
+      <addedPartProps>
+        <solid>true</solid>
+        <partEfficiency>1.10</partEfficiency>
+        <betterThanNatural>true</betterThanNatural>
+      </addedPartProps>
+      <stages>
+        <li>
+          <statOffsets>
+            <MoveSpeed>0.35</MoveSpeed>
+          </statOffsets>
+        </li>
+      </stages>
+    </HediffDef>
+  
+    <ThingDef ParentName="BodyPartBionicBase">
+      <defName>BS_BionicStriderLeg</defName>
+      <label>bionic strider leg</label>
+      <description>An advanced artificial leg. With its biogel nerve-link, powerful mini-servos, and lattice-dust healing system. This version is usually somewhat inferior to the bionic leg for baseline humans, but is slightly better for beings with more than two legs.</description>
+      <descriptionHyperlinks><RecipeDef>InstallBS_BionicStriderLeg</RecipeDef></descriptionHyperlinks>
+      <costList>
+        <Plasteel>16</Plasteel>
+        <ComponentSpacer>4</ComponentSpacer>
+      </costList>
+      <thingSetMakerTags><li>RewardStandardMidFreq</li></thingSetMakerTags>
+      <statBases>
+        <Mass>8</Mass>
+      </statBases>
+    </ThingDef>
+
+    <RecipeDef ParentName="SurgeryInstallBodyPartArtificialBase">
+      <defName>InstallBS_BionicStriderLeg</defName>
+      <label>install bionic strider leg</label>
+      <description>Install a bionic strider leg.</description>
+      <descriptionHyperlinks>
+        <ThingDef>BS_BionicStriderLeg</ThingDef>
+        <HediffDef>BS_BionicStriderLeg</HediffDef>
+      </descriptionHyperlinks>
+      <jobString>Installing bionic strider leg.</jobString>
+      <ingredients>
+        <li>
+          <filter>
+            <thingDefs>
+              <li>BS_BionicStriderLeg</li>
+            </thingDefs>
+          </filter>
+          <count>1</count>
+        </li>
+      </ingredients>
+      <fixedIngredientFilter>
+        <thingDefs>
+          <li>BS_BionicStriderLeg</li>
+        </thingDefs>
+      </fixedIngredientFilter>
+      <appliedOnFixedBodyParts>
+        <li>Leg</li>
+      </appliedOnFixedBodyParts>
+      <addsHediff>BS_BionicStriderLeg</addsHediff>
+    </RecipeDef>
+
+  </value></match></Operation>
+
+</Patch>
