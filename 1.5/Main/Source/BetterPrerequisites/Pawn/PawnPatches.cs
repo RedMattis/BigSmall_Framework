@@ -93,15 +93,16 @@ namespace BigAndSmall
         [HarmonyPostfix]
         public static void Post_Notify_LifeStageStarted(Pawn pawn)
         {
-            if (pawn.genes != null)
-            {
-                List<Gene> genes = pawn.genes.GenesListForReading;
-                foreach (Gene gene in genes.Where(x => x.Active))
-                {
-                    GeneEffectManager.RefreshGeneEffects(gene, true);
-                }
-            }
-            FastAcccess.GetCache(pawn, force: true);
+            
+            //if (pawn?.genes != null)
+            //{
+            //    List<Gene> genes = pawn.genes.GenesListForReading;
+            //    foreach (Gene gene in genes.Where(x => x.Active))
+            //    {
+            //        GeneEffectManager.RefreshGeneEffects(gene, true);
+            //    }
+            //}
+            HumanoidPawnScaler.ShedueleForceRegenerateSafe(pawn, 100);
         }
     }
 }

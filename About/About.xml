@@ -6,6 +6,7 @@
 		<li>1.4</li>
     <li>1.5</li>
 	</supportedVersions>
+	<modVersion>2.0.0.1</modVersion>
 	<modIconPath IgnoreIfNoMatchingField="True">BS_ModIcon</modIconPath>
 	<modDependencies>
 		<!-- <li>

@@ -222,6 +222,12 @@ namespace BigAndSmall
             return GetCache(pawn, forceRefresh, canRegenerate, scheduleForce);
         }
 
+        public static void ShedueleForceRegenerateSafe(Pawn pawn, int tick)
+        {
+            var cache = GetCache(pawn, canRegenerate: false);
+            ShedueleForceRegenerate(cache, tick);
+        }
+
         /// <summary>
         /// Note that if the pawn is "null" then it will use a generic cache with default values. This is mostly to just get rid of the need to
         /// null-check everything that calls this method.
