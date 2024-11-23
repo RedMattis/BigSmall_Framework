@@ -59,7 +59,7 @@ namespace BigAndSmall
 
                 foreach (var gene in GeneHelpers.GetAllActiveGenes(__instance))
                 {
-                    GeneEffectManager.RefreshGeneEffects(gene, activate: true);
+                    GeneEffectManager.RefreshGeneEffects(gene, active: true);
                 }
                 if (forceRefresh)
                 {
@@ -93,7 +93,9 @@ namespace BigAndSmall
         [HarmonyPostfix]
         public static void Post_Notify_LifeStageStarted(Pawn pawn)
         {
-            
+            // Commented out because it can cause crashes on loading the saves. Probably something (another mod likely) can break pawns
+            // in a way that prevents loading saves.
+
             //if (pawn?.genes != null)
             //{
             //    List<Gene> genes = pawn.genes.GenesListForReading;

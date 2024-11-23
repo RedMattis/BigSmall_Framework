@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using Verse.AI;
+using Verse.Noise;
 
 namespace BigAndSmall
 {
@@ -47,6 +48,18 @@ namespace BigAndSmall
                 if (HumanoidPawnScaler.GetCache(pawn, scheduleForce:1) is BSCache cache)
                 {
                 }
+            }
+        }
+
+        public void QueueJobOrRunNowIfPaused(Action job)
+        {
+            if (Find.TickManager?.Paused == true)
+            {
+                job();
+            }
+            else
+            {
+                queuedJobs.Enqueue(job);
             }
         }
 
@@ -229,6 +242,19 @@ namespace BigAndSmall
         }
 
         /// <summary>
+        /// Get the cache later, unless paused, then get it now. Mostly to force updates when in character editor, etc.
+        /// </summary>
+        public static BSCache LazyGetCache(Pawn pawn, int scheduleForce = 10) //, bool debug=false)
+        {
+            if (Find.TickManager?.Paused == true || Find.TickManager?.NotPlaying == true)
+            {
+                return GetCache(pawn, forceRefresh: true);
+            }
+            ShedueleForceRegenerateSafe(pawn, scheduleForce);
+            return GetCache(pawn, canRegenerate: false);
+        }
+
+        /// <summary>
         /// Note that if the pawn is "null" then it will use a generic cache with default values. This is mostly to just get rid of the need to
         /// null-check everything that calls this method.
         /// </summary>
@@ -345,7 +371,7 @@ namespace BigAndSmall
         public bool approximatelyNoChange = true;
         public bool hideHead = false;
         public bool hideBody = false;
-        public Gender? apparentGender = null;
+        private Gender? apparentGender = null;
         public string bodyGraphicPath = null;
         public string bodyDessicatedGraphicPath = null;
         public string headGraphicPath = null;
@@ -709,6 +735,11 @@ namespace BigAndSmall
                 bool everFertile = activeGenes.Any(x => x.def.defName == "BS_EverFertile");
                 animalFriend = pawn.story?.traits?.allTraits.Any(x => !x.Suppressed && x.def.defName == "BS_AnimalFriend") == true || isMechanical;
 
+                var forcedGender = allPawnExt.Any(x => x.forceGender != null) ? allPawnExt.First(x => x.forceGender != null).forceGender : null;
+                if (forcedGender != null && forcedGender != pawn.gender)
+                {
+                    pawn.gender = forcedGender.Value;
+                }
                 GetSetApparentGender(nonRacePawnExt, racePawnExts);
 
                 //facialAnimationDisabled = activeGenes.Any(x => x.def == BSDefs.BS_FacialAnimDisabled);
@@ -898,6 +929,8 @@ namespace BigAndSmall
         public void DelayedUpdate()
         {
             if (pawn == null || pawn.Dead) { return; }
+            PrerequisiteGeneUpdate();
+
             pawn.def.modExtensions?.OfType<RaceExtension>()?.FirstOrDefault()?.ApplyTrackerIfMissing(pawn);
 
             var racePawnExts = pawn.GetRacePawnExtensions();
@@ -1038,6 +1071,39 @@ namespace BigAndSmall
             }
 
         }
+
+        [Unsaved]
+        public HashSet<Gene> lastActiveGenes = [];
+        [Unsaved]
+        public HashSet<Gene> lastInactiveGenes = [];
+
+        // Ideally this mess should be refactored and fixed. This is a workaround for the logic mess that has built up over 2 years
+        // and the various framework merges.
+        public void PrerequisiteGeneUpdate()
+        {
+            (HashSet<Gene> lActiveGenes, HashSet<Gene> lInactiveGenes) = ([.. lastActiveGenes], lastInactiveGenes.Where(g => !lastActiveGenes.Contains(g)).ToHashSet());
+            if (pawn?.genes != null)
+            {
+                var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
+                var allGenes = pawn.genes.GenesListForReading;
+                allGenes.Where(g => g is PGene pGene).Cast<PGene>().ToList().ForEach(pg => pg.ForceRun = true);
+
+                lastActiveGenes = activeGenes;
+                lastInactiveGenes = allGenes.Where(x => !lastActiveGenes.Contains(x)).ToHashSet();
+
+                
+                foreach (var gene in pawn.genes.GenesListForReading)
+                {
+                    bool wasActive = lActiveGenes.Contains(gene);
+                    bool isActive = activeGenes.Contains(gene);
+                    if (wasActive != isActive)
+                    {
+                        GeneEffectManager.RefreshGeneEffects(gene, active: isActive);
+                    }
+                }
+            }
+        }
+
     }
     public class ApparelCache : IExposable
     {

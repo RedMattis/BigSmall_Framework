@@ -78,8 +78,8 @@ namespace BigAndSmall
         public bool TryGetPath(BSCache cache, ref string path)
         {
             var rng = cache.pawn.GetPawnRNGSeed();
-            Gender? forceFemale = cache.apparentGender;
-            var pathList = GetPaths(cache, forceFemale);
+            Gender? gender = cache.GetApparentGender();
+            var pathList = GetPaths(cache, gender);
             if (pathList.Any()) using (new RandBlock(rng))
                 {
                     path = pathList?.RandomElement();

@@ -21,7 +21,7 @@ namespace BigAndSmall
         {
             if (pawn != null && HumanoidPawnScaler.GetCache(pawn) is BSCache cache)
             {
-                if (bodyType == GeneticBodyType.Standard)
+                if (bodyType == GeneticBodyType.Standard && pawn.IsAdult())
                 {
                     Gender apparentGender = cache.GetApparentGender();
                     if (apparentGender == Gender.Female && pawn.story.bodyType.IsBodyStandard())
@@ -44,7 +44,7 @@ namespace BigAndSmall
         [HarmonyPostfix]
         public static void PawnGenerator_GetBodyTypeFor(Pawn pawn, ref BodyTypeDef __result)
         {
-            if (pawn != null && HumanoidPawnScaler.GetCache(pawn) is BSCache cache)
+            if (pawn != null && HumanoidPawnScaler.GetCache(pawn) is BSCache cache && pawn.IsAdult())
             {
                 Gender apparentGender = cache.GetApparentGender();
                 if (__result.IsBodyStandard() && apparentGender == Gender.Female)
@@ -63,7 +63,7 @@ namespace BigAndSmall
         [HarmonyPostfix]
         public static void PawnGenerator_GenerateBodyType(Pawn pawn)
         {
-            if (pawn != null && HumanoidPawnScaler.GetCache(pawn) is BSCache cache)
+            if (pawn != null && HumanoidPawnScaler.GetCache(pawn) is BSCache cache && pawn.IsAdult())
             {
                 Gender apparentGender = cache.GetApparentGender();
                 if (pawn.story.bodyType.IsBodyStandard() && apparentGender == Gender.Female)

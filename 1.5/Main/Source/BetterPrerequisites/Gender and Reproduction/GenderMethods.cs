@@ -24,7 +24,7 @@ namespace BigAndSmall
                 {
                     return;
                 }
-                bool femaleBody = cache.apparentGender == Gender.Female || pawn.gender == Gender.Female;
+                bool femaleBody = cache.GetApparentGender() == Gender.Female || pawn.gender == Gender.Female;
 
                 if (femaleBody && bodyNakedGraphicPath != null && !bodyNakedGraphicPath.Contains("_Female") && (bodyNakedGraphicPath.Contains("_Thin") || bodyNakedGraphicPath.Contains("_Fat") || bodyNakedGraphicPath.Contains("_Hulk")))
                 {
@@ -81,10 +81,20 @@ namespace BigAndSmall
             }
         }
 
+        public static bool IsAdult(this Pawn pawn)
+        {
+            return pawn?.DevelopmentalStage == null || pawn.DevelopmentalStage > DevelopmentalStage.Child;
+        }
+
         public static void UpdateBodyHeadAndBeardPostGenderChange(BSCache cache, bool banNarrow = false)
         {
             Pawn pawn = cache.pawn;
+            
             Gender apparentGender = cache.GetApparentGender();
+            if (apparentGender == Gender.None)
+            {
+                return;
+            }
             bool headNeedsChange = pawn.story.headType.gender != 0 && pawn.story.headType.gender != apparentGender;
 
             var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
@@ -92,7 +102,7 @@ namespace BigAndSmall
             if (activeGenes.Any(x => x.def.bodyType != null))
             {
                 var bodyType = activeGenes.First(x => x.def.bodyType != null).def.bodyType;
-                if (bodyType != null)
+                if (bodyType != null && pawn.IsAdult())
                 {
                     pawn.story.bodyType = bodyType.Value.ToBodyType(pawn);
                 }
@@ -103,41 +113,66 @@ namespace BigAndSmall
             }
             else
             {
-                pawn.story.bodyType = PawnGenerator.GetBodyTypeFor(pawn);//.BodyTypeToGeneticBodyType().ToBodyType(pawn);
+                if (pawn.story.bodyType.IsBodyStandard())
+                {
+                    if (apparentGender == Gender.Female)
+                    {
+                        pawn.story.bodyType = BodyTypeDefOf.Female;
+                    }
+                    else if (apparentGender == Gender.Male)
+                    {
+                        pawn.story.bodyType = BodyTypeDefOf.Male;
+                    }
+                }
             }
 
-            // If we have a head gene we don't want to use a randomchosen head.
-            var headGenes = activeGenes.Where(x => !x.def.forcedHeadTypes.NullOrEmpty());
-            var possibleHeads = headGenes.SelectMany(x => x.def.forcedHeadTypes).ToList();
-
-            if (possibleHeads.Count > 0)
+            if (pawn.story.bodyType == null)
             {
-                Gender targetGender = apparentGender;
-                var validHeads = possibleHeads.Where(x => headGenes.All(ag => ag.def.forcedHeadTypes.Contains(x))).Where(x => x.gender == Gender.None || x.gender == targetGender).ToList();
-                if (banNarrow)
+                pawn.story.bodyType = PawnGenerator.GetBodyTypeFor(pawn);
+            }
+            if (headNeedsChange)
+            {
+                // If we have a head gene we don't want to use a randomchosen head.
+                var headGenes = activeGenes.Where(x => !x.def.forcedHeadTypes.NullOrEmpty());
+                var possibleHeads = headGenes.SelectMany(x => x.def.forcedHeadTypes).ToList();
+                if (possibleHeads.Count > 0)
                 {
-                    validHeads = validHeads.Where(x => !x.narrow).ToList();
-                }
-                if (validHeads.Count > 0)
-                {
-                    Rand.PushState(pawn.thingIDNumber);
-                    pawn.story.headType = validHeads.RandomElement();
-                    Rand.PopState();
-                    headNeedsChange = false;
-                }
-                else
-                {
-                    Log.Warning($"Couldn't find an appropriate head fitting {pawn}'s genes.");
+                    Gender targetGender = apparentGender;
+                    var validHeads = possibleHeads.Where(x => headGenes.All(ag => ag.def.forcedHeadTypes.Contains(x))).Where(x => x.gender == targetGender).ToList();
+                    if (validHeads.Count == 0)  // Try None heads only if there are no exact matches.
+                    {
+                        validHeads = possibleHeads.Where(x => headGenes.All(ag => ag.def.forcedHeadTypes.Contains(x))).Where(x => x.gender == Gender.None || x.gender == targetGender).ToList();
+                    }
+                    if (validHeads.Count == 0)
+                    {
+                        validHeads = possibleHeads.Where(x => headGenes.All(ag => ag.def.forcedHeadTypes.Contains(x))).ToList();
+                        if (validHeads.Any())
+                        {
+                            Log.Warning($"Couldn't find an appropriate head fitting {pawn}'s genes. One was picked which ignored gender-limits.");
+                        }
+                    }
+                    if (banNarrow)
+                    {
+                        validHeads = validHeads.Where(x => !x.narrow).ToList();
+                    }
+                    if (validHeads.Count > 0)
+                    {
+                        Rand.PushState(pawn.thingIDNumber);
+                        pawn.story.headType = validHeads.RandomElement();
+                        Rand.PopState();
+                        headNeedsChange = false;
+                    }
                 }
             }
+
             if (headNeedsChange && !pawn.story.TryGetRandomHeadFromSet(DefDatabase<HeadTypeDef>.AllDefs.Where((HeadTypeDef x) => x.randomChosen)))
             {
                 if (!pawn.story.TryGetRandomHeadFromSet(DefDatabase<HeadTypeDef>.AllDefs.Where((HeadTypeDef x) => x.randomChosen)))
                 {
                     Log.Warning($"Couldn't find an appropriate head for {pawn}.");
                 }
-
             }
+
             if (!pawn.style.CanWantBeard && pawn.style.beardDef != BeardDefOf.NoBeard)
             {
                 pawn.style.beardDef = BeardDefOf.NoBeard;

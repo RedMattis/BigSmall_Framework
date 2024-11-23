@@ -1,4 +1,5 @@
 ﻿using BetterPrerequisites;
+using BigAndSmall.SpecialGenes.Gender;
 using HarmonyLib;
 using RimWorld;
 using System;
@@ -112,45 +113,28 @@ namespace BigAndSmall
             }
         }
 
-        private static bool? harActive = null;
-        private static MethodInfo headTypeFilterMethod = null;
-        public static bool canRefreshGeneEffects = false;
-
-        public static bool RefreshGeneEffects(Gene __instance, bool activate, PawnExtension geneExt = null)
+        public static bool RefreshGeneEffects(Gene __instance, bool active, PawnExtension geneExt = null)
         {
-            //if (__instance.pawn == null || !__instance.pawn.Spawned)
-            //{
-            //    return false;
-            //}
-
-            if (canRefreshGeneEffects == true && __instance is PGene pGene && __instance?.pawn != null)
-            {
-                canRefreshGeneEffects = false;
-                bool conditionalsValid = ConditionalManager.TestConditionals(pGene);
-                bool prerequisitesValid = PrerequisiteValidator.Validate(pGene.def, __instance.pawn);
-                if (!conditionalsValid || !prerequisitesValid)
-                {
-                    activate = false;
-                }
-                canRefreshGeneEffects = true;
-            }
-
-
             bool changeMade = false;
 
             var gene = __instance;
 
             PawnExtension extension = geneExt ?? gene.def.GetModExtension<PawnExtension>();
             if (extension == null) return false;
+
             try
             {
-                AddHediffToPawn(activate, ref changeMade, gene, extension);
-                AddHediffToPart(activate, ref changeMade, gene, extension);
-
+                AddHediffToPawn(active, ref changeMade, gene, extension);
+                AddHediffToPart(active, ref changeMade, gene, extension);
             }
             catch (Exception ex)
             {
                 Log.Error($"Error in RefreshGeneEffects: {ex.Message} {ex.StackTrace}");
+            }
+
+            if (extension.forceGender != null || extension.ApparentGender != null)
+            {
+                HumanoidPawnScaler.LazyGetCache(gene?.pawn);
             }
             return changeMade;
         }

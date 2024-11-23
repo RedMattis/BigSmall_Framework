@@ -37,8 +37,6 @@ namespace BetterPrerequisites
 
                 if (__instance?.pawn?.Drawer?.renderer != null && __instance.pawn.Spawned)
                     __instance.pawn.Drawer.renderer.SetAllGraphicsDirty();
-
-                Patch_NotifyGendesChanged_Gender.RunInPostfix(__instance.pawn, addedOrRemovedGene);
             }
         }
 
@@ -71,7 +69,8 @@ namespace BetterPrerequisites
         {
             if (__instance is PGene && !PawnGenerator.IsBeingGenerated(__instance.pawn) && __instance.Active)
             {
-                GeneEffectManager.RefreshGeneEffects(__instance, activate: false);
+                HumanoidPawnScaler.LazyGetCache(__instance.pawn);
+                //GeneEffectManager.RefreshGeneEffects(__instance, activate: false);
             }
         }
 
@@ -81,17 +80,9 @@ namespace BetterPrerequisites
         {
             if (__instance?.pawn?.genes != null)
             {
-                Pawn pawn = __instance.pawn;
-                // Get all other genes
-                var genes = GeneHelpers.GetAllActiveGenes(__instance.pawn);
-
-                // Check if active. This will trigger the checker for prerequisites.
-                genes.Where(g => g is PGene pGene).Cast<PGene>().ToList().ForEach(pg => pg.ForceRun = true);
-
-                foreach (var gene in genes)
-                {
-                    GeneEffectManager.RefreshGeneEffects(gene, activate: true);
-                }
+                //var modExt = __instance.def.GetModExtension<PawnExtension>();
+                //if (modExt.ApparentGender != null || modExt.forceGender)
+                HumanoidPawnScaler.LazyGetCache(__instance.pawn);
             }
         }
     }

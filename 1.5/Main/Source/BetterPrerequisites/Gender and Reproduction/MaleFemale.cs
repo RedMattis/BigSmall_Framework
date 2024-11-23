@@ -29,45 +29,13 @@ namespace BigAndSmall.SpecialGenes.Gender
     }
 
     //[HarmonyPatch(typeof(Pawn_GeneTracker), "Notify_GenesChanged")]
-    public static class Patch_NotifyGendesChanged_Gender
-    {
-        //[HarmonyPostfix]
-        public static void RunInPostfix(Pawn pawn, GeneDef addedOrRemovedGene)
-        {
-            bool update = false;
-            if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache)
-            {
-                var apparentGender = cache.apparentGender;
-                if (addedOrRemovedGene == BSDefs.Body_FemaleOnly)
-                {
-                    pawn.gender = Gender.Female;
-                    //if (___pawn.story.bodyType == BodyTypeDefOf.Male && apparentGender != Gender.Male)
-                    //{
-                    //    ___pawn.story.bodyType = BodyTypeDefOf.Female;
-                    //}
-                    update = true;
-                }
-                else if (addedOrRemovedGene == BSDefs.Body_MaleOnly && pawn.gender != Gender.Male)
-                {
-                    pawn.gender = Gender.Male;
-                    //if (___pawn.story.bodyType == BodyTypeDefOf.Female && apparentGender != Gender.Female)
-                    //{
-                    //    ___pawn.story.bodyType = BodyTypeDefOf.Male;
-                    //}
-                    update = true;
-                }
-                if (addedOrRemovedGene == BSDefs.Body_Androgynous ||
-                    addedOrRemovedGene.modExtensions?
-                        .Any(x => x is PawnExtension pExt && pExt.ApparentGender is Gender) == true)
-                {
-                    update = true;
-                }
-                if (update)
-                {
-                    pawn.Drawer.renderer.SetAllGraphicsDirty();
-                }
-            }
-        }
-    }
+    //public static class GenderChangeCheck
+    //{
+    //    //[HarmonyPostfix]
+    //    public static void TrySetGenderOrApparentGender(BSCache cache)
+    //    {
+            
+    //    }
+    //}
 
 }

@@ -380,6 +380,7 @@ namespace BigAndSmall
         /// Makes the pawn consider the pawn female for rendering purposes.
         /// Useful for compatibility. Despite the name, it also affects the head.
         /// </summary>
+        public Gender? forceGender = null;
         private bool forceFemaleBody = false;
 
         protected Gender? apparentGender = null;

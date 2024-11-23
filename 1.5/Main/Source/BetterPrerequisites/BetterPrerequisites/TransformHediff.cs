@@ -73,7 +73,7 @@ namespace BetterPrerequisites
                     cache.savedHeadDef = pawn.story?.headType?.defName;
                     cache.savedBeardDef = pawn.style?.beardDef?.defName;
                 }
-                var targetGender = cache.apparentGender ?? pawn.gender;
+                var targetGender = cache.GetApparentGender();
                 if (CRProps.HairColorOverride != null)
                 {
                     if (cache.randomPickHairColor == null || cache.randomPickHairColor >= CRProps.HairColorOverride.Count - 1)
@@ -161,6 +161,7 @@ namespace BetterPrerequisites
                     }
                     if (cache.savedBodyDef != null && DefDatabase<BodyTypeDef>.GetNamed(cache.savedBodyDef) is BodyTypeDef bodyDef)
                     {
+                        Log.Message($"Restoring body type for {pawn.Name} to {bodyDef.defName}");
                         pawn.story.bodyType = bodyDef;
                     }
                     if (cache.savedHeadDef != null && DefDatabase<HeadTypeDef>.GetNamed(cache.savedHeadDef) is HeadTypeDef headDef)

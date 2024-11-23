@@ -113,7 +113,7 @@ namespace BigAndSmall
         public static void EnsureValidBodyType(this List<CompProperties_Race> comps, BSCache cache)
         {
             var pawn = cache.pawn;
-            var gender = cache.apparentGender ?? pawn.gender;
+            var gender = cache.GetApparentGender();
             List<BodyTypeDef> validBodyTypeDefs = comps.SelectMany(x => x.BodyTypeDefs(gender)).ToList();
             if (validBodyTypeDefs.Any() && validBodyTypeDefs.Contains(pawn.story?.bodyType) == false)
             {
@@ -128,7 +128,7 @@ namespace BigAndSmall
         public static void EnsureValidHeadType(this List<CompProperties_Race> comps, BSCache cache)
         {
             var pawn = cache.pawn;
-            var gender = cache.apparentGender ?? pawn.gender;
+            var gender = cache.GetApparentGender();
             List<HeadTypeDef> validHeadTypeDefs = comps.SelectMany(x => x.HeadTypeDefs(gender)).ToList();
             if (validHeadTypeDefs.Any() && validHeadTypeDefs.Contains(pawn.story?.headType) == false)
             {

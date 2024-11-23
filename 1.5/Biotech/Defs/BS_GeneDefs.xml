@@ -23,6 +23,11 @@
     <description>Carriers of this gene are physically female.</description>
     <iconPath>GeneIcons/BS_Female</iconPath>
     <biostatCpx>0</biostatCpx>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <forceGender>Female</forceGender>
+      </li>
+    </modExtensions>
   </GeneDef>
 
   <GeneDef ParentName="BM_MaleAndFemaleBase">
@@ -31,6 +36,11 @@
     <description>Carriers of this gene are physically male.</description>
     <iconPath>GeneIcons/BS_Male</iconPath>
     <biostatCpx>0</biostatCpx>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <forceGender>Male</forceGender>
+      </li>
+    </modExtensions>
   </GeneDef>
 
   
