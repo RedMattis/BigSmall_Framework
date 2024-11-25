@@ -138,20 +138,14 @@ namespace BigAndSmall
         private static bool GeneratePilots(bool changed, Pawn member)
         {
             // Check if the pawnkind has the PilotExtension mod extension.
-            if (member.kindDef.HasModExtension<PilotExtension>())
+            if (member.kindDef.GetModExtension<PilotExtension>() is PilotExtension pilotExtension)
             {
-                try
-                {
-                    // Grab the PilotExtension mod extension.
-                    var pilotExtension = member.kindDef.GetModExtension<PilotExtension>();
-                    // Generate a pilot for the pawn.
-                    pilotExtension.GeneratePilot(member);
-                    changed = true;
-                }
-                catch (Exception e)
-                {
-                    Log.Error("BigAndSmall: Error generating pilot for " + member.Name + ": " + e.Message);
-                }
+                changed = GeneratePilot(changed, member, pilotExtension);
+            }
+            // Otherwise check if the Xenotype has one, as a fallback for stuff like the xenotype being added via mods.
+            else if (member?.genes?.Xenotype?.GetModExtension<PilotExtension>() is PilotExtension xenotypePilotExtension)
+            {
+                changed = GeneratePilot(changed, member, xenotypePilotExtension);
             }
 
             //// As a fallback, generate pilots with random xenotypes for all pawns that have pilotable genes or hediffs.
@@ -184,6 +178,22 @@ namespace BigAndSmall
             //}
 
             return changed;
+
+            static bool GeneratePilot(bool changed, Pawn member, PilotExtension pilotExtension)
+            {
+                try
+                {
+                    // Generate a pilot for the pawn.
+                    pilotExtension.GeneratePilot(member);
+                    changed = true;
+                }
+                catch (Exception e)
+                {
+                    Log.Error("BigAndSmall: Error generating pilot for " + member.Name + ": " + e.Message);
+                }
+
+                return changed;
+            }
         }
 
         private static void TryModifyPawn(Pawn member)

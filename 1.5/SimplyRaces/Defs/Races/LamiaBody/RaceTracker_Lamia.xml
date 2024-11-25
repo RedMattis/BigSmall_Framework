@@ -67,6 +67,7 @@
             <Body_Baby>RaceDefaults/Snek/bp_child</Body_Baby> -->
           </texturePaths>
           <colorA>
+            <replaceFlagsAndInactive><LamiaColorA/></replaceFlagsAndInactive>
             <skinColor>true</skinColor>
             <!-- <hairColor>true</hairColor> -->
             <!-- <averageColors>true</averageColors> -->
@@ -76,6 +77,7 @@
             <!-- <saturation>1.1</saturation> -->
           </colorA>
           <colorB>
+            <replaceFlagsAndInactive><LamiaColorB/></replaceFlagsAndInactive>
             <hairColor>true</hairColor>
             <saturation>0.9</saturation>
             
@@ -91,11 +93,10 @@
           <alts>
             <li>
               <!-- Hide the tail if we have a snake-gene. No ColorA/B specified since, well, nothing to show.-->
-              <triggerGeneTag>
-                <acceptlist>
-                  <li>taur</li>
-                </acceptlist>
-              </triggerGeneTag>
+              <triggerGeneTag> <acceptlist> <li>taur</li> </acceptlist> </triggerGeneTag>
+
+              <!-- Essentially makes this genes still use the graphics here by skipping this.. -->
+              <triggerFlags><blacklist><ShowBaseAbdomen/></blacklist></triggerFlags>
               <texturePaths><default>BS_Blank</default></texturePaths>
             </li>
             <li>

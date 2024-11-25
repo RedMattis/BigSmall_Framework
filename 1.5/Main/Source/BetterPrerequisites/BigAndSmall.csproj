@@ -116,6 +116,7 @@
     <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\AdvancedColor.cs" />
     <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\AdvancedGraphicSetting.cs" />
     <Compile Include="Rendering &amp; Graphics\ConditionalGraphic.cs" />
+    <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\ConditionalGraphicProperties.cs" />
     <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\ConditionalGraphicsSet.cs" />
     <Compile Include="Rendering &amp; Graphics\CustomMaterial.cs" />
     <Compile Include="Rendering &amp; Graphics\AdaptivePawnPath.cs" />
@@ -127,6 +128,7 @@
     <Compile Include="Rendering &amp; Graphics\RenderNodes\PawnRenderNode_SimpleSwitches.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\UltimateRenderNode.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\ComplexRenderNode.cs" />
+    <Compile Include="Rendering &amp; Graphics\RenderWorkers\UltimateRenderNodeWorker.cs" />
     <Compile Include="SimpleCustomRaces\LifeStageWorker_FullyFormedHumanlike.cs" />
     <Compile Include="SimpleCustomRaces\MechanicalRace\FuelNeed.cs" />
     <Compile Include="SimpleCustomRaces\MechanicalRace\MechRacePatches.cs" />
@@ -207,7 +209,7 @@
     <Compile Include="ModPatches\NalsAnim\DisableNalFacialFeatures.cs" />
     <Compile Include="ModPatches\VanillaExpanded\VEModExtension.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\Fur.cs" />
-    <Compile Include="Rendering &amp; Graphics\RenderNodes\Offsets.cs" />
+    <Compile Include="Rendering &amp; Graphics\RenderWorkers\Offsets.cs" />
     <Compile Include="Traits\Gentle.cs" />
     <Compile Include="Traits\GiantTrait.cs" />
     <Compile Include="Balancing\MechanicalChanges.cs" />

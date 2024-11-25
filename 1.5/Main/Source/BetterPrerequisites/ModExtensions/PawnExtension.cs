@@ -23,6 +23,8 @@ namespace BetterPrerequisites
 
 namespace BigAndSmall
 {
+    
+
     public class DefTag : Def { }
 
     public class FacialAnimDisabler
@@ -115,7 +117,7 @@ namespace BigAndSmall
                 CreateIndividualSection("BS_LockedNeeds".Translate(), extList, ext => ext.LockedNeedsDescription),
                 CreateIndividualSection("BS_ConsumeSoulOnHit".Translate(), extList, ext => ext.ConsumeSoulOnHitDescription),
                 // Apparel and Restrictions
-                CreateIndividualSection("BS_HasApparelRestrictions".Translate(), extList, ext => ext.apparelRestrictions != null ? "BS_HasApparelRestrictions".Translate() : null),
+                CreateIndividualSection("BS_HasApparelRestrictions".Translate(), extList, ext => ext.apparelRestrictions != null ? "BS_Modified".Translate().CapitalizeFirst() : null),
                 // Thoughts and Relationships
                 CreateAggregatedSection("BS_HasNullThoughtsCount", extList.Where(x=>x.nullsThoughts != null).ToList(), ext => ext.nullsThoughts?.Count ?? 0, counts => counts.Sum().ToString()),
                 CreateListSection("BS_RomanceTags".Translate(), extList, ext => ext.RomanceTagsDescription),
@@ -271,7 +273,7 @@ namespace BigAndSmall
         /// This is the magic thing that makes the pawn swap to a different ThingDef. E.g. "Race".
         /// </summary>
         public ThingDef thingDefSwap = null;
-        public string ThingDefSwapDescription => thingDefSwap == null ? null : $"BS_ThingDefSwapDesc".Translate(thingDefSwap.LabelCap);
+        public string ThingDefSwapDescription => thingDefSwap == null ? null : $"BS_ThingDefSwapDesc".Translate(thingDefSwap.LabelCap).CapitalizeFirst();
 
         /// <summary>
         /// Forces the swap to the ThingDef. If false, it will be cautious to avoid accidentally turning robots into
@@ -459,7 +461,7 @@ namespace BigAndSmall
         public string ConsumeSoulOnHitDescription => consumeSoulOnHit == null ? null : "BS_ConsumeSoulOnHitDesc".Translate($"{100 * consumeSoulOnHit.gainMultiplier:f0}%");
 
         /// <summary>
-        /// Pawn will be considered a ...
+        /// Pawn will be considered...
         /// </summary>
         public bool isUnliving = false;
         public bool isDeathlike = false;
@@ -511,7 +513,7 @@ namespace BigAndSmall
         /// Lock a Needbar at a certain level. Often more compatible than just removing them.
         /// </summary>
         public List<BetterPrerequisites.LockedNeedClass> lockedNeeds;
-        public string LockedNeedsDescription => lockedNeeds?.Select(x => x.GetLabel()).ToLineList("  - ", capitalizeItems: true);
+        public string LockedNeedsDescription => lockedNeeds?.Where(x=>x!=null && x.GetLabel() != "").Select(x => x.GetLabel())?.ToLineList("  - ", capitalizeItems: true);
 
 
         /// <summary>

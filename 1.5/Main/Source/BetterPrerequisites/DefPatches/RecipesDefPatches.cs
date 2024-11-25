@@ -58,14 +58,18 @@ namespace BigAndSmall
             List<(ThingDef thing, List<RaceExtension> raceExts)> thingsWithRaceExtension = DefDatabase<ThingDef>.AllDefs
                 .Where(x => x.GetRaceExtensions().Any()).Select(td => (td, td.GetRaceExtensions())).ToList();
 
+            
+
             var humanLikes = HumanLikes.Humanlikes;
 
 
             // Migrate all recipes for stuff without a PawnExtension and Tracking Hediff instructing on what to transfer.
-            List<ThingDef> allHumanlikeThings = [.. thingsWithRaceExtension
+            List<ThingDef> defaultHumanlike = [.. thingsWithRaceExtension
                     .Where(x => x.raceExts.All(sr => sr.SurgeryRecipes.AnyItems() == false)).Select(x => x.thing)];
+
+            defaultHumanlike = [.. defaultHumanlike, .. humanLikes];
             var humanRecipes = AllHumanRecipes();
-            foreach (var thing in allHumanlikeThings)
+            foreach (var thing in defaultHumanlike)
             {
                 foreach (var recipe in humanRecipes.Where(x => !thing.recipes.Contains(x)))
                 {

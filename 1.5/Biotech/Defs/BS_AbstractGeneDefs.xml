@@ -1,7 +1,7 @@
 <Defs>
   <GeneDef Abstract="True" Name="BS_BodySwitch">
     <customEffectDescriptions>
-			<li>Switches the character's "Race" for another one if possible.</li>
+			<li>Switches the character's "Race" for another one if possible. Cannot be combined with genes with this property</li>
 		</customEffectDescriptions>
     <displayCategory>BS_BodySwap</displayCategory>
     <geneClass>BetterPrerequisites.PGene</geneClass>
@@ -9,5 +9,13 @@
       <!-- Ensure no other body-swap genes can be active at the same time. -->
       <li>BS_BodySwap</li>
     </exclusionTags>
+  </GeneDef>
+  
+  <GeneDef Abstract="True" Name="BS_BodySwitchNonExclusive">
+    <customEffectDescriptions>
+			<li>Switches the character's "Race" for another one if possible.</li>
+		</customEffectDescriptions>
+    <displayCategory>BS_BodySwap</displayCategory>
+    <geneClass>BetterPrerequisites.PGene</geneClass>
   </GeneDef>
 </Defs>

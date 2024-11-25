@@ -179,7 +179,7 @@ namespace BigAndSmall
 
         public static List<Gene> GetGeneByName(Pawn pawn, string geneName)
         {
-            List<Gene> result = new List<Gene>();
+            List<Gene> result = [];
             var genes = pawn?.genes?.GenesListForReading;
             if (genes == null) return result;
             for (int i = 0; i < genes.Count; i++)
@@ -194,7 +194,7 @@ namespace BigAndSmall
 
         public static HashSet<Gene> GetAllActiveGenes(Pawn pawn)
         {
-            HashSet<Gene> result = new();
+            HashSet<Gene> result = [];
             var genes = pawn?.genes?.GenesListForReading;
             if (genes == null) return result;
             for (int i = 0; i < genes.Count; i++)
@@ -207,7 +207,7 @@ namespace BigAndSmall
             return result;
         }
 
-        public static HashSet<Gene> GetAllActiveOrRandomChosenGenes(Pawn pawn)
+        public static HashSet<Gene> GetAllActiveRandomChosenGenes(Pawn pawn)
         {
             HashSet<Gene> result = new();
             var genes = pawn?.genes?.GenesListForReading;
@@ -520,9 +520,9 @@ namespace BigAndSmall
         //    return hediffExtensions;
         //}
 
-        public static PawnExtension GetPawnExt(this Gene gene)
+        public static List<PawnExtension> GetPawnExt(this Gene gene)
         {
-            return gene.def.GetModExtension<PawnExtension>();
+            return ModExtHelper.GetAllExtensions<PawnExtension>(gene.pawn, parentWhitelist: new List<Type> { typeof(Gene) });
         }
 
         public static List<Gene> GetActiveGenesByName(Pawn pawn, string geneName)

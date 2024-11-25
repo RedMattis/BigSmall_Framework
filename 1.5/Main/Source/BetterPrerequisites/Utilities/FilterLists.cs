@@ -14,7 +14,7 @@ namespace BigAndSmall
         {
             None,       // No result yet. Can be used to determine if there was a filter hit.
             Neutral,     // Accepts the result, but is a fail-state if explicit permission is required.
-            Allow,      // Accepts the result, priority over Accept.
+            Allow,      // Accepts the result, priority over Neutral.
             Deny,       // Denies the result, but can be overridden by ForceAllow.
             ForceAllow, // Accepts the result. Priority over anything but ForceDeny.
             Banned,  // If this is present, the result is always ForceDeny.
@@ -43,13 +43,14 @@ namespace BigAndSmall
 
             private bool Match(object a, object b)
             {
+                if (a == b) return true ;
                 if (a is Def && b is Def)
                 {
                     return a == b;
                 }
                 if (a is string aStr && b is string bStr)
                 {
-                    return string.Equals(aStr, bStr, StringComparison.OrdinalIgnoreCase);
+                    return aStr.ToLower() == bStr.ToLower();
                 }
                 string aAsStr = (a is Def aDef) ? aDef.defName : a.ToString();
                 string bAsStr = (b is Def bDef) ? bDef.defName : b.ToString();
@@ -74,7 +75,13 @@ namespace BigAndSmall
             {
                 foreach (XmlNode cNode in xmlRoot.ChildNodes)
                 {
-                    if (typeof(T) == typeof(string))
+                    if (typeof(T) == typeof(FlagString))
+                    {
+                        var fs = new FlagString();
+                        fs.LoadDataFromXmlCustom(cNode);
+                        Add((T)(object)fs);
+                    }
+                    else if (typeof(T) == typeof(string))
                     {
                         Add((T)(object)cNode.FirstChild.Value);
                     }
@@ -122,7 +129,7 @@ namespace BigAndSmall
         {
             public static FilterResult Fuse(this FilterResult previous, FilterResult next) => (FilterResult)Mathf.Max((int)previous, (int)next);
 
-            public static FilterResult Fuse(this IEnumerable<FilterResult> results) => results.EnumerableNullOrEmpty() ? FilterResult.None : (FilterResult)results.Cast<int>().Max();
+            public static FilterResult Fuse(this IEnumerable<FilterResult> results) => results.EnumerableNullOrEmpty() ? FilterResult.None : (FilterResult)results.Max(x=>(int)x);
 
             public static FilterResult Fuse(this FilterResult previous, IEnumerable<FilterResult> next) =>
                 next.Fuse().Fuse(previous);
@@ -130,30 +137,28 @@ namespace BigAndSmall
 
             public static bool AnyContains<T>(this IEnumerable<FilterList<T>> aLists, T obj)
             {
-                var validLists = aLists.Where(x => x != null);
-                if (!validLists.Any()) return false;
-                return validLists.Any(x => x.AnyMatch(obj));
+                return aLists.Any(x => x != null && x.AnyMatch(obj));
             }
 
             // From single item.
             public static FilterResult GetFilterResult<T>(this IEnumerable<FilterList<T>> filterList, T item)
             {
-                return filterList.AsParallel().Select(x => x.GetFilterResult(item)).Fuse();
+                return filterList.Select(x => x.GetFilterResult(item)).Fuse();
             }
 
             public static IEnumerable<FilterResult> GetFilterResults<T>(this IEnumerable<FilterList<T>> filterList, T item)
             {
-                return filterList.AsParallel().Select(x => x.GetFilterResult(item));
+                return filterList.Select(x => x.GetFilterResult(item));
             }
 
             // From List of items.
             public static IEnumerable<FilterResult> GetFilterResultsFromItemList<T>(this IEnumerable<FilterList<T>> filterList, List<T> itemList)
             {
-                return filterList.SelectMany(x => itemList.AsParallel().Select(y => x.GetFilterResult(y)));
+                return filterList.SelectMany(x => itemList.Select(y => x.GetFilterResult(y)));
             }
             public static FilterResult GetFilterResultFromItemList<T>(this IEnumerable<FilterList<T>> filterList, List<T> itemList)
             {
-                return filterList.SelectMany(x=> itemList.AsParallel().Select(y => x.GetFilterResult(y))).Fuse(); 
+                return filterList.SelectMany(x=> itemList.Select(y => x.GetFilterResult(y))).Fuse(); 
             }
 
             // Status Check.

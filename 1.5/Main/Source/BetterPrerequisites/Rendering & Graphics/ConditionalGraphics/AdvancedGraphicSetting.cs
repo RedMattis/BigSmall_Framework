@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,29 +11,40 @@ using static BigAndSmall.ConditionalGraphic;
 
 namespace BigAndSmall
 {
-    public class ConditionalPath : ConditionalGraphic
+    public class ConditionalTexture : ConditionalGraphic
     {
         public AdaptivePathPathList texturePaths = [];
+        public Vector2 drawSize = Vector2.one;
 
-        public List<ConditionalPath> alts = [];
+        public List<ConditionalTexture> alts = [];
 
         public bool TryGetPath(BSCache cache, ref string path)
         {
             var pawn = cache.pawn;
             foreach (var alt in alts)
             {
-                var result = alt.GetState(pawn);
-                if (result == false) { continue; }
-                if ( alt.TryGetPath(cache, ref path))
+                if (alt.GetState(pawn) == false) { continue; }
+                if (alt.TryGetPath(cache, ref path))
                 {
                     return true;
                 }
             }
+            var pathsSrc = texturePaths;
+
+            foreach (var gfxOverride in GetGraphicOverrides(pawn))
+            {
+                gfxOverride.graphics.OfType<ConditionalTexture>().Where(x => x != null).Do(x =>
+                {
+                    pathsSrc = x.texturePaths;
+                });
+            }
+
             if (texturePaths.Count == 0) { return false; }
-            var paths = texturePaths.GetPaths(cache);
+            var paths = pathsSrc.GetPaths(cache);
             if (paths.Count == 0) { return false; }
 
             int pawnRNGSeed = pawn.thingIDNumber + pawn.def.defName.GetHashCode();
+
             using (new RandBlock(pawnRNGSeed))
             {
                 path = paths.RandomElement();

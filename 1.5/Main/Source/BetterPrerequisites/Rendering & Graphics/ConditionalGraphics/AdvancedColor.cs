@@ -1,4 +1,5 @@
 ﻿using BigAndSmall.FilteredLists;
+using HarmonyLib;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using Verse.Noise;
 using static BigAndSmall.ConditionalGraphic;
 
 namespace BigAndSmall
@@ -57,6 +59,19 @@ namespace BigAndSmall
                 {
                     return altClr;
                 }
+            }
+
+            Color? subDefResult = null;
+            foreach (var gfxOverride in GetGraphicOverrides(pawn))
+            {
+                gfxOverride.graphics.OfType<ColorSetting>().Where(x => x != null).Do(x =>
+                {
+                    subDefResult = x.GetColor(pawn, oldClr, hashOffset, useOldColor);
+                });
+            }
+            if (subDefResult != null)
+            {
+                return subDefResult.Value;
             }
 
             if (invisibleIfDead && pawn.Dead)

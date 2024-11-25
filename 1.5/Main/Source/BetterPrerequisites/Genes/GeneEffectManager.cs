@@ -119,20 +119,23 @@ namespace BigAndSmall
 
             var gene = __instance;
 
-            PawnExtension extension = geneExt ?? gene.def.GetModExtension<PawnExtension>();
-            if (extension == null) return false;
+            var extensions = gene.def.ExtensionsOnDef<PawnExtension, GeneDef>();
+            if (extensions.NullOrEmpty()) return false;
 
             try
             {
-                AddHediffToPawn(active, ref changeMade, gene, extension);
-                AddHediffToPart(active, ref changeMade, gene, extension);
+                foreach (var extension in extensions)
+                {
+                    AddHediffToPawn(active, ref changeMade, gene, extension);
+                    AddHediffToPart(active, ref changeMade, gene, extension);
+                }
             }
             catch (Exception ex)
             {
                 Log.Error($"Error in RefreshGeneEffects: {ex.Message} {ex.StackTrace}");
             }
 
-            if (extension.forceGender != null || extension.ApparentGender != null)
+            if (extensions.Any(x=>x.forceGender != null || x.ApparentGender != null))
             {
                 HumanoidPawnScaler.LazyGetCache(gene?.pawn);
             }

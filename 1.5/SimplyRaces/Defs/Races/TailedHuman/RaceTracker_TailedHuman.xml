@@ -22,9 +22,11 @@
         <conditionalGraphics>
           <texturePaths><li>RaceDefaults/Tails/BS_Tail</li></texturePaths>
           <colorA>
+            <replaceFlagsAndInactive><TailedColorA/></replaceFlagsAndInactive>
             <hairColor>true</hairColor>
           </colorA>
           <colorB>
+            <replaceFlagsAndInactive><TailedColorB/></replaceFlagsAndInactive>
             <hairColor>true</hairColor>
             <brightness>1.2</brightness>
             <saturation>0.8</saturation>

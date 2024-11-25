@@ -11,27 +11,49 @@ namespace BigAndSmall
     public static class ModExtHelper
     {
         // public methods.
-        public static List<PawnExtension> GetAllPawnExtensions(this Pawn pawn, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true)
+        public static List<PawnExtension> GetAllPawnExtensions(this Pawn pawn, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true, bool includeInactiveGenes = false)
         {
-            return [.. GetHediffExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
-                    .. GetGeneExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort)];
+            if (includeInactiveGenes)
+            {
+                return [.. GetHediffExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
+                    .. GetAllGeneExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort)];
+            }
+            else
+            {
+                return [.. GetHediffExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
+                    .. GetActiveGeneExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort)];
+            }
         }
 
         public static List<T> GetAllExtensions<T>(this Pawn pawn, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) where T : DefModExtension
         {
             return [.. GetHediffExtensions<T>(pawn, parentWhitelist, parentBlacklist, doSort),
-                    .. GetGeneExtensions<T>(pawn, parentWhitelist, parentBlacklist, doSort)];
+                    .. GetActiveGeneExtensions<T>(pawn, parentWhitelist, parentBlacklist, doSort)];
         }
-        
+        public static List<T> GetAllExtensionsPlusInactive<T>(this Pawn pawn, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) where T : DefModExtension
+        {
+            return [.. GetHediffExtensions<T>(pawn, parentWhitelist, parentBlacklist, doSort),
+                    .. GetAllGeneExtensions<T>(pawn, parentWhitelist, parentBlacklist, doSort)];
+        }
+
         public static List<T> GetHediffExtensions<T>(this Pawn pawn, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) where T : DefModExtension
         {
             List<ModExtWrapper<T>> matches = GetAllMatchingExtensionsFromHediffSetWithSource<T>(pawn);
             return GetFilteredResult(matches, parentWhitelist, parentBlacklist, doSort);
         }
 
-        public static List<T> GetGeneExtensions<T>(this Pawn pawn, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) where T : DefModExtension
+        public static List<T> GetActiveGeneExtensions<T>(this Pawn pawn, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) where T : DefModExtension
         {
-            List<ModExtWrapper<T>> matches = GetAllMatchingExtensionsFromActiveGenes<T>(pawn);
+            List<ModExtWrapper<T>> matches = GetAllMatchingExtensionsFromGenes<T>(pawn, true);
+            return GetFilteredResult(matches, parentWhitelist, parentBlacklist, doSort);
+        }
+
+        /// <summary>
+        /// Also includes inactive genes.
+        /// </summary>
+        public static List<T> GetAllGeneExtensions<T>(this Pawn pawn, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) where T : DefModExtension
+        {
+            List<ModExtWrapper<T>> matches = GetAllMatchingExtensionsFromGenes<T>(pawn, true);
             return GetFilteredResult(matches, parentWhitelist, parentBlacklist, doSort);
         }
 
@@ -109,12 +131,12 @@ namespace BigAndSmall
             return extensions;
         }
 
-        private static List<ModExtWrapper<T>> GetAllMatchingExtensionsFromActiveGenes<T>(Pawn pawn) where T : DefModExtension
+        private static List<ModExtWrapper<T>> GetAllMatchingExtensionsFromGenes<T>(Pawn pawn, bool active) where T : DefModExtension
         {
             List<ModExtWrapper<T>> extensions = [];
             if (pawn.genes == null) return extensions;
-            var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
-            foreach (var gene in activeGenes)
+            var genes = active ? GeneHelpers.GetAllActiveGenes(pawn) : GeneHelpers.GetAllGenes(pawn).ToHashSet();
+            foreach (var gene in genes)
             {
                 extensions.AddRange(GetAllMatchingExtensions<T>(gene.def, gene.GetType()));
             }

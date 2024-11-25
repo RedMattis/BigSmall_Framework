@@ -112,6 +112,7 @@
             <li>RaceDefaults/Centaur/BS_CentaurBack</li>
           </texturePaths>
           <colorA>
+            <replaceFlagsAndInactive><CentaurColorA/></replaceFlagsAndInactive>
             <!-- <skinColor>true</skinColor> -->
             <hairColor>true</hairColor>
             <brightness>0.95</brightness>
@@ -125,16 +126,14 @@
             </alts>
           </colorA>
           <colorB>
+            <replaceFlagsAndInactive><CentaurColorB/></replaceFlagsAndInactive>
             <hairColor>true</hairColor>
             <skinColor>true</skinColor>
           </colorB>
           <alts>
             <li>
-              <triggerGeneTag>
-                <acceptlist>
-                  <li>taur</li>
-                </acceptlist>
-              </triggerGeneTag>
+              <triggerGeneTag> <acceptlist> <li>taur</li> </acceptlist> </triggerGeneTag>
+              <triggerFlags><blacklist><ShowBaseAbdomen/></blacklist></triggerFlags>
               <texturePaths><default>BS_Blank</default></texturePaths>
             </li>
           </alts>

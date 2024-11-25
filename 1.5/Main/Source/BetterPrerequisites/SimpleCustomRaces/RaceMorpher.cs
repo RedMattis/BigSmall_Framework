@@ -87,21 +87,14 @@ namespace BigAndSmall
                 }
 
                 var thingDefHediffs = ModExtHelper.GetAllPawnExtensions(pawn, parentBlacklist: [typeof(RaceTracker)]).Where(x => x.thingDefSwap != null).Select(x => x.thingDefSwap).ToList();
-                
-                // Uh... I'm not sure when we'd ever want a race to trigger a swap. Best not do this, I think.
-                // var thingDefRace = pawn.GetRacePawnExtensions().Where(x => x.thingDefSwap != null).Select(x => x.thingDefSwap).ToList();
+                var thingDefActiveGenes = ModExtHelper.GetAllPawnExtensions(pawn).Where(x=>x.thingDefSwap != null).Select(x => x.thingDefSwap).ToList();
 
-                var genesWithThingDefSwaps = pawn.genes.GenesListForReading
-                    .Where(x => x != source && x is PGene pg && pg.GetPawnExt() != null && (x as PGene).GetPawnExt().thingDefSwap != null)
-                    .Select(x => (PGene)x).ToList();
+                var thingDefGenes = ModExtHelper.GetAllPawnExtensions(pawn, includeInactiveGenes:true).Where(x => x.thingDefSwap != null).Select(x => x.thingDefSwap).ToList();
+
 
                 // Check if the ThingDef we CURRENTLY are is among the genesWithThingDefSwaps
                 //var geneWithThingDef = Enumerable.Where<PGene>(genesWithThingDefSwaps, (Func<PGene, bool>)(x => x.GeneExt().thingDefSwap.defName == pawn.def.defName));
                 bool didSwap = false;
-                
-                var activeGenesWithSwap = genesWithThingDefSwaps.Where(x => !x.Overridden).ToList();
-                var activeGenesThingDefs = genesWithThingDefSwaps.Select(x => x.GetPawnExt().thingDefSwap).ToList();
-                var allGenesThingDefs = genesWithThingDefSwaps.Select(x => x.GetPawnExt().thingDefSwap).ToList();
 
                 List<(int priority, ThingDef thing)> thingsToTryFusionWith = [];
 
@@ -109,13 +102,12 @@ namespace BigAndSmall
                 List<ThingDef> unwrappedPawnThingdef = pawn.def.GetRaceExtensions()?.Where(x => x.isFusionOf != null)?.SelectMany(x => x.isFusionOf).ToList();
                 unwrappedPawnThingdef = unwrappedPawnThingdef.NullOrEmpty() ? [pawn.def] : unwrappedPawnThingdef;
 
-                bool removingCurrent = swapTarget == pawn.def && state == false;
-                var finalTarget = swapTarget;
+                bool removingCurrent = state == false && unwrappedPawnThingdef.Contains(swapTarget);
+                var finalTarget = state ? swapTarget : ThingDefOf.Human;
 
                 if (!removingCurrent)
                 {
-                    //List<(ThingDef, RaceTracker)> trackerOnRace = 
-
+                    unwrappedPawnThingdef.Remove(swapTarget);
                     foreach ((var tDef, List<HediffDef> rTracker) in unwrappedPawnThingdef
                         .Select(x => (x, x.ExtensionsOnDef<RaceExtension, ThingDef>()?
                             .SelectMany(x => x.RaceHediffs).Where(x => x != null).ToList())))
@@ -128,7 +120,7 @@ namespace BigAndSmall
                         
                         if (thingDefHediffs.Any(x => x == pawn.def))
                             priority = hediffPriority;
-                        else if (genesWithThingDefSwaps.Any(x => x.GetPawnExt().thingDefSwap == tDef))
+                        else if (thingDefActiveGenes.Any(x => x == pawn.def))
                             priority = genePriority;
                         else if (!IsDiscardable(tDef) && props.Any(x => x.canSwapAwayFrom == false))
                             priority = irremovablePriority;
@@ -143,7 +135,7 @@ namespace BigAndSmall
                 
 
                 // We're removing the current def. Find another base def.
-                if (state == false && pawn.def.defName == swapTarget.defName) 
+                if (state == false && removingCurrent) 
                 {
                     bool foundNewDefault = false;
                     if (thingDefHediffs.Count > 0)
@@ -151,9 +143,14 @@ namespace BigAndSmall
                         thingsToTryFusionWith.AddRange(thingDefHediffs.Select(x => (hediffPriority, x)));
                         foundNewDefault = true;
                     }
-                    if (activeGenesWithSwap.Count > 0)
+                    if (thingDefActiveGenes.Count > 0)
                     {
-                        thingsToTryFusionWith.AddRange(activeGenesWithSwap.Select(x => (genePriority, x.GetPawnExt().thingDefSwap)));
+                        thingsToTryFusionWith.AddRange(thingDefActiveGenes.Select(x => (genePriority, x)));
+                        foundNewDefault = true;
+                    }
+                    if (thingDefGenes.Count > 0)
+                    {
+                        thingsToTryFusionWith.AddRange(thingDefActiveGenes.Select(x => (inactiveGenePriority, x)));
                         foundNewDefault = true;
                     }
                     if (!foundNewDefault)
@@ -165,7 +162,7 @@ namespace BigAndSmall
                             {
                                 // Find first MergableBody with defaultMechanical.
                                 var firstMechanical = BodyDefFusionsHelper.MergableBodies.Where(x => x.defaultMechanical).FirstOrDefault();
-                                if (firstMechanical != null)
+                                if (firstMechanical != null && firstMechanical?.thingDef != swapTarget)
                                 {
                                     originalThing = firstMechanical.thingDef;
                                 }
@@ -174,8 +171,17 @@ namespace BigAndSmall
                             {
                                 originalThing = cache.originalThing;
                             }
+                            // If we ended up selected the thing we're removing as the original, select Human instead.
+                            if (originalThing == null || originalThing == swapTarget)
+                            {
+                                originalThing = ThingDefOf.Human;
+                                cache.originalThing = ThingDefOf.Human;
+                            }
                         }
-                        thingsToTryFusionWith.Add((racePriority, originalThing));
+                        if (originalThing != ThingDefOf.Human)
+                        {
+                            thingsToTryFusionWith.Add((racePriority, originalThing));
+                        }
                     }
                 }
                 if (permitFusion)
@@ -183,13 +189,23 @@ namespace BigAndSmall
                     // Priority 1: Hediffs.
                     thingsToTryFusionWith.AddRange(thingDefHediffs.Select(x=> (hediffPriority, x)));
                     // Priority 2: Active genes.
-                    thingsToTryFusionWith.AddRange(activeGenesWithSwap
-                        .Where(x => x.GetPawnExt().thingDefSwap is ThingDef tds && tds != swapTarget).Select(x => (genePriority, x.GetPawnExt().thingDefSwap)));
+                    thingsToTryFusionWith.AddRange(thingDefActiveGenes
+                        .Where(x => x != swapTarget).Select(x => (genePriority, x)));
                     // Priority 4: Inactive genes.
-                    thingsToTryFusionWith.AddRange(genesWithThingDefSwaps
-                        .Where(x => x.GetPawnExt().thingDefSwap is ThingDef tds && tds != swapTarget).Select(x => (inactiveGenePriority, x.GetPawnExt().thingDefSwap)));
+                    thingsToTryFusionWith.AddRange(thingDefGenes
+                        .Where(x => x != swapTarget).Select(x => (inactiveGenePriority, x)));
 
-                    thingsToTryFusionWith = [.. thingsToTryFusionWith.Distinct().OrderByDescending(x=>x.priority)];
+
+                    for (int idx = thingsToTryFusionWith.Count - 1; idx >= 0; idx--)
+                    {
+                        // Remove this if there are and other copies.
+                        if (thingsToTryFusionWith.Count(x => x.thing == thingsToTryFusionWith[idx].thing) > 1)
+                        {
+                            thingsToTryFusionWith.RemoveAt(idx);
+                        }
+                    }
+
+                    thingsToTryFusionWith = [.. thingsToTryFusionWith.OrderByDescending(x=>x.priority)];
 
                     var allPossibleBodies = thingsToTryFusionWith.Select(x => x.thing.race.body).ToList();
                     
@@ -200,7 +216,7 @@ namespace BigAndSmall
                         thingsToTryFusionWith.RemoveAll(x => x.thing == swapTarget);
                     }
 
-                    while (allPossibleBodies.Count > 1)
+                    while (allPossibleBodies.Count > 0)
                     {
                         
                         bool mechanical = HumanoidPawnScaler.GetCacheUltraSpeed(pawn, canRegenerate: false) is BSCache cache && cache.isMechanical;

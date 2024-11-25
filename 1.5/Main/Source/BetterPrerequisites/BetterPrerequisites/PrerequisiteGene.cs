@@ -21,9 +21,7 @@ namespace BetterPrerequisites
         /// <summary>
         /// Avoid recursion by supressing this method when it woudld get called from itself.
         /// </summary>
-        public static bool supressPostfix = false;
-        public static bool supressPostfix2 = false;
-
+        
         private int refreshGeneEffectsCountdown = 5;
 
         public bool? previouslyActive = null;
@@ -36,15 +34,15 @@ namespace BetterPrerequisites
         public bool hasExtension = false;
 
         private bool lookedForGeneExt = false;
-        private PawnExtension geneExt = null;
+        private List<PawnExtension> geneExt = null;
 
-        private PawnExtension GeneExt
+        private List<PawnExtension> GeneExt
         {
             get
             {
                 if (geneExt == null && !lookedForGeneExt)
                 {
-                    geneExt = def.GetModExtension<PawnExtension>();
+                    geneExt = def.ExtensionsOnDef<PawnExtension, GeneDef>();
                     lookedForGeneExt = true;
                 }
                 return geneExt;
@@ -76,7 +74,7 @@ namespace BetterPrerequisites
                 // Check if this is a xenogene.
                 bool xenoGene = pawn.genes.Xenogenes.Any(x => x == this);
 
-                foreach(var geneDef in GeneExt.hiddenGenes)
+                foreach(var geneDef in GeneExt.SelectMany(x=>x.hiddenGenes))
                 {
                     // Add hidden gene
                     pawn.genes.AddGene(geneDef, xenoGene);
@@ -94,7 +92,7 @@ namespace BetterPrerequisites
                 //    Log.Message($"Error in PostAdd: {e.Message}");
                 //}
 
-                if (GeneExt.conditionals != null)
+                if (GeneExt.Any(x=>x.conditionals != null))
                 {
                     needsReevaluation = true;
                 }
@@ -116,18 +114,6 @@ namespace BetterPrerequisites
             }
         }
 
-        //public void PostPostAdd()
-        //{
-        //    if (!postPostAddDone)
-        //    {
-        //        if (GeneExt != null)
-        //        {
-        //            SwapThingFromGene(true);
-        //        }
-        //    }
-        //    postPostAddDone = true;
-        //}
-
         public override void PostRemove()
         {
             BigAndSmallCache.pGenesThatReevaluate.Remove(this);
@@ -140,7 +126,7 @@ namespace BetterPrerequisites
                 bool lastActiveOfDef = !pawn.genes.GenesListForReading.Any(x => x.def == def && x != this);
                 if (lastActiveOfDef)
                 {
-                    foreach (var geneDef in GeneExt.hiddenGenes)
+                    foreach (var geneDef in GeneExt.Where(x=>x.hiddenGenes != null).SelectMany(x => x.hiddenGenes))
                     {
                         // Remove all genes matching def
                         var matchingGenes = pawn.genes.GenesListForReading.Where(x => x.def == geneDef).ToList(); ;
@@ -150,23 +136,6 @@ namespace BetterPrerequisites
                         }
                     }
                 }
-                //if (ModsConfig.IsActive("nals.facialanimation") && GeneExt.facialDisabler != null)
-                //{
-                //    // Check if any other genes have facialDisabler
-
-                //    //bool otherFacialDisabler = pawn.genes.GenesListForReading.Any(x => x.def.HasModExtension<GeneExtension>() && x.def.GetModExtension<GeneExtension>().facialDisabler != null);
-                //    //if (!otherFacialDisabler)
-                //    //{
-                //    //    try
-                //    //    {
-                //    //        NalFaceExt.DisableFacialAnimations(pawn, geneExt.facialDisabler, revert:true);
-                //    //    }
-                //    //    catch (Exception e)
-                //    //    {
-                //    //        Log.Message($"Error in PostRemove: {e.Message}");
-                //    //    }
-                //    //}
-                //}
             }
         }
 
@@ -178,7 +147,7 @@ namespace BetterPrerequisites
             if (currentTick % 5000 == 0)
             {
                 // Try triggering transform genes if it exists.
-                GeneExt?.transformGene?.TryTransform(pawn, this);
+                GeneExt.ForEach(x=>x.transformGene?.TryTransform(pawn, this));
             }
             //if (currentTick % 5000 == 5)
             //{
@@ -187,9 +156,10 @@ namespace BetterPrerequisites
 
             if (currentTick % 100 == 0 && pawn.needs != null && Active)
             {
-                if (GeneExt != null && GeneExt.lockedNeeds != null)
+                if (GeneExt != null && GeneExt.Where(x=>x.lockedNeeds != null).Any())
                 {
-                    foreach (var lockedNeed in GeneExt.lockedNeeds.Where(x=>x.need != null))
+                    foreach (var lockedNeed in GeneExt.Where(x => x.lockedNeeds != null)
+                        .SelectMany(x => x.lockedNeeds).Where(x=>x.need != null))
                     {
                         float value = lockedNeed.value;
                         bool minValue = lockedNeed.minValue;
@@ -218,10 +188,11 @@ namespace BetterPrerequisites
 
         public void GeneRequestThingSwap(bool state)
         {
-            if (GeneExt != null && GeneExt.thingDefSwap != null)
+            if (GeneExt != null && GeneExt.Any(x=>x.thingDefSwap != null))
             {
                 GeneHelpers.CheckForOverrides(pawn);
-                RaceMorpher.SwapThingDef(pawn, GeneExt.thingDefSwap, state, targetPriority:0, source:this);
+                var firstValid = GeneExt.Where(x => x.thingDefSwap != null).Select(x => x.thingDefSwap).First();
+                RaceMorpher.SwapThingDef(pawn, firstValid, state, targetPriority:0, source:this);
             }
         }
         
@@ -266,7 +237,7 @@ namespace BetterPrerequisites
                 if (def.HasModExtension<PawnExtension>())
                 {
                     ForceRun = true;
-                    GeneExt = def.GetModExtension<PawnExtension>();
+                    GeneExt = def.ExtensionsOnDef<PawnExtension, GeneDef>();
                 }
             }
         }
@@ -278,6 +249,10 @@ namespace BetterPrerequisites
         //private bool isSupressedByGene = false;
         private bool isSupressedByHediff = false;
         private bool conditionalsWasValid = false;
+
+        public static bool supressPostfix = false;
+        public static bool supressPostfix2 = false;
+
         #endregion
         public bool RegenerateState()
         {
@@ -293,6 +268,9 @@ namespace BetterPrerequisites
                 try
                 {
                     supressPostfix = true;
+                    var allPawnGenes = pawn.genes.GenesListForReading;
+                    isSupressedByGene = isSupressedByGene && allPawnGenes.Contains(overriddenByGene);
+
                     conditionalsValid = ConditionalManager.TestConditionals(this);
                     prerequisitesValid = PrerequisiteValidator.Validate(def, pawn);
                     if (conditionalsValid != this.conditionalsValid || prerequisitesValid != this.prerequisitesValid)
@@ -333,10 +311,10 @@ namespace BetterPrerequisites
                 {
                     if (previouslyActive != result || refreshGraphics)
                     {
-                        //lastUpdate = Time.realtimeSinceStartup;
-                        //previouslyActive = result;
-
-                        //PostActivateOrDeactivate();
+                        if (result)
+                        {
+                            overriddenByGene = null;
+                        }
                         if ((def.HasDefinedGraphicProperties || refreshGraphics) && Thread.CurrentThread == BigSmall.mainThread)
                         {
                             pawn.Drawer.renderer.SetAllGraphicsDirty();
@@ -350,7 +328,7 @@ namespace BetterPrerequisites
                     if (refreshGeneEffectsCountdown <= 0)
                     {
                         refreshGeneEffectsCountdown = 5;
-                        var change = GeneEffectManager.RefreshGeneEffects(this, result, geneExt: GeneExt);
+                        var change = GeneEffectManager.RefreshGeneEffects(this, result);
 
                         // Check if on main thread
                         if (change && Thread.CurrentThread == BigSmall.mainThread)
@@ -367,11 +345,6 @@ namespace BetterPrerequisites
 
                 lastUpdate = Time.realtimeSinceStartup;
                 lastUpdateTicks = Find.TickManager.TicksGame;// Time.realtimeSinceStartup;
-                //if (previouslyActive != result)
-                //{
-                //    Log.Message($"CHANGED PREVIOUSLY ACTIVE from {previouslyActive} to {result}: {def.defName} - {result} && {prerequisitesValid} && {conditionalsValid} && {Overridden}: {overriddenByGene?.def.defName} && {isSupressedByHediff}");
-                //}
-
                 previouslyActive = result;
             }
 
@@ -389,8 +362,6 @@ namespace BetterPrerequisites
                     if (supresserGene.def.HasModExtension<GeneSuppressor_Gene>())
                     {
                         var geneExtension = supresserGene.def.GetModExtension<GeneSuppressor_Gene>();
-                        //var supresserGeneLst = Helpers.GetActiveGeneByName(__instance.pawn, supresserDef.defName);
-                        //var supresserGene = supresserGeneLst.Count > 0 ? supresserGeneLst.First() : null;
 
                         foreach (string supressedGene in geneExtension.supressedGenes)
                         {

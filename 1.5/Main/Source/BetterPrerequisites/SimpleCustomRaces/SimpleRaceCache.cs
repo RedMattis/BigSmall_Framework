@@ -35,15 +35,15 @@ namespace BigAndSmall
                 xenoenesRemovedByRace ??= [];
 
 
-                List<GeneDef> endoGenesToRestore = endogenesRemovedByRace.Where(g => raceExts
-                    .Select(ext => ext.IsGeneLegal(g))
-                    .Aggregate((a, b) => a.Fuse(b)).Accepted()).ToList();
+                //List<GeneDef> endoGenesToRestore = endogenesRemovedByRace.Where(g => raceExts
+                //    .Select(ext => ext.IsGeneLegal(g))
+                //    .Aggregate((a, b) => a.Fuse(b)).Accepted()).ToList();
 
-                RestoreGenes(endoGenesToRestore, false);
-                List<GeneDef> xenogenesToRestore = xenoenesRemovedByRace.Where(g => raceExts
-                    .Select(ext => ext.IsGeneLegal(g))
-                    .Aggregate((a, b) => a.Fuse(b)).Accepted()).ToList();
-                RestoreGenes(xenogenesToRestore, true);
+                //RestoreGenes(endoGenesToRestore, false);
+                //List<GeneDef> xenogenesToRestore = xenoenesRemovedByRace.Where(g => raceExts
+                //    .Select(ext => ext.IsGeneLegal(g))
+                //    .Aggregate((a, b) => a.Fuse(b)).Accepted()).ToList();
+                //RestoreGenes(xenogenesToRestore, true);
 
                 raceExts.ForEach(ext => ext.ForcedEndogenes.Where(g => !pawn.HasGene(g)).ToList().ForEach(g => pawn.genes.AddGene(g, false)));
                 raceExts.ForEach(ext => ext.forcedXenogenes?.Where(g => !pawn.HasGene(g)).ToList().ForEach(g => pawn.genes.AddGene(g, true)));

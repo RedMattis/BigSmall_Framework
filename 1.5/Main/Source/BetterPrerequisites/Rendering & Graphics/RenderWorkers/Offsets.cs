@@ -18,6 +18,17 @@ namespace BigAndSmall
 
     public class PawnRenderNodeWorker_LazyCentaur : PawnRenderNodeWorker_Body
     {
+        public override Vector3 ScaleFor(PawnRenderNode node, PawnDrawParms parms)
+        {
+            Vector3 scaleFor = base.ScaleFor(node, parms);
+            if (node is PawnRenderNode_Ultimate ult && ult.scaleSet)
+            {
+                scaleFor.x *= ult.cachedScale.x;
+                scaleFor.z *= ult.cachedScale.y;
+            }
+            return scaleFor;
+        }
+
         public override Vector3 OffsetFor(PawnRenderNode node, PawnDrawParms parms, out Vector3 pivot)
         {
             var bodyType = node?.tree?.pawn?.story?.bodyType;

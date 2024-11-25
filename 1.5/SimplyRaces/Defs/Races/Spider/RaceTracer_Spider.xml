@@ -55,7 +55,7 @@
             <li>RaceDefaults/SpooderNew/BS_Spooder</li>
           </texturePaths>
           <colorA>
-            <!-- <skinColor>true</skinColor> -->
+            <replaceFlagsAndInactive><SpiderColorA/></replaceFlagsAndInactive>
             <hairColor>true</hairColor>
             <brightness>0.95</brightness>
             <alts>
@@ -68,16 +68,14 @@
             </alts>
           </colorA>
           <colorB>
+            <replaceFlagsAndInactive><SpiderColorB/></replaceFlagsAndInactive>
             <favoriteColor>true</favoriteColor>
             <maxBrightness>0.75</maxBrightness>
           </colorB>
           <alts>
             <li>
-              <triggerGeneTag>
-                <acceptlist>
-                  <li>taur</li>
-                </acceptlist>
-              </triggerGeneTag>
+              <triggerGeneTag> <acceptlist> <li>taur</li> </acceptlist> </triggerGeneTag>
+              <triggerFlags><blacklist><ShowBaseAbdomen/></blacklist></triggerFlags>
               <texturePaths><default>BS_Blank</default></texturePaths>
             </li>
             <li>
@@ -106,7 +104,7 @@
             <layer>89.5</layer>
           </dataNorth>
           <dataSouth>
-            <offset>(0, -0.000, -0.0)</offset>
+            <offset>(0, -0.000, -0.1)</offset>
             <layer>89.5</layer>
           </dataSouth>
           <dataEast>
@@ -114,7 +112,7 @@
             <layer>89.5</layer>
           </dataEast>
           <dataWest>
-            <offset>(0.27, 0.0, -0.2)</offset>
+            <offset>(0.27, 0.0, -0.12)</offset>
             <layer>89.5</layer>
           </dataWest>
         </drawData>
@@ -132,6 +130,7 @@
           </texturePaths>
           <colorA>
             <!-- <skinColor>true</skinColor> -->
+            <replaceFlagsAndInactive><SpiderColorA/></replaceFlagsAndInactive>
             <hairColor>true</hairColor>
             <brightness>0.95</brightness>
             <alts>
@@ -149,11 +148,8 @@
           </colorB>
           <alts>
             <li>
-              <triggerGeneTag>
-                <acceptlist>
-                  <li>taur</li>
-                </acceptlist>
-              </triggerGeneTag>
+              <triggerGeneTag> <acceptlist> <li>taur</li> </acceptlist> </triggerGeneTag>
+              <triggerFlags><blacklist><ShowBaseAbdomen/></blacklist></triggerFlags>
               <texturePaths><default>BS_Blank</default></texturePaths>
             </li>
             <li>
@@ -162,6 +158,7 @@
                 <li> <bodyPartDef>BS_SpiderAbdomen</bodyPartDef> <partMissing>true</partMissing> </li>
                 <li> <bodyPartDef>BS_Mech_SpiderAbdomen</bodyPartDef> <partMissing>true</partMissing> </li>
               </triggerBodyPart>
+              
               <texturePaths><default>BS_Blank</default></texturePaths>
             </li>
           </alts>
@@ -182,7 +179,7 @@
             <layer>-1</layer>
           </dataNorth>
           <dataSouth>
-            <offset>(0, 0.000, -0.0)</offset>
+            <offset>(0, 0.000, -0.1)</offset>
             <layer>-4</layer>
           </dataSouth>
         </drawData>

@@ -42,7 +42,10 @@ namespace BigAndSmall
             GeneDefPatcher.PatchExistingDefs();
             if (BigSmallMod.settings.experimental)
             {
+                //Log.Message($"[Big and Small]: Experimental Options - Active.\n" +
+                //    $"Initializing Merged BodyDefs...");
                 RaceFuser.CreateMergedBodyTypes(hotReload);
+                //Log.Message($"[Big and Small]: Experimental Setup - Finalized.");
             }
         }
     }

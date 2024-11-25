@@ -66,7 +66,7 @@ namespace BigAndSmall
             return bodyType == BodyTypeDefOf.Female || bodyType == BodyTypeDefOf.Male;
         }
 
-        public static void UpdateBodyHeadAndBeardPostGenderChange(Pawn pawn, bool banNarrow = false)
+        public static void UpdateBodyHeadAndBeardPostGenderChange(Pawn pawn, bool banNarrow = false, bool force = false)
         {
             if (pawn?.story?.headType?.gender == null)
             {
@@ -77,7 +77,7 @@ namespace BigAndSmall
             }
             if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache)
             {
-                UpdateBodyHeadAndBeardPostGenderChange(cache, banNarrow);
+                UpdateBodyHeadAndBeardPostGenderChange(cache, banNarrow, force:force);
             }
         }
 
@@ -86,7 +86,7 @@ namespace BigAndSmall
             return pawn?.DevelopmentalStage == null || pawn.DevelopmentalStage > DevelopmentalStage.Child;
         }
 
-        public static void UpdateBodyHeadAndBeardPostGenderChange(BSCache cache, bool banNarrow = false)
+        public static void UpdateBodyHeadAndBeardPostGenderChange(BSCache cache, bool banNarrow = false, bool force = false)
         {
             Pawn pawn = cache.pawn;
             
@@ -98,30 +98,50 @@ namespace BigAndSmall
             bool headNeedsChange = pawn.story.headType.gender != 0 && pawn.story.headType.gender != apparentGender;
 
             var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
+            var activeGeneDefs = activeGenes.Select(x => x.def).ToList();
             // Set body type.
-            if (activeGenes.Any(x => x.def.bodyType != null))
+            bool updateBody = pawn?.story.bodyType == null ||
+                apparentGender != pawn?.gender ||
+                banNarrow ||
+                force;
+
+            if (updateBody)
             {
-                var bodyType = activeGenes.First(x => x.def.bodyType != null).def.bodyType;
-                if (bodyType != null && pawn.IsAdult())
+                if (activeGenes.Any(x => x.def.bodyType != null))
                 {
-                    pawn.story.bodyType = bodyType.Value.ToBodyType(pawn);
-                }
-                else // Shouldn't happen, but just in case.
-                {
-                    pawn.story.bodyType = PawnGenerator.GetBodyTypeFor(pawn);//.BodyTypeToGeneticBodyType().ToBodyType(pawn);
-                }
-            }
-            else
-            {
-                if (pawn.story.bodyType.IsBodyStandard())
-                {
-                    if (apparentGender == Gender.Female)
+                    var bodyType = activeGenes.First(x => x.def.bodyType != null).def.bodyType;
+                    if (bodyType != null && pawn.IsAdult())
                     {
-                        pawn.story.bodyType = BodyTypeDefOf.Female;
+                        pawn.story.bodyType = bodyType.Value.ToBodyType(pawn);
                     }
-                    else if (apparentGender == Gender.Male)
+                    else if (bodyType == null) // Shouldn't happen, but just in case.
                     {
-                        pawn.story.bodyType = BodyTypeDefOf.Male;
+                        TrySetMissingBodytype(pawn);
+                    }
+                }
+                else
+                {
+                    if (pawn.story.bodyType.IsBodyStandard())
+                    {
+                        if (apparentGender == Gender.Female)
+                        {
+                            pawn.story.bodyType = BodyTypeDefOf.Female;
+                        }
+                        else if (apparentGender == Gender.Male)
+                        {
+                            pawn.story.bodyType = BodyTypeDefOf.Male;
+                        }
+                    }
+                    else if (pawn.story.bodyType == null)
+                    {
+                        if (pawn.story?.Adulthood != null)
+                        {
+                            pawn.story.bodyType = pawn.story.Adulthood.BodyTypeFor(pawn.gender);
+                        }
+                        else if (pawn.story.bodyType == null)
+                        {
+                            TrySetMissingBodytype(pawn);
+                        }
                     }
                 }
             }
@@ -138,10 +158,15 @@ namespace BigAndSmall
                 if (possibleHeads.Count > 0)
                 {
                     Gender targetGender = apparentGender;
-                    var validHeads = possibleHeads.Where(x => headGenes.All(ag => ag.def.forcedHeadTypes.Contains(x))).Where(x => x.gender == targetGender).ToList();
-                    if (validHeads.Count == 0)  // Try None heads only if there are no exact matches.
+                    var validHeads = possibleHeads.Where(x => headGenes.All(ag => ag.def.forcedHeadTypes.Contains(x)))
+                        .Where(x => x.gender == targetGender && (x.requiredGenes.NullOrEmpty() || x.requiredGenes.All(x=> activeGeneDefs.Contains(x)))).ToList();
+                    if (validHeads.Count == 0)  // 
                     {
-                        validHeads = possibleHeads.Where(x => headGenes.All(ag => ag.def.forcedHeadTypes.Contains(x))).Where(x => x.gender == Gender.None || x.gender == targetGender).ToList();
+                        validHeads = possibleHeads.Where(x => headGenes.All(ag => ag.def.forcedHeadTypes.Contains(x))).Where(x => x.gender == targetGender).ToList();
+                        if (validHeads.Count == 0)  // Try None heads only if there are no exact matches.
+                        {
+                            validHeads = possibleHeads.Where(x => headGenes.All(ag => ag.def.forcedHeadTypes.Contains(x))).Where(x => x.gender == Gender.None || x.gender == targetGender).ToList();
+                        }
                     }
                     if (validHeads.Count == 0)
                     {
@@ -176,6 +201,27 @@ namespace BigAndSmall
             if (!pawn.style.CanWantBeard && pawn.style.beardDef != BeardDefOf.NoBeard)
             {
                 pawn.style.beardDef = BeardDefOf.NoBeard;
+            }
+
+            static void TrySetMissingBodytype(Pawn pawn)
+            {
+                if (pawn.story?.Adulthood != null)
+                {
+                    pawn.story.bodyType = pawn.story.Adulthood.BodyTypeFor(pawn.gender);
+                }
+                if (pawn.story.bodyType == null && ModsConfig.BiotechActive && pawn.DevelopmentalStage.Juvenile())
+                {
+                    if (pawn.DevelopmentalStage == DevelopmentalStage.Baby)
+                    {
+                        pawn.story.bodyType = BodyTypeDefOf.Baby;
+                    }
+                    else { pawn.story.bodyType = BodyTypeDefOf.Child; }
+                }
+                if (pawn.story.bodyType == null)
+                {
+                    PawnGenerator.GetBodyTypeFor(pawn);
+                }
+                //.BodyTypeToGeneticBodyType().ToBodyType(pawn);
             }
         }
 

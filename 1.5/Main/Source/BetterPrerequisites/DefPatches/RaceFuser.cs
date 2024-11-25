@@ -212,7 +212,6 @@ namespace BigAndSmall
                 Log.Message($"Merging {bodyDefsToMerge.Select(x => x.bodyDef.defName).ToCommaList()}");
             }
 
-
             if (bodyDefsToMerge.Count < 2)
             {
                 return;
@@ -222,8 +221,8 @@ namespace BigAndSmall
             {
                 foreach (var vb in FusedBody.FusedBodies.Values.Where(x => !x.fake))
                 {
-                    DefGenerator.AddImpliedDef(vb.generatedBody, hotReload: true);
-                    DefGenerator.AddImpliedDef(vb.thing, hotReload: true);
+                    //try { DefGenerator.AddImpliedDef(vb.generatedBody, hotReload: true); } catch (Exception e) { Log.Warning("Hotreload Warning: " + e.ToString()); }
+                    //try { DefGenerator.AddImpliedDef(vb.thing, hotReload: true); } catch (Exception e) { Log.Warning("Hotreload Warning: " + e.ToString()); }
                     //DefGenerator.AddImpliedDef(vb.thing.race.body, hotReload: true);
                 }
                 return;

@@ -74,7 +74,7 @@
   <BS_ApplyBodyHediff>{0}</BS_ApplyBodyHediff>
   <BS_ApplyPartHediff>applies {0} to {1}</BS_ApplyPartHediff>
   <BS_ThingDefSwap>applies race/hybrid race</BS_ThingDefSwap>
-  <BS_ThingDefSwapDesc>set to {0}</BS_ThingDefSwapDesc>
+  <BS_ThingDefSwapDesc>Apply {0}</BS_ThingDefSwapDesc>
   <BS_DroneDesc>is a drone (less affected by death, ...)</BS_DroneDesc>
   <BS_ForceUnarmed>unarmed fighter</BS_ForceUnarmed>
   <BS_ForceUnarmedDesc>uses bionic or unarmed melee attacks</BS_ForceUnarmedDesc>
@@ -99,9 +99,13 @@
   <BS_FocedXeno>forced xenogene</BS_FocedXeno>
   <BS_SizeByAgeOffset>Size offset at age</BS_SizeByAgeOffset>
   <BS_SizeByAgeOffset>Size multiplier at age</BS_SizeByAgeOffset>
+  <BS_LockedNeeds>Locked needs</BS_LockedNeeds>
 
   <BS_PreventDisfigurementDesc>prevents disfigurement</BS_PreventDisfigurementDesc>
-  <BS_CanWalkOnCreepDesc>can walk on creep</BS_CanWalkOnCreepDesc>
+  <BS_CanWalkOnCreep>Insectoid creep</BS_CanWalkOnCreep>
+  <BS_CanWalkOnCreepDesc>can walk full-speed on creep</BS_CanWalkOnCreepDesc>
 
   <BS_Priority>priority {0}</BS_Priority>
+
+  <BS_Modified>modified</BS_Modified>
 </LanguageData>

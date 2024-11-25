@@ -23,6 +23,7 @@ namespace BetterPrerequisites
 
         public string GetLabel()
         {
+            if (need == null) return "";
             return need.LabelCap + (minValue ? " Min" : "");
         }
     }

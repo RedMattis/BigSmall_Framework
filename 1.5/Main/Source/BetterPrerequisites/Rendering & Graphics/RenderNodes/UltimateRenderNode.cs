@@ -20,6 +20,9 @@ namespace BigAndSmall
 
     public class PawnRenderNode_Ultimate : PawnRenderNode
     {
+        public bool scaleSet = false;
+        public Vector2 cachedScale = Vector2.one;
+
         readonly string noImage = "BS_Blank";
         PawnRenderingProps_Ultimate UProps => (PawnRenderingProps_Ultimate)props;
         public PawnRenderNode_Ultimate(Pawn pawn, PawnRenderingProps_Ultimate props, PawnRenderTree tree)
@@ -40,6 +43,14 @@ namespace BigAndSmall
             {
                 var graphicSet = props.conditionalGraphics.GetGraphicsSet(cache);
                 var texPath = graphicSet.GetPath(cache, noImage);
+                var conditionalProps = graphicSet.props.GetGraphicProperties(cache);
+
+                if (conditionalProps.drawSize != Vector2.one)
+                {
+                    scaleSet = true;
+                    cachedScale = conditionalProps.drawSize;
+                }
+
                 if (texPath.NullOrEmpty())
                 {
                     Log.WarningOnce($"[BigAndSmall] No texture path for {pawn}. Returning empty image.", GetHashCode());

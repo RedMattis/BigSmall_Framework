@@ -74,7 +74,9 @@
         <li>Plasteel</li>
       </thingDefs>
     </fixedIngredientFilter>
-    <addsHediff>BS_BasicMech_Morph</addsHediff>
+    
+    <!--  Example. -->
+    <!-- <addsHediff>BS_BasicMech_Morph</addsHediff> -->
   </RecipeDef>
   <HediffDef>
     <defName>BS_BasicMech_Morph</defName>

@@ -41,7 +41,7 @@ namespace BigAndSmall
                 {
                     pawn.gender = Gender.Male;
                 }
-                GenderMethods.UpdateBodyHeadAndBeardPostGenderChange(pawn);
+                GenderMethods.UpdateBodyHeadAndBeardPostGenderChange(pawn, force:true);
             }
             catch
             {
