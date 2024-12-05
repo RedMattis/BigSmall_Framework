@@ -14,8 +14,8 @@ namespace BigAndSmall
     {
         public class MorphManager
         {
-            private readonly List<XenotypeDef> upstreamXenos = new();
-            private readonly List<XenotypeDef> downstreamXenos = new();
+            private readonly List<XenotypeDef> upstreamXenos = [];
+            private readonly List<XenotypeDef> downstreamXenos = [];
 
             public readonly bool canEverMorphUp = false;
             public readonly bool canEverMorphDown = false;
@@ -111,7 +111,7 @@ namespace BigAndSmall
             return null;
         }
 
-        public static HashSet<Pawn> pawnsQueuedForMorphing = new();
+        public static HashSet<Pawn> pawnsQueuedForMorphing = [];
         public static void HandleMetamorph(Pawn pawn, List<PawnExtension> geneExts)
         {
             if (geneExts.Count == 0 || pawnsQueuedForMorphing.Contains(pawn))

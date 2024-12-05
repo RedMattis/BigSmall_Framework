@@ -18,9 +18,9 @@ namespace BigAndSmall
 {
     public class BigAndSmallCache : GameComponent
     {
-        public static HashSet<PGene> pGenesThatReevaluate = new();
+        public static HashSet<PGene> pGenesThatReevaluate = [];
 
-        public static HashSet<BSCache> scribedCache = new();
+        public static HashSet<BSCache> scribedCache = [];
         public static bool regenerationAttempted = false;
         public Game game;
 
@@ -30,7 +30,7 @@ namespace BigAndSmall
 
         public static Dictionary<int, HashSet<BSCache>> schedulePostUpdate = [];
         public static Dictionary<int, HashSet<BSCache>> scheduleFullUpdate = [];
-        public static HashSet<BSCache> currentlyQueued = new(); // Ensures we never queue the same cache twice.
+        public static HashSet<BSCache> currentlyQueued = []; // Ensures we never queue the same cache twice.
 
         public static float globalRandNum = 0;
 
@@ -362,15 +362,17 @@ namespace BigAndSmall
         public int? lastUpdateTick = null;
         public bool SameTick => lastUpdateTick == Find.TickManager.TicksGame;
 
-        public CacheTimer Timer { get; set; } = new CacheTimer();
+        //public CacheTimer Timer { get; set; } = new CacheTimer();
 
 
         public bool isHumanlike = false;
         public ThingDef originalThing = null;
+        public HashSet<HediffDef> raceTrackerHistory = [];
 
         public bool approximatelyNoChange = true;
         public bool hideHead = false;
         public bool hideBody = false;
+        public BodyTypesPerGender bodyTypeOverride = null;
         private Gender? apparentGender = null;
         public string bodyGraphicPath = null;
         public string bodyDessicatedGraphicPath = null;
@@ -399,6 +401,8 @@ namespace BigAndSmall
         public float growthPointGain = 1;
         //public float foodNeedCapacityMult = 1;
         //public float? previousFoodCapacity = null;
+
+
         public float headSizeMultiplier = 1;
         public float headPositionMultiplier = 1;
         public float worldspaceOffset = 0;
@@ -406,8 +410,9 @@ namespace BigAndSmall
         /// <summary>
         /// If populated should always have 4 items, one for each rotation.
         /// </summary>
-        public List<Vector3> headOffsets = null;
-        public List<Vector3> bodyOffsets = null;
+        public List<Vector3> complexHeadOffsets = null;
+        public List<Vector3> complexBodyOffsets = null;
+        public bool hasComplexHeadOffsets = false;
 
         /// <summary>
         /// This one returns true on stuff like bloodless pawns just so they can't have blood drained from them.
@@ -518,7 +523,7 @@ namespace BigAndSmall
 
             Scribe_Values.Look(ref hideHead, "BS_HideHead", false);
             Scribe_Values.Look(ref hideBody, "BS_HideBody", false);
-            Scribe_Values.Look(ref apparentGender, "BS_ApparentGender", null);
+            //Scribe_Values.Look(ref apparentGender, "BS_ApparentGender", null);
 
             //Scribe_Deep.Look(ref apparelRestrictions, "BS_ApparelRestrictions");
 
@@ -619,11 +624,14 @@ namespace BigAndSmall
                 isHumanlike = pawn.RaceProps?.Humanlike == true;
                 originalThing ??= pawn.def;
                 var raceTrackers = pawn.GetRaceTrackers();
-                
+
+                raceTrackerHistory.AddRange(raceTrackers.Select(x => x.def));
+
                 var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
                 var allPawnExt = ModExtHelper.GetAllPawnExtensions(pawn);
                 var racePawnExts = pawn.GetRacePawnExtensions();
                 var nonRacePawnExt = ModExtHelper.GetAllPawnExtensions(pawn, parentBlacklist: [typeof(RaceTracker)]);
+                CalculateGenderAndApparentGender(allPawnExt);
 
                 bool hasSizeAffliction = ScalingMethods.CheckForSizeAffliction(pawn);
                 CalculateSize(dStage, allPawnExt, hasSizeAffliction);
@@ -631,14 +639,14 @@ namespace BigAndSmall
                 if (isHumanlike)
                 {
                     pawnDiet = nonRacePawnExt.Where(x => x.pawnDiet != null).Select(x => x.pawnDiet).ToList();
-                    if (racePawnExts.Any(x=>x.pawnDiet != null) && !nonRacePawnExt.Any(x => x.pawnDietRacialOverride))
+                    if (racePawnExts.Any(x => x.pawnDiet != null) && !nonRacePawnExt.Any(x => x.pawnDietRacialOverride))
                     {
-                        pawnDiet.AddRange(racePawnExts.Where(x=>x.pawnDiet != null).Select(x=>x.pawnDiet));
+                        pawnDiet.AddRange(racePawnExts.Where(x => x.pawnDiet != null).Select(x => x.pawnDiet));
                     }
                     var activeGenedefs = activeGenes.Select(x => x.def).ToList();
                     newFoodCatAllow = BSDefLibrary.FoodCategoryDefs.Where(x => x.DefaultAcceptPawn(pawn, activeGenedefs, pawnDiet).Fuse(pawnDiet.Select(y => y.AcceptFoodCategory(x))).ExplicitlyAllowed()).ToList();
                     newFoodCatDeny = BSDefLibrary.FoodCategoryDefs.Where(x => x.DefaultAcceptPawn(pawn, activeGenedefs, pawnDiet).Fuse(pawnDiet.Select(y => y.AcceptFoodCategory(x))).NeutralOrWorse()).ToList();
-                    
+
                     // Log what filtered it
                     //BSDefLibrary.FoodCategoryDefs.ForEach(x =>
                     //{
@@ -678,10 +686,10 @@ namespace BigAndSmall
 
                 // Get all genes with the GeneExtension
                 // Gene Caching
-                var undeadGenes = GeneHelpers.GetActiveGenesByNames(pawn, new List<string>
-                {
+                var undeadGenes = GeneHelpers.GetActiveGenesByNames(pawn,
+                [
                     "VU_Unliving", "VU_Lesser_Unliving_Resilience", "VU_Unliving_Resilience", "BS_RoboticResilienceLesser", "BS_RoboticResilience", "BS_IsUnliving"
-                });
+                ]);
 
                 bool animalReturned = pawn.health.hediffSet.HasHediff(BSDefs.VU_AnimalReturned);
                 bool animalVampirism = pawn.health.hediffSet.HasHediff(BSDefs.VU_DraculAnimalVampirism);
@@ -715,7 +723,7 @@ namespace BigAndSmall
                                                   : slowBleeding ? BleedRateState.SlowBleeding
                                                   : BleedRateState.Unchanged;
 
-                if (raceTrackers.Any(x=>x.CurStage is HediffStage hs && hs.totalBleedFactor == 0))
+                if (raceTrackers.Any(x => x.CurStage is HediffStage hs && hs.totalBleedFactor == 0))
                 {
                     bleedState = BleedRateState.NoBleeding;
                 }
@@ -735,12 +743,7 @@ namespace BigAndSmall
                 bool everFertile = activeGenes.Any(x => x.def.defName == "BS_EverFertile");
                 animalFriend = pawn.story?.traits?.allTraits.Any(x => !x.Suppressed && x.def.defName == "BS_AnimalFriend") == true || isMechanical;
 
-                var forcedGender = allPawnExt.Any(x => x.forceGender != null) ? allPawnExt.First(x => x.forceGender != null).forceGender : null;
-                if (forcedGender != null && forcedGender != pawn.gender)
-                {
-                    pawn.gender = forcedGender.Value;
-                }
-                GetSetApparentGender(nonRacePawnExt, racePawnExts);
+
 
                 //facialAnimationDisabled = activeGenes.Any(x => x.def == BSDefs.BS_FacialAnimDisabled);
                 facialAnimationDisabled = allPawnExt.Any(x => x.disableFacialAnimations || x.facialDisabler != null)
@@ -780,7 +783,7 @@ namespace BigAndSmall
 
                 unarmedOnly = allPawnExt.Any(x => x.unarmedOnly || x.forceUnarmed) ||
                                 activeGenes.Any(x => new List<string> { "BS_UnarmedOnly", "BS_NoEquip", "BS_UnarmedOnly_Android" }.Contains(x.def.defName));
-                
+
                 this.succubusUnbonded = succubusUnbonded;
                 romanceTags = allPawnExt.Select(x => x.romanceTags).Where(x => x != null)?.GetMerged();
                 if (romanceTags == null && HumanLikes.Humanlikes.Contains(pawn?.def) || racePawnExts.All(x => x.romanceTags == null))
@@ -799,16 +802,18 @@ namespace BigAndSmall
 
                 bodyRenderSize = GetBodyRenderSize();
                 headRenderSize = GetHeadRenderSize();
-                CalculateHeadOffset();
+                headPositionMultiplier = CalculateHeadOffset();
                 SetWorldOffset();
 
-                headOffsets = allPawnExt.Select(x => x.headDrawData).Where(x => x != null).ToList().GetCombinedOffsetsByRot();
-                bodyOffsets = allPawnExt.Select(x => x.bodyDrawData).Where(x => x != null).ToList().GetCombinedOffsetsByRot();
+                complexHeadOffsets = allPawnExt.Select(x => x.headDrawData).Where(x => x != null).ToList().GetCombinedOffsetsByRot(headPositionMultiplier);
+                complexBodyOffsets = allPawnExt.Select(x => x.bodyDrawData).Where(x => x != null).ToList().GetCombinedOffsetsByRot();
 
                 // Check if the body size, head size, body offset, or head position has changed. If not set approximatelyNoChange to false.
                 approximatelyNoChange = bodyRenderSize.Approx(1) && headRenderSize.Approx(1) && bodyPosOffset.Approx(0) &&
                     headPosMultiplier.Approx(1) && headPositionMultiplier.Approx(1) && worldspaceOffset.Approx(0) &&
-                    headOffsets == null && bodyOffsets == null;
+                    complexHeadOffsets == null && complexBodyOffsets == null;
+
+                hasComplexHeadOffsets = complexHeadOffsets != null;
 
                 if (isHumanlike)
                 {
@@ -826,7 +831,7 @@ namespace BigAndSmall
                     Log.Warning($"Issue reloading cache of {pawn} ({id}). Removing entire cache so it can be regenerated.");
                     // Reassigning instead of clearing in case it is null for some reason.
                     HumanoidPawnScaler.Cache = new ConcurrentDictionary<Pawn, BSCache>();
-                    BigAndSmallCache.scribedCache = new HashSet<BSCache>();
+                    BigAndSmallCache.scribedCache = [];
                     BigAndSmallCache.regenerationAttempted = true;
                 }
                 throw;
@@ -839,11 +844,19 @@ namespace BigAndSmall
             return true;
         }
 
-        private Gender? GetSetApparentGender(List<PawnExtension> otherExts = null, List<PawnExtension> raceExts = null)
+        private void CalculateGenderAndApparentGender(List<PawnExtension> allPawnExt)
         {
-            apparentGender = otherExts.FirstOrDefault(x => x.ApparentGender != null)?.ApparentGender ??
-                raceExts.FirstOrDefault(x => x.ApparentGender != null)?.ApparentGender;
-            return apparentGender;
+            var forcedGender = allPawnExt.Any(x => x.forceGender != null) ? allPawnExt.First(x => x.forceGender != null).forceGender : null;
+            if (forcedGender != null && forcedGender != pawn.gender)
+            {
+                pawn.gender = forcedGender.Value;
+            }
+            apparentGender = GetApparentGender(allPawnExt);
+        }
+
+        private Gender? GetApparentGender(List<PawnExtension> allExts = null)
+        {
+            return allExts.FirstOrDefault(x => x.ApparentGender != null)?.ApparentGender;
         }
 
         public void ReevaluateGraphics(List<PawnExtension> otherExts = null, List<PawnExtension> raceExts = null)
@@ -858,7 +871,7 @@ namespace BigAndSmall
             headGraphicPath = null; bodyGraphicPath = null;
 
             //apparentGender = allPawnExt.FirstOrDefault(x => x.ApparentGender != null)?.ApparentGender;
-            Gender? apparentGender = GetSetApparentGender(otherExts, raceExts);
+            CalculateGenderAndApparentGender([..otherExts, ..raceExts]);
 
             int pawnRNGSeed = pawn.GetPawnRNGSeed();
 
@@ -897,10 +910,13 @@ namespace BigAndSmall
                 if (bodyGfxExt.bodyMaterial != null) bodyMaterial = bodyGfxExt.bodyMaterial;
                 bodyDessicatedGraphicPath = bodyGfxExt.GetDessicatedFromBodyPath(bodyGraphicPath);
             }
-
+            var btpg = new BodyTypesPerGender();
+            btpg.AddRange(otherExts.SelectMany(x => x.bodyTypes));
+            if (btpg.Count == 0) btpg.AddRange(raceExts.SelectMany(x => x.bodyTypes));
+            bodyTypeOverride = btpg.Count == 0 ? null : btpg;
 
             // Set body/hair/etc. from mostly other sources.
-            if (this != BSCache.defaultCache && pawn?.story?.bodyType != null && pawn?.story?.headType != null)
+            if (this != defaultCache && pawn?.story?.bodyType != null && pawn?.story?.headType != null)
             {
                 GenderMethods.UpdateBodyHeadAndBeardPostGenderChange(this);
             }
@@ -931,7 +947,7 @@ namespace BigAndSmall
             if (pawn == null || pawn.Dead) { return; }
             PrerequisiteGeneUpdate();
 
-            pawn.def.modExtensions?.OfType<RaceExtension>()?.FirstOrDefault()?.ApplyTrackerIfMissing(pawn);
+            pawn.def.modExtensions?.OfType<RaceExtension>()?.FirstOrDefault()?.ApplyTrackerIfMissing(pawn, this);
 
             var racePawnExts = pawn.GetRacePawnExtensions();
             var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);

@@ -40,7 +40,7 @@ namespace BigAndSmall
         public static void UnhealingRessurection(Pawn pawn)
         {
             ////// Save Hediffs of all wounds on the pawn.
-            List<(HediffDef, BodyPartRecord)> missingParts = new List<(HediffDef, BodyPartRecord)>();
+            List<(HediffDef, BodyPartRecord)> missingParts = [];
 
             // Foreach hediff per body part
             foreach (var hediff in pawn.health.hediffSet.hediffs)
@@ -74,20 +74,6 @@ namespace BigAndSmall
             //        pawn.health.AddHediff(hediff.Item1, part: hediff.Item2);
             //    }
             //}
-        }
-
-        public static FoodKind GetDiet(Pawn pawn)
-        {
-            var dietGenes = GeneHelpers.GetActiveGenesByNames(pawn, new List<string> { "BS_Diet_Carnivore", "BS_Diet_Herbivore" });
-
-            foreach (var gene in dietGenes)
-            {
-                if (gene.def.defName.Contains("Carnivore"))
-                    return FoodKind.Meat;
-                if (gene.def.defName.Contains("Herbivore"))
-                    return FoodKind.NonMeat;
-            }
-            return FoodKind.Any;
         }
     }
 }

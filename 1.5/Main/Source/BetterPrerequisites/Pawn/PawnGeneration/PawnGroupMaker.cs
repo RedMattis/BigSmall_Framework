@@ -13,8 +13,8 @@ namespace BigAndSmall
 {
     public class PilotExtension : DefModExtension
     {
-        public List<XenotypeChance> xenotypeChances = new List<XenotypeChance>();
-        public List<PawnKindDef> pilotPawnkind = new List<PawnKindDef>();
+        public List<XenotypeChance> xenotypeChances = [];
+        public List<PawnKindDef> pilotPawnkind = [];
 
         public void GeneratePilot(Pawn pawn)
         {
@@ -81,6 +81,17 @@ namespace BigAndSmall
     [HarmonyPatch]
     public static class GeneratePawns_Patch
     {
+        private static Pawn lastTouchedPawn = null;  // Make sure we're not editing the same pawn twice.
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(PawnGenerator), nameof(PawnGenerator.GeneratePawn), [typeof(PawnKindDef), typeof(Faction)])]
+        public static void GeneratePawnPostfix(ref Pawn __result, PawnKindDef kindDef, Faction faction)
+        {
+            if (__result == null || lastTouchedPawn == __result) return;
+            lastTouchedPawn = __result;
+            ModifyGeneratedPawn(false, __result);
+        }
+
+
         [HarmonyPostfix]
         [HarmonyPatch(typeof(PawnGroupMakerUtility), "GeneratePawns")]
         public static void GeneratePawnsPatch(PawnGroupMakerParms parms, bool warnOnZeroResults, ref IEnumerable<Pawn> __result)
@@ -99,40 +110,47 @@ namespace BigAndSmall
             var modifiedPawn = __result.ToList();
             foreach (var member in modifiedPawn)
             {
-                if (member == null) continue;
-
+                if (member == null || lastTouchedPawn == member) continue;
+                lastTouchedPawn = member;
                 //Log.Message("DEBUG: Running Generate Patch in Unsafe Mode.");
 
-                try
-                {
-                    // Force refresh the pawn so they get correct body-size and stuff.
-                    if (HumanoidPawnScaler.GetCache(member, forceRefresh: true) is BSCache cache)
-                    {
-                        changed = true;
-                        try { TryModifyPawn(member); }
-                        catch (Exception e) { Log.Warning($"BigAndSmall (GeneratePawns): Failed the TryModifyPawn for {member.Name} ({member.Label}): + {e.Message}"); }
-                        try { RemoveInvalidThings(member); }
-                        catch (Exception e) { Log.Warning($"BigAndSmall (GeneratePawns): Failed to remove invalid apparel for {member.Name} ({member.Label}): + {e.Message}"); }
-                    }
-                }
-                catch (Exception e)
-                {
-                    Log.Warning($"BigAndSmall (GeneratePawns): Failed to pregenerate pawn cache for {member.Name} ({member.Label}): + {e.Message}");
-                }
-
-                try
-                {
-                    changed = GeneratePilots(changed, member);
-                }
-                catch (Exception e)
-                {
-                    Log.Error("BigAndSmall: Error generating pilot for " + member.Name + ": " + e.Message);
-                }
+                changed = ModifyGeneratedPawn(changed, member);
             }
             if (changed)
             {
                 __result = modifiedPawn;
             }
+        }
+
+        private static bool ModifyGeneratedPawn(bool changed, Pawn member)
+        {
+            try
+            {
+                // Force refresh the pawn so they get correct body-size and stuff.
+                if (HumanoidPawnScaler.GetCache(member, forceRefresh: true) is BSCache cache)
+                {
+                    changed = true;
+                    try { TryModifyPawn(member); }
+                    catch (Exception e) { Log.Warning($"BigAndSmall (GeneratePawns): Failed the TryModifyPawn for {member.Name} ({member.Label}): + {e.Message}"); }
+                    try { RemoveInvalidThings(member); }
+                    catch (Exception e) { Log.Warning($"BigAndSmall (GeneratePawns): Failed to remove invalid apparel for {member.Name} ({member.Label}): + {e.Message}"); }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Warning($"BigAndSmall (GeneratePawns): Failed to pregenerate pawn cache for {member.Name} ({member.Label}): + {e.Message}");
+            }
+
+            try
+            {
+                changed = GeneratePilots(changed, member);
+            }
+            catch (Exception e)
+            {
+                Log.Error("BigAndSmall: Error generating pilot for " + member.Name + ": " + e.Message);
+            }
+
+            return changed;
         }
 
         private static bool GeneratePilots(bool changed, Pawn member)
@@ -143,7 +161,7 @@ namespace BigAndSmall
                 changed = GeneratePilot(changed, member, pilotExtension);
             }
             // Otherwise check if the Xenotype has one, as a fallback for stuff like the xenotype being added via mods.
-            else if (member?.genes?.Xenotype?.GetModExtension<PilotExtension>() is PilotExtension xenotypePilotExtension)
+            else if (member.genes?.Xenotype?.GetModExtension<PilotExtension>() is PilotExtension xenotypePilotExtension)
             {
                 changed = GeneratePilot(changed, member, xenotypePilotExtension);
             }

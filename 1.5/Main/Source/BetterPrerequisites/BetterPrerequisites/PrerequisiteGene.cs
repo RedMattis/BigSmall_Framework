@@ -53,7 +53,7 @@ namespace BetterPrerequisites
         public override bool Active => TryGetGeneActiveCache(base.Active);
 
         public bool ForceRun { get; set; } = false;
-        public CacheTimer Timer { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        //public CacheTimer Timer { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         //public bool postPostAddDone = false;
 

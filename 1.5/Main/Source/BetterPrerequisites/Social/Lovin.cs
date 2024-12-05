@@ -28,7 +28,7 @@ namespace BigAndSmall
                 if (pawn != null && partner != null && !partner.IsBloodfeeder())
                 {
                     // , "VU_WhiteRoseBite", "VU_SuccubusBloodFeeder"
-                    var activationGenes = GeneHelpers.GetActiveGenesByNames(pawn, new List<string> { "VU_VampireLover" });
+                    var activationGenes = GeneHelpers.GetActiveGenesByNames(pawn, ["VU_VampireLover"]);
                     if (activationGenes.Count > 0)
                     {
                         //var biteAbilities = pawn.abilities.AllAbilitiesForReading.Where(x => x.def.defName == "VU_WhiteRoseBite" || x.def.defName == "Bloodfeed");

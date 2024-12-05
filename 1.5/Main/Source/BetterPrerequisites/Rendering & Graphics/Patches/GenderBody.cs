@@ -24,14 +24,9 @@ namespace BigAndSmall
                 if (bodyType == GeneticBodyType.Standard && pawn.IsAdult())
                 {
                     Gender apparentGender = cache.GetApparentGender();
-                    if (apparentGender == Gender.Female && pawn.story.bodyType.IsBodyStandard())
+                    if (GenderMethods.TryBodyGenderBodyUpdate(pawn.story.bodyType, apparentGender, cache, out BodyTypeDef newBody))
                     {
-                        __result = BodyTypeDefOf.Female;
-                        return false;
-                    }
-                    else if (apparentGender == Gender.Male && pawn.story.bodyType.IsBodyStandard())
-                    {
-                        __result = BodyTypeDefOf.Male;
+                        __result = newBody;
                         return false;
                     }
                 }
@@ -47,13 +42,9 @@ namespace BigAndSmall
             if (pawn != null && HumanoidPawnScaler.GetCache(pawn) is BSCache cache && pawn.IsAdult())
             {
                 Gender apparentGender = cache.GetApparentGender();
-                if (__result.IsBodyStandard() && apparentGender == Gender.Female)
+                if (GenderMethods.TryBodyGenderBodyUpdate(pawn.story.bodyType, apparentGender, cache, out BodyTypeDef newBody))
                 {
-                    __result = BodyTypeDefOf.Female;
-                }
-                else if (__result.IsBodyStandard() && apparentGender == Gender.Male)
-                {
-                    __result = BodyTypeDefOf.Male;
+                    __result = newBody;
                 }
             }
         }
@@ -66,13 +57,9 @@ namespace BigAndSmall
             if (pawn != null && HumanoidPawnScaler.GetCache(pawn) is BSCache cache && pawn.IsAdult())
             {
                 Gender apparentGender = cache.GetApparentGender();
-                if (pawn.story.bodyType.IsBodyStandard() && apparentGender == Gender.Female)
+                if (GenderMethods.TryBodyGenderBodyUpdate(pawn.story.bodyType, apparentGender, cache, out BodyTypeDef newBody))
                 {
-                    pawn.story.bodyType = BodyTypeDefOf.Female;
-                }
-                else if (pawn.story.bodyType.IsBodyStandard() && apparentGender == Gender.Male)
-                {
-                    pawn.story.bodyType = BodyTypeDefOf.Male;
+                    pawn.story.bodyType = newBody;
                 }
             }
         }

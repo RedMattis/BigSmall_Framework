@@ -201,10 +201,10 @@ namespace BigAndSmall
             return;
         }
 
-        public static readonly List<string> PhysicalTraitWhitelist = new List<string>
-        {
+        public static readonly List<string> PhysicalTraitWhitelist =
+        [
             "speedoffset", "beauty", "gigantism", "large", "small", "dwarfism", "bs_giant", "tough"
-        };
+        ];
 
         public void InheritRelationships(Pawn source, Pawn target)
         {
@@ -485,7 +485,7 @@ namespace BigAndSmall
         }
 
 
-        public List<PawnCapacityModifier> cachedCapMods = new List<PawnCapacityModifier>();
+        public List<PawnCapacityModifier> cachedCapMods = [];
         [HarmonyPatch(typeof(Hediff), nameof(CapMods), MethodType.Getter)]
         [HarmonyPostfix]
         public static void CapMods_Postfix(Hediff __instance, ref List<PawnCapacityModifier> __result)
@@ -525,8 +525,7 @@ namespace BigAndSmall
                 }
 
                 consciousness.offset = +piloted.CalculateConsciousnessOffset();
-                __result = new List<PawnCapacityModifier>() { consciousness };
-                __result.AddRange(otherCapacityMods);
+                __result = [consciousness, .. otherCapacityMods];
                 piloted.cachedCapMods = __result;
             }
         }

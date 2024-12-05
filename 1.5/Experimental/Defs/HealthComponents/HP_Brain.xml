@@ -2,6 +2,7 @@
   <RedHealth.HealthAspect>
     <defName>RED_BrainHealth</defName>
     <label>neural rating</label>
+    <labelSimple>brain health</labelSimple>
     <description>Neural health is a measure of how well the brain is functioning.</description>
     <associatedPartsTags><li>ConsciousnessSource</li></associatedPartsTags>
     <!--This is mostly because fixing a broken brain is quite difficult, unlike other health issues.-->

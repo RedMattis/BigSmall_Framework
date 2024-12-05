@@ -2,6 +2,7 @@
   <RedHealth.HealthAspect>
     <defName>RED_OrganHealth</defName>
     <label>visceral rating</label>
+    <labelSimple>overal organ health</labelSimple>
     <description>A meassure of how well the organs are functioning.</description>
     <associatedPartsTags>
       <li>BreathingSource</li>

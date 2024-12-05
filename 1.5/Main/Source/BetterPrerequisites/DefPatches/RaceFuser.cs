@@ -75,14 +75,21 @@ namespace BigAndSmall
         public List<BodyDef> bodyDefs = [];
         public BodyDef target = null;  // If this is null we simply remove the requirement.
     }
+    public class RetainableTrackers
+    {
+        public List<HediffDef> raceTrackers = [];
+        public BodyDef target = null;
+    }
 
     public class BodyDefFusion : Def
     {
         public List<MergableBody> mergableBody = [];
         public List<Substitutions> substitutions = [];
+        public List<RetainableTrackers> retainableTrackers = [];
         public List<SimilarParts> similarParts = [];
         public List<BodyPartDef> bodyPartToSkip = [];
     }
+
 
     public static class BodyDefFusionsHelper
     {
@@ -94,6 +101,59 @@ namespace BigAndSmall
         public static List<SimilarParts> PartSets => Instances.SelectMany(x => x.similarParts).ToList();
         public static List<BodyPartDef> PartsToSkip => Instances.SelectMany(x => x.bodyPartToSkip).ToList();
         public static List<Substitutions> Substitutions => Instances.SelectMany(x => x.substitutions).ToList();
+        public static List<RetainableTrackers> RetainableTrackers => Instances.SelectMany(x => x.retainableTrackers).ToList();
+
+        private static Dictionary<ThingDef, List<HediffDef>> _racesAndTrackers = null;
+        public static Dictionary<ThingDef, List<HediffDef>> RacesAndTrackers => _racesAndTrackers ??= DefDatabase<ThingDef>.AllDefsListForReading
+            .Where(x => x.GetRaceExtensions().Any())
+            .Select(x => (x, x.GetRaceExtensions().SelectMany(y => y.RaceHediffs).ToList()))
+            .ToDictionary(x => x.x, x => x.Item2);
+
+        private static List<HashSet<HediffDef>> substitutableTrackers = null;
+
+        public static List<HashSet<HediffDef>> GetSubstitutableTrackers(HediffDef trackerOne)
+        {
+            if (substitutableTrackers == null)
+            {
+                SetupSubstitutableTrackers();
+                Log.Warning("Substitutable trackers not set up. This should be done before this runs. It will not perform as expected.");
+            }
+            return substitutableTrackers.Where(x => x.Contains(trackerOne)).ToList();
+        }
+
+        public static void SetupSubstitutableTrackers()
+        {
+            Dictionary<BodyDef, HashSet<HediffDef>> trackersUsingTheSameBodyDef = [];
+            var retainableTrackers = RetainableTrackers;
+            foreach (var retainable in retainableTrackers)
+            {
+                trackersUsingTheSameBodyDef.Add(retainable.target, [.. retainable.raceTrackers]);
+            }
+
+            foreach ((var thing, var hediffList) in RacesAndTrackers.Select(x => (x.Key, x.Value)))
+            {
+                var body = thing.race.body;
+                if (!trackersUsingTheSameBodyDef.ContainsKey(body))
+                {
+                    trackersUsingTheSameBodyDef[body] = [];
+                }
+                foreach (var hediff in hediffList)
+                {
+                    trackersUsingTheSameBodyDef[body].Add(hediff);
+                }
+            }
+            substitutableTrackers = [.. trackersUsingTheSameBodyDef.Values];
+
+            //Print entire list of substitutable trackers with indentation and key.
+            //foreach (var kvp in trackersUsingTheSameBodyDef)
+            //{
+            //    Log.Message($"Key: {kvp.Key.defName}");
+            //    foreach (var hediff in kvp.Value)
+            //    {
+            //        Log.Message($"    Hediff: {hediff.defName}");
+            //    }
+            //}
+        }
 
         public static float? Equavalence(BodyPartDef partOne, BodyPartDef partTwo)
         {
@@ -200,6 +260,7 @@ namespace BigAndSmall
         /// </summary>
         public static void CreateMergedBodyTypes(bool hotReload)
         {
+            SetupSubstitutableTrackers();
             if (doDebug) { Log.Message($"Found Mergable Bodies: {MergableBodies.Select(x => x.bodyDef.defName).ToCommaList()}"); }
 
             List<MergableBody> bodyDefsToMerge = DefDatabase<BodyDef>.AllDefsListForReading
@@ -641,7 +702,7 @@ namespace BigAndSmall
         private static Dictionary<BodyPartDef, List<BodyPartDef>> GetMechanicalVersionsOf()
         {
             if (_mechanicalVersionOf != null) return _mechanicalVersionOf;
-            _mechanicalVersionOf = new Dictionary<BodyPartDef, List<BodyPartDef>>();
+            _mechanicalVersionOf = [];
 
             List<(BodyPartDef, BodyPartExtension)> parts = [];
             foreach (var def in DefDatabase<BodyPartDef>.AllDefsListForReading)
@@ -666,7 +727,7 @@ namespace BigAndSmall
                 {
                     if (!_mechanicalVersionOf.ContainsKey(mechanicalPart))
                     {
-                        _mechanicalVersionOf[mechanicalPart] = new List<BodyPartDef>();
+                        _mechanicalVersionOf[mechanicalPart] = [];
                     }
                     _mechanicalVersionOf[mechanicalPart].Add(part.Item1);
                 }

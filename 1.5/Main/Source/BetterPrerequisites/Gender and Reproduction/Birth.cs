@@ -19,7 +19,7 @@ namespace BigAndSmall
         public static List<GeneDef> newBabyGenes = null;
         public static int? babyStartAge = null;
 
-        public static List<Pawn> parents = new List<Pawn>();
+        public static List<Pawn> parents = [];
 
         //[HarmonyPatch(typeof(Hediff_Pregnant),
         //    nameof(Hediff_Pregnant.DoBirthSpawn),
@@ -116,7 +116,7 @@ namespace BigAndSmall
             }
             if (parents.Count > 0)
             {
-                List<(Pawn pawn, float score)> parentScores = new();
+                List<(Pawn pawn, float score)> parentScores = [];
                 foreach (var parent in parents.Where(x => x.genes?.Xenotype != null))
                 {
                     var babyGeneDefs = baby.genes.GenesListForReading.Select(x => x.def);

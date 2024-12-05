@@ -5,11 +5,9 @@ using RimWorld;
 using Verse;
 using HarmonyLib;
 using UnityEngine;
-using System.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using BetterPrerequisites;
 
 namespace BigAndSmall
 {

@@ -160,28 +160,24 @@ namespace BigAndSmall
             return foodCategory.allowByDefault ? FilterResult.Allow : FilterResult.Neutral;
         }
 
-        //public FilterResult FilterForFood(ThingDef foodDef)
-        //{
-        //    FilterResult result = FilterForDef(foodDef);
-        //    //Log.Message($"[BigAndSmall] {this} (FilterForDef): {foodDef.defName} {result}");
-        //    if (result.PriorityResult() || result.Denied()) return result;
-        //    if (foodCategory != GeneralFoodCategory.Ignore && foodDef.IsIngestible && !foodDef.IsProcessedFood) // No point checking this on actual food items.
-        //    {
-        //        bool foodCatagoryMatch = foodCategory switch
-        //        {
-        //            GeneralFoodCategory.Carnivore => FoodUtility.GetFoodKind(foodDef) != FoodKind.NonMeat,
-        //            GeneralFoodCategory.Herbivore => FoodUtility.GetFoodKind(foodDef) != FoodKind.Meat,
-
-        //            // Untested.
-        //            //GeneralFoodCategory.ExclusiveCarnivore => FoodUtility.GetFoodKind(foodDef) == FoodKind.Meat,
-        //            //GeneralFoodCategory.ExclusiveHerbivore => FoodUtility.GetFoodKind(foodDef) == FoodKind.NonMeat,
-        //            GeneralFoodCategory.Nothing => false,
-        //            _ => true
-        //        };
-        //        return result.Fuse(foodCatagoryMatch ? FilterResult.Neutral : FilterResult.Deny);
-        //    }
-        //    return result;
-        //}
+        public FilterResult FilterForFoodWithoutThing(ThingDef foodDef)
+        {
+            FilterResult result = FilterForDef(foodDef);
+            Log.Message($"[BigAndSmall] {this} (FilterForDef): {foodDef.defName} {result}");
+            if (result.PriorityResult() || result.Denied()) return result;
+            if (foodCategory != GeneralFoodCategory.Ignore && foodDef.IsIngestible && !foodDef.IsProcessedFood) // No point checking this on actual food items.
+            {
+                bool foodCatagoryMatch = foodCategory switch
+                {
+                    GeneralFoodCategory.Carnivore => FoodUtility.GetFoodKind(foodDef) != FoodKind.NonMeat,
+                    GeneralFoodCategory.Herbivore => FoodUtility.GetFoodKind(foodDef) != FoodKind.Meat,
+                    GeneralFoodCategory.Nothing => false,
+                    _ => true
+                };
+                return result.Fuse(foodCatagoryMatch ? FilterResult.Neutral : FilterResult.Deny);
+            }
+            return result;
+        }
 
         public FilterResult FilterForFood(Thing food)
         {
@@ -246,57 +242,58 @@ namespace BigAndSmall
     {
 
         // Iirc. WillEat ThingDef has troubles with caravans and stuff. Rimworld assumes humans are hardcoded so they can eat anything there.
-        //[HarmonyPatch(typeof(FoodUtility), nameof(FoodUtility.WillEat), new Type[]
-        //{
-        //    typeof(Pawn),
-        //    typeof(ThingDef),
-        //    typeof(Pawn),
-        //    typeof(bool),
-        //    typeof(bool)
-        //})]
-        //[HarmonyPrefix]
-        //[HarmonyPriority(Priority.Low)]
-        //public static bool WillEatDef_Prefix(ref bool __result, Pawn p, ThingDef food, Pawn getter, bool careIfNotAcceptableForTitle, bool allowVenerated)
-        //{
+        [HarmonyPatch(typeof(FoodUtility), nameof(FoodUtility.WillEat), new Type[]
+        {
+            typeof(Pawn),
+            typeof(ThingDef),
+            typeof(Pawn),
+            typeof(bool),
+            typeof(bool)
+        })]
+        [HarmonyPrefix]
+        [HarmonyPriority(Priority.High)]
+        public static bool WillEatDef_Prefix(ref bool __result, Pawn p, ThingDef food, Pawn getter, bool careIfNotAcceptableForTitle, bool allowVenerated)
+        {
+            if (skepThingDefCheck) return true;
+            if (HumanoidPawnScaler.GetCacheUltraSpeed(p) is BSCache cache)
+            {
+                if (p?.DevelopmentalStage == DevelopmentalStage.Baby)  // Yum yum babies can eat chemfuel-based food for simplicity's sake.
+                {
+                    return true;
+                }
+                var catForFood = NewFoodCategory.foodCatagoryForFood.TryGetValue(food, null);
+                List<FilterResult> result = [];
+                if (catForFood != null)
+                {
+                    if (cache.newFoodCatDeny?.Contains(catForFood) == true)
+                    {
+                        result.Add(FilterResult.Deny);
+                    }
+                    else if (cache.newFoodCatAllow?.Contains(catForFood) == true)
+                    {
+                        result.Add(FilterResult.Allow);
+                    }
+                    else
+                    {
+                        result.Add(catForFood.allowByDefault ? FilterResult.Allow : FilterResult.Deny);
+                    }
+                }
+                if (cache.pawnDiet.NullOrEmpty() == false)
+                {
+                    result.AddRange(cache.pawnDiet.Select(diet => diet.FilterForFoodWithoutThing(food)));
+                }
 
-        //    if (HumanoidPawnScaler.GetCacheUltraSpeed(p) is BSCache cache && p.Spawned())
-        //    {
-        //        if (p?.DevelopmentalStage == DevelopmentalStage.Baby)
-        //        {
-        //            return true;
-        //        }
-        //        var catForFood = NewFoodCategory.foodCatagoryForFood.TryGetValue(food, null);
-        //        List<FilterResult> result = [];
-        //        if (catForFood != null)
-        //        {
-        //            if (cache.newFoodCatDeny?.Contains(catForFood) == true)
-        //            {
-        //                result.Add(FilterResult.Deny);
-        //            }
-        //            else if (cache.newFoodCatAllow?.Contains(catForFood) == true)
-        //            {
-        //                result.Add(FilterResult.Allow);
-        //            }
-        //            else
-        //            {
-        //                result.Add(catForFood.allowByDefault ? FilterResult.Allow : FilterResult.Deny);
-        //            }
-        //        }
-        //        if (cache.pawnDiet.NullOrEmpty() == false)
-        //        {
-        //            result.AddRange(cache.pawnDiet.Select(diet => diet.FilterForFood(food)));
-        //        }
+                var resultTag = result.Fuse();
+                if (resultTag.Denied())
+                {
+                    __result = false;
+                    return false;
+                }
+            }
+            return true;
+        }
 
-        //        var resultTag = result.Fuse();
-        //        if (resultTag.Denied())
-        //        {
-        //            __result = false;
-        //            return false;
-        //        }
-        //    }
-        //    return true;
-        //}
-
+        private static bool skepThingDefCheck = false;  // To avoid pointless extra checks.
         [HarmonyPatch(typeof(FoodUtility), nameof(FoodUtility.WillEat), new Type[]
         {
             typeof(Pawn),
@@ -306,20 +303,16 @@ namespace BigAndSmall
             typeof(bool)
         })]
         [HarmonyPrefix]
-        [HarmonyPriority(Priority.Low)]
+        [HarmonyPriority(Priority.VeryHigh)]
         public static bool WillEatThing_Prefix(ref bool __result, Pawn p, Thing food, Pawn getter, bool careIfNotAcceptableForTitle, bool allowVenerated)
         {
+            skepThingDefCheck = true;
             // Ignore unspawned pawns, it just gets messy because of Ludeon hardcoding.
             if (p?.Spawned == true && HumanoidPawnScaler.GetCacheUltraSpeed(p) is BSCache cache && cache.isHumanlike)
             {
-                // Allow nutrient paste. It is too much of a hassle to make people have seperate meat/veg networks.
-                // Er. I mean the nutrient paste is so nutritionally perfected that it is acceptable. Ofc.
-                //if (food?.def?.defName?.Contains("NutrientPaste") == true)
-                //{
-                //    return true;
-                //}
                 if (p?.DevelopmentalStage == DevelopmentalStage.Baby)
                 {
+                    skepThingDefCheck = false;
                     return true;
                 }
                 List<FilterResult> result = food.GetFilterForFoodThing(cache);
@@ -328,13 +321,13 @@ namespace BigAndSmall
                 if (resultTag.Denied())
                 {
                     __result = false;
+                    skepThingDefCheck = false;
+
                     return false;
                 }
-                //if (resultTag.ForceAllowed())
-                //{
-                //    return false;
-                //}
             }
+            skepThingDefCheck = false;
+
             return true;
         }  
 

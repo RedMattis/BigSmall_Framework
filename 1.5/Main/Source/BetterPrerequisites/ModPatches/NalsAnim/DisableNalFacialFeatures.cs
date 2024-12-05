@@ -96,7 +96,7 @@ namespace BigAndSmall
                 var raceFaceTypeListV = raceFaceTypeList.GetValue(null);
 
                 var raceFaceTypeListVAsDict = raceFaceTypeListV as System.Collections.IDictionary;
-                List<Def> validVaceDefs = new List<Def>();
+                List<Def> validVaceDefs = [];
 
                 // Add all human heads.
                 var faceTypeList = raceFaceTypeListVAsDict["Human"] as IEnumerable<Def>;

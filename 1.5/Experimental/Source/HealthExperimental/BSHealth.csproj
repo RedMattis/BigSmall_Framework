@@ -73,11 +73,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseCache.cs" />
-    <Compile Include="Defs.cs" />
+    <Compile Include="DefsOf.cs" />
     <Compile Include="HarmonyPatches.cs" />
+    <Compile Include="HealthAspect\HealthAspectDef.cs" />
+    <Compile Include="HealthAspect\HealthAspectTracker.cs" />
+    <Compile Include="HealthEvent.cs" />
+    <Compile Include="Hediff\HealthManager.cs" />
+    <Compile Include="GameComponents\HealthScheduler.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="Settings\ModSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings\ModSettingWidgets.cs" />
     <Compile Include="UtilityFns.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

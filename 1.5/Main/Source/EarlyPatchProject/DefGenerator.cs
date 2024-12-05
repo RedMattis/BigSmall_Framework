@@ -78,7 +78,7 @@ namespace BigAndSmall
                             hideInGenePicker = false
                         };
 
-                        result.Add(GenerateXenoTypeGene(xeno, metDownTemplate, geneExtTarget, new List<string> { xeno.label }));
+                        result.Add(GenerateXenoTypeGene(xeno, metDownTemplate, geneExtTarget, [xeno.label]));
                     }
                 }
             }

@@ -57,6 +57,7 @@ namespace BigAndSmall
         public override void CompPostMake()
         {
             //Props.ValidateLists(parent.pawn);
+            HumanoidPawnScaler.GetCache(parent.pawn, forceRefresh: true);
             GenderMethods.UpdateBodyHeadAndBeardPostGenderChange(Pawn, banNarrow: true, force:true);
             base.CompPostMake();
         }

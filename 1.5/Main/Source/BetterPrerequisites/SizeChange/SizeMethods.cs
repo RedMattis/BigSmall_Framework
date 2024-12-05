@@ -123,15 +123,21 @@ namespace BigAndSmall
             }
         }
 
-        private void CalculateHeadOffset()
+        private float CalculateHeadOffset()
         {
-            var headPos = Mathf.Lerp(bodyRenderSize, headRenderSize, 0.8f);
-            headPos *= headPosMultiplier;
-            //var headPos = Mathf.Max(bodySize, headSize);
+            float headPosMultiplier = Mathf.Lerp(bodyRenderSize, headRenderSize, 0.8f);
+            headPosMultiplier *= headPosMultiplier;
+            headPosMultiplier = Mathf.Max(bodyRenderSize, headRenderSize);
+            if (headPosMultiplier < 1) { headPosMultiplier = Mathf.Pow(headPosMultiplier, 0.96f); }
+            return headPosMultiplier;
 
-            // Move up the head for dwarves etc. so they don't end up a walking head.
-            if (headPos < 1) { headPos = Mathf.Pow(headPos, 0.96f); }
-            headPositionMultiplier = headPos;
+            //var headPos = Mathf.Lerp(bodyRenderSize, headRenderSize, 0.8f);
+            //headPos *= headPosMultiplier;
+            ////var headPos = Mathf.Max(bodySize, headSize);
+
+            //// Move up the head for dwarves etc. so they don't end up a walking head.
+            //if (headPos < 1) { headPos = Mathf.Pow(headPos, 0.96f); }
+            //headPositionMultiplier = headPos;
         }
 
         private void SetWorldOffset()

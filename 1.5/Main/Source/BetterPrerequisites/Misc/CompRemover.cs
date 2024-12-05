@@ -9,9 +9,9 @@ namespace BigAndSmall
 {
     public class CompProperties_CompRemover : CompProperties
     {
-        public List<string> compNameList = new List<string>();
-        public List<string> compNamespaceList = new List<string>();
-        public List<string> compFullNameList = new List<string>();
+        public List<string> compNameList = [];
+        public List<string> compNamespaceList = [];
+        public List<string> compFullNameList = [];
         public CompProperties_CompRemover()
         {
             compClass = typeof(CompRemover);

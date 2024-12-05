@@ -86,6 +86,17 @@ namespace BigAndSmall
                     targetPriority = forcePriority;
                 }
 
+                var cache = HumanoidPawnScaler.GetCache(pawn, canRegenerate: false);
+                if (force && swapTarget.GetModExtension<RaceExtension>()?.RaceHediffs is List<HediffDef> raceHediffs)
+                {
+                    // Remove everything on the raceTrackerHistory with the same substitution groups
+                    foreach(var raceHediff in raceHediffs)
+                    {
+                        var subs = BodyDefFusionsHelper.GetSubstitutableTrackers(raceHediff).SelectMany(x => x).ToList();
+                        cache.raceTrackerHistory.RemoveWhere(subs.Contains);
+                    }
+                }
+
                 var thingDefHediffs = ModExtHelper.GetAllPawnExtensions(pawn, parentBlacklist: [typeof(RaceTracker)]).Where(x => x.thingDefSwap != null).Select(x => x.thingDefSwap).ToList();
                 var thingDefActiveGenes = ModExtHelper.GetAllPawnExtensions(pawn).Where(x=>x.thingDefSwap != null).Select(x => x.thingDefSwap).ToList();
 
@@ -156,28 +167,27 @@ namespace BigAndSmall
                     if (!foundNewDefault)
                     {
                         var originalThing = ThingDefOf.Human;
-                        if (HumanoidPawnScaler.GetCacheUltraSpeed(pawn, canRegenerate: false) is BSCache cache)
+
+                        if (cache.isMechanical)
                         {
-                            if (cache.isMechanical)
+                            // Find first MergableBody with defaultMechanical.
+                            var firstMechanical = BodyDefFusionsHelper.MergableBodies.Where(x => x.defaultMechanical).FirstOrDefault();
+                            if (firstMechanical != null && firstMechanical?.thingDef != swapTarget)
                             {
-                                // Find first MergableBody with defaultMechanical.
-                                var firstMechanical = BodyDefFusionsHelper.MergableBodies.Where(x => x.defaultMechanical).FirstOrDefault();
-                                if (firstMechanical != null && firstMechanical?.thingDef != swapTarget)
-                                {
-                                    originalThing = firstMechanical.thingDef;
-                                }
-                            }
-                            if (cache.originalThing != pawn.def && cache.originalThing != ThingDefOf.Human)
-                            {
-                                originalThing = cache.originalThing;
-                            }
-                            // If we ended up selected the thing we're removing as the original, select Human instead.
-                            if (originalThing == null || originalThing == swapTarget)
-                            {
-                                originalThing = ThingDefOf.Human;
-                                cache.originalThing = ThingDefOf.Human;
+                                originalThing = firstMechanical.thingDef;
                             }
                         }
+                        if (cache.originalThing != pawn.def && cache.originalThing != ThingDefOf.Human)
+                        {
+                            originalThing = cache.originalThing;
+                        }
+                        // If we ended up selected the thing we're removing as the original, select Human instead.
+                        if (originalThing == null || originalThing == swapTarget)
+                        {
+                            originalThing = ThingDefOf.Human;
+                            cache.originalThing = ThingDefOf.Human;
+                        }
+                        
                         if (originalThing != ThingDefOf.Human)
                         {
                             thingsToTryFusionWith.Add((racePriority, originalThing));
@@ -219,7 +229,7 @@ namespace BigAndSmall
                     while (allPossibleBodies.Count > 0)
                     {
                         
-                        bool mechanical = HumanoidPawnScaler.GetCacheUltraSpeed(pawn, canRegenerate: false) is BSCache cache && cache.isMechanical;
+                        bool mechanical = cache.isMechanical;
                         var fusedBody = FusedBody.TryGetBody(mechanical, [.. allPossibleBodies]);
                         if (fusedBody != null)
                         {
@@ -246,7 +256,7 @@ namespace BigAndSmall
                     //Log.Message($"[DEBUG] Running defswap on {pawn} to {finalTarget} (original target: {swapTarget.defName}) with state {state} and force {force}.");
 
                     // Change the pawn's thingDef to the one specified in the GeneExtension.
-                    didSwap = ExecuteDefSwap(pawn, finalTarget);
+                    didSwap = ExecuteDefSwap(cache, finalTarget);
                 }
 
                 if (didSwap)
@@ -257,11 +267,6 @@ namespace BigAndSmall
                     }
 
                     pawn.VerbTracker.InitVerbsFromZero();
-                    if (pawn.def.GetRaceExtensions()?.FirstOrDefault() is RaceExtension raceExtension)
-                    {
-                        raceExtension.ApplyTrackerIfMissing(pawn);
-                    }
-                    
                 }
             }
             catch (Exception e)
@@ -282,8 +287,9 @@ namespace BigAndSmall
             }
         }
 
-        private static bool ExecuteDefSwap(Pawn pawn, ThingDef swapTarget)
+        private static bool ExecuteDefSwap(BSCache cache, ThingDef swapTarget)
         {
+            Pawn pawn = cache.pawn;
             if (pawn?.def == null) return false;
             if (pawn.def == swapTarget) return false;
             bool wasRemovedFromLister = false;
@@ -319,16 +325,18 @@ namespace BigAndSmall
             }
             int ageBiologicalYears = pawn.ageTracker.AgeBiologicalYears;
 
-            RaceExtension.RemoveOldRaceTrackers(pawn);
+           
+            var removedTrackers = RaceExtension.RemoveOldRaceTrackers(pawn);
+
             CacheAndRemoveHediffs(pawn);
             pawn.def = swapTarget;
             //pawn.ageTracker = new Pawn_AgeTracker(pawn);
 
             //pawn.ageTracker.RecalculateLifeStageIndex
             // Access cachedLifeStageIndex
-            
+
             int lifeStageIndex = -1;
-            
+
             List<LifeStageAge> lifeStageAges = pawn.RaceProps.lifeStageAges;
             for (int lifeIdx = lifeStageAges.Count - 1; lifeIdx >= 0; lifeIdx--)
             {
@@ -374,6 +382,12 @@ namespace BigAndSmall
             }
 
             RestoreMatchingHediffs(pawn, pawn.def);
+
+            if (pawn.def.GetRaceExtensions()?.FirstOrDefault() is RaceExtension raceExtension)
+            {
+                raceExtension.ApplyTrackerIfMissing(pawn, cache);
+            }
+
             //pawn.Drawer.renderer.SetAllGraphicsDirty();
             return true;
         }
@@ -381,7 +395,7 @@ namespace BigAndSmall
         public static void CacheAndRemoveHediffs(Pawn pawn)
         {
             var allHediffs = pawn.health.hediffSet.hediffs.ToList();
-            hediffsToReapply[pawn] = allHediffs.ToList();
+            hediffsToReapply[pawn] = [.. allHediffs];
 
             // Remove all hediffs
             foreach (var hediff in allHediffs)

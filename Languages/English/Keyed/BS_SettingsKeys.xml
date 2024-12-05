@@ -46,6 +46,7 @@
   <!-- DEV-Settings -->
   <BS_DevSettings>Dev Options</BS_DevSettings>
   <BS_JesusMode>Max all needs</BS_JesusMode>
+  <BS_HideNonBSGene>HideNoneBSGenes</BS_HideNonBSGene>
 
 
 </LanguageData>

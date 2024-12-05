@@ -16,6 +16,8 @@
       <li>Stomach</li>
     </bodyPartToSkip>
 
+
+
     <substitutions>
       <!-- Note that these target only BodyDefs, not ThingDefs. -->
       <li>
@@ -32,18 +34,23 @@
         </bodyDefs>
       </li>
       <li>
-        <target>BS_FourArmedHuman</target>
-        <bodyDefs>
-          <li MayRequire="RedMattis.BigSmall.Bugs">BS_InsectoidHumanoid_FourArmedBody</li>
-        </bodyDefs>
-      </li>
-      <li>
         <target>BS_StandardAndroid</target>
         <bodyDefs>
           <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_TVAndroid</li>
         </bodyDefs>
       </li>
     </substitutions>
+
+    <!-- Special version of the above. Body isn't replaced, but the Tracker can be kept. -->
+    <retainableTrackers>
+      <li>
+        <target>BS_StandardAndroid</target>
+        <raceTrackers>
+          <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_TVAndroid</li>
+          <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_TVAndroid_Sapient</li>
+        </raceTrackers>
+      </li>
+    </retainableTrackers>
 
     <mergableBody>
       <!-- <li>

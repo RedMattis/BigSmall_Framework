@@ -41,6 +41,7 @@ namespace BigAndSmall
                 {
                     pawn.gender = Gender.Male;
                 }
+                HumanoidPawnScaler.GetCache(pawn, forceRefresh: true);
                 GenderMethods.UpdateBodyHeadAndBeardPostGenderChange(pawn, force:true);
             }
             catch

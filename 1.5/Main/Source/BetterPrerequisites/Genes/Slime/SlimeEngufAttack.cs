@@ -288,7 +288,7 @@ namespace BigAndSmall
                     pawn.needs.food.CurLevel += -pawn.needs.food.FoodFallPerTick * tickRate * -0.5f;
                 }
 
-                List<Thing> toRemove = new List<Thing>();
+                List<Thing> toRemove = [];
                 foreach (var thing in innerContainer)
                 {
                     if (thing is Pawn innerPawn)

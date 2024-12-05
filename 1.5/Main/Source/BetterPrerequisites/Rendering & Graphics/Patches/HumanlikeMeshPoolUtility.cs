@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
-using System.Reflection.Emit;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -19,35 +17,40 @@ namespace BigAndSmall
     [HarmonyPatch(typeof(PawnRenderer), "BaseHeadOffsetAt")]
     public static class PawnRenderer_BaseHeadOffsetAt
     {
-        public static void Postfix(PawnRenderer __instance, ref Vector3 __result)
+        public static void Postfix(PawnRenderer __instance, ref Vector3 __result, ref Vector3 rotation)
         {
-            Pawn pawn = GetPawnFromRef(__instance);
+            Pawn pawn = __instance.pawn;
             //if (pawn != null)
             //{
-                //float factorFromVEF = 1;
-                //if (BigSmallLegacy.VEFActive && VEF_CachedPawnDataWrapper.CachedPawnData.TryGetValue(pawn, out VEF_CachedPawnDataWrapper VEPawnData))
-                //{
-                //    factorFromVEF *= VEPawnData.bodyRenderSize;
-                //}
+            //float factorFromVEF = 1;
+            //if (BigSmallLegacy.VEFActive && VEF_CachedPawnDataWrapper.CachedPawnData.TryGetValue(pawn, out VEF_CachedPawnDataWrapper VEPawnData))
+            //{
+            //    factorFromVEF *= VEPawnData.bodyRenderSize;
+            //}
 
             if (HumanoidPawnScaler.GetCacheUltraSpeed(pawn, canRegenerate: false) is BSCache sizeCache)
             {
                 __result = new Vector3(__result.x * sizeCache.headPositionMultiplier, __result.y, __result.z * sizeCache.headPositionMultiplier);
+
+                if (sizeCache.hasComplexHeadOffsets)
+                {
+                    var rot = pawn.Rotation.AsInt;
+                    Vector3 headPosOffset = rot switch
+                    {
+                        0 => sizeCache.complexHeadOffsets[0],
+                        1 => sizeCache.complexHeadOffsets[1],
+                        2 => sizeCache.complexHeadOffsets[2],
+                        3 => sizeCache.complexHeadOffsets[3],
+                        _ => Vector3.zero
+                    };
+                    __result += headPosOffset;
+                }
             }
             if (pawn == null)
             {
                 Log.Warning($"PawnRenderer_BaseHeadOffsetAt: pawn is null ({__instance}");
             }
             //}
-        }
-
-        
-
-        public static AccessTools.FieldRef<PawnRenderer, Pawn> pawnFieldRef = null;
-        private static Pawn GetPawnFromRef(PawnRenderer __instance)
-        {
-            pawnFieldRef ??= AccessTools.FieldRefAccess<PawnRenderer, Pawn>("pawn");
-            return pawnFieldRef(__instance);
         }
     }
 
@@ -67,6 +70,7 @@ namespace BigAndSmall
             public bool doComplexBodyOffset;
             public bool doComplexHeadOffset;
             public bool spawned;
+            public Rot4 rotation;
             public Rot4 lastRot;
             public int lastRotAsInt;
             public int uses;
@@ -90,10 +94,11 @@ namespace BigAndSmall
                     var posture = ___pawn.GetPosture();
                     threadStaticCache.cachingDisabled = (!disableCache && BigSmallMod.settings.disableTextureCaching) &&
                         (threadStaticCache.cache.totalSizeOffset > 0 || threadStaticCache.cache.scaleMultiplier.linear > 1 || threadStaticCache.cache.renderCacheOff);
-                    threadStaticCache.doOffset = !skipOffset && BigSmallMod.settings.offsetBodyPos && ___pawn.GetPosture() == PawnPosture.Standing && ___pawn.RaceProps?.Humanlike == true;
-                    threadStaticCache.doComplexHeadOffset = threadStaticCache.cache.headOffsets != null;
-                    threadStaticCache.doComplexBodyOffset = threadStaticCache.cache.bodyOffsets != null;
-                    threadStaticCache.lastRot = rotOverride ?? ((posture == PawnPosture.Standing || ___pawn.Crawling) ? ___pawn.Rotation : __instance.LayingFacing());
+                    threadStaticCache.doOffset = BigSmallMod.settings.offsetBodyPos && ___pawn.GetPosture() == PawnPosture.Standing && ___pawn.RaceProps?.Humanlike == true;
+                    threadStaticCache.doComplexHeadOffset = threadStaticCache.cache.complexHeadOffsets != null;
+                    threadStaticCache.doComplexBodyOffset = threadStaticCache.cache.complexBodyOffsets != null;
+                    threadStaticCache.rotation = rotOverride ?? ___pawn.Rotation;
+                    threadStaticCache.lastRot = rotOverride ?? ((posture == PawnPosture.Standing || ___pawn.Crawling) ? threadStaticCache.rotation : __instance.LayingFacing());
                     threadStaticCache.lastRotAsInt = threadStaticCache.lastRot.AsInt;
                     threadStaticCache.spawned = ___pawn.Spawned;
                     threadStaticCache.uses = 0;
@@ -109,18 +114,36 @@ namespace BigAndSmall
                 disableCache = true;
             }
             // Offset pawn upwards if the option is enabled.
-            if (threadStaticCache.doOffset)
+            if (!skipOffset && threadStaticCache.doOffset)
             {
                 drawLoc.z += threadStaticCache.cache.worldspaceOffset;
             }
-            if (threadStaticCache.doComplexBodyOffset)
+            if (!skipOffset && threadStaticCache.doComplexBodyOffset)
             {
-                drawLoc += threadStaticCache.cache.bodyOffsets[threadStaticCache.lastRotAsInt];
+                // Get the rotation.
+                if (threadStaticCache.rotation != ___pawn.Rotation)
+                {
+                    threadStaticCache.uses = 999999999; // Force refresh next time. No need to re-run it won't be visible in practice.
+                }
+                Rot4 orientation = threadStaticCache.rotation;
+                // rotate the offset based on the orientation.
+                switch (orientation.AsInt)
+                {
+                    case 0:
+                        drawLoc += threadStaticCache.cache.complexBodyOffsets[0];
+                        break;
+                    case 1:
+                        drawLoc += threadStaticCache.cache.complexBodyOffsets[1];
+                        break;
+                    case 2:
+                        drawLoc += threadStaticCache.cache.complexBodyOffsets[2];
+                        break;
+                    case 3:
+                        drawLoc += threadStaticCache.cache.complexBodyOffsets[3];
+                        break;
+                }
             }
-            if (threadStaticCache.doComplexHeadOffset)
-            {
-                drawLoc += threadStaticCache.cache.headOffsets[threadStaticCache.lastRotAsInt];
-            }
+            
         }
     }
 
@@ -276,20 +299,29 @@ namespace BigAndSmall
             }
             var cache = threadStaticCache.cache;
             if (cache.approximatelyNoChange) return;
+
+            // Tiny performance win because Unity Casts all float multiplications to double.
+            double bodyRenderSizeD = cache.bodyRenderSize;
+            double resultX = __result.x;
+            double resultZ = __result.z;
             if (cache.isHumanlike)
             {
                 if (node is PawnRenderNode_Body)
                 {
-                    __result *= cache.bodyRenderSize;
+                    __result.x = (float)(resultX * bodyRenderSizeD);
+                    __result.z = (float)(resultZ * bodyRenderSizeD);
                 }
                 else if (node is PawnRenderNode_Head)
                 {
-                    __result *= cache.headRenderSize;
+                    double headerRenderSizeD = cache.headRenderSize;
+                    __result.x = (float)(resultX * headerRenderSizeD);
+                    __result.z = (float)(resultZ * headerRenderSizeD);
                 }
             }
             else
             {
-                __result *= cache.bodyRenderSize;
+                __result.x = (float)(resultX * bodyRenderSizeD);
+                __result.z = (float)(resultZ * bodyRenderSizeD);
             }
         }
     }

@@ -75,7 +75,7 @@ namespace BigAndSmall
     {
         public static float? GetHighestSharedTag(BSCache first, BSCache second)
         {
-            Dictionary<string, Compatibility> compatibilities = new();
+            Dictionary<string, Compatibility> compatibilities = [];
             void CheckTags(RomanceTags rOne, RomanceTags rTwo)
             {
                 foreach (var tagOne in rOne.compatibilities.Where(x=>!x.Value.exclude))

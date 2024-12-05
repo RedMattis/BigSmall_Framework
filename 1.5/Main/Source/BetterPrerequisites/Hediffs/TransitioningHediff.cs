@@ -16,10 +16,10 @@ namespace BigAndSmall
         public class Trigger
         {
             public bool xenogene = false;
-            public List<GeneDef> geneDefsToAdd = new List<GeneDef>();
-            public List<GeneDef> geneDefsToRemove = new List<GeneDef>();
-            public List<HediffDef> hediffsToAdd = new List<HediffDef>();
-            public List<HediffDef> hediffsToRemove = new List<HediffDef>();
+            public List<GeneDef> geneDefsToAdd = [];
+            public List<GeneDef> geneDefsToRemove = [];
+            public List<HediffDef> hediffsToAdd = [];
+            public List<HediffDef> hediffsToRemove = [];
             public XenotypeDef xenoTypeToAdd = null;
             public XenotypeDef xenoTypeToReplace = null;
             public bool resurrect = false;
@@ -50,7 +50,7 @@ namespace BigAndSmall
         public TransitioningHediffProps properties = null;
         bool? statWasActive = null;
 
-        private List<SeverityTrigger> SeverityTriggers { get; set; } = new List<SeverityTrigger>();
+        private List<SeverityTrigger> SeverityTriggers { get; set; } = [];
 
         public override void ExposeData()
         {
@@ -100,7 +100,7 @@ namespace BigAndSmall
                 }
                 else
                 {
-                    SeverityTriggers = new List<SeverityTrigger>();
+                    SeverityTriggers = [];
                 }
             }
         }

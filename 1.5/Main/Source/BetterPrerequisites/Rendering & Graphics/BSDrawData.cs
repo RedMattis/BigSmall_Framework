@@ -14,7 +14,7 @@ namespace BigAndSmall
     }
     public static class BSDrawDataExtentions
     {
-        public static List<Vector3> GetCombinedOffsetsByRot(this List<BSDrawData> offsets)
+        public static List<Vector3> GetCombinedOffsetsByRot(this List<BSDrawData> offsets, float multipler=1)
         {
             bool any = false;
             var result = new List<Vector3>() { Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero, };
@@ -22,7 +22,7 @@ namespace BigAndSmall
             {
                 foreach (var offset in offsets)
                 {
-                    result[i] += offset.OffsetForRot(new Rot4(i));
+                    result[i] += offset.OffsetForRot(new Rot4(i)) * multipler;
                     any = true;
                 }
             }

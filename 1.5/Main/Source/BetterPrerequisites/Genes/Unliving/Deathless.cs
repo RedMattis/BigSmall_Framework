@@ -167,7 +167,7 @@ namespace BigAndSmall
     public class ReturningSoulManager : GameComponent
     {
         public static ReturningSoulManager instance = null;
-        public List<ReturningSoulHolder> returningSouls = new List<ReturningSoulHolder>();
+        public List<ReturningSoulHolder> returningSouls = [];
         public Game game;
 
         const int tickFrequency = 500;
@@ -316,7 +316,7 @@ namespace BigAndSmall
                     }
 
                     // Resurrect the pawn
-                    CompPropertiesMimicffect.DoMimic(pawn, corpse, new List<GeneDef> { BSDefs.BS_ReturningSoul }, spawnGibblets: false, addCorpseGenes: addCorpseGenes);
+                    CompPropertiesMimicffect.DoMimic(pawn, corpse, [BSDefs.BS_ReturningSoul], spawnGibblets: false, addCorpseGenes: addCorpseGenes);
                     FilthMaker.TryMakeFilth(pawn.Position, pawn.Map, ThingDefOf.Filth_Ash, 5);
 
                     Messages.Message("BS_ReturningSoulCorpse_Success".Translate(pawn.Name.ToString(), corpse.InnerPawn.Name.ToString()), MessageTypeDefOf.PositiveEvent);

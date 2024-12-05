@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props" Condition="Exists('packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
@@ -10,6 +11,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <!--<LangVersion>preview</LangVersion>-->
     <!--<LangVersion>7.3</LangVersion>-->
   </PropertyGroup>
@@ -259,6 +262,21 @@
     <Compile Include="BetterPrerequisites\PrerequisiteValidator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Publicize Include="Assembly-CSharp:RimWorld.Pawn_GeneTracker.xenotype" />
+    <Publicize Include="Assembly-CSharp:Verse.Hediff.severityInt" />
+    <Publicize Include="Assembly-CSharp:Verse.PawnRenderer.pawn" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props'))" />
+    <Error Condition="!Exists('packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets'))" />
+  </Target>
+  <Import Project="packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets" Condition="Exists('packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets')" />
 </Project>

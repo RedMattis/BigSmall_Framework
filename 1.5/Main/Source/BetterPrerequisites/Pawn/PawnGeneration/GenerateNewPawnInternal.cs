@@ -13,7 +13,7 @@ namespace BigAndSmall
     {
         // private static Pawn TryGenerateNewPawnInternal(ref PawnGenerationRequest request, out string error, bool ignoreScenarioRequirements, bool ignoreValidator)
         [HarmonyPatch(typeof(PawnGenerator), "GenerateNewPawnInternal")]
-        [HarmonyPrefix]
+        [HarmonyPostfix]
         public static void GenerateNewPawnInternalPostfix(ref Pawn __result, ref PawnGenerationRequest request)
         {
             var thingDef = request.KindDef?.race;

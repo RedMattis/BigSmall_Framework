@@ -96,15 +96,18 @@ namespace BigAndSmall
         }
 
         public static Dictionary<BodyPartDef, List<BodyPartDef>> partImportsFromDict = [];
+
+        // Used for GetPartsWithDef_Postfix to make parts act as the same part.
+        public static Dictionary<BodyPartDef, List<BodyPartDef>> partImportsFromDictReverse = [];
         private static void PatchCustomBodyPartDefs()
         {
             var partDefs = DefDatabase<BodyPartDef>.AllDefs;
             List<(BodyPartDef part, List<BodyPartDef> sources)> partExts = partDefs.Where(x => x.modExtensions != null && x.modExtensions.Any(y => y is BodyPartExtension)).Select(bd =>
             {
-                
+
                 // We want to add ALL since someone might be patching in multiple of the same extension.
                 HashSet<BodyPartDef> defs = [];
-                foreach(var ext in bd.modExtensions.Where(x=>x is BodyPartExtension).Select(bpe => bpe as BodyPartExtension))
+                foreach (var ext in bd.modExtensions.Where(x => x is BodyPartExtension).Select(bpe => bpe as BodyPartExtension))
                 {
                     defs.AddRange(ext.importAllRecipesFrom);
                 }
@@ -119,10 +122,22 @@ namespace BigAndSmall
                 {
                     if (!recipe.appliedOnFixedBodyParts.Contains(part))
                     {
-                        
+
                         recipe.appliedOnFixedBodyParts.Add(part);
                         //Log.Message($"Patched recipe {recipe.defName} to include {part.defName}");
                     }
+                }
+            }
+            foreach (var kvp in partImportsFromDict)
+            {
+                foreach (var part in kvp.Value)
+                {
+                    if (!partImportsFromDictReverse.TryGetValue(part, out var list))
+                    {
+                        list = [];
+                        partImportsFromDictReverse[part] = list;
+                    }
+                    list.Add(kvp.Key);
                 }
             }
         }

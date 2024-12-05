@@ -12,7 +12,7 @@ namespace BigAndSmall
     [HarmonyPatch]
     public static class Dialog_CreateXenotypePatches
     {
-        public static HashSet<GeneDef> hiddenGenes = new();
+        public static HashSet<GeneDef> hiddenGenes = [];
         [HarmonyPatch(typeof(Dialog_CreateXenotype), "DrawGene")]
         [HarmonyPrefix]
         [HarmonyPriority(Priority.Last)]

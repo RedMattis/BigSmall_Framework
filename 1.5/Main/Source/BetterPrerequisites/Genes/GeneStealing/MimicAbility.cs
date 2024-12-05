@@ -41,7 +41,7 @@ namespace BigAndSmall
 
     public class CompPropertiesMimicOff : CompProperties_AbilityEffect
     {
-        public List<GeneDef> genesToRetain = new List<GeneDef>();
+        public List<GeneDef> genesToRetain = [];
         public bool spawnFilth = true;
         public CompPropertiesMimicOff()
         {
@@ -112,7 +112,7 @@ namespace BigAndSmall
 
     public class CompPropertiesMimic : CompProperties_AbilityEffect
     {
-        public List<GeneDef> genesToRetain = new List<GeneDef>();
+        public List<GeneDef> genesToRetain = [];
         public CompPropertiesMimic()
         {
             compClass = typeof(CompPropertiesMimicffect);

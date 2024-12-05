@@ -15,7 +15,7 @@ namespace BigAndSmall
     [StaticConstructorOnStartup]
     public class GeneGizmo_ResourceSlime : GeneGizmo_Resource
     {
-        private List<Pair<IGeneResourceDrain, float>> tmpDrainGenes = new List<Pair<IGeneResourceDrain, float>>(); // Unused.
+        private List<Pair<IGeneResourceDrain, float>> tmpDrainGenes = []; // Unused.
 
         public GeneGizmo_ResourceSlime(Gene_Resource gene, List<IGeneResourceDrain> drainGenes, Color barColor, Color barhighlightColor)
             : base(gene, drainGenes, barColor, barhighlightColor)

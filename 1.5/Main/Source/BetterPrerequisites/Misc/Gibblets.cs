@@ -62,10 +62,10 @@ namespace BigAndSmall
             }
             if (spawnRandomOrgans)
             {
-                List<ThingDef> whiteList = new List<ThingDef>()
-                {
+                List<ThingDef> whiteList =
+                [
                     BSDefs.Heart, BSDefs.Liver, BSDefs.Lung, BSDefs.Kidney
-                };
+                ];
 
                 // Check if the pawn has any of the organs in the white list, if so, select the whitlist entry.
                 // Get all not-missing parts
@@ -88,10 +88,8 @@ namespace BigAndSmall
             }
             if (spawnSkull && ModsConfig.IdeologyActive)
             {
-
                 var skull = ThingMaker.MakeThing(ThingDefOf.Skull);
                 GenSpawn.Spawn(skull, centerPos, map);
-
             }
         }
     }

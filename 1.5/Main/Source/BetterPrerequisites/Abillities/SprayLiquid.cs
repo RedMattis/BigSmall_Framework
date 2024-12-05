@@ -25,9 +25,9 @@ namespace BigAndSmall
 
     public class CompAbilityEffect_SprayLiquid : CompAbilityEffect
     {
-        private List<Pair<IntVec3, float>> tmpCellDots = new List<Pair<IntVec3, float>>();
+        private List<Pair<IntVec3, float>> tmpCellDots = [];
 
-        private List<IntVec3> tmpCells = new List<IntVec3>();
+        private List<IntVec3> tmpCells = [];
 
         private new CompProperties_AbilitySprayLiquid Props => (CompProperties_AbilitySprayLiquid)props;
 

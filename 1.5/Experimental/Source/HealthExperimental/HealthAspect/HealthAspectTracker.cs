@@ -7,144 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace RedHealth
 {
-    [DefOf]
-    public class HDefs
-    {
-        public static HealthCurve RED_LinearCurve;
-        public static HealthCurve RED_ExponentialCurve;
-
-        public static HealthAspect RED_OverallHealth;
-
-        public static HealthAspect RED_CardiHealth;
-
-        public static HediffDef RED_FailingOrganDamage;
-    }
-
-    public class HealthCurve : Def
-    {
-        public static List<HealthCurve> healthCurves = null;
-
-        public SimpleCurve curve;
-        public float weight;
-        public int score = 0;
-
-        public static List<HealthCurve> GetAllCruves()
-        {
-            healthCurves ??= DefDatabase<HealthCurve>.AllDefsListForReading;
-            return healthCurves;
-        }
-    }
-
-    public class HealthAspect : Def
-    {
-        private static List<HealthAspect> healthAspects = null;
-
-        public bool addAutomatically = true;
-        public StatDef oddsMultipliedByStat = null;
-        public List<BodyPartTagDef> associatedPartsTags = new();
-        public bool lucky = false; // Means it cannot pick the bad curves, and length will never be less than 1.
-
-        public List<HealthThreshold> thresholds = new();
-
-        public List<Effects> hediffs_lowRisk = new();
-        public List<Effects> hediffs_mediumRisk = new();
-        public List<Effects> hediffs_highRisk = new();
-        public List<Effects> hediffs_justDieAlready = new();
-
-        public List<FleshTypeDef> validFleshTypes = new();
-
-        public bool nullifyIfPartsReplaced = true;
-        public bool nullifyIfPartsReplacedBetterThanNatural = true;
-        public List<HediffDef> nullifyingHediffs = new();
-        public List<GeneDef> nullifyingGenes = new();
-        public List<TraitDef> nullifyingTraits = new();
-        public List<ThingDef> nullifyingRaces = new();
-
-        public List<WeightedCapacity> offsetFromCapacity = new();
-
-        public static List<HealthAspect> GetHealthAspects()
-        {
-            healthAspects ??= DefDatabase<HealthAspect>.AllDefsListForReading.Where(x=>x.addAutomatically).ToList();
-            return healthAspects;
-        }
-    }
-
-    public class HealthThreshold
-    {
-        public const int defaultMaxMeanTime = 480000;
-        public string label;
-        public string description;
-        public float threshold = 0;
-        public float odds = 0;  // 1 means 100%.
-        public Color? labelColor = null;
-
-        /// <summary>
-        /// Time until next health even can happen, in ticks. Note that this is used as the UPPER part of a random range.
-        /// 
-        /// 60'000 is 1 day.
-        /// 900'000 is 1 quadrum.
-        /// 3'600'000 is 1 year.
-        /// Never set to more than 0.5 quadrum. We still need to reevaluate the health aspects in case the pawn was aged up or had organs swapped.
-        /// 
-        /// Note that 480000 (0-8 days, average 4) should be fine for most pawns unless they are very old and we want to spam them with health events.
-        /// </summary>
-        public float maxMeanTime = defaultMaxMeanTime;
-        public List<Effects> effects = new();
-
-        public override string ToString()
-        {
-            return $"{label} ({threshold})";
-        }
-
-        public int GetNextEventTime()
-        {
-            return Rand.Range(100, (int)maxMeanTime);
-        }
-
-        public Color GetColor()
-        {
-            return labelColor ?? Color.white;
-        }
-    }
-
-    public class Effects
-    {
-        public HediffDef hediff = null;
-        public FloatRange? severityRange = null;
-        public FloatRange? severityPerDayRange = null;
-        public float weight = 1;
-        public bool stackWithExisting = true;
-        public bool killWorldPawn = false;
-        public bool killPawn = false;
-        public bool? filterIfExisting = null;
-        public List<BodyPartDef> partsToAffect = new();
-        public bool canAffectAnyLivePart = false;
-
-        public bool ShouldFilterIfExisting()
-        {
-            if (hediff == null) return false;
-            if (filterIfExisting != null) return filterIfExisting.Value;
-            // Check if the Hediff uses Severity. If so default to True.
-            bool usesSeverity = severityRange != null || hediff.maxSeverity < float.MaxValue || !hediff.stages.NullOrEmpty();
-            return !usesSeverity;
-        }
-
-        public bool AppliesToSpecificParts()
-        {
-            return partsToAffect.Count > 0;
-        }
-    }
-    public class WeightedCapacity  // 
-    {
-        public PawnCapacityDef capacity;
-        public float weight;
-        public FloatRange clamp = new(0.25f, 99);
-    }
-
     public class HealthAspectTracker : IExposable
     {
         public HealthAspect def;
@@ -158,10 +23,10 @@ namespace RedHealth
         public HealthAspectTracker(HealthAspect def, bool mainHealthCurve)
         {
             this.def = def;
-            
+
             var curvesShapes = HealthCurve.GetAllCruves();
 
-            var curve1 = curvesShapes.Where(x=> !def.lucky || (x.score >= 0)).RandomElementByWeight(x => x.weight);
+            var curve1 = curvesShapes.Where(x => !def.lucky || (x.score >= 0)).RandomElementByWeight(x => x.weight);
             if (mainHealthCurve)
             {
                 // The main health curve always uses the exponential curve for one of the blended curves so that most pawns only get health issues towards the end
@@ -176,7 +41,7 @@ namespace RedHealth
             float interpolation = Rand.Value;
 
             // Create a new curve that is a blend of the two curves. The purpose of all this is to create a curve that is unique to this pawn.
-            curve = new SimpleCurve();
+            curve = [];
             for (int i = 0; i < curve1.curve.PointsCount; i++)
             {
                 curve.Add(new CurvePoint(curve1.curve[i].x * interpolation + curve2.curve[i].x * (1 - interpolation),
@@ -188,12 +53,16 @@ namespace RedHealth
                 curve.Add(new CurvePoint(1.2f, 1.5f));
             }
 
-            if (Main.loggingV) Log.Message($"Created HealthAspectTracker for {def.defName} with the curves {curve1.defName} ({interpolation*100:f0}%), {curve2.defName} ({(1-interpolation) * 100:f0}%).");
+            if (Main.loggingV) Log.Message($"Created HealthAspectTracker for {def.defName} with the curves {curve1.defName} ({interpolation * 100:f0}%), {curve2.defName} ({(1 - interpolation) * 100:f0}%).");
         }
 
         public bool IsApplicable(Pawn pawn, out float vulnerablePartsPercent)
         {
             vulnerablePartsPercent = 1;
+
+            if (Main.settings.disableForAll) return false;
+            if (Main.settings.aspectsDisabled.Any(x => x.defName == def.defName && x.active is false)) return false;
+
             if (def.nullifyingRaces.Count > 0 && def.nullifyingRaces.Contains(pawn.def))
             {
                 if (Main.loggingV) Log.Message($"Nullifying race found for {def.defName} on {pawn.Name} {pawn.def}");
@@ -312,7 +181,7 @@ namespace RedHealth
             return GetThreshold(score);
         }
 
-        public void SetSeverity(Pawn pawn, Hediff hediff, float? severityInput, bool set, BodyPartRecord part=null, float? severityPerDayMultiplier = null)
+        public void SetSeverity(Pawn pawn, Hediff hediff, float? severityInput, bool set, BodyPartRecord part = null, float? severityPerDayMultiplier = null)
         {
             if (Main.loggingV) Log.Message($"Setting severity of {hediff.def.defName} ({hediff}) on {pawn.Name} (part:{part} to {severityInput} (set: {set})...");
             if (severityInput == null) return;
@@ -338,7 +207,7 @@ namespace RedHealth
             }
         }
 
-        public int HealthEvent(Pawn pawn, float? baseRating, bool forceEvent=false)
+        public int HealthEvent(Pawn pawn, float? baseRating, bool forceEvent = false)
         {
             bool PartInvalidTargetForHediff(HediffDef hediffDef, BodyPartRecord part, bool permitExisting)
             {
@@ -377,7 +246,7 @@ namespace RedHealth
             {
                 if (forceEvent)
                 {
-                    if (Main.logging) Log.Message($"Forcing event for {def.defName} on {pawn.Name}. Threshold was {threshold} ({baseRating}->{adjustedRating}), Real chance was {threshold.odds*100:f2}%");
+                    if (Main.logging) Log.Message($"Forcing event for {def.defName} on {pawn.Name}. Threshold was {threshold} ({baseRating}->{adjustedRating}), Real chance was {threshold.odds * 100:f2}%");
                 }
                 var possibleEffects = threshold.effects.ToList();
                 var validBodyParts = pawn.health.hediffSet.GetNotMissingParts()?.Where(x => !HealthHelpers.PartIsBionic(pawn, x)).ToList();
@@ -407,7 +276,7 @@ namespace RedHealth
                 }
                 catch (Exception e)
                 {
-                      Log.Error($"Error while filtering effects for {def.defName} on {pawn.Name} at Threshold {threshold.label} ({baseRating:f2}->{adjustedRating:f2}). {e.Message}");
+                    Log.Error($"Error while filtering effects for {def.defName} on {pawn.Name} at Threshold {threshold.label} ({baseRating:f2}->{adjustedRating:f2}). {e.Message}");
                 }
 
                 if (possibleEffects.Count == 0)
@@ -420,7 +289,7 @@ namespace RedHealth
                 bool filterIfExisting = effect.ShouldFilterIfExisting();
 
                 // Check if worldpawn.
-                if (pawn.IsWorldPawn() && (effect.killWorldPawn || effect.killPawn)  && pawn.Faction != Faction.OfPlayerSilentFail)
+                if (pawn.IsWorldPawn() && (effect.killWorldPawn || effect.killPawn) && pawn.Faction != Faction.OfPlayerSilentFail)
                 {
                     pawn.Kill(null, null);
                     if (Main.loggingV) Log.Message($"Killed world pawn {pawn.Name} due to failing {def.label}");
@@ -434,8 +303,8 @@ namespace RedHealth
                     $"Extras: FilterIfExisting: {effect.ShouldFilterIfExisting()}. Probability Weight: {effect.weight}. Custom Severity Range {effect.severityRange != null}. Custom Severity Rate: {effect.severityPerDayRange != null}\n" +
                     $"Next Event of this type in {nextEventTime / 60000.0:f2} days.\n");
 
-                List<Hediff> newHediffs = new();
-                List<Hediff> hediffsModified = new();
+                List<Hediff> newHediffs = [];
+                List<Hediff> hediffsModified = [];
                 if (!pawn.IsWorldPawn() && effect.hediff != null)
                 {
                     if (effect.canAffectAnyLivePart)
@@ -462,7 +331,7 @@ namespace RedHealth
                         if (existingHediff != null && effect.stackWithExisting)
                         {
                             // Default to 20% severity if nothing is specified.
-                            SetSeverity(pawn, existingHediff, effect.severityRange?.RandomInRange ?? 0.5f, set:false); 
+                            SetSeverity(pawn, existingHediff, effect.severityRange?.RandomInRange ?? 0.5f, set: false);
                             hediffsModified.Add(existingHediff);
                             if (Main.loggingV) Log.Message($"Stacked {effect.hediff.defName} on {pawn.Name}");
                         }
@@ -505,7 +374,7 @@ namespace RedHealth
                                 {
                                     if (Main.loggingV) Log.Message($"Stacking {effect.hediff.defName} on {pawn.Name} on {bodyPart.def.defName}");
                                     hediffsModified.Add(existingHediff);
-                                    SetSeverity(pawn, existingHediff, effect.severityRange?.RandomInRange ?? 0.5f, set: false, part:bodyPart);
+                                    SetSeverity(pawn, existingHediff, effect.severityRange?.RandomInRange ?? 0.5f, set: false, part: bodyPart);
                                 }
                                 else
                                 {
@@ -532,7 +401,7 @@ namespace RedHealth
                     //        if (Main.logging) Log.Message($"Set {hediffAdded.def.defName} to permanent");
                     //    }
                     //}
-                    foreach(var hediffsModifiedOrAdded in hediffsModified.Concat(newHediffs))
+                    foreach (var hediffsModifiedOrAdded in hediffsModified.Concat(newHediffs))
                     {
                         if (hediffsModifiedOrAdded is Hediff_Injury injury && injury.TryGetComp<HediffComp_GetsPermanent>() is HediffComp_GetsPermanent permanentComp)
                         {
@@ -583,4 +452,5 @@ namespace RedHealth
             //Scribe_Values.Look(ref randomCurveSize, "randomCurveSize");
         }
     }
+
 }

@@ -301,19 +301,19 @@ namespace BigAndSmall
             }
         }
 
-        public static List<string> BodyShapeGeneNames => new List<string>
-        {
+        public static List<string> BodyShapeGeneNames =>
+        [
             "Body_Standard",
             "Body_Hulk",
             "Body_Fat",
             "Body_Thin",
-        };
+        ];
 
-        public static List<string> ForcedGenderGenes => new List<string>
-        {
+        public static List<string> ForcedGenderGenes =>
+        [
             "Body_MaleOnly",
             "Body_FemaleOnly",
-        };
+        ];
 
         public override void DoWindowContents(Rect inRect)
         {

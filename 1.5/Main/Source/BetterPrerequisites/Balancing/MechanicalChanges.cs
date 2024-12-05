@@ -8,8 +8,6 @@ using Verse.Noise;
 using Verse;
 using RimWorld;
 using UnityEngine;
-using System.Reflection.Emit;
-using System.Reflection;
 
 namespace BigAndSmall
 {
@@ -20,16 +18,6 @@ namespace BigAndSmall
     {
         private readonly static Dictionary<Hediff_Injury, float> injuryRescaling = [];
         private static int lastTick = 0;
-        static FieldInfo severityIntField = null;
-
-        public static void SetSeverityNoEvent(this Hediff injury, float value)
-        {
-            if (severityIntField == null)
-            {
-                severityIntField = typeof(Hediff).GetField("severityInt", BindingFlags.NonPublic | BindingFlags.Instance);
-            }
-            severityIntField.SetValue(injury, value);
-        }
         public static void Postfix(ref float __result, Pawn __instance)
         {
             if (HumanoidPawnScaler.GetCacheUltraSpeed(__instance) is BSCache sizeCache)
@@ -52,7 +40,7 @@ namespace BigAndSmall
                             Hediff_Injury injury = injuryCache[idx];
                             try
                             {
-                                injury.SetSeverityNoEvent(injuryRescaling[injury]);
+                                injury.severityInt = injuryRescaling[injury];
                             }
                             catch (Exception e)
                             {
@@ -79,10 +67,10 @@ namespace BigAndSmall
                     foreach (var injury in injuries)
                     {
                         injuryRescaling[injury] = injury.Severity;
-                        injury.SetSeverityNoEvent(injury.Severity * injuryScale);
+                        injury.severityInt = injury.Severity * injuryScale;
                         if (injury.Severity < 0.05f) // Delete tiny injuries.
                         {
-                            injury.SetSeverityNoEvent(0);
+                            injury.severityInt = 0;
                         }
                     }
                     sizeCache.injuriesRescaled = true;

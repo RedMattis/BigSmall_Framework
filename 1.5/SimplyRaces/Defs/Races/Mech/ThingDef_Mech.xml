@@ -31,7 +31,7 @@
       <SM_BodySizeMultiplier>1.15</SM_BodySizeMultiplier> -->
       <ArmorRating_Heat>2.00</ArmorRating_Heat>
       <ArmorRating_Blunt>0.25</ArmorRating_Blunt>
-      <ArmorRating_Sharp>0.53</ArmorRating_Sharp>
+      <ArmorRating_Sharp>0.45</ArmorRating_Sharp>
     </statBases>
     <race>
       <!-- <thinkTreeMain>Mechanoid</thinkTreeMain>-->
@@ -49,7 +49,8 @@
 
       <canBecomeShambler>false</canBecomeShambler>
 
-      <useMeatFrom IsNull="True"/>
+      <specificMeatDef>Steel</specificMeatDef>
+      <hasMeat>false</hasMeat>
       <leatherDef IsNull="True"/>
       <bloodSmearDef IsNull="True"/>
       <bloodDef>Filth_MachineBits</bloodDef>

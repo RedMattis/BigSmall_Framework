@@ -48,6 +48,7 @@ namespace BigAndSmall
             }
         }
 
+        
         public List<PawnExtension> PawnExtensionOnRace => ModExtHelper.ExtensionsOnDefList<PawnExtension, HediffDef>(RaceHediffs);
 
         // Merge with FilterListSet<T> MergeFilters<T>'s extension methods.
@@ -69,11 +70,12 @@ namespace BigAndSmall
             }
         }
 
-        public void ApplyTrackerIfMissing(Pawn pawn)
+        
+        public void ApplyTrackerIfMissing(Pawn pawn, BSCache cache=null)
         {
             if (TrackerMissing(pawn))
             {
-                ApplyHediffToPawn(pawn);
+                ApplyHediffToPawn(pawn, cache);
             }
         }
         public bool TrackerMissing(Pawn pawn)
@@ -84,41 +86,75 @@ namespace BigAndSmall
                 raceHediffList.AddRange(raceExtensions.RaceHediffs);
             }
             if (raceHediffList.Count == 0) return false;
-
-            return raceHediffList.Any(rh => !pawn.health.hediffSet.HasHediff(rh));
-
-            // Check if the raceHediff is not null and if the pawn has the raceHediff.
-            //return raceHediff != null && !pawn.health.hediffSet.HasHediff(raceHediff);
+            List<HashSet<HediffDef>> raceHediffsWithSubstitutions = [];
+            foreach (var raceHediff in raceHediffList)
+            {
+                var subs = BodyDefFusionsHelper.GetSubstitutableTrackers(raceHediff);
+                raceHediffsWithSubstitutions.AddRange(subs);
+            }
+            foreach(var hediffGroup in raceHediffsWithSubstitutions)
+            {
+                if (hediffGroup.All(h => !pawn.health.hediffSet.HasHediff(h)))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
-        private void ApplyHediffToPawn(Pawn pawn)
+        private void ApplyHediffToPawn(Pawn pawn, BSCache cache = null)
         {
             if (RaceHediffs.Count > 0)
             {
                 // Remove all other RaceTracker Hediffs
-                RemoveOldRaceTrackers(pawn);
+                var removedTrackers = RemoveOldRaceTrackers(pawn);
 
+                List<HediffDef> allRemovedTrackers = [.. removedTrackers];
+                if (cache != null)
+                {
+                    allRemovedTrackers.AddRange(cache.raceTrackerHistory);
+                }
                 // Ensure the raceDef is of the "RaceTracker" class or a subclass thereof.
                 foreach (var raceHediff in RaceHediffs)
                 {
-                    if (raceHediff.hediffClass == typeof(RaceTracker))
+                    var targetHediff = raceHediff;
+
+                    var substituteSets = BodyDefFusionsHelper.GetSubstitutableTrackers(raceHediff);
+                    var validSubstitutes = GetValidSubstitutes(allRemovedTrackers, substituteSets);
+                    if (validSubstitutes.Any())
                     {
-                        pawn.health.AddHediff(raceHediff);
+                        targetHediff = validSubstitutes.FirstOrFallback(raceHediff);
+                    }
+
+                    if (targetHediff.hediffClass == typeof(RaceTracker))
+                    {
+                        pawn.health.AddHediff(targetHediff);
                     }
                     else
                     {
-                        Log.Error($"{pawn}'s raceDef needs to be a {nameof(RaceTracker)} or subclass thereof.");
+                        Log.Error($"{pawn}'s raceDef needs to be a {nameof(RaceTracker)} or subclass thereof ({raceHediff}/{targetHediff}).");
                     }
                     // Ensure the Hediff has a RaceCompProps component
-                    if (raceHediff.HasComp(typeof(HediffComp_Race))) { }
-                    else { Log.Error($"{pawn}'s raceDef needs to have a {nameof(HediffComp_Race)} component."); }
-
-                    pawn.health.AddHediff(raceHediff);
+                    if (targetHediff.HasComp(typeof(HediffComp_Race))) { }
+                    else { Log.Error($"{pawn}'s raceDef needs to have a {nameof(HediffComp_Race)} component. ({raceHediff}/{targetHediff})"); }
                 }
             }
             else
             {
                 Log.Error($"{pawn} has a BigAndSmall.RaceExtension without an associated raceDef!");
             }
+        }
+
+        private static HashSet<HediffDef> GetValidSubstitutes(List<HediffDef> allRemovedTrackers, List<HashSet<HediffDef>> substituteSets)
+        {
+            var validHediffDefs = new HashSet<HediffDef>();
+            foreach (var substituteSet in substituteSets)
+            {
+                foreach (var removedTracker in allRemovedTrackers.Where(substituteSet.Contains))
+                {
+                    validHediffDefs.Add(removedTracker);
+                }
+            }
+            return validHediffDefs;
         }
 
         //public void SwapToThisRace(Pawn pawn, bool force = false)
@@ -130,19 +166,21 @@ namespace BigAndSmall
         //    else { Log.Error($"{pawn} has a BigAndSmall.RaceExtension without an associated raceDef!"); }
         //}
 
-        public static void RemoveOldRaceTrackers(Pawn pawn)
+        public static List<HediffDef> RemoveOldRaceTrackers(Pawn pawn)
         {
+            List<HediffDef> removedTrackers = [];
             var oldRaceTrackers = pawn.health?.hediffSet?.hediffs?.Where(h => h is RaceTracker);
-            if (oldRaceTrackers == null) return;
+            if (oldRaceTrackers == null) return removedTrackers;
 
             var extensions = ModExtHelper.GetHediffExtensions<PawnExtension>(pawn, parentWhitelist: [typeof(RaceTracker)]);
 
-            var ort = oldRaceTrackers.ToList();
+           var ort = oldRaceTrackers.ToList();
             for (int idx = ort.Count - 1; idx >= 0; idx--)
             {
                 Hediff hediff = ort[idx];
                 if (hediff is RaceTracker)
                 {
+                    removedTrackers.Add(hediff.def);
                     pawn.health.hediffSet.hediffs.Remove(hediff);
                 }
             }
@@ -159,6 +197,7 @@ namespace BigAndSmall
                         if (pawn.health.hediffSet.HasHediff(hediff))
                         {
                             pawn.health.hediffSet.hediffs.Remove(pawn.health.hediffSet.GetFirstHediffOfDef(hediff));
+                            
                         }
                     }
                 }
@@ -182,6 +221,7 @@ namespace BigAndSmall
                     }
                 }
             }
+            return removedTrackers;
         }
     }
 

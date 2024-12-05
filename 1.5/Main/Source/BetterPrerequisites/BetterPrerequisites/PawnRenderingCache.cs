@@ -13,9 +13,9 @@ namespace BetterPrerequisites
 
         private List<PawnRenderingCache> renderingScribe = null;
 
-        private Dictionary<Pawn, PawnRenderingCache> renderingCacheDict = new Dictionary<Pawn, PawnRenderingCache>();
+        private Dictionary<Pawn, PawnRenderingCache> renderingCacheDict = [];
 
-        public static HashSet<Pawn> pawnsQueueForRendering = new HashSet<Pawn>();
+        public static HashSet<Pawn> pawnsQueueForRendering = [];
 
         public PawnRendering(Game game)
         {
@@ -69,8 +69,8 @@ namespace BetterPrerequisites
         {
             if (renderingScribe == null)
             {
-                renderingScribe = new List<PawnRenderingCache>();
-                renderingCacheDict = new Dictionary<Pawn, PawnRenderingCache>();
+                renderingScribe = [];
+                renderingCacheDict = [];
             }
 
             if (renderingCacheDict.TryGetValue(pawn, out var cache))
@@ -121,13 +121,13 @@ namespace BetterPrerequisites
 
         public bool hasFur = false;
 
-        private List<string> headDefNames = new List<string>();
+        private List<string> headDefNames = [];
 
         public List<string> HeadDefNames
         {
             get
             {
-                if (headDefNames == null) headDefNames = new List<string>();
+                if (headDefNames == null) headDefNames = [];
                 return headDefNames;
             }
             set => headDefNames = value;
@@ -135,7 +135,7 @@ namespace BetterPrerequisites
 
         public void AddHeadDefName(string name)
         {
-            if (HeadDefNames == null) HeadDefNames = new List<string>();
+            if (HeadDefNames == null) HeadDefNames = [];
             if (!HeadDefNames.Contains(name))
             {
                 HeadDefNames.Add(name);

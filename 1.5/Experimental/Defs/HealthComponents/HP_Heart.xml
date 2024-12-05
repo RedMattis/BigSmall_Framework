@@ -2,6 +2,7 @@
   <RedHealth.HealthAspect>
     <defName>RED_CardiHealth</defName>
     <label>cardiac rating</label>
+    <labelSimple>heart health</labelSimple>
     <description>Cardiovascular health is a measure of how well the heart and blood vessels are functioning. It is a key indicator of overall health and fitness.</description>
     <associatedPartsTags><li>BloodPumpingSource</li></associatedPartsTags>
     <nullifyIfPartsReplacedBetterThanNatural>true</nullifyIfPartsReplacedBetterThanNatural>

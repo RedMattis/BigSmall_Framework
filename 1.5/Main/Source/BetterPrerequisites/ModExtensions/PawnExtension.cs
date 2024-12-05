@@ -40,7 +40,6 @@ namespace BigAndSmall
 
     public static class PawnExtensionExtension
     {
-
         private class TooltipSection
         {
             public string Header { get; }
@@ -48,7 +47,7 @@ namespace BigAndSmall
             public TooltipSection(string header, IEnumerable<string> entries = null)
             {
                 Header = header;
-                Entries = entries?.Where(e => !string.IsNullOrWhiteSpace(e)).ToList() ?? new List<string>();
+                Entries = entries?.Where(e => !string.IsNullOrWhiteSpace(e)).ToList() ?? [];
             }
 
             public override string ToString()
@@ -383,10 +382,12 @@ namespace BigAndSmall
         /// Useful for compatibility. Despite the name, it also affects the head.
         /// </summary>
         public Gender? forceGender = null;
-        private bool forceFemaleBody = false;
+        protected bool forceFemaleBody = false;
 
         protected Gender? apparentGender = null;
         public Gender? ApparentGender => forceFemaleBody ? Gender.Female : apparentGender;
+
+        public BodyTypesPerGender bodyTypes = [];
         #endregion
 
         /// <summary>
@@ -423,6 +424,7 @@ namespace BigAndSmall
         /// Offsets the entire pawn's body up or down.
         /// </summary>
         public float bodyPosOffset = 0f;
+
         /// <summary>
         /// Offsets the head up or down relative to the body.
         /// </summary>
@@ -431,8 +433,8 @@ namespace BigAndSmall
         /// <summary>
         /// Only the basic offsets will be respected at the moment. Supporting all is a performance hit.
         /// </summary>
-        public BSDrawData headDrawData = null;
         public BSDrawData bodyDrawData = null;
+        public BSDrawData headDrawData = null;
 
         public bool preventDisfigurement = false;
         public string PreventDisfigurementDescription => preventDisfigurement ? "BS_PreventDisfigurementDesc".Translate() : null;
@@ -717,7 +719,7 @@ namespace BigAndSmall
 
         public List<ConditionalStatAffecter> conditionals;
 
-        public List<BodyPartDef> bodyparts = new List<BodyPartDef>();
+        public List<BodyPartDef> bodyparts = [];
     }
 
     public class GraphicPathPerBodyType
@@ -761,9 +763,7 @@ namespace BigAndSmall
                     var xenotypeToAddDef = DefDatabase<XenotypeDef>.GetNamed(xenotypeToAdd, errorOnFail: false);
                     if (xenotypeToAddDef != null)
                     {
-                        // Set pawn.genes.xenotype = xenotype; via reflection
-                        var xenotypeField = typeof(Pawn_GeneTracker).GetField("xenotype", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                        xenotypeField?.SetValue(pawn.genes, xenotypeToAddDef);
+                        pawn.genes.xenotype = xenotypeToAddDef;
                         pawn.genes.xenotypeName = xenotypeToAddDef.LabelCap;
                         pawn.genes.iconDef = null;
                         for (int i = 0; i < xenotypeToAddDef.genes.Count; i++)

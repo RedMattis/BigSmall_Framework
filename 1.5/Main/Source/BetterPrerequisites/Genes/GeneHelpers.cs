@@ -164,7 +164,7 @@ namespace BigAndSmall
 
         public static List<Gene> GetActiveGeneByName(Pawn pawn, string geneName)
         {
-            List<Gene> result = new List<Gene>();
+            List<Gene> result = [];
             var genes = pawn?.genes?.GenesListForReading;
             if (genes == null) return result;
             for (int i = 0; i < genes.Count; i++)
@@ -209,7 +209,7 @@ namespace BigAndSmall
 
         public static HashSet<Gene> GetAllActiveRandomChosenGenes(Pawn pawn)
         {
-            HashSet<Gene> result = new();
+            HashSet<Gene> result = [];
             var genes = pawn?.genes?.GenesListForReading;
             if (genes == null) return result;
             for (int i = 0; i < genes.Count; i++)
@@ -232,7 +232,7 @@ namespace BigAndSmall
 
         public static HashSet<GeneDef> GetAllActiveGeneDefs(Pawn pawn)
         {
-            HashSet<GeneDef> result = new();
+            HashSet<GeneDef> result = [];
             var genes = pawn?.genes?.GenesListForReading;
             if (genes == null) return result;
             for (int i = 0; i < genes.Count; i++)
@@ -247,7 +247,7 @@ namespace BigAndSmall
 
         public static List<Gene> GetAllInactiveGenes(Pawn pawn)
         {
-            List<Gene> result = new List<Gene>();
+            List<Gene> result = [];
             var genes = pawn?.genes?.GenesListForReading;
             if (genes == null) return result;
             for (int i = 0; i < genes.Count; i++)
@@ -279,12 +279,12 @@ namespace BigAndSmall
             if (pawnKind == null)
             {
                 Log.Warning("Trying to GetXenotypeChances, but PawnKindDef is null");
-                return new List<XenotypeChance>();
+                return [];
             }
             if (pawnKind.xenotypeSet == null)
             {
                 //Log.Warning("Trying to GetXenotypeChances, but the PawnKindDef's XenotypeSet is null");
-                return new List<XenotypeChance>();
+                return [];
             }
 
             if (xenoTypeField == null)
@@ -292,7 +292,7 @@ namespace BigAndSmall
             if (xenoTypeField == null)
             {
                 Log.Warning("Could not find xenotypeChances field in XenotypeSet");
-                return new List<XenotypeChance>();
+                return [];
             }
             var result =  xenoTypeField.GetValue(pawnKind.xenotypeSet) as List<XenotypeChance>;
             return result;
@@ -311,7 +311,7 @@ namespace BigAndSmall
 
         public static List<Gene> GetActiveGenesByNames(Pawn pawn, List<string> geneNames)
         {
-            List<Gene> result = new List<Gene>();
+            List<Gene> result = [];
             var genes = pawn?.genes?.GenesListForReading;
             if (genes == null) return result;
             for (int i = 0; i < genes.Count; i++)
@@ -326,7 +326,7 @@ namespace BigAndSmall
 
         public static List<Gene> GetAllActiveEndoGenes(Pawn pawn)
         {
-            List<Gene> result = new List<Gene>();
+            List<Gene> result = [];
             var genes = pawn?.genes?.Endogenes;
             if (genes == null) return result;
             for (int i = 0; i < genes.Count; i++)
@@ -341,7 +341,7 @@ namespace BigAndSmall
 
         public static List<Gene> GetAllActiveXenoGenes(Pawn pawn)
         {
-            List<Gene> result = new List<Gene>();
+            List<Gene> result = [];
             var genes = pawn?.genes?.Xenogenes;
             if (genes == null) return result;
             for (int i = 0; i < genes.Count; i++)
@@ -395,7 +395,7 @@ namespace BigAndSmall
         public static void RemoveRandomToMetabolism(int initialMet, List<GeneDef> newGenes, int minMet = -6, List<GeneDef> exclusionList = null)
         {
             if (exclusionList == null)
-                exclusionList = new List<GeneDef>();
+                exclusionList = [];
             int idx = 0;
             // Sum up the metabolism cost of the new genes
             while (newGenes.Sum(x => x.biostatMet) + initialMet < minMet || newGenes.Count <= 1 || idx > 200)
@@ -419,7 +419,7 @@ namespace BigAndSmall
         public static void RemoveRandomToMetabolism(int initialMet, Pawn_GeneTracker genes, int minMet = -6, List<GeneDef> exclusionList = null)
         {
             if (exclusionList != null)
-                exclusionList = new List<GeneDef>();
+                exclusionList = [];
             int idx = 0;
             // Sum up the metabolism cost of the new genes
             while (genes.GenesListForReading.Where(x => x.Overridden == false).Sum(x => x.def.biostatMet) + initialMet < minMet || genes.GenesListForReading.Count <= 1 || idx > 200)
@@ -522,12 +522,12 @@ namespace BigAndSmall
 
         public static List<PawnExtension> GetPawnExt(this Gene gene)
         {
-            return ModExtHelper.GetAllExtensions<PawnExtension>(gene.pawn, parentWhitelist: new List<Type> { typeof(Gene) });
+            return ModExtHelper.GetAllExtensions<PawnExtension>(gene.pawn, parentWhitelist: [typeof(Gene)]);
         }
 
         public static List<Gene> GetActiveGenesByName(Pawn pawn, string geneName)
         {
-            return GetActiveGenesByNames(pawn, new List<string> { geneName });
+            return GetActiveGenesByNames(pawn, [geneName]);
         }
 
         public static void ChangeXenotypeFast(Pawn pawn, XenotypeDef targetXenottype)

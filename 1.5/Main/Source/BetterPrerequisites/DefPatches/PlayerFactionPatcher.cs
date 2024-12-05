@@ -18,13 +18,13 @@ namespace BigAndSmall
         public class PawnKindSwap
         {
             //public List<string> pawnKindsToSwapFaction = new List<string>();
-            public List<string> eventsToSwapPawnKind = new List<string>();
-            public List<PawnkindChance> pawnKindSet = new List<PawnkindChance>();
+            public List<string> eventsToSwapPawnKind = [];
+            public List<PawnkindChance> pawnKindSet = [];
             public bool forcePawnKindIdeology = false;
             //List<XenotypeChance> xenotypeChances = new List<XenotypeChance>();
         }
 
-        public List<PawnKindSwap> pawnKindSwaps = new List<PawnKindSwap>();
+        public List<PawnKindSwap> pawnKindSwaps = [];
     }
 
     public class PawnkindChance

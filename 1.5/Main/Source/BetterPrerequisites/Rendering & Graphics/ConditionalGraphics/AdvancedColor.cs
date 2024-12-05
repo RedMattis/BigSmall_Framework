@@ -50,7 +50,7 @@ namespace BigAndSmall
         //public float? alpha = null;
 
         [Unsaved(false)]
-        private readonly static Dictionary<string, Color> randomClrPerId = new();
+        private readonly static Dictionary<string, Color> randomClrPerId = [];
         public Color GetColor(Pawn pawn, Color oldClr, string hashOffset, bool useOldColor = false)
         {
             foreach (var alt in alts.Where(x => x.GetState(pawn)))

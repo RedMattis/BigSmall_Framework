@@ -143,7 +143,7 @@ namespace BigAndSmall
         {
             // spawn a xenogerm item containing a list of genes of thingClass Xenogerm
             Xenogerm xenogerm = (Xenogerm)ThingMaker.MakeThing(ThingDefOf.Xenogerm);
-            xenogerm.Initialize(new List<Genepack>(), pawn.genes.xenotypeName, pawn.genes.iconDef);
+            xenogerm.Initialize([], pawn.genes.xenotypeName, pawn.genes.iconDef);
 
             // Get pawn's xenogenes
             List<Gene> targetGenes;
