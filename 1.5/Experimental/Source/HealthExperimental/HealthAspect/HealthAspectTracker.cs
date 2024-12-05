@@ -177,7 +177,7 @@ namespace RedHealth
 
         public HealthThreshold GetThresholdFromScore(Pawn pawn, float rating)
         {
-            float score = GetScore(pawn, rating).Value;
+            float? score = GetScore(pawn, rating);
             return GetThreshold(score);
         }
 

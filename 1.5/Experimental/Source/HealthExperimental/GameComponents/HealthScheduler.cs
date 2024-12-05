@@ -60,13 +60,19 @@ namespace RedHealth
             }
             if (Main.settings.activeOnAllPawnsByDefault && currentTick % 60000 == 0)
             {
-                var allPawns = PawnsFinder.AllMapsAndWorld_Alive;
-                foreach (var pawn in allPawns)
+                AddTrackersNow();
+            }
+        }
+
+        public static void AddTrackersNow()
+        {
+            var allPawns = PawnsFinder.AllMapsAndWorld_Alive;
+            foreach (var pawn in allPawns)
+            {
+                if (pawn.health.hediffSet.hediffs.FirstOrDefault(x => x is HealthManager) == null)
                 {
-                    if (pawn.health.hediffSet.hediffs.FirstOrDefault(x => x is HealthManager) == null)
-                    {
-                        pawn.health.AddHediff(HDefs.RED_SecretHealthTracker);
-                    }
+                    var hediff = HediffMaker.MakeHediff(HDefs.RED_SecretHealthTracker, pawn) as HealthManager;
+                    pawn.health.AddHediff(hediff);
                 }
             }
         }

@@ -35,13 +35,13 @@ namespace RedHealth
                 // At most 120. But due to how the curves work they might well die long before that even if they roll 120.
 
                 overalHealth = new HealthAspectTracker(HDefs.RED_OverallHealth, true);
-                var overalRating = GetOveralHealthLoss();
-                if (overalRating == null) return;
+                var overall = GetOverallHealthLoss();
+                if (!overall.HasValue) return;
                 foreach (var def in HealthAspect.GetHealthAspects())
                 {
                     var tracker = new HealthAspectTracker(def, false);
                     healthAspects.Add(tracker);
-                    var threshold = tracker.GetThresholdFromScore(pawn, overalRating.Value);
+                    var threshold = tracker.GetThresholdFromScore(pawn, overall.Value);
                     int nextEventTime = threshold.GetNextEventTime();
                     QueueHealthEvent(def.defName, nextEventTime);
 
@@ -136,7 +136,7 @@ namespace RedHealth
             }
 
             tipSb.AppendLine();
-            var healthRating = GetOveralHealthLoss();
+            var healthRating = GetOverallHealthLoss();
             if (healthRating != null)
             {
                 var threshold = GetOveralThreshold();
@@ -166,7 +166,7 @@ namespace RedHealth
             return tipSb.ToString().TrimEnd();
         }
 
-        public override bool Visible => false;
+        public override bool Visible => !Main.settings.hideHealthTracker;
 
         public float GetAgePercentOfLifeMax()
         {
@@ -180,7 +180,7 @@ namespace RedHealth
         /// 
         /// The reason for this is to avoid negative values for really low health.
         /// </summary>
-        public float? GetOveralHealthLoss()
+        public float? GetOverallHealthLoss()
         {
             var result = overalHealth.GetScore(pawn, GetAgePercentOfLifeMax());
             if (result == null) return null;
@@ -190,7 +190,7 @@ namespace RedHealth
 
         public HealthThreshold GetOveralThreshold()
         {
-            return overalHealth.GetThreshold(GetOveralHealthLoss() ?? -2);
+            return overalHealth.GetThreshold(GetOverallHealthLoss() ?? -2);
         }
 
         public float GetPawnAgingRate() // The biologicalAgeTickFactorFromAgeCurve
@@ -238,7 +238,7 @@ namespace RedHealth
             var tracker = healthAspects.FirstOrDefault(x => x.def.defName == trackerName);
             if (tracker == null) { Log.Error($"Tracker not found for {trackerName}"); return; }
 
-            float? overalHealthValue = GetOveralHealthLoss();
+            float? overalHealthValue = GetOverallHealthLoss();
 
             int nextEventTime = HealthThreshold.defaultMaxMeanTime;
             if (overalHealthValue.HasValue)

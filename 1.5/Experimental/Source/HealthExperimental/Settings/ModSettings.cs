@@ -44,6 +44,11 @@ namespace RedHealth
             listStd.GapLine();
             listStd.Label("RED_HealthSettings".Translate().AsTipTitle());
             CreateSettingCheckbox(listStd, "RED_HealthEnabledForAllPawns".Translate(), ref settings.activeOnAllPawnsByDefault);
+            if (listStd.ButtonText("RED_AddTrackersToValidPawns".Translate()))
+            {
+                HealthScheduler.AddTrackersNow();
+            }
+            CreateSettingCheckbox(listStd, "RED_HideHealthTracker".Translate(), ref settings.hideHealthTracker);
             CreateSettingCheckbox(listStd, "RED_HealthDisableForAll".Translate(), ref settings.disableForAll);
 
             listStd.Label("RED_SpecificTrackers".Translate().AsTipTitle());
@@ -51,6 +56,7 @@ namespace RedHealth
             {
                 if (aspect != HDefs.RED_OverallHealth)
                 {
+                    settings.aspectsDisabled ??= [];
                     if (settings.aspectsDisabled.Any(x => x.defName == aspect.defName) is false)
                     {
                         settings.aspectsDisabled.Add(new HealthAspectWrapper { defName = aspect.defName, active = true });
@@ -78,12 +84,23 @@ namespace RedHealth
         }
     }
 
+    public class HealthAspectWrapper : IExposable
+    {
+        public string defName; public bool active = false;
+
+        public void ExposeData()
+        {
+            Scribe_Values.Look(ref defName, "defName");
+            Scribe_Values.Look(ref active, "active");
+        }
+    }
     public class RedSettings : ModSettings
     {
-        public class HealthAspectWrapper { public string defName; public bool active; }
-
         public static readonly bool activeOnAllPawnsByDefaultDefault = false;
         public bool activeOnAllPawnsByDefault = activeOnAllPawnsByDefaultDefault;
+
+        public static readonly bool hideHealthTrackerDefault = false;
+        public bool hideHealthTracker = hideHealthTrackerDefault;
 
         public static readonly bool disableForAllDefault = false;
         public bool disableForAll = disableForAllDefault;
@@ -96,9 +113,12 @@ namespace RedHealth
         }
         public override void ExposeData()
         {
+            
             Scribe_Values.Look(ref activeOnAllPawnsByDefault, "activeOnAllPawnsByDefault", activeOnAllPawnsByDefaultDefault);
+            Scribe_Values.Look(ref hideHealthTracker, "hideHealthTracker", hideHealthTrackerDefault);
             Scribe_Values.Look(ref disableForAll, "disableForAll", disableForAllDefault);
-            Scribe_Collections.Look(ref aspectsDisabled, "aspectsDisabled", LookMode.Value);
+            Scribe_Collections.Look(ref aspectsDisabled, "aspectsDisabled", LookMode.Deep);
+
             base.ExposeData();
         }
     }

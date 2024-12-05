@@ -2,7 +2,7 @@
   <RedHealth.HealthAspect>
     <defName>RED_OverallHealth</defName>
     <label>Health State</label>
-    <labelSimple>overal health</labelSimple>
+    <labelSimple>overall health</labelSimple>
     <description>Overall health is a measure of how well the body is functioning. It is a key indicator of longevity and quality of life.</description>
     <!-- This is basically the main component and not an aspect, so don't add it automatically. -->
     <addAutomatically>false</addAutomatically> 
