@@ -5,14 +5,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
-using Verse.AI;
-using Verse.Noise;
 
 namespace BigAndSmall
 {
@@ -32,7 +26,7 @@ namespace BigAndSmall
         public static Dictionary<int, HashSet<BSCache>> scheduleFullUpdate = [];
         public static HashSet<BSCache> currentlyQueued = []; // Ensures we never queue the same cache twice.
 
-        public static float globalRandNum = 0;
+        public static float globalRandNum = 1;
 
         public BigAndSmallCache(Game game)
         {
@@ -402,7 +396,8 @@ namespace BigAndSmall
         //public float foodNeedCapacityMult = 1;
         //public float? previousFoodCapacity = null;
 
-
+        public bool preventHeadScaling = false;
+        public bool bodyConstantHeadScale = false;
         public float headSizeMultiplier = 1;
         public float headPositionMultiplier = 1;
         public float worldspaceOffset = 0;
@@ -454,7 +449,7 @@ namespace BigAndSmall
         public float raidWealthMultiplier = 1;
 
         public float bodyPosOffset = 0;
-        public float headPosMultiplier = 1;
+        //public float headPosMultiplier = 1;
 
         public bool preventDisfigurement = false;
 
@@ -547,8 +542,8 @@ namespace BigAndSmall
             Scribe_Values.Look(ref apparentAge, "BS_ApparentAge", 30);
 
 
-            Scribe_Values.Look(ref bodyPosOffset, "BS_BodyPosOffset", 0);
-            Scribe_Values.Look(ref headPosMultiplier, "BS_HeadPosMultiplier", 1);
+            //Scribe_Values.Look(ref bodyPosOffset, "BS_BodyPosOffset", 0);
+            //Scribe_Values.Look(ref headPosMultiplier, "BS_HeadPosMultiplier", 1);
 
             // Between Sessions Save Required
             Scribe_Values.Look(ref injuriesRescaled, "BS_InjuriesRescaled", false);
@@ -631,6 +626,10 @@ namespace BigAndSmall
                 var allPawnExt = ModExtHelper.GetAllPawnExtensions(pawn);
                 var racePawnExts = pawn.GetRacePawnExtensions();
                 var nonRacePawnExt = ModExtHelper.GetAllPawnExtensions(pawn, parentBlacklist: [typeof(RaceTracker)]);
+                preventHeadScaling = allPawnExt.Any(x => x.preventHeadScaling);
+                bodyConstantHeadScale = allPawnExt.Any(x => x.bodyConstantHeadScale);
+
+
                 CalculateGenderAndApparentGender(allPawnExt);
 
                 bool hasSizeAffliction = ScalingMethods.CheckForSizeAffliction(pawn);
@@ -751,7 +750,7 @@ namespace BigAndSmall
 
                 // Add together bodyPosOffset from GeneExtension.
                 float bodyPosOffset = allPawnExt.Sum(x => x.bodyPosOffset);
-                float headPosMultiplier = allPawnExt.Sum(x => x.headPosMultiplier);
+                float headPosMultiplier = 1 + allPawnExt.Sum(x => x.headPosMultiplier);
                 bool preventDisfigurement = allPawnExt.Any(x => x.preventDisfigurement);
 
                 var alcoholHediff = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.AlcoholHigh);
@@ -795,14 +794,13 @@ namespace BigAndSmall
                 renderCacheOff = allPawnExt.Any(x => x.renderCacheOff);
 
                 this.bodyPosOffset = bodyPosOffset;
-                this.headPosMultiplier = 1 + headPosMultiplier;
 
                 raidWealthMultiplier = pawn.GetStatValue(StatDef.Named("SM_RaidWealthMultiplier"));
                 raidWealthOffset = pawn.GetStatValue(StatDef.Named("SM_RaidWealthOffset"));
 
                 bodyRenderSize = GetBodyRenderSize();
                 headRenderSize = GetHeadRenderSize();
-                headPositionMultiplier = CalculateHeadOffset();
+                headPositionMultiplier = CalculateHeadOffset(headPosMultiplier);
                 SetWorldOffset();
 
                 complexHeadOffsets = allPawnExt.Select(x => x.headDrawData).Where(x => x != null).ToList().GetCombinedOffsetsByRot(headPositionMultiplier);
@@ -847,6 +845,7 @@ namespace BigAndSmall
         private void CalculateGenderAndApparentGender(List<PawnExtension> allPawnExt)
         {
             var forcedGender = allPawnExt.Any(x => x.forceGender != null) ? allPawnExt.First(x => x.forceGender != null).forceGender : null;
+            forcedGender = allPawnExt.Any(x => x.ignoreForceGender) ? null : forcedGender;
             if (forcedGender != null && forcedGender != pawn.gender)
             {
                 pawn.gender = forcedGender.Value;
@@ -1085,7 +1084,7 @@ namespace BigAndSmall
                 }
                 throw;
             }
-
+            pawn.skills?.DirtyAptitudes();
         }
 
         [Unsaved]

@@ -8,6 +8,7 @@
       <li Class="BigAndSmall.CompProperties_Race">
         <canSwapAwayFrom>true</canSwapAwayFrom>
       </li>
+      <li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="AnimalBehaviours.HediffCompProperties_Floating"/>
     </comps>
     <renderNodeProperties>
       <!-- ...Why did I do this to myself... -->

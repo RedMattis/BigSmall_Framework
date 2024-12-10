@@ -2,12 +2,11 @@
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using Verse;
 
 namespace BigAndSmall
 {
-    
+
 
     // Patch BleedRate so pawns with the gene Gene_NoBlood always have a bleed rate of 0.
     [HarmonyPatch(typeof(Hediff_Injury), nameof(Hediff_Injury.BleedRate), MethodType.Getter)]

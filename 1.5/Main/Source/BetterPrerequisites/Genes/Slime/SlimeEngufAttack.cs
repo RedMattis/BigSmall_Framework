@@ -1,15 +1,11 @@
-﻿using BigAndSmall;
-using RimWorld;
+﻿using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using UnityEngine;
 using Verse;
 using Verse.AI;
-using static HarmonyLib.Code;
 
 namespace BigAndSmall
 {

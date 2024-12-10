@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BigAndSmall.SpecialGenes.Gender
+﻿namespace BigAndSmall.SpecialGenes.Gender
 {
     using HarmonyLib;
-    using RimWorld;
     using Verse;
 
 
     // Not totally sure what this tiny snippet of code does, but someone in the comment section of my mod said this AG code fixed
     // A bug with pawn relations, so I'm just copy-pasting it here.
     [HarmonyPatch(typeof(PawnGenerator), "GeneratePawnRelations")]
-    [HarmonyPriority(1000)]
+    [HarmonyPriority(int.MaxValue)]
     public static class PawnGenerator_GeneratePawnRelations_Patch
     {
         [HarmonyPrefix]

@@ -4,10 +4,7 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
-using static HarmonyLib.Code;
 
 namespace BigAndSmall
 {
@@ -234,7 +231,7 @@ namespace BigAndSmall
             }
             bool soloInfiltrator = Rand.Chance(BigSmallMod.settings.inflitratorChance);
             bool infiltratorRaid = BigSmallMod.settings.inflitratorRaidChance > BigAndSmallCache.globalRandNum;
-            if (soloInfiltrator || infiltratorRaid)
+            if ((soloInfiltrator || infiltratorRaid) && member.IsMutant == false)
             {
                 try
                 {

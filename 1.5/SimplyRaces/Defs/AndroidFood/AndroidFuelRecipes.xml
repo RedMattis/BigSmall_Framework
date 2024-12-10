@@ -81,7 +81,7 @@
     <effectWorking>Cremate</effectWorking>
     <soundWorking>Recipe_Cremate</soundWorking>
     <workAmount>500</workAmount>
-    <requiredGiverWorkType>Crafting</requiredGiverWorkType>
+    <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
     <recipeUsers>
       <li>BiofuelRefinery</li>
     </recipeUsers>
@@ -113,7 +113,7 @@
     <effectWorking>Cremate</effectWorking>
     <soundWorking>Recipe_Cremate</soundWorking>
     <workAmount>4000</workAmount>
-    <requiredGiverWorkType>Crafting</requiredGiverWorkType>
+    <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
     <recipeUsers>
       <li>BiofuelRefinery</li>
     </recipeUsers>

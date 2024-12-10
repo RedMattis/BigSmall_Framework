@@ -1,13 +1,7 @@
 ﻿using BigAndSmall;
-using BigAndSmall.SpecialGenes.Gender;
 using HarmonyLib;
-using RimWorld;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Text;
 using Verse;
 
 namespace BetterPrerequisites
@@ -46,12 +40,15 @@ namespace BetterPrerequisites
                     }
                 }
             }
-            if (__instance?.pawn?.Drawer?.renderer != null && __instance.pawn.Spawned)
+
+            bool requiresRefresh = __instance?.def?.GetAllPawnExtensionsOnHediff() is var extensions && extensions.Any(x => x.RequiresCacheRefresh());
+            if (requiresRefresh || (__instance?.pawn?.Drawer?.renderer != null && __instance.pawn.Spawned))
             {
                 if (supressMngrChangeMade)
                 {
                     __instance.pawn.Drawer.renderer.SetAllGraphicsDirty();
                 }
+                
                 HumanoidPawnScaler.GetCache(__instance.pawn, scheduleForce: 1);
             }
         }
@@ -89,6 +86,11 @@ namespace BetterPrerequisites
                     HumanoidPawnScaler.GetCache(__instance.pawn, scheduleForce: 1);
                 }
 
+            }
+            bool requiresRefresh = __instance?.def?.GetAllPawnExtensionsOnHediff() is var extensions && extensions.Any(x => x.RequiresCacheRefresh());
+            if (requiresRefresh || (__instance?.pawn?.Drawer?.renderer != null && __instance.pawn.Spawned))
+            {
+                HumanoidPawnScaler.GetCache(__instance.pawn, scheduleForce: 1);
             }
         }
     }

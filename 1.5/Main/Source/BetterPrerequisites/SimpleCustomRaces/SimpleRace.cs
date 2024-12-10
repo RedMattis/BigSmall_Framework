@@ -1,13 +1,8 @@
 ﻿using BetterPrerequisites;
 using HarmonyLib;
 using RimWorld;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using UnityEngine;
 using Verse;
 
 namespace BigAndSmall
@@ -121,7 +116,7 @@ namespace BigAndSmall
                 using (new RandBlock(pawn.GetPawnRNGSeed()))
                 {
                     pawn.story.bodyType = validBodyTypeDefs.RandomElement();
-                    Log.Message($"Changed body type to {pawn.story.bodyType.defName}. Valid options were {string.Join(", ", validBodyTypeDefs.Select(x => x?.defName))}.");
+                    //Log.Message($"Changed body type to {pawn.story.bodyType.defName}. Valid options were {string.Join(", ", validBodyTypeDefs.Select(x => x?.defName))}.");
                 }
             }
         }
@@ -136,7 +131,7 @@ namespace BigAndSmall
                 using (new RandBlock(pawn.GetPawnRNGSeed()))
                 {
                     pawn.story.headType = validHeadTypeDefs.RandomElement();
-                    Log.Message($"Changed head type to {pawn.story.headType.defName}. Valid options were {string.Join(", ", validHeadTypeDefs.Select(x => x?.defName))}.");
+                    //Log.Message($"Changed head type to {pawn.story.headType.defName}. Valid options were {string.Join(", ", validHeadTypeDefs.Select(x => x?.defName))}.");
                 }
             }
         }

@@ -68,10 +68,18 @@ namespace RedHealth
                 if (Main.loggingV) Log.Message($"Nullifying race found for {def.defName} on {pawn.Name} {pawn.def}");
                 return false;
             }
-            if (def.validFleshTypes.Count > 0 && !def.validFleshTypes.Contains(pawn.RaceProps.FleshType))
+            if (def.validFleshTypes.Count > 0 )
             {
-                if (Main.loggingV) Log.Message($"FleshType not valid for {def.defName} on {pawn.Name}");
-                return false;
+                var pawnFleshType = pawn.RaceProps.FleshType;
+
+                // A bit of a hax to tag the pawn as a mechanoid.
+                if (pawn?.RaceProps.BloodDef == HDefs.Filth_MachineBits) pawnFleshType = FleshTypeDefOf.Mechanoid;
+
+                if (!def.validFleshTypes.Contains(pawnFleshType))
+                {
+                    if (Main.loggingV) Log.Message($"FleshType not valid for {def.defName} on {pawn.Name}");
+                    return false;
+                }
             }
             if (def.nullifyingHediffs.Count > 0 && def.nullifyingHediffs.Any(x => pawn.health.hediffSet.hediffs.Any(y => y.def == x)))
             {

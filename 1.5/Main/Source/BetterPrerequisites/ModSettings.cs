@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 using System.Linq;
-using System.Runtime;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using static BigAndSmall.SettingsWidgets;
@@ -114,8 +109,8 @@ namespace BigAndSmall
             listStd.Label("BS_GameMechanics".Translate().AsTipTitle());
             CreateSettingCheckbox(listStd, "BS_ScaleAnimals".Translate(), ref settings.scaleAnimals);
             CreateSettingCheckbox(listStd, "BS_PreventUndead".Translate(), ref settings.preventUndead);
-            CreateSettingsSlider(listStd, "BS_InflitratorChance".Translate(), ref settings.inflitratorChance, 0f, 1f, (f) => $"{f:P4}");
-            CreateSettingsSlider(listStd, "BS_InflitratorRaidChance".Translate(), ref settings.inflitratorRaidChance, 0f, 1f, (f) => $"{f:P4}");
+            CreateSettingsSlider(listStd, "BS_InflitratorChance".Translate(), ref settings.inflitratorChance, 0f, 1f, (f) => $"{f:F3}");
+            CreateSettingsSlider(listStd, "BS_InflitratorRaidChance".Translate(), ref settings.inflitratorRaidChance, 0f, 1f, (f) => $"{f:F3}");
             listStd.GapLine();
             listStd.Label("BS_LowestUsed".Translate());
 

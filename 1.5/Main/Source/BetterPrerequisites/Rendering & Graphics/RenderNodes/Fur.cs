@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using Verse;
-using static BigAndSmall.RenderingLib;
 
 namespace BigAndSmall
 {

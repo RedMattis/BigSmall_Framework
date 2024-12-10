@@ -1,12 +1,8 @@
-﻿using BetterPrerequisites;
-using HarmonyLib;
+﻿using HarmonyLib;
 using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
 
 namespace BigAndSmall
@@ -39,7 +35,7 @@ namespace BigAndSmall
         {
             if (pawn?.needs?.mood == null)
             {
-                __result = new List<Thought_MemoryObservationTerror>();
+                __result = [];
                 return false; //Abort further patches.
             }
             return true;

@@ -1,40 +1,26 @@
 ﻿using HarmonyLib;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using RimWorld;
-using Verse.Noise;
-using System.Threading;
-using System.Collections.Concurrent;
+using static Verse.PawnRenderer;
 
 namespace BigAndSmall
 {
-    [HarmonyPatch(typeof(PawnRenderer), "BaseHeadOffsetAt")]
+    [HarmonyPatch(typeof(PawnRenderer), nameof(PawnRenderer.BaseHeadOffsetAt))]
     public static class PawnRenderer_BaseHeadOffsetAt
     {
-        public static void Postfix(PawnRenderer __instance, ref Vector3 __result, ref Vector3 rotation)
+        public static void Postfix(PawnRenderer __instance, ref Vector3 __result, ref Rot4 rotation)
         {
             Pawn pawn = __instance.pawn;
-            //if (pawn != null)
-            //{
-            //float factorFromVEF = 1;
-            //if (BigSmallLegacy.VEFActive && VEF_CachedPawnDataWrapper.CachedPawnData.TryGetValue(pawn, out VEF_CachedPawnDataWrapper VEPawnData))
-            //{
-            //    factorFromVEF *= VEPawnData.bodyRenderSize;
-            //}
 
             if (HumanoidPawnScaler.GetCacheUltraSpeed(pawn, canRegenerate: false) is BSCache sizeCache)
             {
                 __result = new Vector3(__result.x * sizeCache.headPositionMultiplier, __result.y, __result.z * sizeCache.headPositionMultiplier);
 
-                if (sizeCache.hasComplexHeadOffsets)
+                if (sizeCache.hasComplexHeadOffsets && __instance.results.parms is PawnDrawParms pdp && !pdp.flags.HasFlag(PawnRenderFlags.Portrait))
                 {
-                    var rot = pawn.Rotation.AsInt;
+                    var rot = rotation.AsInt;
                     Vector3 headPosOffset = rot switch
                     {
                         0 => sizeCache.complexHeadOffsets[0],

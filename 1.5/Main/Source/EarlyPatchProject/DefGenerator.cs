@@ -1,12 +1,9 @@
-﻿using BetterPrerequisites;
-using HarmonyLib;
+﻿using HarmonyLib;
 using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
@@ -67,7 +64,7 @@ namespace BigAndSmall
                             hideInGenePicker = false
                         };
 
-                        result.Add(GenerateXenoTypeGene(xeno, metTemplate, geneExt, new List<string> { xeno.label }));
+                        result.Add(GenerateXenoTypeGene(xeno, metTemplate, geneExt, [xeno.label]));
                     }
 
                     if (metDownTemplate != null)
@@ -115,7 +112,7 @@ namespace BigAndSmall
                 displayCategory = template.displayCategory,
                 canGenerateInGeneSet = template.canGenerateInGeneSet,
                 selectionWeight = template.selectionWeight,
-                modExtensions = new List<DefModExtension> { extension }
+                modExtensions = [extension]
             };
 
             for (int idx = 0; idx < descriptionKeys.Count; idx++)

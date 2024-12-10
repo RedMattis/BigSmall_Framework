@@ -1,9 +1,4 @@
 ﻿using RimWorld;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
 
 namespace BigAndSmall
@@ -98,6 +93,7 @@ namespace BigAndSmall
         public static ThingDef Lung;
         public static ThingDef Kidney;
         public static ThingDef Liver;
+
         public static ThingDef Filth_MachineBits;
 
         // Capacity

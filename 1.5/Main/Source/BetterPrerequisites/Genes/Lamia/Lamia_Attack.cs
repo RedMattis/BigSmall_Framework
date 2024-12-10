@@ -1,18 +1,4 @@
-﻿using HarmonyLib;
-using Mono.Cecil;
-using RimWorld;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
-using Verse;
-using static HarmonyLib.Code;
-using static RimWorld.Dialog_EditIdeoStyleItems;
-
-namespace BigAndSmall
+﻿namespace BigAndSmall
 {
     public static class LamiaAttack
     {

@@ -1,9 +1,6 @@
-﻿using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
 
 namespace BigAndSmall
@@ -24,6 +21,11 @@ namespace BigAndSmall
                     .. GetActiveGeneExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort)];
             }
         }
+        public static List<PawnExtension> GetAllPawnExtensionsOnHediff(this HediffDef hediffDef, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true)
+        {
+            return ExtensionsOnDef<PawnExtension, HediffDef>(hediffDef, parentWhitelist, parentBlacklist, doSort);
+        }
+
 
         public static List<T> GetAllExtensions<T>(this Pawn pawn, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) where T : DefModExtension
         {

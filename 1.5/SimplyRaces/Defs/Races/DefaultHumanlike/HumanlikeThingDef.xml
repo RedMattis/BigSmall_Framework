@@ -8,6 +8,7 @@
     <race>
       <!-- Just disabled to avoid generating a ton of unnatural corpses. -->
       <hasUnnaturalCorpse>false</hasUnnaturalCorpse>
+      <useMeatFrom>Human</useMeatFrom>
     </race>
   </ThingDef>
 </Defs>

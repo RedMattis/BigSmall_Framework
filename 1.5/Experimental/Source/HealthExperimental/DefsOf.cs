@@ -23,5 +23,9 @@ namespace RedHealth
         public static HediffDef RED_SecretHealthTracker;
 
         public static HediffDef RED_FailingOrganDamage;
+
+
+        // Vanilla
+        public static ThingDef Filth_MachineBits;
     }
 }

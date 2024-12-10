@@ -103,7 +103,12 @@
     <Compile Include="Debugging\DebugActions.cs" />
     <Compile Include="BSDefLibrary.cs" />
     <Compile Include="Debugging\GeneDebugMenu.cs" />
-    <Compile Include="DefPatches\RaceFuser.cs" />
+    <Compile Include="DefPatches\RaceFuser\RaceFuser.cs" />
+    <Compile Include="DefPatches\RaceFuser\RaceFuser_Defs.cs" />
+    <Compile Include="DefPatches\RaceFuser\RaceFuser_FuseBodies.cs" />
+    <Compile Include="DefPatches\RaceFuser\RaceFuser_Finalize.cs" />
+    <Compile Include="DefPatches\RaceFuser\RaceFuser_FusedBody.cs" />
+    <Compile Include="DefPatches\RaceFuser\RaceFuser_Helpers.cs" />
     <Compile Include="Gender and Reproduction\GenderMethods.cs" />
     <Compile Include="Genes\GeneEffectManager.cs" />
     <Compile Include="Hediffs\HediffPatches.cs" />
@@ -112,6 +117,7 @@
     <Compile Include="DefPatches\RecipesDefPatches.cs" />
     <Compile Include="Hediffs\TakeDamage.cs" />
     <Compile Include="Items\ApparelRestrictions.cs" />
+    <Compile Include="ModExtensions\SmartExtension.cs" />
     <Compile Include="ModExtensions\ModExtHelper.cs" />
     <Compile Include="Path Operations\SettingsBasedPatches.cs" />
     <Compile Include="Pawn\PawnGeneration\GenerateNewPawnInternal.cs" />
@@ -269,6 +275,8 @@
     <Publicize Include="Assembly-CSharp:RimWorld.Pawn_GeneTracker.xenotype" />
     <Publicize Include="Assembly-CSharp:Verse.Hediff.severityInt" />
     <Publicize Include="Assembly-CSharp:Verse.PawnRenderer.pawn" />
+    <Publicize Include="Assembly-CSharp:Verse.PawnRenderer.results" />
+    <Publicize Include="Assembly-CSharp:Verse.PawnRenderer+PreRenderResults" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

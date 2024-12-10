@@ -1,10 +1,7 @@
 ﻿using HarmonyLib;
 using RimWorld;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
 
 namespace BigAndSmall
@@ -138,6 +135,39 @@ namespace BigAndSmall
                 var resultList = __result.ToList();
                 resultList.AddRange(cachedParts);
                 __result = resultList;
+            }
+        }
+
+        [HarmonyPatch(typeof(GenRecipe), nameof(GenRecipe.MakeRecipeProducts))]
+        [HarmonyPrefix]
+        [HarmonyPriority(Priority.First)]
+        public static bool MakeRecipeProducts(ref IEnumerable<Thing> __result, RecipeDef recipeDef, Pawn worker, List<Thing> ingredients, Thing dominantIngredient, IBillGiver billGiver, Precept_ThingStyle precept = null, ThingStyleDef style = null, int? overrideGraphicIndex = null)
+        {
+            if (recipeDef?.ExtensionsOnDef<RecipeExtension, RecipeDef>()?.FirstOrDefault() is RecipeExtension re && re?.pawnKindDef is PawnKindDef pkd)
+            {
+                __result = [];
+                Faction playerFaction = Faction.OfPlayerSilentFail;
+                playerFaction ??= FactionUtility.DefaultFactionFrom(pkd.defaultFactionType);
+
+                Pawn pawn = PawnGenerator.GeneratePawn(pkd, playerFaction);
+                if (pawn != null)
+                {
+                    GenSpawn.Spawn(pawn, worker.Position, worker.Map);
+                }
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    public class UnfinishedMechanicalRace : UnfinishedThing
+    {
+        public override string LabelNoCount
+        {
+            get
+            {
+                return def.LabelCap;
             }
         }
     }

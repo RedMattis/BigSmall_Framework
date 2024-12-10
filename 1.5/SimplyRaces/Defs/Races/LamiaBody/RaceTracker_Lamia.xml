@@ -30,6 +30,7 @@
           <li>Hulk</li>
         </bodyDefOverrideList_Female> -->
       </li>
+      <li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="AnimalBehaviours.HediffCompProperties_Floating"/>
     </comps>
     <modExtensions>
       <li Class="BigAndSmall.PawnExtension">

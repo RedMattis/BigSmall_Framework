@@ -1,13 +1,9 @@
-﻿using BetterPrerequisites;
-using RimWorld;
+﻿using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
-using static BigAndSmall.BSCache;
 
 namespace BigAndSmall
 {
@@ -123,13 +119,21 @@ namespace BigAndSmall
             }
         }
 
-        private float CalculateHeadOffset()
+        private float CalculateHeadOffset(float headPosMultiplier)
         {
-            float headPosMultiplier = Mathf.Lerp(bodyRenderSize, headRenderSize, 0.8f);
-            headPosMultiplier *= headPosMultiplier;
-            headPosMultiplier = Mathf.Max(bodyRenderSize, headRenderSize);
-            if (headPosMultiplier < 1) { headPosMultiplier = Mathf.Pow(headPosMultiplier, 0.96f); }
-            return headPosMultiplier;
+            if (preventHeadScaling || bodyConstantHeadScale)
+            {
+                float hPos = bodyRenderSize;
+                if (preventHeadScaling == false) hPos *= headPosMultiplier;
+
+                return hPos;
+            }
+
+            float headPos = Mathf.Lerp(bodyRenderSize, headRenderSize, 0.8f);
+            headPos *= headPosMultiplier;
+            headPos = Mathf.Max(bodyRenderSize, headRenderSize);
+            if (headPos < 1) { headPos = Mathf.Pow(headPos, 0.96f); }
+            return headPos;
 
             //var headPos = Mathf.Lerp(bodyRenderSize, headRenderSize, 0.8f);
             //headPos *= headPosMultiplier;

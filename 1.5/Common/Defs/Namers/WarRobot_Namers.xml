@@ -1,11 +1,11 @@
 <Defs>
 
   <RulePackDef>
-    <defName>BS_NamerRobot</defName>
+    <defName>BS_NamerRobotUltra</defName>
     <rulePack>
       <include>
-        <li>BS_NamerFirstNameRobot</li>
-        <li>BS_NamerLastNameRobot</li>
+        <li>BS_NamerFirstNameRobotUltra</li>
+        <li>BS_NamerLastNameRobotUltra</li>
       </include>
       <rulesStrings>
         <li>r_name->[firstName] [lastName]</li>
@@ -14,7 +14,7 @@
   </RulePackDef>
 
   <RulePackDef>
-    <defName>BS_NamerFirstNameRobot</defName>
+    <defName>BS_NamerFirstNameRobotUltra</defName>
     <rulePack>
       <rulesStrings>
         <li>firstName->[firstNamePrefix]-[firstNameLetter]</li>
@@ -54,6 +54,34 @@
         <li>firstNamePrefix->TECH</li>
         <li>firstNamePrefix->NULL</li>
         <li>firstNamePrefix->NullReferenceException</li>
+        <li>firstNamePrefix->PHANTOM</li>
+        <li>firstNamePrefix->REAPER</li>
+        <li>firstNamePrefix->STALKER</li>
+        <li>firstNamePrefix->DOOM</li>
+        <li>firstNamePrefix->CHAOS</li>
+        <li>firstNamePrefix->EMBER</li>
+        <li>firstNamePrefix->FROST</li>
+        <li>firstNamePrefix->LUNAR</li>
+        <li>firstNamePrefix->DRAGON</li>
+        <li>firstNamePrefix->BEHEMOTH</li>
+        <li>firstNamePrefix->SPECTER</li>
+        <li>firstNamePrefix->VEGA</li>
+        <li>firstNamePrefix->PREDATOR</li>
+        <li>firstNamePrefix->SCARAB</li>
+        <li>firstNamePrefix->COLOSSUS</li>
+        <li>firstNamePrefix->SHADOW</li>
+        <li>firstNamePrefix->OBSIDIAN</li>
+        <li>firstNamePrefix->ONYX</li>
+        <li>firstNamePrefix->CINDER</li>
+        <li>firstNamePrefix->AETHER</li>
+        <li>firstNamePrefix->FALCON</li>
+        <li>firstNamePrefix->NEBULA</li>
+        <li>firstNamePrefix->DREAD</li>
+        <li>firstNamePrefix->INFERNO</li>
+        <li>firstNamePrefix->RAPTOR</li>
+        <li>firstNamePrefix->TUNDRA</li>
+        <li>firstNamePrefix->ATLAS</li>
+        <li>firstNamePrefix->NOVA</li>
 
         <!--Number-->
         <li>firstNameNumber1->1</li>
@@ -77,14 +105,19 @@
         <li>firstNameLetter->E</li>
         <li>firstNameLetter->R</li>
         <li>firstNameLetter->Z</li>
-
-
+        <li>firstNameLetter->K</li>
+        <li>firstNameLetter->N</li>
+        <li>firstNameLetter->P</li>
+        <li>firstNameLetter->V</li>
+        <li>firstNameLetter->L</li>
+        <li>firstNameLetter->S</li>
+        <li>firstNameLetter->C</li>
       </rulesStrings>
     </rulePack>
   </RulePackDef>
 
   <RulePackDef>
-    <defName>BS_NamerLastNameRobot</defName>
+    <defName>BS_NamerLastNameRobotUltra</defName>
     <rulePack>
       <rulesStrings>
         <li>lastName->[lastNamePrefix][lastNameSuffix]</li>
@@ -99,6 +132,19 @@
         <li>lastNamePrefix->anvil</li>
         <li>lastNamePrefix->shock</li>
         <li>lastNamePrefix->night</li>
+        <li>lastNamePrefix->plasma</li>
+        <li>lastNamePrefix->shadow</li>
+        <li>lastNamePrefix->mecha</li>
+        <li>lastNamePrefix->cyber</li>
+        <li>lastNamePrefix->neon</li>
+        <li>lastNamePrefix->void</li>
+        <li>lastNamePrefix->storm</li>
+        <li>lastNamePrefix->laser</li>
+        <li>lastNamePrefix->venom</li>
+        <li>lastNamePrefix->razor</li>
+        <li>lastNamePrefix->helix</li>
+        <li>lastNamePrefix->quantum</li>
+        <li>lastNamePrefix->warp</li>
         
         <!--Suffix-->
         <li>lastNameSuffix->star</li>
@@ -118,6 +164,21 @@
         <li>lastNameSuffix->fang</li>
         <li>lastNameSuffix->blaster</li>
         <li>lastNameSuffix->eater</li>
+        <li>lastNameSuffix->blade</li>
+        <li>lastNameSuffix->scourge</li>
+        <li>lastNameSuffix->tormentor</li>
+        <li>lastNameSuffix->reaper</li>
+        <li>lastNameSuffix->drone</li>
+        <li>lastNameSuffix->storm</li>
+        <li>lastNameSuffix->maul</li>
+        <li>lastNameSuffix->rage</li>
+        <li>lastNameSuffix->cannon</li>
+        <li>lastNameSuffix->spark</li>
+        <li>lastNameSuffix->pulse</li>
+        <li>lastNameSuffix->flare</li>
+        <li>lastNameSuffix->engine</li>
+        <li>lastNameSuffix->bane</li>
+        <li>lastNameSuffix->strike</li>
 
         <!--Single-->
         <!-- <li>lastNameSuffix->avalanche</li> -->

@@ -1,16 +1,9 @@
 ﻿using BigAndSmall.FilteredLists;
 using HarmonyLib;
 using RimWorld;
-using RimWorld.QuestGen;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
-using Unity.Jobs;
-using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -163,7 +156,6 @@ namespace BigAndSmall
         public FilterResult FilterForFoodWithoutThing(ThingDef foodDef)
         {
             FilterResult result = FilterForDef(foodDef);
-            Log.Message($"[BigAndSmall] {this} (FilterForDef): {foodDef.defName} {result}");
             if (result.PriorityResult() || result.Denied()) return result;
             if (foodCategory != GeneralFoodCategory.Ignore && foodDef.IsIngestible && !foodDef.IsProcessedFood) // No point checking this on actual food items.
             {

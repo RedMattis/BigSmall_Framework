@@ -7,6 +7,7 @@
     </statBases>
     <race>
       <body>BS_HumanoidWithTail_Body</body>
+      <useMeatFrom>Human</useMeatFrom>
     </race>
     <modExtensions>
       <li Class="BigAndSmall.RaceExtension"> <raceHediff>BS_HumanoidWithTailRace</raceHediff> </li>

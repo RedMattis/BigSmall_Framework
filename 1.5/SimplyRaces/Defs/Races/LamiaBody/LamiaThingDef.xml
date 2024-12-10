@@ -9,6 +9,7 @@
     <race>
       <body>BS_SnakeHuman</body>
       <useLeatherFrom>Cobra</useLeatherFrom>
+      <useMeatFrom>Human</useMeatFrom>
     </race>
     <modExtensions>
       <li Class="BigAndSmall.RaceExtension"> <raceHediff>BS_Naga_Race</raceHediff> </li>

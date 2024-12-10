@@ -5,10 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
-using static UnityEngine.Scripting.GarbageCollector;
 
 namespace BigAndSmall
 {
@@ -53,7 +50,7 @@ namespace BigAndSmall
             if (HumanoidPawnScaler.GetCacheUltraSpeed(pawn) is BSCache cache && cache.aptitudes != null)
             //if (HumanoidPawnScaler.GetCache(pawn, forceRefresh:true) is BSCache cache && cache.aptitudes != null)
             {
-                cache.aptitudes.Where(x => x.skill == record.def).Do(x => amount = x.level);
+                cache.aptitudes.Where(x => x.skill == record.def).Do(x => amount =+ x.level);
             }
             return amount;
         }

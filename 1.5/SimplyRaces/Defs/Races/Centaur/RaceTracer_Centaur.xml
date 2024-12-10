@@ -63,11 +63,8 @@
           </colorB>
           <alts>
             <li>
-              <triggerGeneTag>
-                <acceptlist>
-                  <li>taur</li>
-                </acceptlist>
-              </triggerGeneTag>
+              <triggerGeneTag> <acceptlist> <li>taur</li> </acceptlist> </triggerGeneTag>
+              <triggerFlags><blacklist><ShowBaseAbdomen/></blacklist></triggerFlags>
               <texturePaths><default>BS_Blank</default></texturePaths>
             </li>
           </alts>

@@ -4,16 +4,8 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using UnityEngine;
-using UnityEngine.Assertions.Must;
 using Verse;
-using Verse.Noise;
-using static BigAndSmall.RaceHelper;
-using static RimWorld.ColonistBar;
 
 namespace BetterPrerequisites
 {
@@ -23,7 +15,7 @@ namespace BetterPrerequisites
 
 namespace BigAndSmall
 {
-    
+
 
     public class DefTag : Def { }
 
@@ -225,8 +217,9 @@ namespace BigAndSmall
         }
     }
 
-    public class PawnExtension : DefModExtension
+    public class PawnExtension : SmartExtension
     {
+
         // Used for race-defaults.
         public static PawnExtension defaultPawnExtension = new();
 
@@ -327,6 +320,19 @@ namespace BigAndSmall
 
         #region Rendering
         /// <summary>
+        /// Prevents head-scaling/offsets from sources other than the pawn's general size.
+        /// </summary>
+        public bool preventHeadScaling = false;
+
+        /// <summary>
+        /// Prevents auto-scaling the pawn's head from changing body-size sources other than explicit headscale.
+        /// This means large pawns won't get slightly smaller heads, and small ones won't get a chibi-head.
+        /// 
+        /// Basically just a more specific version of the above.
+        /// </summary>
+        public bool bodyConstantHeadScale = false;
+
+        /// <summary>
         /// Sets a custom material for the body. Highly versatile.
         /// </summary>
         public CustomMaterial bodyMaterial = null;
@@ -383,6 +389,8 @@ namespace BigAndSmall
         /// </summary>
         public Gender? forceGender = null;
         protected bool forceFemaleBody = false;
+
+        public bool ignoreForceGender = false;
 
         protected Gender? apparentGender = null;
         public Gender? ApparentGender => forceFemaleBody ? Gender.Female : apparentGender;
@@ -612,6 +620,11 @@ namespace BigAndSmall
         public bool CanMorphAtAll => CanMorphDown || CanMorphUp;
         public bool HasMorphTarget => metamorphTarget != null || retromorphTarget != null;
         public bool MorphRelated => CanMorphAtAll || HasMorphTarget;
+
+        public bool RequiresCacheRefresh()
+        {
+            return aptitudes != null;
+        }
 
         public StringBuilder GetAllEffectorDescriptions()
         {

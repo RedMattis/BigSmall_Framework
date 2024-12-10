@@ -1,0 +1,314 @@
+<Defs>
+
+  <RulePackDef>
+    <defName>BS_NamerRobot</defName>
+    <rulePack>
+      <include>
+        <li>BS_NamerFirstNameRobot</li>
+        <li>BS_NamerLastNameRobot</li>
+      </include>
+      <rulesStrings>
+        <li>r_name->[firstName] [lastName]</li>
+      </rulesStrings>
+    </rulePack>
+  </RulePackDef>
+
+  <RulePackDef>
+    <defName>BS_NamerFirstNameRobot</defName>
+    <rulePack>
+      <rulesStrings>
+        <li>firstName->[firstNamePrefix]</li>
+        <li>firstName->[firstNamePrefix]</li>
+        <li>firstName->[firstNamePrefix]</li>
+        <li>firstName->[firstNamePrefix]</li>
+        <li>firstName->[firstNamePrefix]</li>
+        <li>firstName->[firstNamePrefix]</li>
+        <li>firstName->[firstNamePrefix]</li>
+        <li>firstName->[firstNamePrefix]</li>
+        <li>firstName->[firstNamePrefix]</li>
+        <li>firstName->[firstNamePrefix]</li>
+        <li>firstName->[firstNamePrefix]</li>
+        <li>firstName->[firstNamePrefix]</li>
+        <li>firstName->[firstNamePrefix]-[firstNameLetter]</li>
+        <li>firstName->[firstNamePrefix]-[firstNameLetter][firstNameLetter]</li>
+        <li>firstName->[firstNamePrefix]-[firstNameNumber1]</li>
+        <li>firstName->[firstNamePrefix]-[firstNameNumber1][firstNameNumber1]</li>
+        <li>firstName->[firstNamePrefix]-[firstNameLetter]-[firstNameNumber1]</li>
+        <li>firstName->[firstNamePrefix]-[firstNameLetter]-[firstNameNumber1][firstNameNumber1]</li>
+        <li>firstName->[firstNamePrefix]-[firstNameLetter][firstNameNumber1]</li>
+        <li>firstName->[firstNamePrefix]-[firstNameLetter][firstNameNumber1][firstNameNumber1]</li>
+        <li>firstName->[firstNamePrefix]-[firstNameNumber1][firstNameLetter]</li>
+        <li>firstName->[firstNamePrefix]-[firstNameNumber1][firstNameNumber1][firstNameLetter]</li>
+        <li>firstName->[firstNamePrefix]-[firstNameNumber1][firstNameNumber1][firstNameNumber1][firstNameLetter]</li>
+
+        <!--Prefix-->
+        <li>firstNamePrefix->Field</li>
+        <li>firstNamePrefix->Logistics</li>
+        <li>firstNamePrefix->Maintenance</li>
+        <li>firstNamePrefix->Repair</li>
+        <li>firstNamePrefix->Supply</li>
+        <li>firstNamePrefix->Transporter</li>
+        <li>firstNamePrefix->Combat</li>
+        <li>firstNamePrefix->Heavy</li>
+        <li>firstNamePrefix->Recon</li>
+        <li>firstNamePrefix->Search</li>
+        <li>firstNamePrefix->Reconnaissance</li>
+        <li>firstNamePrefix->Support</li>
+        <li>firstNamePrefix->Troop</li>
+        <li>firstNamePrefix->Survey</li>
+        <li>firstNamePrefix->Assault</li>
+        <li>firstNamePrefix->Defender</li>
+        <li>firstNamePrefix->Guardian</li>
+        <li>firstNamePrefix->Sentry</li>
+        <li>firstNamePrefix->Strike</li>
+        <li>firstNamePrefix->Engineer</li>
+        <li>firstNamePrefix->Alpha</li>
+        <li>firstNamePrefix->Bravo</li>
+        <li>firstNamePrefix->Echo</li>
+        <li>firstNamePrefix->Gamma</li>
+        <li>firstNamePrefix->Delta</li>
+        <li>firstNamePrefix->Tactical</li>
+        <li>firstNamePrefix->Air</li>
+        <li>firstNamePrefix->Maneuver</li>
+        <li>firstNamePrefix->Logistic</li>
+        <li>firstNamePrefix->Rescue</li>
+        <li>firstNamePrefix->Intelligence</li>
+        <li>firstNamePrefix->Rapid</li>
+        <li>firstNamePrefix->Transport</li>
+        <li>firstNamePrefix->Close</li>
+        <li>firstNamePrefix->Mobile</li>
+        <li>firstNamePrefix->Scout</li>
+        <li>firstNamePrefix->Defense</li>
+        <li>firstNamePrefix->Surveillance</li>
+        <li>firstNamePrefix->Frontline</li>
+        <li>firstNamePrefix->Deploy</li>
+        <li>firstNamePrefix->Advance</li>
+        <li>firstNamePrefix->Secure</li>
+        <li>firstNamePrefix->Reinforce</li>
+        <li>firstNamePrefix->Airborne</li>
+        <li>firstNamePrefix->Heavy</li>
+        <li>firstNamePrefix->Vanguard</li>
+        <li>firstNamePrefix->Sentinel</li>
+        <li>firstNamePrefix->Patrol</li>
+        <li>firstNamePrefix->Recon</li>
+        <li>firstNamePrefix->Scout</li>
+        <li>firstNamePrefix->Guardian</li>
+        <li>firstNamePrefix->Protector</li>
+        <li>firstNamePrefix->Defender</li>
+        <li>firstNamePrefix->Striker</li>
+        <li>firstNamePrefix->Raider</li>
+        <li>firstNamePrefix->Hunter</li>
+        <li>firstNamePrefix->Seeker</li>
+        <li>firstNamePrefix->Tracker</li>
+        <li>firstNamePrefix->Pioneer</li>
+        <li>firstNamePrefix->Pathfinder</li>
+        <li>firstNamePrefix->Explorer</li>
+        <li>firstNamePrefix->Navigator</li>
+        <li>firstNamePrefix->Operator</li>
+        <li>firstNamePrefix->Technician</li>
+        <li>firstNamePrefix->Mechanic</li>
+        <li>firstNamePrefix->Specialist</li>
+        <li>firstNamePrefix->Commander</li>
+        <li>firstNamePrefix->Leader</li>
+        <li>firstNamePrefix->Chief</li>
+        <li>firstNamePrefix->Captain</li>
+        <li>firstNamePrefix->Lieutenant</li>
+        <li>firstNamePrefix->Sergeant</li>
+        <li>firstNamePrefix->Corporal</li>
+        <li>firstNamePrefix->Private</li>
+        <li>firstNamePrefix->Veteran</li>
+        <li>firstNamePrefix->Elite</li>
+        <li>firstNamePrefix->Ace</li>
+        <li>firstNamePrefix->Champion</li>
+        <li>firstNamePrefix->Hero</li>
+        <li>firstNamePrefix->Legend</li>
+        <li>firstNamePrefix->NullReferenceException</li>
+
+        <!--Number-->
+        <li>firstNameNumber1->1</li>
+        <li>firstNameNumber1->2</li>
+        <li>firstNameNumber1->3</li>
+        <li>firstNameNumber1->4</li>
+        <li>firstNameNumber1->5</li>
+        <li>firstNameNumber1->6</li>
+        <li>firstNameNumber1->7</li>
+        <li>firstNameNumber1->8</li>
+        <li>firstNameNumber1->9</li>
+        <li>firstNameNumber1->0</li>
+        <li>firstNameNumber1->0</li>
+
+        <li>firstNameLetter->A</li>
+        <li>firstNameLetter->D</li>
+        <li>firstNameLetter->T</li>
+        <li>firstNameLetter->F</li>
+        <li>firstNameLetter->M</li>
+        <li>firstNameLetter->X</li>
+        <li>firstNameLetter->Y</li>
+        <li>firstNameLetter->E</li>
+        <li>firstNameLetter->R</li>
+        <li>firstNameLetter->Z</li>
+        <li>firstNameLetter->K</li>
+        <li>firstNameLetter->N</li>
+        <li>firstNameLetter->P</li>
+        <li>firstNameLetter->V</li>
+        <li>firstNameLetter->L</li>
+        <li>firstNameLetter->S</li>
+        <li>firstNameLetter->C</li>
+
+      </rulesStrings>
+    </rulePack>
+  </RulePackDef>
+
+  <RulePackDef>
+    <defName>BS_NamerLastNameRobot</defName>
+    <rulePack>
+      <rulesStrings>
+        <li>lastName->[lastNameLetter]</li>
+        <li>lastName->[lastNameNumber1]</li>
+        <li>lastName->[lastNameSuffix]</li>
+        <li>lastName->[lastNameLetter]</li>
+        <li>lastName->[lastNameNumber1]</li>
+        <li>lastName->[lastNameSuffix]</li>
+        
+        <li>lastName->[lastNamePrefix] [lastNameSuffix]</li>
+        <li>lastName->[lastNamePrefix] [lastNameNumber1]</li>
+        <li>lastName->[lastNamePrefix] [lastNameLetter]</li>
+        <li>lastName->[lastNamePrefix] Mk. [lastNameNumber1]</li>
+
+        <li>lastName->[lastNameNumber1]</li>
+        <li>lastName->[lastNameNumber1][lastNameNumber1][lastNameNumber1]</li>
+        <li>lastName->[lastNameLetter][lastNameLetter]</li>
+        <li>lastName->[lastNameNumber1][lastNameNumber1]</li>
+        <li>lastName->[lastNameNumber1][lastNameNumber1]</li>
+        <li>lastName->[lastNameLetter][lastNameNumber1]</li>
+
+        <li>lastName->Mk. [lastNameNumber1]</li>
+        <li>lastName->Mk. [lastNameNumber1][lastNameNumber1][lastNameNumber1]</li>
+        <li>lastName->Mk. [lastNameNumber1]</li>
+
+        <li>lastNamePrefix->Duty</li>
+        <li>lastNamePrefix->Bot</li>
+        <li>lastNamePrefix->Unit</li>
+        <li>lastNamePrefix->Depot</li>
+        <li>lastNamePrefix->Drone</li>
+        <li>lastNamePrefix->Combat</li>
+        <li>lastNamePrefix->Engineer</li>
+        <li>lastNamePrefix->Squad</li>
+        <li>lastNamePrefix->Deployment</li>
+        <li>lastNamePrefix->Quarters</li>
+        <li>lastNamePrefix->Response</li>
+        <li>lastNamePrefix->Task</li>
+        <li>lastNamePrefix->Control</li>
+        <li>lastNamePrefix->Taskforce</li>
+        <li>lastNamePrefix->Sentry</li>
+        <li>lastNamePrefix->Recon</li>
+        <li>lastNamePrefix->Survey</li>
+        <li>lastNamePrefix->Observation</li>
+        <li>lastNamePrefix->Surveyor</li>
+        <li>lastNamePrefix->Maneuver</li>
+        <li>lastNamePrefix->Defense</li>
+        <li>lastNamePrefix->Shield</li>
+        <li>lastNamePrefix->Core</li>
+        <li>lastNamePrefix->Guardian</li>
+        <li>lastNamePrefix->Handler</li>
+        <li>lastNamePrefix->Enforcer</li>
+        <li>lastNamePrefix->Striker</li>
+        <li>lastNamePrefix->Sustain</li>
+        <li>lastNamePrefix->Barrier</li>
+        <li>lastNamePrefix->Interceptor</li>
+        <li>lastNamePrefix->Supply</li>
+        <li>lastNamePrefix->Commander</li>
+        <li>lastNamePrefix->Heavy</li>
+        <li>lastNamePrefix->Watch</li>
+        <li>lastNamePrefix->Supply Chain</li>
+        <li>lastNamePrefix->Operations</li>
+        <li>lastNamePrefix->Force</li>
+        <li>lastNamePrefix->Logistic</li>
+        <li>lastNamePrefix->Field</li>
+        <li>lastNamePrefix->Support</li>
+        <li>lastNamePrefix->Rapid Response</li>
+        <li>lastNamePrefix->Secure</li>
+        <li>lastNamePrefix->Intervention</li>
+        <li>lastNamePrefix->Command</li>
+        <li>lastNamePrefix->Team</li>
+        <li>lastNamePrefix->Patrol</li>
+        <li>lastNamePrefix->Guard</li>
+              
+        <li>lastNameNumber1->1</li>
+        <li>lastNameNumber1->2</li>
+        <li>lastNameNumber1->3</li>
+        <li>lastNameNumber1->4</li>
+        <li>lastNameNumber1->5</li>
+        <li>lastNameNumber1->6</li>
+        <li>lastNameNumber1->7</li>
+        <li>lastNameNumber1->8</li>
+        <li>lastNameNumber1->9</li>
+        <li>lastNameNumber1->0</li>
+        <li>lastNameNumber1->0</li>
+
+        <li>lastNameLetter->A</li>
+        <li>lastNameLetter->D</li>
+        <li>lastNameLetter->T</li>
+        <li>lastNameLetter->M</li>
+        <li>lastNameLetter->X</li>
+        <li>lastNameLetter->Y</li>
+        <li>lastNameLetter->E</li>
+        <li>lastNameLetter->R</li>
+        <li>lastNameLetter->Z</li>
+        <li>lastNameLetter->K</li>
+        <li>lastNameLetter->N</li>
+        <li>lastNameLetter->P</li>
+        <li>lastNameLetter->V</li>
+        <li>lastNameLetter->L</li>
+        <li>lastNameLetter->S</li>
+        <li>lastNameLetter->C</li>
+
+        <li>lastNameSuffix->101</li>
+        <li>lastNameSuffix->404</li>
+        <li>lastNameSuffix->13</li>
+        <li>lastNameSuffix->69</li>
+        <li>lastNameSuffix->420</li>
+        <li>lastNameSuffix->666</li>
+        <li>lastNameSuffix->911</li>
+        <li>lastNameSuffix->007</li>
+        <li>lastNameSuffix->1337</li>
+        <li>lastNameSuffix->8008</li>
+        <li>lastNameSuffix->80085</li>
+        <li>lastNameSuffix->123</li>
+        <li>lastNameSuffix->321</li>
+        <li>lastNameSuffix->777</li>
+        <li>lastNameSuffix->888</li>
+        <li>lastNameSuffix->999</li>
+        <li>lastNameSuffix->000</li>
+        <li>lastNameSuffix->8472</li>
+        <li>lastNameSuffix->42</li>
+        <li>lastNameSuffix->709</li>
+
+        <li>lastNameSuffix->MissingNo</li>
+        <li>lastNameSuffix->Null</li>
+        <li>lastNameSuffix->Void</li>
+        <li>lastNameSuffix->XXX</li>
+        <li>lastNameSuffix->X</li>
+        <li>lastNameSuffix->PlusUltra</li>
+        <li>lastNameSuffix->Omega</li>
+        <li>lastNameSuffix->Alpha</li>
+        <li>lastNameSuffix->Beta</li>
+        <li>lastNameSuffix->Gamma</li>
+        <li>lastNameSuffix->Delta</li>
+        <li>lastNameSuffix->Epsilon</li>
+        <li>lastNameSuffix->Zeta</li>
+        <li>lastNameSuffix->Eta</li>
+        <li>lastNameSuffix->Theta</li>
+        <li>lastNameSuffix->Iota</li>
+        <li>lastNameSuffix->Nerd</li>
+        <li>lastNameSuffix->Dork</li>
+        <li>lastNameSuffix->Borg</li>
+        
+
+
+        <!--Single-->
+        <!-- <li>lastNameSuffix->avalanche</li> -->
+      </rulesStrings>
+    </rulePack>
+  </RulePackDef>
+</Defs>

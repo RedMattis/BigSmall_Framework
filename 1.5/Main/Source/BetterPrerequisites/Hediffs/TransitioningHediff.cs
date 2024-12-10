@@ -3,11 +3,8 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
 using static BigAndSmall.TransitioningHediffProps;
-using static HarmonyLib.Code;
 
 namespace BigAndSmall
 {
@@ -160,7 +157,7 @@ namespace BigAndSmall
             }
         }
 
-        private void DoEffects(TransitioningHediffProps.Trigger trigger)
+        private void DoEffects(Trigger trigger)
         {
             if(trigger.perfectResurrect)
             {
