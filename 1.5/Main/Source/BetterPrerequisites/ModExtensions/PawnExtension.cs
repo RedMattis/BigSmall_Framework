@@ -333,6 +333,18 @@ namespace BigAndSmall
         public bool bodyConstantHeadScale = false;
 
         /// <summary>
+        /// Exactly the same as the above, but permits big head if the body is small.
+        /// </summary>
+        public bool bodyConstantHeadScaleBigOnly = false;
+
+        /// <summary>
+        /// If specified, instead of blocking scale it will be reduced by this factor.
+        /// </summary>
+        public float? preventHeadScalingFactor = null;
+
+        public float? preventHeadOffsetFactor = null;
+
+        /// <summary>
         /// Sets a custom material for the body. Highly versatile.
         /// </summary>
         public CustomMaterial bodyMaterial = null;

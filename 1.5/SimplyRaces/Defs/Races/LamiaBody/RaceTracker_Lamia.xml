@@ -81,15 +81,6 @@
             <replaceFlagsAndInactive><LamiaColorB/></replaceFlagsAndInactive>
             <hairColor>true</hairColor>
             <saturation>0.9</saturation>
-            
-            <alts>
-              <li>
-                <triggers><li>Rotted</li></triggers>
-                <hairColor>true</hairColor>
-                <skinColor>true</skinColor> 
-                <saturation>0.5</saturation>
-              </li>
-            </alts>
           </colorB>
           <alts>
             <li>

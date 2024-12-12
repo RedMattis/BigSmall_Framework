@@ -398,6 +398,9 @@ namespace BigAndSmall
 
         public bool preventHeadScaling = false;
         public bool bodyConstantHeadScale = false;
+        public bool bodyConstantHeadScaleBigOnly = false;
+        public float preventHeadScalingFactor = 1f;
+        public float preventHeadOffsetFactor = 1f;
         public float headSizeMultiplier = 1;
         public float headPositionMultiplier = 1;
         public float worldspaceOffset = 0;
@@ -628,6 +631,16 @@ namespace BigAndSmall
                 var nonRacePawnExt = ModExtHelper.GetAllPawnExtensions(pawn, parentBlacklist: [typeof(RaceTracker)]);
                 preventHeadScaling = allPawnExt.Any(x => x.preventHeadScaling);
                 bodyConstantHeadScale = allPawnExt.Any(x => x.bodyConstantHeadScale);
+                bodyConstantHeadScaleBigOnly = allPawnExt.Any(x => x.bodyConstantHeadScaleBigOnly);
+
+                preventHeadScalingFactor = allPawnExt.Where(x => x.preventHeadScalingFactor != null)
+                    .DefaultIfEmpty(new PawnExtension { preventHeadScalingFactor = 1.0f })
+                    .Average(x => x.preventHeadScalingFactor.Value);
+
+                preventHeadOffsetFactor = allPawnExt.Where(x => x.preventHeadOffsetFactor != null)
+                    .DefaultIfEmpty(new PawnExtension { preventHeadOffsetFactor = preventHeadScalingFactor })
+                    .Average(x => x.preventHeadOffsetFactor.Value);
+
 
 
                 CalculateGenderAndApparentGender(allPawnExt);

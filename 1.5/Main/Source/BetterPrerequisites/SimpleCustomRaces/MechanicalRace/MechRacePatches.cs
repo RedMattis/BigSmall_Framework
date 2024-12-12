@@ -1,8 +1,10 @@
 ﻿using HarmonyLib;
 using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
+using static RimWorld.PsychicRitualRoleDef;
 
 namespace BigAndSmall
 {
@@ -158,6 +160,31 @@ namespace BigAndSmall
             }
 
             return true;
+        }
+
+        static List<string> blackListMechanical = ["PsychophagyTarget", "ChronophagyTarget", "PhilophagyTarget"];
+        static List<string> blackListTrulyAgeless = ["ChronophagyTarget"];
+        [HarmonyPatch(
+            typeof(PsychicRitualRoleDef),
+            nameof(PsychicRitualRoleDef.PawnCanDo),
+            [typeof(Context), typeof(Pawn), typeof(TargetInfo), typeof(AnyEnum)],
+            [ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Out]
+        )]
+        [HarmonyPostfix]
+        public static void PawnCanDo_Prefix(ref bool __result, PsychicRitualRoleDef __instance, Context context, Pawn pawn, TargetInfo target, ref AnyEnum reason)
+        {
+            BSCache cache = HumanoidPawnScaler.GetCacheUltraSpeed(pawn);
+            if (blackListMechanical.Contains(__instance.defName) && cache?.isMechanical == true)
+            {
+                __result = false;
+                reason = AnyEnum.FromEnum(Condition.NoPsychicSensitivity);
+            }
+
+            if (blackListTrulyAgeless.Contains(__instance.defName) && GeneHelpers.GetAllActiveGenes(pawn).Any(x=>x is TrulyAgeless))
+            {
+                __result = false;
+                reason = AnyEnum.FromEnum(Condition.NoPsychicSensitivity);
+            }
         }
     }
 

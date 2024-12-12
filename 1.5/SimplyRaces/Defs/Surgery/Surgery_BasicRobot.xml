@@ -102,7 +102,7 @@
           <HypoxiaResistance MayRequire="kentington.saveourship2">1</HypoxiaResistance>
           <VacuumSpeedMultiplier MayRequire="kentington.saveourship2">1.2</VacuumSpeedMultiplier>
           
-          <ComfyTemperatureMin>-40</ComfyTemperatureMin>
+          <ComfyTemperatureMin>-60</ComfyTemperatureMin>
           <ComfyTemperatureMax>20</ComfyTemperatureMax>
         </statOffsets>
         <statFactors>

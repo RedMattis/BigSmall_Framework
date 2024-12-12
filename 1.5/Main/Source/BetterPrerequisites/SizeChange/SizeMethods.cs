@@ -121,18 +121,19 @@ namespace BigAndSmall
 
         private float CalculateHeadOffset(float headPosMultiplier)
         {
-            if (preventHeadScaling || bodyConstantHeadScale)
-            {
-                float hPos = bodyRenderSize;
-                if (preventHeadScaling == false) hPos *= headPosMultiplier;
-
-                return hPos;
-            }
+            
 
             float headPos = Mathf.Lerp(bodyRenderSize, headRenderSize, 0.8f);
             headPos *= headPosMultiplier;
             headPos = Mathf.Max(bodyRenderSize, headRenderSize);
             if (headPos < 1) { headPos = Mathf.Pow(headPos, 0.96f); }
+
+            if (preventHeadScaling || bodyConstantHeadScale || (bodyConstantHeadScaleBigOnly && bodyRenderSize > 1))
+            {
+                float hPos = bodyRenderSize;
+                hPos *= headPosMultiplier;
+                return Mathf.Lerp(headPos, hPos, preventHeadOffsetFactor);
+            }
             return headPos;
 
             //var headPos = Mathf.Lerp(bodyRenderSize, headRenderSize, 0.8f);
@@ -214,6 +215,8 @@ namespace BigAndSmall
         {
             float bodyRSize = GetBodyRenderSize();
 
+            
+
             float bodyTypeScale = 1;
             // Even out the cosmetic sizes of the pawn since we already have genes for the bodysize itself.
             if (pawn.story != null && BigSmallMod.settings.scaleBodyTypes)
@@ -248,6 +251,12 @@ namespace BigAndSmall
             }
 
             headSize *= headSizeMultiplier;
+
+            if (preventHeadScaling || bodyConstantHeadScale || (bodyConstantHeadScaleBigOnly && bodyRSize > 1))
+            {
+                float preventedHeadScale = preventHeadScaling ? bodyRSize : bodyRSize * headSizeMultiplier;
+                return Mathf.Lerp(headSize, preventedHeadScale, preventHeadScalingFactor);
+            }
             return headSize;
         }
         public float GetBodyRenderSize()

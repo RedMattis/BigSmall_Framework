@@ -21,7 +21,7 @@
     <description>Completely disable facial animations from Nal's Facial Animation Mod and use the standard head instead. This is probably the version of the facial anim disablers you're want to use.</description>
     <iconPath>GeneIcons/BS_ToggleFacialAnim</iconPath>
     <modExtensions>
-      <li Class="BetterPrerequisites.GeneExtension">
+      <li Class="BigAndSmall.PawnExtension">
         <disableFacialAnimations>true</disableFacialAnimations>
       </li>
     </modExtensions>
@@ -34,7 +34,7 @@
     <description>Retains only animations related to the brows.</description>
     <iconPath>GeneIcons/BS_NoFacialAnim</iconPath>
     <modExtensions>
-      <li Class="BetterPrerequisites.GeneExtension">
+      <li Class="BigAndSmall.PawnExtension">
         <facialDisabler>
           <headName>retain</headName>
           <browName>retain</browName>
@@ -50,7 +50,7 @@
     <description>Retains only animations related to the lids.</description>
     <iconPath>GeneIcons/BS_NoFacialAnim</iconPath>
     <modExtensions>
-      <li Class="BetterPrerequisites.GeneExtension">
+      <li Class="BigAndSmall.PawnExtension">
         <facialDisabler>
           <headName>retain</headName>
           <lidName>retain</lidName>
@@ -66,7 +66,7 @@
     <description>Retains only animations related to the eyes/lids.</description>
     <iconPath>GeneIcons/BS_NoFacialAnim</iconPath>
     <modExtensions>
-      <li Class="BetterPrerequisites.GeneExtension">
+      <li Class="BigAndSmall.PawnExtension">
         <facialDisabler>
           <headName>retain</headName>
           <lidName>retain</lidName>
@@ -85,7 +85,7 @@
     <description>Retains the lids and brows.</description>
     <iconPath>GeneIcons/BS_NoFacialAnim</iconPath>
     <modExtensions>
-      <li Class="BetterPrerequisites.GeneExtension">
+      <li Class="BigAndSmall.PawnExtension">
         <facialDisabler>
           <headName>retain</headName>
           <lidName>retain</lidName>
