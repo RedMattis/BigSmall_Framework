@@ -13,7 +13,7 @@ namespace BigAndSmall
         public BigAndSmall_Early(ModContentPack content) : base(content)
         {
             instance = this;
-            BigSmallMod.settings ??= GetSettings<BSRettings>();
+            BigSmallMod.settings ??= GetSettings<BSSettings>();
             //settings = GetSettings<BSXenoSettings>();
 
             ApplyHarmonyPatches();

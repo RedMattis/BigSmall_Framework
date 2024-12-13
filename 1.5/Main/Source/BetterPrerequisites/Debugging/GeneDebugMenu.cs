@@ -4,8 +4,10 @@ using LudeonTK;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using UnityEngine;
 using Verse;
+using static BigAndSmall.Debugging.BigAndSmallDebugActions;
 
 namespace BigAndSmall.Debugging
 {
@@ -33,45 +35,43 @@ namespace BigAndSmall.Debugging
                 new FloatMenuOption("Apply/Append RaceDef", delegate
                 {
                     List<DebugMenuOption> list = [];
-                    
+
                     foreach (var def in DefDatabase<ThingDef>.AllDefs.Where(x => x?.race?.intelligence == Intelligence.Humanlike && !x.IsCorpse))
                     {
-                        list.Add(new DebugMenuOption(def.defName, DebugMenuOptionMode.Action, delegate
+                        list.Add(new DebugMenuOption($"{def.defName,lblPad}\t ({def.LabelCap})", DebugMenuOptionMode.Action, delegate
                         {
                             RaceMorpher.SwapThingDef(pawn, def, true, targetPriority: 100, force: false);
                         }));
                     }
                     foreach (var def in DefDatabase<ThingDef>.AllDefs.Where(x => x?.race?.intelligence == Intelligence.Humanlike && !x.IsCorpse))
                     {
-                        list.Add(new DebugMenuOption(def.defName + " (force)", DebugMenuOptionMode.Action, delegate
+                        list.Add(new DebugMenuOption($"{def.defName,lblPad}\t ({def.LabelCap})" + " (force)", DebugMenuOptionMode.Action, delegate
                         {
                             RaceMorpher.SwapThingDef(pawn, def, true, targetPriority: 999, force: true, permitFusion:false);
                         }));
                     }
                     Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
                 }),
-                new FloatMenuOption("Set to exact xenotype (also sets race)", delegate
+                new FloatMenuOption("Set exact xenotype + race", delegate
                 {
                     List<DebugMenuOption> xenotypeLister = [];
                     foreach (XenotypeDef allDef in DefDatabase<XenotypeDef>.AllDefs)
                     {
                         XenotypeDef xenotype = allDef;
-                        xenotypeLister.Add(new DebugMenuOption(xenotype.LabelCap, DebugMenuOptionMode.Action, delegate
+                        xenotypeLister.Add(new DebugMenuOption($"{xenotype.defName,lblPad}\t ({xenotype.LabelCap})", DebugMenuOptionMode.Action, delegate
                         {
-                            GeneHelpers.RemoveAllGenesSlow_ExceptColor(pawn);
-                            pawn.genes.SetXenotype(xenotype);
-                            pawn.TrySwapToXenotypeThingDef();
+                            SetXenotypeAndRace(pawn, xenotype);
                         }));
                     }
                     Find.WindowStack.Add(new Dialog_DebugOptionListLister(xenotypeLister));
                 }),
-                new FloatMenuOption("Apply xenotype.", delegate
+                new FloatMenuOption("Apply xenotype", delegate
                 {
                     List<DebugMenuOption> xenotypeLister = [];
                     foreach (XenotypeDef allDef in DefDatabase<XenotypeDef>.AllDefs)
                     {
                         XenotypeDef xenotype = allDef;
-                        xenotypeLister.Add(new DebugMenuOption(xenotype.LabelCap, DebugMenuOptionMode.Action, delegate
+                        xenotypeLister.Add(new DebugMenuOption($"{xenotype.defName,lblPad}\t ({xenotype.LabelCap})", DebugMenuOptionMode.Action, delegate
                         {
                             pawn.genes.SetXenotype(xenotype);
                             pawn.TrySwapToXenotypeThingDef();
@@ -150,6 +150,13 @@ namespace BigAndSmall.Debugging
 
             ];
             Find.WindowStack.Add(new FloatMenu(list));
+        }
+
+        public static void SetXenotypeAndRace(Pawn pawn, XenotypeDef xenotype)
+        {
+            GeneHelpers.RemoveAllGenesSlow_ExceptColor(pawn);
+            pawn.genes.SetXenotype(xenotype);
+            pawn.TrySwapToXenotypeThingDef();
         }
     }
 

@@ -300,13 +300,13 @@ namespace RedHealth
                 if (pawn.IsWorldPawn() && (effect.killWorldPawn || effect.killPawn) && pawn.Faction != Faction.OfPlayerSilentFail)
                 {
                     pawn.Kill(null, null);
-                    if (Main.loggingV) Log.Message($"Killed world pawn {pawn.Name} due to failing {def.label}");
+                    if (Main.DoCheapLogging) Log.Message($"Killed world pawn {pawn.Name} due to failing {def.label}");
                     return nextEventTime;
                 }
 
                 if (Main.loggingV) Log.Message($"Time to apply stuff. We've got Hediff {effect.hediff}.");
 
-                if (Main.logging) Log.Message($"Event for {def.LabelCap} on {pawn.Name}. Applying: \"{effect.hediff.LabelCap}\".\n" +
+                if (Main.loggingV) Log.Message($"Event for {def.LabelCap} on {pawn.Name}. Applying: \"{effect.hediff.LabelCap}\".\n" +
                     $"Threshold was {threshold.label} ({baseRating:f2}->{adjustedRating:f2}), Chance was {threshold.odds * 100f:f2}%. Rolled {rng * 100:f2}%. Forced: {forceEvent}.\n" +
                     $"Extras: FilterIfExisting: {effect.ShouldFilterIfExisting()}. Probability Weight: {effect.weight}. Custom Severity Range {effect.severityRange != null}. Custom Severity Rate: {effect.severityPerDayRange != null}\n" +
                     $"Next Event of this type in {nextEventTime / 60000.0:f2} days.\n");
@@ -341,7 +341,7 @@ namespace RedHealth
                             // Default to 20% severity if nothing is specified.
                             SetSeverity(pawn, existingHediff, effect.severityRange?.RandomInRange ?? 0.5f, set: false);
                             hediffsModified.Add(existingHediff);
-                            if (Main.loggingV) Log.Message($"Stacked {effect.hediff.defName} on {pawn.Name}");
+                            if (Main.DoCheapLogging) Log.Message($"Stacked {effect.hediff.defName} on {pawn.Name}");
                         }
                         else
                         {
@@ -349,7 +349,7 @@ namespace RedHealth
                             SetSeverity(pawn, existingHediff, effect.severityRange?.RandomInRange, set: true);
                             pawn.health.AddHediff(newHediff);
                             newHediffs.Add(newHediff);
-                            if (Main.loggingV) Log.Message($"Added {effect.hediff.defName} to {pawn.Name}");
+                            if (Main.DoCheapLogging) Log.Message($"Added {effect.hediff.defName} to {pawn.Name}");
                         }
                     }
                     else
@@ -380,7 +380,7 @@ namespace RedHealth
                                 //Hediff existingHediff = null;
                                 if (existingHediff != null && effect.stackWithExisting)
                                 {
-                                    if (Main.loggingV) Log.Message($"Stacking {effect.hediff.defName} on {pawn.Name} on {bodyPart.def.defName}");
+                                    if (Main.DoCheapLogging) Log.Message($"Stacking {effect.hediff.defName} on {pawn.Name} on {bodyPart.def.defName}");
                                     hediffsModified.Add(existingHediff);
                                     SetSeverity(pawn, existingHediff, effect.severityRange?.RandomInRange ?? 0.5f, set: false, part: bodyPart);
                                 }
@@ -390,7 +390,7 @@ namespace RedHealth
                                     SetSeverity(pawn, newHediff, effect.severityRange?.RandomInRange ?? 0.2f, set: true, part: bodyPart);
                                     pawn.health.AddHediff(newHediff, bodyPart);
                                     newHediffs.Add(newHediff);
-                                    if (Main.loggingV) Log.Message($"Added {effect.hediff.defName} to {pawn.Name} on {bodyPart.def.defName}");
+                                    if (Main.DoCheapLogging) Log.Message($"Added {effect.hediff.defName} to {pawn.Name} on {bodyPart.def.defName}");
                                 }
                                 partFound = true;
                                 break;
@@ -436,13 +436,13 @@ namespace RedHealth
 
                 if (effect.killPawn)
                 {
-                    if (Main.loggingV) Log.Message($"Killing {pawn.Name}");
+                    if (Main.DoCheapLogging) Log.Message($"Killing {pawn.Name}");
                     pawn.Kill(null, newHediffs.FirstOrDefault());
                     return nextEventTime;
                 }
                 if (effect.killWorldPawn && pawn.IsWorldPawn() && pawn.Faction != Faction.OfPlayerSilentFail)
                 {
-                    if (Main.loggingV) Log.Message($"Killing {pawn.Name}");
+                    if (Main.DoCheapLogging) Log.Message($"Killing {pawn.Name}");
                     pawn.Kill(null, newHediffs.FirstOrDefault());
                     return nextEventTime;
                 }

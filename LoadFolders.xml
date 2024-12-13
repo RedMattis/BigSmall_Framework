@@ -18,6 +18,7 @@
     <!-- <li>1.5/No_HAR</li> -->
     <li IfModActive="nals.facialanimation">1.5/FacialAnim</li>
     <li>1.5/SimplyRaces</li>
-    <li>1.5/Experimental</li>
+    <!-- <li>1.5/Experimental</li> -->
+    <li IfModNotActive="RedMattis.RedHealth">1.5/RedHealth</li>
   </v1.5>
 </loadFolders>

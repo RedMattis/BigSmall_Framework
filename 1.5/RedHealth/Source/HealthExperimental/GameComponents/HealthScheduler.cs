@@ -16,6 +16,8 @@ namespace RedHealth
         private int? launchTick = null;
 
         public Game game;
+
+        
         public HealthScheduler(Game game)
         {
             this.game = game;
@@ -25,15 +27,15 @@ namespace RedHealth
         public override void GameComponentTick()
         {
             int currentTick = Find.TickManager.TicksGame;
-            if (launchTick == null) launchTick = currentTick;
-            if (Main.logging)
+            launchTick ??= currentTick;
+            if (currentTick % 500 == 0)
             {
-                if (currentTick % 500 == 0)
+                if (Main.DoCheapLogging && Prefs.DevMode)
                 {
                     int? nextEvent = schedule.Keys?.OrderBy(x => x).FirstOrDefault();
                     if (nextEvent != null && schedule.Keys.Count > 0)
                     {
-                        Log.Message($"Simulated a total time of {(currentTick - launchTick) / 60000.0f * Main.debugTickDivider:f1} days");
+                        Log.Message($"Simulated a total time of {(currentTick - launchTick) / Main.settings.devEventTimeAcceleration * Main.debugTickDivider:f1} days");
                         Log.Message($"HealthScheduler tick is {currentTick}. Next event is at {nextEvent}. {nextEvent - currentTick} ticks away.");
                     }
                 }
@@ -58,7 +60,7 @@ namespace RedHealth
                 }
                 schedule.Remove(currentTick);
             }
-            if (Main.settings.activeOnAllPawnsByDefault && currentTick % 60000 == 0)
+            if (Main.settings.ActiveOnAllPawnsByDefault && currentTick % 60000 == 0)
             {
                 AddTrackersNow();
             }
@@ -76,13 +78,35 @@ namespace RedHealth
                 }
             }
         }
+        public static void RemoveAllTrackersNow()
+        {
+            var allPawns = PawnsFinder.AllMapsAndWorld_Alive;
+            foreach (var pawn in allPawns)
+            {
+                try
+                {
+                    if (pawn.health.hediffSet.hediffs.FirstOrDefault(x => x is HealthManager) is HealthManager healthManager)
+                    {
+                        pawn.health.RemoveHediff(healthManager);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Error($"Failed to remove HealthManager from {pawn}. {e}");
+                }
+            }
+        }
+
+        public override void LoadedGame()
+        {
+            if (Main.StandaloneModActive)
+            {
+                AddTrackersNow();
+            }
+        }
 
         public override void ExposeData()
         {
-            if (Scribe.mode == LoadSaveMode.LoadingVars)
-            {
-                
-            }
         }
     }
 }

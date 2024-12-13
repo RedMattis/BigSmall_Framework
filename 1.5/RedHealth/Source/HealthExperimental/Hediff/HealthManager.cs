@@ -27,10 +27,22 @@ namespace RedHealth
             if (firstTimeSetup)
             {
                 lifeSpanMultiplier = Rand.Range(1.0f, 1.5f);
-                if (Main.logging) Log.Message($"--------------------------\n" +
-                    $"Setup for Pawn {pawn}.\n" +
-                    $"They are {pawn.ageTracker.AgeBiologicalYearsFloat:f1} out of an maximum expected" +
-                        $"{pawn.RaceProps.AnyPawnKind.RaceProps.lifeExpectancy}*{pawn.GetStatValue(StatDefOf.LifespanFactor):f1}, or {GetAgePercentOfLifeMax():f1}% expectance when adjusted by their random scaling");
+                if (Main.DoCheapLogging)
+                {
+                    try
+                    {
+                        Log.Message($"--------------------------\n" +
+                        $"Setup for {pawn?.def?.LabelCap} {pawn}.\n" +
+                        $"They are {pawn?.ageTracker?.AgeBiologicalYearsFloat:f1} years a maximum expected " +
+                        $"({pawn.RaceProps?.AnyPawnKind?.RaceProps?.lifeExpectancy}*{pawn.GetStatValue(StatDefOf.LifespanFactor):f1}).\n" +
+                        $"They are at {GetAgePercentOfLifeMax()*100:f0}% of the expected lifespan when adjusted by their random scaling");
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Message($"Failed to print debug message for {pawn}. Possibly attempts to check a property their race lacks.\n{e}");
+                    }
+                }
+
                 firstTimeSetup = false;
                 // At most 120. But due to how the curves work they might well die long before that even if they roll 120.
 
@@ -73,23 +85,6 @@ namespace RedHealth
         {
             get
             {
-                //var sb = new System.Text.StringBuilder();
-                //var healthRating = GetOveralHealthLoss();
-                //if (healthRating == null) return overalHealth.def.thresholds.First().description;
-                //var threshold = GetOveralThreshold();
-
-                //sb.AppendLine(threshold.description);
-
-                //// Maybe make the ability to view these dependent on research?
-                //sb.AppendLine("");
-                //foreach (var aspect in healthAspects)
-                //{
-                //    var aspectRating = aspect.GetScore(pawn, healthRating.Value);
-                //    if (aspectRating == null) continue;
-                //    string aspectString = ToStateString(healthRating, aspect, aspectRating);
-                //    sb.AppendLine(aspectString);
-                //}
-                // return sb.ToString();
                 return "";
             }
         }
@@ -100,7 +95,7 @@ namespace RedHealth
             float score = aspect.GetScore(pawn, healthRating.Value) ?? 0;
             var threshold = aspect.GetThreshold(score);
             string innerText;
-            if (Prefs.DevMode) // score > 0 && score < 1
+            if (Main.settings.showPercentages) // Prefs.DevMode
             {
                 innerText = $"{threshold.label}, {aspect.AsHealthDisplay(score)}".Colorize(threshold.GetColor());
             }
@@ -153,7 +148,7 @@ namespace RedHealth
                     tipSb.AppendLine(aspectString);
                 }
 
-                if (Main.debug)
+                if (Main.settings.logging)
                 {
                     tipSb.AppendLine();
                     tipSb.AppendLine("DEBUG VARS");
@@ -203,7 +198,9 @@ namespace RedHealth
         public void QueueHealthEvent(string name, int time)
         {
             const int margin = 10; // Just so we don't have to worry about order of events.
-            if (Main.debug)
+            
+            float timeAcceleration = Main.settings.devEventTimeAcceleration;
+            if (timeAcceleration > 1.1f || timeAcceleration < 0.9f)
             {
                 int newTime = time / Main.debugTickDivider;
                 if (Main.loggingV) Log.Message($"[DEBUG] Reducing queue time for {pawn}'s {name} from {time} to {newTime}.\nChange: {time / (float)60000:f1} days to {newTime / (float)2500:f2} hours");

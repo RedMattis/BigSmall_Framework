@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using static RedHealth.SettingsWidgets;
-using static RedHealth.RedSettings;
 
 namespace RedHealth
 {
@@ -43,12 +42,20 @@ namespace RedHealth
 
             listStd.GapLine();
             listStd.Label("RED_HealthSettings".Translate().AsTipTitle());
-            CreateSettingCheckbox(listStd, "RED_HealthEnabledForAllPawns".Translate(), ref settings.activeOnAllPawnsByDefault);
+            if (!StandaloneModActive)
+            {
+                CreateSettingCheckbox(listStd, "RED_HealthEnabledForAllPawns".Translate(), ref settings._activeOnAllPawnsByDefault);
+            }
             if (listStd.ButtonText("RED_AddTrackersToValidPawns".Translate()))
             {
                 HealthScheduler.AddTrackersNow();
             }
+            if (listStd.ButtonText("RED_RemoveAddTrackersToValidPawns".Translate()))
+            {
+                HealthScheduler.RemoveAllTrackersNow();
+            }
             CreateSettingCheckbox(listStd, "RED_HideHealthTracker".Translate(), ref settings.hideHealthTracker);
+            CreateSettingCheckbox(listStd, "RED_ShowPercentages".Translate(), ref settings.showPercentages);
             CreateSettingCheckbox(listStd, "RED_HealthDisableForAll".Translate(), ref settings.disableForAll);
 
             listStd.Label("RED_SpecificTrackers".Translate().AsTipTitle());
@@ -66,11 +73,16 @@ namespace RedHealth
                 }
             }
 
+            CreateSettingsSlider(listStd, "RED_DevTimeAcceleration".Translate(), ref settings.devEventTimeAcceleration, 0.1f, Prefs.DevMode ? 100000f : 10f, x => x.ToString("F1"));
+
 
             // Check if in dev-mode
             if (Prefs.DevMode)
             {
-                // Unused.
+                listStd.GapLine();
+                listStd.Label("RED_DevSettings".Translate().AsTipTitle());
+                
+                CreateSettingCheckbox(listStd, "RED_Logging".Translate(), ref settings.logging);
             }
 
             listStd.End();
@@ -97,7 +109,7 @@ namespace RedHealth
     public class RedSettings : ModSettings
     {
         public static readonly bool activeOnAllPawnsByDefaultDefault = false;
-        public bool activeOnAllPawnsByDefault = activeOnAllPawnsByDefaultDefault;
+        public bool _activeOnAllPawnsByDefault = activeOnAllPawnsByDefaultDefault;
 
         public static readonly bool hideHealthTrackerDefault = false;
         public bool hideHealthTracker = hideHealthTrackerDefault;
@@ -105,19 +117,34 @@ namespace RedHealth
         public static readonly bool disableForAllDefault = false;
         public bool disableForAll = disableForAllDefault;
 
+        //public List<HealthAspectWrapper> aspectsHidden = [];
+
+        public float devEventTimeAcceleration = 1f;
+        public bool logging = false;
+
         public List<HealthAspectWrapper> aspectsDisabled = [];
 
-        public bool IsAspectDisabled(HealthAspect aspect)
-        {
-            return aspectsDisabled.Any(x => x.defName == aspect.defName && x.active is false);
-        }
+        public static readonly bool showPercentagesDefault = false;
+        public bool showPercentages = showPercentagesDefault;
+
+        public bool ActiveOnAllPawnsByDefault { get => Main.StandaloneModActive || _activeOnAllPawnsByDefault; set => _activeOnAllPawnsByDefault = value; }
+
+        //public bool IsAspectDisabled(HealthAspect aspect)
+        //{
+        //    return aspectsDisabled.Any(x => x.defName == aspect.defName && x.active is false);
+        //}
+
+
         public override void ExposeData()
         {
-            
-            Scribe_Values.Look(ref activeOnAllPawnsByDefault, "activeOnAllPawnsByDefault", activeOnAllPawnsByDefaultDefault);
+            Scribe_Values.Look(ref _activeOnAllPawnsByDefault, "activeOnAllPawnsByDefault", activeOnAllPawnsByDefaultDefault);
             Scribe_Values.Look(ref hideHealthTracker, "hideHealthTracker", hideHealthTrackerDefault);
             Scribe_Values.Look(ref disableForAll, "disableForAll", disableForAllDefault);
+            Scribe_Values.Look(ref showPercentages, "showPercentages", showPercentagesDefault);
             Scribe_Collections.Look(ref aspectsDisabled, "aspectsDisabled", LookMode.Deep);
+
+            Scribe_Values.Look(ref devEventTimeAcceleration, "devEventTimeAcceleration", 1f);
+            Scribe_Values.Look(ref logging, "logging", false);
 
             base.ExposeData();
         }

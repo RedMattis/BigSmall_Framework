@@ -46,6 +46,7 @@
   <!-- DEV-Settings -->
   <BS_DevSettings>Dev Options</BS_DevSettings>
   <BS_JesusMode>Max all needs</BS_JesusMode>
+  <BS_RecruitDevSpawned>Set B&amp;S Dev-Spawned pawns to Player faction.</BS_RecruitDevSpawned>
   <BS_HideNonBSGene>HideNoneBSGenes</BS_HideNonBSGene>
 
 

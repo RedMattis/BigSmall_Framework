@@ -3,10 +3,17 @@
   <RED_HealthSettings>Red Health</RED_HealthSettings>
   
   <RED_HealthEnabledForAllPawns>Activate</RED_HealthEnabledForAllPawns>
-  <RED_AddTrackersToValidPawns>Add health trackers now</RED_AddTrackersToValidPawns>
+  <RED_AddTrackersToValidPawns>Add health trackers for pawns missing them</RED_AddTrackersToValidPawns>
+  <RED_RemoveAddTrackersToValidPawns>Remove all health trackers</RED_RemoveAddTrackersToValidPawns>
   <RED_HideHealthTracker>Hide health tracker</RED_HideHealthTracker>
   <RED_HealthDisableForAll>Force disable for all (including when forced via gene/hediff)</RED_HealthDisableForAll>
 
   <RED_SpecificTrackers>Toggle specific aspects</RED_SpecificTrackers>
+
+  <RED_ShowPercentages>Show percentages</RED_ShowPercentages>
+
+  <RED_DevSettings>Developer settings</RED_DevSettings>
+  <RED_DevTimeAcceleration>Health event rate</RED_DevTimeAcceleration>
+  <RED_Logging>Activate Heavy Logging</RED_Logging>
   
 </LanguageData>

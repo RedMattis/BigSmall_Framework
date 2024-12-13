@@ -20,11 +20,11 @@ namespace BigAndSmall
         //private string healthScaleTxt;
         private string hungerScaleTxt;
 
-        public static BSRettings settings = null;
+        public static BSSettings settings = null;
 
         public BigSmallMod(ModContentPack content) : base(content)
         {
-            settings ??= GetSettings<BSRettings>();
+            settings ??= GetSettings<BSSettings>();
 
             //// Check if pawnmorhper (tachyonite.pawnmorpherpublic) is active
             //if (ModLister.HasActiveModWithName("Pawnmorpher"))
@@ -145,6 +145,8 @@ namespace BigAndSmall
                 listStd.GapLine();
                 listStd.Label("BS_DevSettings".Translate().AsTipTitle());
                 CreateSettingCheckbox(listStd, "BS_JesusMode".Translate(), ref settings.jesusMode);
+                CreateSettingCheckbox(listStd, "BS_RecruitDevSpawned".Translate(), ref settings.recruitDevSpawned);
+
             }
 
 
@@ -160,7 +162,7 @@ namespace BigAndSmall
         }
     }
 
-    public class BSRettings : ModSettings
+    public class BSSettings : ModSettings
     {
         private static readonly bool defaultGenerateDefs = true;
         public bool generateDefs = defaultGenerateDefs;
@@ -229,6 +231,9 @@ namespace BigAndSmall
         public static readonly bool defaultJesusMode = false;
         public bool jesusMode = defaultJesusMode;
 
+        public static readonly bool defaultRecruitDevSpawned = true;
+        public bool recruitDevSpawned = defaultRecruitDevSpawned;
+
         public override void ExposeData()
         {
             Scribe_Values.Look(ref experimental, "experimental", defaultExperimental);
@@ -256,6 +261,8 @@ namespace BigAndSmall
 
             // Scribe Dev Settings
             Scribe_Values.Look(ref jesusMode, "jesusMode", defaultJesusMode);
+            Scribe_Values.Look(ref recruitDevSpawned, "recruitDevSpawned", defaultRecruitDevSpawned);
+
 
             base.ExposeData();
         }

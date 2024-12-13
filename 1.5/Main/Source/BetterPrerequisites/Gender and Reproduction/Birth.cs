@@ -68,30 +68,46 @@ namespace BigAndSmall
             }
 
             disableBirthPatch = true;
-
-            babyStartAge = pawnExtensions.FirstOrDefault(x => x.babyStartAge != null)?.babyStartAge ?? null;
-
-            parents = new List<Pawn> { geneticMother, father }.Where(x=>x != null).ToList();
-            for (int i = 0; i < babiesToSpawn; i++)
+            bool success = false;
+            try
             {
-                if (ModsConfig.IsActive("RedMattis.BetterGeneInheritance") && i > 0)
+                babyStartAge = pawnExtensions.FirstOrDefault(x => x.babyStartAge != null)?.babyStartAge ?? null;
+
+                parents = new List<Pawn> { geneticMother, father }.Where(x => x != null).ToList();
+                for (int i = 0; i < babiesToSpawn; i++)
                 {
-                    // Invoke the "BGInheritance.BGI_HarmonyPatches.GetChildGenes" method which gives us new genes.
-                    newBabyGenes = (List<GeneDef>)AccessTools.Method("BGInheritance.BGI_HarmonyPatches:GetChildGenes").Invoke(null, new object[] { geneticMother, father });
+                    if (ModsConfig.IsActive("RedMattis.BetterGeneInheritance") && i > 0)
+                    {
+                        // Invoke the "BGInheritance.BGI_HarmonyPatches.GetChildGenes" method which gives us new genes.
+                        newBabyGenes = (List<GeneDef>)AccessTools.Method("BGInheritance.BGI_HarmonyPatches:GetChildGenes").Invoke(null, [geneticMother, father]);
+                    }
+                    PregnancyUtility.ApplyBirthOutcome_NewTemp(outcome, quality, ritual, genes, geneticMother, birtherThing, father, doctor, lordJobRitual, assignments, preventLetter);
+                    newBabyGenes = null;
                 }
-                PregnancyUtility.ApplyBirthOutcome_NewTemp(outcome, quality, ritual, genes, geneticMother, birtherThing, father, doctor, lordJobRitual, assignments, preventLetter);
-                newBabyGenes = null;
+                parents.Clear();
+                success = true;
             }
-            parents.Clear();
-            babyStartAge = null;
-            disableBirthPatch = false;
+            finally
+            {
+                disableBirthPatch = false;
+                newBabyGenes = null;
+                babyStartAge = null;
+                if (!success)
+                {
+                    Log.Error("An Exception was thrown during the birth process.\n" +
+                        "The error was not captured but start-state has been salvaged.\n" +
+
+                        "The exception which occured may prevent Better Gene Inheritance genes from being applied" +
+                        "correctly, or prevent the likes of litterbirth genes from working.");
+                }
+            }
             return false;
         }
 
         [HarmonyPatch(
             typeof(PawnGenerator),
             nameof(PawnGenerator.GeneratePawn),
-            new Type[] { typeof(PawnGenerationRequest) })
+            [typeof(PawnGenerationRequest)])
             ]
         [HarmonyPostfix]
         public static void GeneratePawnPostfix(Pawn __result, PawnGenerationRequest request)

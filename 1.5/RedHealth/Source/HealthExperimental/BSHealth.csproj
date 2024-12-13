@@ -88,4 +88,14 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>set targetDir=%25(TargetDir)
+if exist "%25(SolutionDir)..\..\..\..\..\..\Red Health\Assemblies" (
+    xcopy "$(TargetPath)" "%25(SolutionDir)..\..\..\..\..\..\Red Health\Assemblies" /Y
+   echo Copy successful: "$(TargetPath)" to "%25(SolutionDir)..\..\..\..\..\..\Red Health\Assemblies"
+) else (
+    echo Warning: Target directory "%25(SolutionDir)..\..\..\..\..\..\Red Health\Assemblies" could not be copied to or does not exist.
+)
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>

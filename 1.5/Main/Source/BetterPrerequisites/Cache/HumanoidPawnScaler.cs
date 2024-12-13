@@ -8,8 +8,13 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 
+
 namespace BigAndSmall
 {
+    public static class BS
+    {
+        public static BSSettings Settings => BigSmallMod.settings;
+    }
     public class BigAndSmallCache : GameComponent
     {
         public static HashSet<PGene> pGenesThatReevaluate = [];

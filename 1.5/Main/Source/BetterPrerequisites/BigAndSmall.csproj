@@ -277,6 +277,7 @@
     <Publicize Include="Assembly-CSharp:Verse.PawnRenderer.pawn" />
     <Publicize Include="Assembly-CSharp:Verse.PawnRenderer.results" />
     <Publicize Include="Assembly-CSharp:Verse.PawnRenderer+PreRenderResults" />
+    <Publicize Include="Assembly-CSharp:Verse.DebugToolsSpawning.PostPawnSpawn" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
