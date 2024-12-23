@@ -379,6 +379,7 @@ namespace BigAndSmall
         public string headDessicatedGraphicPath = null;
         public CustomMaterial bodyMaterial = null;
         public CustomMaterial headMaterial = null;
+        public RotDrawMode? forcedRotDrawMode = null;
 
         public float bodyRenderSize = 1;
         public float headRenderSize = 1;
@@ -824,6 +825,9 @@ namespace BigAndSmall
                 complexHeadOffsets = allPawnExt.Select(x => x.headDrawData).Where(x => x != null).ToList().GetCombinedOffsetsByRot(headPositionMultiplier);
                 complexBodyOffsets = allPawnExt.Select(x => x.bodyDrawData).Where(x => x != null).ToList().GetCombinedOffsetsByRot();
 
+
+                var forcedRot = allPawnExt.Select(x => x.forcedRotDrawMode).Where(x => x != null);
+                forcedRotDrawMode = forcedRot.EnumerableNullOrEmpty() ? null : forcedRot.First();
                 // Check if the body size, head size, body offset, or head position has changed. If not set approximatelyNoChange to false.
                 approximatelyNoChange = bodyRenderSize.Approx(1) && headRenderSize.Approx(1) && bodyPosOffset.Approx(0) &&
                     headPosMultiplier.Approx(1) && headPositionMultiplier.Approx(1) && worldspaceOffset.Approx(0) &&
@@ -873,7 +877,12 @@ namespace BigAndSmall
 
         private Gender? GetApparentGender(List<PawnExtension> allExts = null)
         {
-            return allExts.FirstOrDefault(x => x.ApparentGender != null)?.ApparentGender;
+            Gender? gender = allExts.FirstOrDefault(x => x.ApparentGender != null)?.ApparentGender;
+            bool invertApparentGender = allExts.Any(x => x.invertApparentGender);
+
+            if (gender != null && invertApparentGender) gender = gender == Gender.Male ? Gender.Female : Gender.Male;
+            if (gender == null && invertApparentGender) gender = pawn.gender == Gender.Male ? Gender.Female : Gender.Male;
+            return gender;
         }
 
         public void ReevaluateGraphics(List<PawnExtension> otherExts = null, List<PawnExtension> raceExts = null)

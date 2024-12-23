@@ -117,8 +117,10 @@
     <Compile Include="DefPatches\RecipesDefPatches.cs" />
     <Compile Include="Hediffs\TakeDamage.cs" />
     <Compile Include="Items\ApparelRestrictions.cs" />
+    <Compile Include="Items\EquipNotifyPatches.cs" />
     <Compile Include="ModExtensions\SmartExtension.cs" />
     <Compile Include="ModExtensions\ModExtHelper.cs" />
+    <Compile Include="ModPatches\MiscCompatibility\HumanoidAlienRaces.cs" />
     <Compile Include="Path Operations\SettingsBasedPatches.cs" />
     <Compile Include="Pawn\PawnGeneration\GenerateNewPawnInternal.cs" />
     <Compile Include="Pawn\PawnPatches.cs" />
@@ -273,11 +275,20 @@
   </ItemGroup>
   <ItemGroup>
     <Publicize Include="Assembly-CSharp:RimWorld.Pawn_GeneTracker.xenotype" />
+    
     <Publicize Include="Assembly-CSharp:Verse.Hediff.severityInt" />
+    
     <Publicize Include="Assembly-CSharp:Verse.PawnRenderer.pawn" />
     <Publicize Include="Assembly-CSharp:Verse.PawnRenderer.results" />
     <Publicize Include="Assembly-CSharp:Verse.PawnRenderer+PreRenderResults" />
+    
     <Publicize Include="Assembly-CSharp:Verse.DebugToolsSpawning.PostPawnSpawn" />
+    
+    <Publicize Include="Assembly-CSharp:Verse.RecipeDef.ingredients" />
+    <Publicize Include="Assembly-CSharp:Verse.ThingFilter.allowedDefs" />
+    <Publicize Include="Assembly-CSharp:Verse.ThingFilter.thingDefs" />
+    
+    <Publicize Include="Assembly-CSharp:Verse.ThingDef.verbs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

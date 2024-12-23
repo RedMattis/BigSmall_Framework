@@ -57,16 +57,19 @@ namespace BigAndSmall
                 // So we don't append to the original lists...
                 newThing.modExtensions = sThing.modExtensions != null ? [.. sThing.modExtensions] : [];
                 newThing.comps = sThing.comps != null ? [.. sThing.comps] : null;
+                newThing.thingCategories = sThing.thingCategories != null ? [.. sThing.thingCategories] : [];
+                newThing.recipes = sThing.recipes != null ? [.. sThing.recipes] : null;
+                newThing.tools = sThing.tools != null ? [.. sThing.tools] : null;
+                newThing.inspectorTabs = sThing.inspectorTabs != null ? [.. sThing.inspectorTabs] : null;
+                newThing.inspectorTabsResolved = sThing.inspectorTabsResolved != null ? [.. sThing.inspectorTabsResolved] : null;
+                //newThing.tradeTags = sThing.tradeTags != null ? [.. sThing.tradeTags] : null;
+                newThing.verbs = sThing.verbs != null ? [.. sThing.verbs] : null;
+                //newThing.stuffCategories = sThing.stuffCategories != null ? [.. sThing.stuffCategories] : null;
+                newThing.thingSetMakerTags = sThing.thingSetMakerTags != null ? [.. sThing.thingSetMakerTags] : null;
+                newThing.butcherProducts = sThing.butcherProducts != null ? [.. sThing.butcherProducts] : null;
+                newThing.smeltProducts = sThing.smeltProducts != null ? [.. sThing.smeltProducts] : null;
+                newThing.virtualDefs = sThing.virtualDefs != null ? [.. sThing.virtualDefs] : null;
 
-                // Removes Comps that there shouldn't be more than one of.
-                //List<string> maxOneCompList = ["CompProperties_Transmog"];
-                //if (newThing.comps != null)
-                //{
-                //    newThing.comps = newThing.comps
-                //        .GroupBy(comp => comp.GetType().Name)
-                //        .SelectMany(group => maxOneCompList.Contains(group.Key) ? group.Take(1) : group)
-                //        .ToList();
-                //}
 
                 // Deduplicate inspector tabs
                 if (newThing.inspectorTabs != null)
@@ -95,12 +98,27 @@ namespace BigAndSmall
                 newRace.body = sRace.body;
                 newRace.renderTree = sRace.renderTree;
                 newRace.corpseDef = sRace.corpseDef;
+                newRace.linkedCorpseKind = sRace.linkedCorpseKind;
 
                 bool makeCorpse = newRace.hasCorpse && newRace.linkedCorpseKind == null;
-                if (makeCorpse)
+                if (makeCorpse && sThing?.race?.corpseDef != null)
                 {
                     // And Corpse
-                    var newCorpse = newRace.corpseDef.GetType().GetConstructor([]).Invoke([]) as ThingDef;
+
+                    ThingDef newCorpse = new();
+                    //if (fields == null)
+                    //{
+                    //    Log.Error($"Failed to get fields from corpseDef of \"{sThing?.defName}\".\n");
+                    //    Log.Error($"{sThing?.race?.corpseDef}");
+                    //    if (sThing?.race?.corpseDef != null)
+                    //    {
+                    //        Log.Error($"{sThing?.race?.corpseDef?.GetType()}");
+                    //        Log.Error($"{sThing?.race?.corpseDef?.GetType()?.GetFields()}");
+                    //        Log.Error($"{sThing}.{sThing?.race}.{sThing?.race?.corpseDef}.{sThing?.race?.corpseDef?.GetType()}, {sThing?.race?.corpseDef?.GetType()?.GetFields()}");
+                    //    }
+                    //    fields = [];
+                    //}
+
                     foreach (var field in sThing.race.corpseDef.GetType().GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
                     {
                         try
@@ -115,12 +133,17 @@ namespace BigAndSmall
                     }
                     newRace.corpseDef = newCorpse;
                     newCorpse.defName = $"{body.defName}_Corpse";
-                    newCorpse.label = $"Corpse of {body.LabelCap}";
+                    newCorpse.label = "BS_CorpseOf".Translate(body.LabelCap);
                     newCorpse.race = newRace;
-                    //newCorpse.modExtensions ??= [];
-                    //newCorpse.modExtensions.RemoveAll(x => x is RaceExtension);
-                    //newCorpse.modExtensions.Add(newRaceExtension);
+
+                    newCorpse.modExtensions ??= [];
+                    newCorpse.modExtensions.RemoveAll(x => x is RaceExtension);
+                    newCorpse.modExtensions.Add(newRaceExtension);
+
+                    Log.Message($"[Big and Small]: Generated CorpseDef for {newThing?.defName} with the name {newCorpse.label} ({newCorpse.defName}).");
                 }
+
+
 
 
                 // Lets not generate a bunch of unnatural corpses. Set via reflection because of reports that the 
@@ -140,6 +163,7 @@ namespace BigAndSmall
 
                 if (fusedBody.isMechanical)
                 {
+
                 }
                 if (fusedBody.fuseSetBody is MergableBody fSBody)
                 {
@@ -185,11 +209,14 @@ namespace BigAndSmall
                 // Hmm... doesn't seem worth the mess.
                 //newThing.tools = [.. allThingDefSources.Where(x => x.tools != null).SelectMany(x => x?.tools).Where(x => x != null).ToList().Distinct()];
 
-                fusedBody.thing = newThing;
+                fusedBody.SetThing(newThing);
 
                 // Add the things to the game.
                 DefGenerator.AddImpliedDef(newThing, hotReload: hotReload);
                 DefGenerator.AddImpliedDef(newRace.body, hotReload: hotReload);
+
+                bodyDefsAdded.Add(newRace.body);
+                thingDefsAdded.Add(newThing);
                 //DefDatabase<ThingDef>.Add(newThing);
                 //DefDatabase<BodyDef>.Add(body);
 

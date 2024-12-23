@@ -16,6 +16,21 @@ namespace BigAndSmall
         public const string MESH_DEF = "Mech";
         public const string MESH_LABEL = "BS_Mech";
         public static bool doDebug = false;
+
+        public static HashSet<BodyDef> bodyDefsAdded = [];
+        public static HashSet<ThingDef> thingDefsAdded = [];
+
+        public static void PreHotreload()
+        {
+            FusedBody.FusedBodies.Clear();
+            FusedBody.FusedBodyByThing.Clear();
+            bodyDefsAdded.ToList().ForEach(bodyDef =>
+            {
+                bodyDef.AllParts.Clear();
+                //DefDatabase<BodyDef>.AllDefsListForReading.Remove(bodyDef);
+            });
+            //thingDefsAdded.ToList().ForEach(thingDef => DefDatabase<ThingDef>.AllDefsListForReading.Remove(thingDef));
+        }
         /// <summary>
         /// Merge body parts.
         /// </summary>
@@ -36,17 +51,6 @@ namespace BigAndSmall
 
             if (bodyDefsToMerge.Count < 2)
             {
-                return;
-            }
-
-            if (hotReload)
-            {
-                foreach (var vb in FusedBody.FusedBodies.Values.Where(x => !x.fake))
-                {
-                    //try { DefGenerator.AddImpliedDef(vb.generatedBody, hotReload: true); } catch (Exception e) { Log.Warning("Hotreload Warning: " + e.ToString()); }
-                    //try { DefGenerator.AddImpliedDef(vb.thing, hotReload: true); } catch (Exception e) { Log.Warning("Hotreload Warning: " + e.ToString()); }
-                    //DefGenerator.AddImpliedDef(vb.thing.race.body, hotReload: true);
-                }
                 return;
             }
 
@@ -125,7 +129,7 @@ namespace BigAndSmall
             if (doDebug) Log.Message($"Running FuseSets on Sources. There are {fuseSets.Count} sets to fuse, and {bodyDefsToMerge.Count} sources to fuse them with.");
             foreach (var fusedSetBody in fuseSets.Where(x => x.fuseSet))
             {
-                foreach (var baseMergable in bodyDefsToMerge.Where(x => fusedSetBody.isMechanical == false || x.canMakeRobotVersion))
+                foreach (var baseMergable in bodyDefsToMerge.Where(x => x != fusedSetBody && (fusedSetBody.isMechanical == false || x.canMakeRobotVersion)))
                 {
                     //var existing = DefDatabase<BodyDef>.AllDefs.FirstOrDefault(x => x.defName == newDefName);
                     string defName = fusedSetBody.overrideDefNamer ?? fusedSetBody.bodyDef.defName;
@@ -207,7 +211,11 @@ namespace BigAndSmall
                         }
 
                         //generatedBodyDefs[(bodyOne, bodyTwo)] = genBody;
-                        new FusedBody(genBody, fusetSetBody:null, mechanical: bodyOne.isMechanical, [bodyOne, .. secondaryBodies]);
+                        new FusedBody(
+                            genBody,
+                            fusetSetBody:null,
+                            mechanical: bodyOne.isMechanical || secondaryBodies.Any(x=>x.isMechanical),
+                            [bodyOne, .. secondaryBodies]);
                     }
                 }
             }

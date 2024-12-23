@@ -56,8 +56,8 @@ namespace BigAndSmall
                     Log.WarningOnce($"[BigAndSmall] No texture path for {pawn}. Returning empty image.", GetHashCode());
                     return GraphicDatabase.Get<Graphic_Single>(noImage);
                 }
-                Color colorOne = graphicSet.colorA.GetColor(pawn, Color.white, ColorSetting.clrOneKey);
-                Color colorTwo = graphicSet.colorB.GetColor(pawn, Color.white, ColorSetting.clrTwoKey);
+                Color colorOne = graphicSet.colorA.GetColor(this, Color.white, ColorSetting.clrOneKey);
+                Color colorTwo = graphicSet.colorB.GetColor(this, Color.white, ColorSetting.clrTwoKey);
                 ShaderTypeDef shader = props.shader ?? ShaderTypeDefOf.CutoutComplex;
 
                 

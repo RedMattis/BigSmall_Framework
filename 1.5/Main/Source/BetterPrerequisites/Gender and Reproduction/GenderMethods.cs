@@ -125,6 +125,8 @@ namespace BigAndSmall
         }
         public static bool TryBodyGenderBodyUpdate(BodyTypeDef bodyType, Gender apparentGender, BSCache cache, out BodyTypeDef newBody)
         {
+
+            var harLegalBodies = HARCompat.TryGetHarBodiesForThingdef(cache?.pawn?.def);
             newBody = null;
             if (IsBodyStandard(bodyType))
             {
@@ -134,7 +136,10 @@ namespace BigAndSmall
                     Gender.Female => BodyTypeDefOf.Female,
                     _ => null
                 };
-
+                if (harLegalBodies != null && !harLegalBodies.Contains(newBody))
+                {
+                    return false;
+                }
                 return newBody != null && newBody != bodyType;
             }
             return false;
@@ -185,8 +190,9 @@ namespace BigAndSmall
                 force;
 
             // 
+            var harLegalBodies = HARCompat.TryGetHarBodiesForThingdef(cache?.pawn?.def);
 
-            if (updateBody)
+            if (updateBody && harLegalBodies == null)
             {
                 bool adult = pawn.IsAdult();
                 var currentBody = pawn.story?.bodyType;

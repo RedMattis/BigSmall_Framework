@@ -25,7 +25,7 @@ namespace RedHealth
         public const bool loggingV = false;
         public const bool logging = false;
         public static bool debug = false;
-        public const int debugTickDivider = 5000;
+        //public const int debugTickDivider = 5000;
 
         public static bool StandaloneModActive = false;
 

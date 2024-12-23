@@ -25,10 +25,10 @@ namespace BigAndSmall
         }
     }
 
-    [HarmonyPatch(typeof(TerrorUtility), nameof(TerrorUtility.GetTerrorThoughts), new Type[]
-    {
+    [HarmonyPatch(typeof(TerrorUtility), nameof(TerrorUtility.GetTerrorThoughts),
+    [
         typeof(Pawn),
-    })]
+    ])]
     public static class GetTerrorThoughts_Patch
     {
         public static bool Prefix(ref IEnumerable<Thought_MemoryObservationTerror> __result, Pawn pawn)

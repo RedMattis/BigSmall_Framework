@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using RimWorld;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -185,6 +186,29 @@ namespace BigAndSmall
                 __result = false;
                 reason = AnyEnum.FromEnum(Condition.NoPsychicSensitivity);
             }
+        }
+
+        [HarmonyPatch(
+            typeof(Corpse),
+            nameof(Corpse.ButcherProducts),
+             [ typeof(Pawn), typeof(float) ]
+        )]
+        [HarmonyPrefix]
+        public static bool ButcherProducts_Prefix(ref IEnumerable<Thing> __result, Corpse __instance, Pawn butcher, float efficiency)
+        {
+            if (__instance?.InnerPawn?.def?.IsMechanicalDef() == true)
+            {
+                IEnumerable<Thing> EnumerableFromLambda()
+                {
+                    foreach (var item in __instance.InnerPawn.ButcherProducts(butcher, efficiency * __instance.InnerPawn.BodySize))
+                    {
+                        yield return item;
+                    }
+                }
+                __result = EnumerableFromLambda();
+                return false;
+            }
+            return true;
         }
     }
 

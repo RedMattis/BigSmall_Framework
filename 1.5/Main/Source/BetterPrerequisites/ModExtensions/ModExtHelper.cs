@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -13,12 +14,15 @@ namespace BigAndSmall
             if (includeInactiveGenes)
             {
                 return [.. GetHediffExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
-                    .. GetAllGeneExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort)];
+                    .. GetAllGeneExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
+                    .. GetAllActiveTraitExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort)];
             }
             else
             {
                 return [.. GetHediffExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
-                    .. GetActiveGeneExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort)];
+                    .. GetActiveGeneExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
+                    .. GetAllActiveTraitExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort)
+                    ];
             }
         }
         public static List<PawnExtension> GetAllPawnExtensionsOnHediff(this HediffDef hediffDef, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true)
@@ -30,12 +34,15 @@ namespace BigAndSmall
         public static List<T> GetAllExtensions<T>(this Pawn pawn, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) where T : DefModExtension
         {
             return [.. GetHediffExtensions<T>(pawn, parentWhitelist, parentBlacklist, doSort),
-                    .. GetActiveGeneExtensions<T>(pawn, parentWhitelist, parentBlacklist, doSort)];
+                    .. GetActiveGeneExtensions<T>(pawn, parentWhitelist, parentBlacklist, doSort),
+                    .. GetAllActiveTraitExtensions<T>(pawn, parentWhitelist, parentBlacklist, doSort)
+                    ];
         }
         public static List<T> GetAllExtensionsPlusInactive<T>(this Pawn pawn, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) where T : DefModExtension
         {
             return [.. GetHediffExtensions<T>(pawn, parentWhitelist, parentBlacklist, doSort),
-                    .. GetAllGeneExtensions<T>(pawn, parentWhitelist, parentBlacklist, doSort)];
+                    .. GetAllGeneExtensions<T>(pawn, parentWhitelist, parentBlacklist, doSort),
+                    .. GetAllATraitExtensions<T>(pawn, parentWhitelist, parentBlacklist, doSort)];
         }
 
         public static List<T> GetHediffExtensions<T>(this Pawn pawn, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) where T : DefModExtension
@@ -57,6 +64,20 @@ namespace BigAndSmall
         {
             List<ModExtWrapper<T>> matches = GetAllMatchingExtensionsFromGenes<T>(pawn, true);
             return GetFilteredResult(matches, parentWhitelist, parentBlacklist, doSort);
+        }
+
+        public static List<T> GetAllActiveTraitExtensions<T>(this Pawn pawn, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) where T : DefModExtension
+        {
+            List<T> extensions = [];
+            if (pawn.story?.traits?.allTraits?.Any() != true) return extensions;
+            return pawn.story.traits.allTraits.Where(x=>!x.Suppressed).Select(x=>x.def).ToList().ExtensionsOnDefList<T,TraitDef>(parentWhitelist, parentBlacklist, doSort);
+        }
+
+        public static List<T> GetAllATraitExtensions<T>(this Pawn pawn, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) where T : DefModExtension
+        {
+            List<T> extensions = [];
+            if (pawn.story?.traits?.allTraits?.Any() != true) return extensions;
+            return pawn.story.traits.allTraits.Select(x => x.def).ToList().ExtensionsOnDefList<T, TraitDef>(parentWhitelist, parentBlacklist, doSort);
         }
 
         // Private use by class.
@@ -153,6 +174,10 @@ namespace BigAndSmall
             if (source == typeof(RaceTracker))
             {
                 defaultPriority = -100; // Ensures that stuff grabbing "FirstOrDefault" will not get this if there are other options.
+            }
+            else if (def is TraitDef trait)
+            {
+                defaultPriority = -10;
             }
             else if (def is GeneDef)
             {

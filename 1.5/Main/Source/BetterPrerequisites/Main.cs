@@ -23,17 +23,16 @@ namespace BigAndSmall
 
             PregnancyPatches.ApplyPatches();
             RunDefPatchesWithHotReload(hotReload: false);
-            XenotypeDefPatcher.PatchDefs();
-            ModDefPatcher.PatchDefs();
-            HumanPatcher.PatchRecipes();
+            
             NewFoodCategory.SetupFoodCategories();
             ThoughtDefPatcher.PatchDefs();
 
-            
-
             GlobalSettings.Initialize();
             DefAltNamer.Initialize();
-            
+
+            HARCompat.SetupHARThingsIfHARIsActive();
+
+
         }
 
         public static void RunDefPatchesWithHotReload(bool hotReload)
@@ -45,19 +44,29 @@ namespace BigAndSmall
                 //Log.Message($"[Big and Small]: Experimental Options - Active.\n" +
                 //    $"Initializing Merged BodyDefs...");
                 RaceFuser.CreateMergedBodyTypes(hotReload);
+                XenotypeDefPatcher.PatchDefs();
+                ModDefPatcher.PatchDefs();
+                HumanPatcher.PatchRecipes();
                 //Log.Message($"[Big and Small]: Experimental Setup - Finalized.");
             }
         }
     }
-    [Harmony]
+    [HarmonyPatch]
     public static class ReloadPatches
     {
         [HarmonyPostfix]
         [HarmonyPatch(typeof(DefGenerator), nameof(DefGenerator.GenerateImpliedDefs_PreResolve))]
-        public static void LoadAllActiveModsPostfix()
+        public static void LoadAllActiveModsPostfix(bool hotReload)
         {
-            BSCore.RunDefPatchesWithHotReload(hotReload: true);
+            BSCore.RunDefPatchesWithHotReload(hotReload: hotReload);
             
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(DefGenerator), nameof(DefGenerator.GenerateImpliedDefs_PreResolve))]
+        public static void LoadAllActiveModsPrefix(bool hotReload)
+        {
+            RaceFuser.PreHotreload();
         }
     }
 

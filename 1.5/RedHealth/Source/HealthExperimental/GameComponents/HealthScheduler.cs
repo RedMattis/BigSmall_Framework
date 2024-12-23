@@ -30,12 +30,12 @@ namespace RedHealth
             launchTick ??= currentTick;
             if (currentTick % 500 == 0)
             {
-                if (Main.DoCheapLogging && Prefs.DevMode)
+                if (Main.DoCheapLogging && Prefs.DevMode && Main.settings.devEventTimeAcceleration > 1000)
                 {
                     int? nextEvent = schedule.Keys?.OrderBy(x => x).FirstOrDefault();
                     if (nextEvent != null && schedule.Keys.Count > 0)
                     {
-                        Log.Message($"Simulated a total time of {(currentTick - launchTick) / Main.settings.devEventTimeAcceleration * Main.debugTickDivider:f1} days");
+                        Log.Message($"Simulated a total time of {(currentTick - launchTick) / Main.settings.devEventTimeAcceleration / 60000:f1} days");
                         Log.Message($"HealthScheduler tick is {currentTick}. Next event is at {nextEvent}. {nextEvent - currentTick} ticks away.");
                     }
                 }
@@ -85,7 +85,8 @@ namespace RedHealth
             {
                 try
                 {
-                    if (pawn.health.hediffSet.hediffs.FirstOrDefault(x => x is HealthManager) is HealthManager healthManager)
+                    HealthManager healthManager = pawn.health.hediffSet.hediffs.FirstOrDefault(x => x is HealthManager) as HealthManager;
+                    if (healthManager != null)
                     {
                         pawn.health.RemoveHediff(healthManager);
                     }

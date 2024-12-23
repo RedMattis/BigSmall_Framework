@@ -66,7 +66,7 @@ namespace BigAndSmall
     {
         public static void PatchRecipes()
         {
-            MigrateHumanRecipes();
+            MigrateThingDefLinks();
             PatchCustomBodyPartDefs();
         }
 
@@ -96,7 +96,7 @@ namespace BigAndSmall
 
         private static List<ThingDef> raceThingList = [];
         private static List<(ThingDef thing, List<RaceExtension> raceExts)> thingsWithRaceExtension = [];
-        private static void MigrateHumanRecipes()
+        private static void MigrateThingDefLinks()
         {
             raceThingList = DefDatabase<ThingDef>.AllDefs.Where(x => x.race is RaceProperties rp).ToList();
             thingsWithRaceExtension = DefDatabase<ThingDef>.AllDefs
@@ -156,6 +156,32 @@ namespace BigAndSmall
                 {
                     thing.recipes.Add(recipe);
                     //Log.Message($"Patched recipe {recipe.defName} to include {thing.defName}");
+                }
+            }
+
+            foreach(var thing in raceThingList.Distinct())
+            {
+                if (thing.IsMechanicalDef())
+                {
+                    if (thing.race?.corpseDef != null)
+                    {
+                        Log.Message($"DEBUG: Patching {thing.defName} to allow butchering and smashing");
+                        var corpse = thing.race.corpseDef;
+                        //BSDefs.BS_ShredRobot.fixedIngredientFilter.SetAllow(corpse, true);
+                        //BSDefs.BS_SmashRobot.fixedIngredientFilter.SetAllow(corpse, true);
+                        //Log.Message($"DEBUG: Patched corse of {thing.defName}/{corpse.defName}: {BSDefs.BS_ShredRobot.fixedIngredientFilter.AllowedThingDefs.Any(x => x == corpse)}");
+
+                        //DirectXmlCrossRefLoader.RegisterListWantsCrossRef(thing.thingCategories, thing.race.Humanlike ? ThingCategoryDefOf.CorpsesHumanlike.defName : thing.race.FleshType.corpseCategory.defName, thing);
+                        //corpse.thingCategories ??= [];
+                        //corpse.thingCategories.Add(BSDefs.BS_RobotCorpses);
+                        DirectXmlCrossRefLoader.RegisterListWantsCrossRef(corpse.thingCategories, BSDefs.BS_RobotCorpses.defName, corpse);
+
+                        corpse.comps.RemoveAll((CompProperties compProperties) => compProperties is CompProperties_SpawnerFilth
+                            //|| compProperties?.compClass == typeof(CompHarbingerTreeConsumable)
+                            || compProperties is CompProperties_Rottable);
+
+
+                    }
                 }
             }
         }

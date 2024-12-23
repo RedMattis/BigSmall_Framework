@@ -10,7 +10,7 @@ using Verse;
 namespace BigAndSmall
 {
     [HarmonyPatch]
-    public static class DefGenerator
+    public static class DefGeneratorPatches
     {
         /// <summary>
         /// This class generates genedefs for the game. We want to run it after the game has loaded all defs and any xenotypes that might be code-generated.

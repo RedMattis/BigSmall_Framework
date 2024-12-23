@@ -1,0 +1,56 @@
+<Defs>
+  <ThingCategoryDef>
+      <defName>BS_RobotCorpses</defName>
+      <label>robot corpses</label>
+      <parent>Corpses</parent>
+    </ThingCategoryDef>
+
+  <RecipeDef ParentName="ButcherCorpseMechanoidBase" Name="BS_ButcherRobotBase" Abstract="True">
+    <!-- <ingredients Inherit="False">
+      <li>
+        <filter>
+          <categories>
+            <li>Corpses</li>
+          </categories>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients> -->
+    <!-- <defaultIngredientFilter Inherit="False"> -->
+    <defaultIngredientFilter Inherit="False">
+      <categories>
+        <li>BS_RobotCorpses</li>
+      </categories>
+    </defaultIngredientFilter>
+    <!-- <fixedIngredientFilter Inherit="False"> -->
+    <fixedIngredientFilter Inherit="False">
+      <!-- <thingDefs/> -->
+      <categories>
+        <li>BS_RobotCorpses</li>
+      </categories>
+      <specialFiltersToAllow>
+        <li>AllowCorpsesColonist</li>
+        <li MayRequire="Ludeon.RimWorld.Ideology">AllowCorpsesSlave</li>
+        <li>AllowCorpsesStranger</li>
+      </specialFiltersToAllow>
+    </fixedIngredientFilter>
+  </RecipeDef>
+
+  <RecipeDef ParentName="BS_ButcherRobotBase">
+    <defName>BS_ShredRobot</defName>
+    <label>shred robot</label>
+    <description>Shred a dead robot to try to salvage usable material.</description>
+    <workAmount>300</workAmount>
+    <jobString>Shredding robot.</jobString>
+    <soundWorking>Recipe_ButcherCorpseMechanoid</soundWorking>
+  </RecipeDef>
+
+  <RecipeDef ParentName="BS_ButcherRobotBase">
+    <defName>BS_SmashRobot</defName>
+    <label>smash robot</label>
+    <description>smash a dead robot to try to salvage usable material.</description>
+    <jobString>Smashing mechanoid.</jobString>
+    <workAmount>500</workAmount>
+    <soundWorking>Recipe_SmashCorpseMechanoid</soundWorking>
+  </RecipeDef>
+</Defs>

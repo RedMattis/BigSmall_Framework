@@ -44,6 +44,20 @@ namespace BigAndSmall
             if (raceCompPropList.Any()) { return raceCompPropList; }
             return [CompProperties_Race.defaultMissingProps];
         }
+
+        public static bool IsMechanical(this Pawn pawn)
+        {
+            return pawn.GetAllPawnExtensions().Any(x => x.isMechanical);
+        }
+
+        public static bool IsMechanicalDef(this ThingDef def)
+        {
+            if (FusedBody.FusedBodyByThing.TryGetValue(def, out var fusedBody) && fusedBody.isMechanical)
+            {
+                return true;
+            }
+            return def.GetRaceExtensions().SelectMany(x => x.PawnExtensionOnRace).Any(x => x.isMechanical);
+        }
     }
 
     public class HediffComp_Race : HediffComp_ColorAndFur
@@ -68,17 +82,29 @@ namespace BigAndSmall
         public static void RandomSkinColorGene_Postfix(ref GeneDef __result, Pawn pawn)
         {
             //if (pawn.GetRacePawnExtension().randomSkinGenes == null) return;
-            List<GeneDef> skinGenes = [];
-            foreach (var skinGeneSet in pawn.GetAllPawnExtensions()
-                .Where(x => x.randomSkinGenes != null).Select(x=>x.randomSkinGenes))
+            try
             {
-                skinGenes.AddRange(skinGeneSet);
-            }
-            if (skinGenes.Count > 0)
-            {
-                using (new RandBlock(pawn.thingIDNumber))
+                if (pawn == null || __result == null) { return; }
+                List<GeneDef> skinGenes = [];
+                foreach (var skinGeneSet in pawn.GetAllPawnExtensions()
+                    .Where(x => x.randomSkinGenes != null).Select(x => x.randomSkinGenes))
                 {
-                    __result = skinGenes.RandomElement();
+                    skinGenes.AddRange(skinGeneSet);
+                }
+                if (skinGenes.Count > 0)
+                {
+                    using (new RandBlock(pawn.thingIDNumber))
+                    {
+                        __result = skinGenes.RandomElement();
+                    }
+                }
+            }
+            catch (System.Exception e)
+            {
+                if (!didWarn)
+                {
+                    Log.Error($"[BigAndSmall] Error in RandomSkinColorGene_Postfix for {pawn}: {e}");
+                    didWarn = true;
                 }
             }
         }

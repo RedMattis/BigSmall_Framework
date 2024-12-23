@@ -48,8 +48,8 @@ namespace BigAndSmall
                 Log.Warning($"[BigAndSmall] No texture path for {pawn}");
                 return null;
             }
-            Color colorOne = props.colorA.GetColor(pawn, Color.white, ColorSetting.clrOneKey);
-            Color colorTwo = props.colorB.GetColor(pawn, Color.white, ColorSetting.clrTwoKey);
+            Color colorOne = props.colorA.GetColor(this, Color.white, ColorSetting.clrOneKey);
+            Color colorTwo = props.colorB.GetColor(this, Color.white, ColorSetting.clrTwoKey);
             ShaderTypeDef shader = props.shader;
 
      

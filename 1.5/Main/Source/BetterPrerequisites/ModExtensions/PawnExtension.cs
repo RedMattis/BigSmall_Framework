@@ -372,6 +372,8 @@ namespace BigAndSmall
             }
             return null;
         }
+
+        public RotDrawMode? forcedRotDrawMode = null;
         /// <summary>
         /// Same as above.
         /// </summary>
@@ -405,6 +407,7 @@ namespace BigAndSmall
         public bool ignoreForceGender = false;
 
         protected Gender? apparentGender = null;
+        public bool invertApparentGender = false;
         public Gender? ApparentGender => forceFemaleBody ? Gender.Female : apparentGender;
 
         public BodyTypesPerGender bodyTypes = [];

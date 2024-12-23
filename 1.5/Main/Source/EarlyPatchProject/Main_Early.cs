@@ -1,6 +1,7 @@
 ﻿
 using Verse;
 using HarmonyLib;
+using RimWorld;
 
 namespace BigAndSmall
 {
@@ -31,7 +32,16 @@ namespace BigAndSmall
         
     }
 
-    
 
+    //[HarmonyPatch]
+    //public static class LoadReloadPatches
+    //{
+    //    [HarmonyPatch(typeof(DefGenerator), nameof(DefGenerator.GenerateImpliedDefs_PreResolve))]
+    //    [HarmonyPrefix]
+    //    public static void GenerateImpliedDefs_PreResolve(bool hotReload)
+    //    {
+    //        BSCore.RunDefPatchesWithHotReload(hotReload: hotReload);
+    //    }
+    //}
 
 }
