@@ -1,6 +1,8 @@
 ﻿using RimWorld;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,58 +17,91 @@ namespace BigAndSmall
         private static void GenerateAndRegisterRaceDefs(bool hotReload)
         {
             // Generate ThingDefs for all BodyDets as long as they don't have "discardNonRobotFusions"
-            foreach (var fusedBody in FusedBody.FusedBodies.Values)
+            foreach (var fused in FusedBody.FusedBodies.Values)
             //.Select(x => (x.generatedBody, x.SourceBody, x)))
             {
-                var body = fusedBody.generatedBody;
-                var source = fusedBody.SourceBody;
-                var fSetBody = fusedBody.fuseSetBody;
-                body.generated = true;
-                body.ResolveReferences();
-                if (doDebug) Log.Message(GetPartsStringRecursive(body.corePart));
+                var generateBody = fused.generatedBody;
+                var source = fused.SourceBody;
+                //var mergableBody = fused.fuseSetBody;
+
+                if (doDebug) Log.Message(GetPartsStringRecursive(generateBody.corePart));
 
                 var sThing = source.thingDef;
                 var sRace = sThing.race;
-                var fSetRace = fSetBody != null ? fSetBody.thingDef.race : sRace;
 
-                // Make the new Thing using reflection, in case it is a subclass. (Har Har Har... HAR!)
-                var newThing = sThing.GetType().GetConstructor([]).Invoke([]) as ThingDef;
+                string thingDefName = $"{generateBody.defName}";
+
+                string bodyDefName = generateBody.defName;
+                ThingDef newThing = thingDefName.TryGetExistingDef<ThingDef>();
+                BodyDef newBody = bodyDefName.TryGetExistingDef<BodyDef>();
+
                 var newRace = new RaceProperties();
 
-                var allThingDefSources = fusedBody.mergableBodies.Select(x => x.thingDef).ToList();
-                var raceExtensions = allThingDefSources.SelectMany(x => x.ExtensionsOnDef<RaceExtension, ThingDef>()).ToList();
 
-                var newRaceExtension = new RaceExtension(raceExtensions)
-                {
-                    isFusionOf = fusedBody.mergableBodies.Select(x => x.thingDef).ToList()
-                };
 
-                // Use reflection to copy all fields from the source ThingDef to the new ThingDef.
-                foreach (var field in sThing.GetType().GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
+
+                // Make the new Thing using reflection, in case it is a subclass. (Har Har Har... HAR!)
+                //newThing ??= sThing.GetType().GetConstructor([]).Invoke([]) as ThingDef;
+
+                // Actually let's try Not doing that. If we can drop HAR stuff then it is probably a benefit due to avoiding weird interactions.
+                newThing ??= new ThingDef();
+
+                //foreach (var field in sThing.GetType().GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
+                foreach (var field in typeof(ThingDef).GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
                 {
                     try
                     {
-                        field.SetValue(newThing, field.GetValue(sThing));
+
+                        if (field.FieldType.IsClass && field.GetValue(sThing) != null && field.GetType().Name == "AlienRace.AlienRaceSettings")
+                        {
+                            field.SetValue(newThing, field.GetType().GetConstructor([]).Invoke([]));
+                            foreach (var alienField in field.GetType().GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
+                            {
+                                try
+                                {
+                                    alienField.SetValue(field.GetValue(newThing), alienField.GetValue(field.GetValue(sThing)));
+                                    Log.Message($"Field: {field.Name}, Value: {field.GetValue(alienField)}");
+                                }
+                                catch (Exception e)
+                                {
+                                    Log.Error($"Failed to access field {field.Name}.");
+                                    Log.Error(e.ToString());
+                                }
+                            }
+                        }
+                        else
+                        {
+                            field.SetValue(newThing, field.GetValue(sThing));
+                        }
                     }
                     catch (Exception e)
                     {
-                        Log.Error($"Failed to copy field {field.Name} from {sThing.defName} to {newThing.defName}.");
+                        Log.Error($"Failed to copy field {field.Name} from thingDef.");
                         Log.Error(e.ToString());
                     }
+
                 }
+
+                var allThingDefSources = fused.mergableBodies.Select(x => x.thingDef).ToList();
+                newThing.recipes = [.. allThingDefSources.Where(x => x.recipes != null).SelectMany(x => x?.recipes).Where(x => x != null).ToList().Distinct()];
+                newThing.thingCategories = [.. allThingDefSources.Where(x => x.thingCategories != null).SelectMany(x => x?.thingCategories).Where(x => x != null).ToList().Distinct()];
+
                 // So we don't append to the original lists...
                 newThing.modExtensions = sThing.modExtensions != null ? [.. sThing.modExtensions] : [];
                 newThing.comps = sThing.comps != null ? [.. sThing.comps] : null;
+                newThing.thingCategories = sThing.thingCategories != null ? [.. sThing.thingCategories] : [];
+                newThing.recipes = sThing.recipes != null ? [.. sThing.recipes] : null;
+                newThing.tools = sThing.tools != null ? [.. sThing.tools] : null;
+                newThing.inspectorTabs = sThing.inspectorTabs != null ? [.. sThing.inspectorTabs] : null;
+                newThing.inspectorTabsResolved = sThing.inspectorTabsResolved != null ? [.. sThing.inspectorTabsResolved] : null;
+                newThing.tradeTags = sThing.tradeTags != null ? [.. sThing.tradeTags] : null;
+                newThing.verbs = sThing.verbs != null ? [.. sThing.verbs] : null;
+                newThing.stuffCategories = sThing.stuffCategories != null ? [.. sThing.stuffCategories] : null;
+                newThing.thingSetMakerTags = sThing.thingSetMakerTags != null ? [.. sThing.thingSetMakerTags] : null;
+                newThing.butcherProducts = sThing.butcherProducts != null ? [.. sThing.butcherProducts] : null;
+                newThing.smeltProducts = sThing.smeltProducts != null ? [.. sThing.smeltProducts] : null;
+                newThing.virtualDefs = sThing.virtualDefs != null ? [.. sThing.virtualDefs] : null;
 
-                // Removes Comps that there shouldn't be more than one of.
-                //List<string> maxOneCompList = ["CompProperties_Transmog"];
-                //if (newThing.comps != null)
-                //{
-                //    newThing.comps = newThing.comps
-                //        .GroupBy(comp => comp.GetType().Name)
-                //        .SelectMany(group => maxOneCompList.Contains(group.Key) ? group.Take(1) : group)
-                //        .ToList();
-                //}
 
                 // Deduplicate inspector tabs
                 if (newThing.inspectorTabs != null)
@@ -78,70 +113,62 @@ namespace BigAndSmall
                     newThing.inspectorTabsResolved = newThing.inspectorTabsResolved.Distinct().ToList();
                 }
 
-                // Same for Race
-                foreach (var field in fSetRace.GetType().GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
+                foreach (var field in sRace.GetType().GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
                 {
                     try
                     {
-                        field.SetValue(newRace, field.GetValue(sRace));
+                        if (field.FieldType.IsGenericType && field.GetValue(sRace) != null)
+                        {
+                            var sourceList = field.GetValue(sRace);
+                            var newList = (IList)Activator.CreateInstance(field.FieldType);
+                            foreach (var item in (IEnumerable)sourceList)
+                            {
+                                newList.Add(item);
+                            }
+                            field.SetValue(newRace, newList);
+                        }
+                        else
+                        {
+                            field.SetValue(newRace, field.GetValue(sRace));
+                        }
                     }
                     catch (Exception e)
                     {
                         Log.Error($"Failed to copy field {field.Name} from race.");
                         Log.Error(e.ToString());
                     }
+
                 }
+
+
                 // Set the body of the base race rather than that of the Fuse Set.
                 newRace.body = sRace.body;
                 newRace.renderTree = sRace.renderTree;
-                newRace.corpseDef = sRace.corpseDef;
-
-                bool makeCorpse = newRace.hasCorpse && newRace.linkedCorpseKind == null;
-                if (makeCorpse)
-                {
-                    // And Corpse
-                    var newCorpse = newRace.corpseDef.GetType().GetConstructor([]).Invoke([]) as ThingDef;
-                    foreach (var field in sThing.race.corpseDef.GetType().GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
-                    {
-                        try
-                        {
-                            field.SetValue(newCorpse, field.GetValue(newRace.corpseDef));
-                        }
-                        catch (Exception e)
-                        {
-                            Log.Error($"Failed to copy field {field.Name} from corpseDef.");
-                            Log.Error(e.ToString());
-                        }
-                    }
-                    newRace.corpseDef = newCorpse;
-                    newCorpse.defName = $"{body.defName}_Corpse";
-                    newCorpse.label = $"Corpse of {body.LabelCap}";
-                    newCorpse.race = newRace;
-                    //newCorpse.modExtensions ??= [];
-                    //newCorpse.modExtensions.RemoveAll(x => x is RaceExtension);
-                    //newCorpse.modExtensions.Add(newRaceExtension);
-                }
-
-
-                // Lets not generate a bunch of unnatural corpses. Set via reflection because of reports that the 
-                // field is sometimes not present.
-                var hasUnnaturalCorpseField = newRace.GetType().GetField("hasUnnaturalCorpse");
-                hasUnnaturalCorpseField?.SetValue(newRace, false);
 
                 newThing.generated = true;
-                newThing.defName = $"{body.defName}";
-                newThing.label = body.LabelCap;
+                newThing.defName = thingDefName;
+                newThing.label = generateBody.LabelCap;
                 newThing.race = newRace;
-                newRace.body = body;
+                newRace.body = generateBody;
+                generateBody.generated = true;
+
+                //body.ResolveReferences();
+
+                var raceExtensions = allThingDefSources.SelectMany(x => x.ExtensionsOnDef<RaceExtension, ThingDef>()).ToList();
+                var newRaceExtension = new RaceExtension(raceExtensions)
+                {
+                    isFusionOf = fused.mergableBodies.Select(x => x.thingDef).ToList()
+                };
 
                 newThing.modExtensions ??= [];
                 newThing.modExtensions.RemoveAll(x => x is RaceExtension);
                 newThing.modExtensions.Add(newRaceExtension);
 
-                if (fusedBody.isMechanical)
+                if (fused.isMechanical)
                 {
+
                 }
-                if (fusedBody.fuseSetBody is MergableBody fSBody)
+                if (fused.fuseSetBody is MergableBody fSBody)
                 {
                     var fsThing = fSBody.thingDef;
                     var fsRace = fsThing.race;
@@ -178,37 +205,160 @@ namespace BigAndSmall
                     newThing.SetStatBaseValue(StatDefOf.MeleeDodgeChance, Mathf.Max(sThing.GetStatValueAbstract(StatDefOf.MeleeDodgeChance), fsThing.GetStatValueAbstract(StatDefOf.MeleeDodgeChance)));
                 }
 
+                newRace.corpseDef = null;
+                newRace.linkedCorpseKind = null;
+                newRace.hasCorpse = false;
+                // Lets not generate a bunch of unnatural corpses. Set via reflection because of reports that the 
+                // field is sometimes not present.
+                var hasUnnaturalCorpseField = newRace.GetType().GetField("hasUnnaturalCorpse");
+                hasUnnaturalCorpseField?.SetValue(newRace, false);
+                //GenerateCorpse(hotReload, fused, generateBody, sThing, sRace, newThing, newRace);
+                ////////////////////////
+
+
+
                 // Copy over the recipes, styles, and categories, ...
-                newThing.recipes = [.. allThingDefSources.Where(x => x.recipes != null).SelectMany(x => x?.recipes).Where(x => x != null).ToList().Distinct()];
-                newThing.thingCategories = [.. allThingDefSources.Where(x => x.thingCategories != null).SelectMany(x => x?.thingCategories).Where(x => x != null).ToList().Distinct()];
+
 
                 // Hmm... doesn't seem worth the mess.
                 //newThing.tools = [.. allThingDefSources.Where(x => x.tools != null).SelectMany(x => x?.tools).Where(x => x != null).ToList().Distinct()];
 
-                fusedBody.thing = newThing;
+                fused.SetThing(newThing);
 
-                // Add the things to the game.
+                // Clear the caches from newRace.body.
+                newRace.body.cachedPartsByTag.Clear();
+                newRace.body.cachedPartsByDef.Clear();
+
+                bodyDefsAdded.Add(newRace.body);
+                thingDefsAdded.Add(newThing);
+
                 DefGenerator.AddImpliedDef(newThing, hotReload: hotReload);
                 DefGenerator.AddImpliedDef(newRace.body, hotReload: hotReload);
-                //DefDatabase<ThingDef>.Add(newThing);
-                //DefDatabase<BodyDef>.Add(body);
-
-                // Make sure we generate new Hashes for the new ThingDefs.
-                GenerateShortHashes(hotReload, newThing, newRace);
-                //if (makeCorpse)
-                //{
-                //    ShortHashWrapper.GiveShortHash(newThing.race.corpseDef);
-                //}
             }
         }
+
+        public static void GenerateCorpses(bool hotReload)
+        {
+            foreach (var (newThingDef, fused) in FusedBody.FusedBodyByThing.Select(x=> (x.Key, x.Value)))
+            {
+                var sThing = fused.SourceBody.thingDef;
+                GenerateCorpse(
+                    fused: fused,
+                    sThing: sThing,
+                    newThing: newThingDef,
+                    hotReload: hotReload
+                    );
+            }
+        }
+
+        private static void GenerateCorpse(FusedBody fused,ThingDef sThing, ThingDef newThing, bool hotReload)
+        {
+            RaceProperties newRace = newThing.race;
+            BodyDef generatedBody = newThing.race.body;
+            RaceProperties sRace = sThing.race;
+
+            ThingDef sCorpse = sThing.race.corpseDef;
+            sCorpse ??= sThing?.race?.linkedCorpseKind;
+
+            string corpseDefName = $"{generatedBody.defName}_Corpse";
+            ThingDef newCorpse = corpseDefName.TryGetExistingDef<ThingDef>();
+            newCorpse ??= new();
+            bool makeCorpse = sRace.hasCorpse;
+
+            if (makeCorpse && sCorpse == null)
+            {
+                Log.Warning($"{sThing}.hasCorpse is True, but no ThingDef for corpse was found. Aborting corpse generation for fused race things.");
+                return;
+            }
+            if (!makeCorpse) return;
+
+            foreach (var field in sCorpse.GetType().GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
+            {
+                try
+                {
+                    if (field.FieldType.IsGenericType && field.GetValue(sCorpse) != null)
+                    {
+                        var sourceList = field.GetValue(sCorpse);
+                        var newList = (IList)Activator.CreateInstance(field.FieldType);
+                        //Log.Message($"Set List Field {field.Name}.");
+                        foreach (var item in (IEnumerable)sourceList)
+                        {
+                            newList.Add(item);
+                            //Log.Message($"--Added Field: {item} to {field.Name}");
+                        }
+                        field.SetValue(newCorpse, newList);
+                        
+                    }
+                    else
+                    {
+                        field.SetValue(newCorpse, field.GetValue(sCorpse));
+                        //Log.Message($"Set Field: {field.Name} to {field.GetValue(newCorpse)}");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Error($"Failed to copy field {field.Name} from race.");
+                    Log.Error(e.ToString());
+                }
+
+            }
+            Log.Clear();
+
+            newCorpse.defName = corpseDefName;
+            newCorpse.label = "CorpseLabel".Translate(generatedBody.label);
+
+            newCorpse.description = "CorpseDesc".Translate(newThing.label);
+           
+
+            newCorpse.race = newRace;
+            newCorpse.recipes = [.. sCorpse.recipes];
+            newCorpse.thingCategories = [.. sCorpse.thingCategories];
+            newCorpse.inspectorTabs = [.. sCorpse.inspectorTabs];
+            newThing.race.corpseDef = newCorpse;
+            newThing.race.hasCorpse = true;
+
+
+            DirectXmlCrossRefLoader.RegisterListWantsCrossRef(newCorpse.thingCategories, !fused.isMechanical ? ThingCategoryDefOf.CorpsesHumanlike.defName : BSDefs.BS_RobotCorpses.defName, newCorpse);
+
+            thingDefsAdded.Add(newCorpse);
+            DefGenerator.AddImpliedDef(newCorpse, hotReload: hotReload);
+        }
+
         private static void GenerateShortHashes(bool hotReload, ThingDef newThing, RaceProperties newRace)
         {
             if (!hotReload)
             {
+                Log.Message($"[BaS] H:{hotReload}: Generating ShortHashes for {newThing.defName} and {newRace.body.defName}.");
                 newThing.shortHash = 0;
-                ShortHashWrapper.GiveShortHash(newRace.body);
-                ShortHashWrapper.GiveShortHash(newThing);
+                //ShortHashWrapper.GiveShortHash(newThing);
+                Log.Message($"[BaS]: Generating ShortHashes for body {newRace.body.defName}.");
+
+                newRace.body.shortHash = 0;
+                
+                //ShortHashWrapper.GiveShortHash(newRace.body);
+                Log.Message($"[BaS]: Generated ShortHashes.");
             }
+        }
+        private static string OutputFullClassAsString(object obj)
+        {
+            if (obj == null) return "null";
+
+            var type = obj.GetType();
+            var fields = type.GetFields();
+            var sb = new StringBuilder();
+
+            sb.AppendLine($"Class: {type?.Name} ({obj})");
+            sb.AppendLine("{");
+
+            foreach (var field in fields)
+            {
+                var value = field.GetValue(obj);
+                if (value == null) continue;
+                sb.AppendLine($"  {field?.Name}: {value}");
+            }
+
+            sb.AppendLine("}");
+            return sb.ToString();
         }
 
         internal static class ShortHashWrapper

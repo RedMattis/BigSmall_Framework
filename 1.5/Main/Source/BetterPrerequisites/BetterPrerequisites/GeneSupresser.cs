@@ -85,19 +85,19 @@ namespace BetterPrerequisites
             return didAddSupressor;
         }
 
-        public static bool IsSupressedByHediff(GeneDef geneDefName, Pawn pawn)
+        public static bool IsSupressedByHediff(GeneDef geneDef, Pawn pawn)
         {
 
             if (supressedGenesPerPawn_Hediff.ContainsKey(pawn))
             {
                 var supressedGenes = supressedGenesPerPawn_Hediff[pawn];
-                if (supressedGenes.ContainsKey(geneDefName))
+                if (supressedGenes.ContainsKey(geneDef))
                 {
 
-                    for (int i = supressedGenes[geneDefName].Count - 1; i >= 0; i--)
+                    for (int i = supressedGenes[geneDef].Count - 1; i >= 0; i--)
                     {
-                        var supresser = supressedGenes[geneDefName][i];
-                        if (supressedGenes[geneDefName].Any(suppressor => pawn.health.hediffSet.HasHediff(supresser)))
+                        var supresser = supressedGenes[geneDef][i];
+                        if (supressedGenes[geneDef].Any(suppressor => pawn.health.hediffSet.HasHediff(supresser)))
                         {
                             return true;
                         }

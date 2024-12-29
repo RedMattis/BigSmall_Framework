@@ -173,6 +173,19 @@
     </value>
   </Operation>
 
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/ThingDef[defName="TableMachining"]/recipes</xpath>
+    <value>
+      <li>BS_ShredRobot</li>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/ThingDef[defName="CraftingSpot"]/recipes</xpath>
+    <value>
+      <li>BS_SmashRobot</li>
+    </value>
+  </Operation>
+
 	<!-- <Operation Class="PatchOperationAdd">
     <success>Always</success>
     <xpath>Defs/StatDef[defName="PainShockThreshold"][not(labelMechanoids)]</xpath>

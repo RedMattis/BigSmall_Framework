@@ -14,25 +14,30 @@ namespace BigAndSmall
             if (__result == null) return;
             if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache && !cache.isDefaultCache && cache.isHumanlike)
             {
-                HeadGraphics.CalculateHeadGraphicsForPawn(pawn, ref __result, cache);
+                HeadGraphics.CalculateHeadGraphicsForPawn(__instance, ref __result, cache);
             }
         }
 
     public static class HeadGraphics
     {
-            public static void CalculateHeadGraphicsForPawn(Pawn pawn, ref Graphic __result, BSCache cache)
+            public static void CalculateHeadGraphicsForPawn(PawnRenderNode_Head headNode, ref Graphic __result, BSCache cache)
             {
-                if (cache.hideHead) { __result = GraphicsHelper.GetBlankMaterial(pawn); return; }
+                if (cache.hideHead) { __result = GraphicsHelper.GetBlankMaterial(); return; }
 
-                if (cache.headMaterial?.overrideDesiccated != true && pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Dessicated)
+                bool dessicated = headNode.tree.pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Dessicated;
+                if (cache.headMaterial?.overrideDesiccated != true && dessicated)
                 {
                     return;
                 }
 
                 if (cache.headGraphicPath is string headGraphicPath)
                 {
+                    if (dessicated && cache.headDessicatedGraphicPath != null)
+                    {
+                        headGraphicPath = cache.headDessicatedGraphicPath;
+                    }
                     //Debug.Log("DEBUG! HeadGraphicPath: " + headGraphicPath);
-                    __result = GraphicsHelper.TryGetCustomGraphics(pawn, headGraphicPath, __result.color, __result.colorTwo, __result.drawSize, cache.headMaterial);
+                    __result = GraphicsHelper.TryGetCustomGraphics(headNode, headGraphicPath, __result.color, __result.colorTwo, __result.drawSize, cache.headMaterial);
                 }
             }
         }

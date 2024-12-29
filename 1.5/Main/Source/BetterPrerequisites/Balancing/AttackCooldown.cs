@@ -33,15 +33,11 @@ namespace BigAndSmall
             {
                 if (equipment == null)
                 {
-                    //float oldResult = __result;
                     __result /= (sizeCache.attackSpeedUnarmedMultiplier + sizeCache.attackSpeedMultiplier - 1);
-                    //Log.Message($"Unarmed attack speed of {attacker}: {oldResult} -> {__result}. (unarmed bonus = {sizeCache.attackSpeedUnarmedMultiplier}, global bonus = {sizeCache.attackSpeedMultiplier})");
                 }
                 else
                 {
-                    //float oldResult = __result;
                     __result /= sizeCache.attackSpeedMultiplier;
-                    //Log.Message($"Global attack speed of {attacker}: {oldResult} -> {__result}. (global bonus = {sizeCache.attackSpeedMultiplier})");
                 }
                 
             }

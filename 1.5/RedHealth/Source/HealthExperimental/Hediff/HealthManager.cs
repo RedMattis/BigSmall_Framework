@@ -200,9 +200,9 @@ namespace RedHealth
             const int margin = 10; // Just so we don't have to worry about order of events.
             
             float timeAcceleration = Main.settings.devEventTimeAcceleration;
-            if (timeAcceleration > 1.1f || timeAcceleration < 0.9f)
+            if (timeAcceleration > 1.2f || timeAcceleration < 0.8f)
             {
-                int newTime = time / Main.debugTickDivider;
+                int newTime = (int)(time / timeAcceleration);
                 if (Main.loggingV) Log.Message($"[DEBUG] Reducing queue time for {pawn}'s {name} from {time} to {newTime}.\nChange: {time / (float)60000:f1} days to {newTime / (float)2500:f2} hours");
                 time = newTime;
             }

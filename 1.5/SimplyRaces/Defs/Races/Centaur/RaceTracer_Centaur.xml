@@ -32,6 +32,11 @@
           </li>
         </applyBodyHediff>
         <bodyPosOffset>0.6</bodyPosOffset>
+        <geneFilters>
+          <blacklist>
+            <li MayRequire="Ludeon.Rimworld.Biotech">Body_Fat</li>
+          </blacklist>
+        </geneFilters>
       </li> 
     </modExtensions>
     <renderNodeProperties>
@@ -76,8 +81,8 @@
             <Fat>1.35</Fat>
             <Hulk>1.1</Hulk>
             <Thin>0.85</Thin>
-            <Child MayRequire="Ludeon.Rimworld.Ideology">0.85</Child>
-            <Baby MayRequire="Ludeon.Rimworld.Ideology">0.70</Baby>
+            <Child MayRequire="Ludeon.Rimworld.Biotech">0.85</Child>
+            <Baby MayRequire="Ludeon.Rimworld.Biotech">0.70</Baby>
           </bodyTypeScales>
           <dataNorth>
             <offset>(0, 0.000, -0.48 )</offset>
@@ -142,8 +147,8 @@
             <Fat>1.35</Fat>
             <Hulk>1.1</Hulk>
             <Thin>0.85</Thin>
-            <Child MayRequire="Ludeon.Rimworld.Ideology">0.85</Child>
-            <Baby MayRequire="Ludeon.Rimworld.Ideology">0.70</Baby>
+            <Child MayRequire="Ludeon.Rimworld.Biotech">0.85</Child>
+            <Baby MayRequire="Ludeon.Rimworld.Biotech">0.70</Baby>
           </bodyTypeScales>
           <dataSouth>
             <offset>(0, 0.000, 0.08)</offset>

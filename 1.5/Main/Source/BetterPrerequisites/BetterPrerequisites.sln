@@ -5,7 +5,7 @@ VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigAndSmall", "BigAndSmall.csproj", "{F0272DF1-D703-495D-8F95-48D6BAB3A0B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BSXeno", "..\EarlyPatchProject\BSXeno.csproj", "{632562DC-9399-48D4-95D2-1C9A919C9640}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigAndSmall_Early", "..\EarlyPatchProject\BigAndSmall_Early.csproj", "{632562DC-9399-48D4-95D2-1C9A919C9640}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F0272DF1-D703-495D-8F95-48D6BAB3A0B9} = {F0272DF1-D703-495D-8F95-48D6BAB3A0B9}
 	EndProjectSection

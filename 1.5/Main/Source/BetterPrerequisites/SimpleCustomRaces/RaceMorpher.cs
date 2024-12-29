@@ -226,7 +226,7 @@ namespace BigAndSmall
                         var fusedBody = FusedBody.TryGetBody(mechanical, [.. allPossibleBodies]);
                         if (fusedBody != null)
                         {
-                            finalTarget = fusedBody.thing;
+                            finalTarget = fusedBody.Thing;
                             break;
                         }
                         else if (FusedBody.TryGetNonFused([.. allPossibleBodies]) is BodyDef nonFusedBody &&

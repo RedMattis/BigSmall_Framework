@@ -145,9 +145,24 @@ namespace BigAndSmall.Debugging
                     pawn.TrySwapToXenotypeThingDef();
                 }),
 
+                new FloatMenuOption("Set to Race...", delegate
+                {
+                    List<DebugMenuOption> list = [];
+                    foreach (var def in DefDatabase<ThingDef>.AllDefs.Where(x => x?.race?.intelligence == Intelligence.Humanlike && !x.IsCorpse))
+                    {
+                        list.Add(new DebugMenuOption($"{def.defName,lblPad}\t ({def.LabelCap})", DebugMenuOptionMode.Action, delegate
+                        {
+                            RaceMorpher.SwapThingDef(pawn, def, true, targetPriority: 999, force: true, permitFusion: false);
+                        }));
+                    }
+                    Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
+                }),
 
-
-
+                new FloatMenuOption("Set to Baseline Human [Force]", delegate
+                {
+                    GeneHelpers.RemoveAllGenesSlow_ExceptColor(pawn);
+                    RaceMorpher.SwapThingDef(pawn, ThingDefOf.Human, true, targetPriority: 999, force: true, permitFusion: false);
+                }),
             ];
             Find.WindowStack.Add(new FloatMenu(list));
         }

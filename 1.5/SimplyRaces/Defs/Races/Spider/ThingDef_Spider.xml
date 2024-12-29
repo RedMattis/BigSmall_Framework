@@ -10,6 +10,7 @@
       <body>BS_SpiderHybrid</body>
       <useMeatFrom>Megaspider</useMeatFrom>
       <useLeatherFrom>Megaspider</useLeatherFrom>
+      <bloodDef>Filth_BloodInsect</bloodDef>
     </race>
     <modExtensions>
       <li Class="BigAndSmall.RaceExtension"> <raceHediff>BS_SpiderPersonRace</raceHediff> </li>

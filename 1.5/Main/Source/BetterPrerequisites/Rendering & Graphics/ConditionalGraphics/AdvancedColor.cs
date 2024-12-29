@@ -29,6 +29,7 @@ namespace BigAndSmall
         public bool apparelColorOrFavorite = false;
         public bool favoriteColor = false;
         public List<Color> colourRange = null;
+        public bool apparelStuff = false; // Only works if the item is apparel.
         public Color? color = null;
         public float? saturation = null;
         public float? hue = null;
@@ -45,11 +46,12 @@ namespace BigAndSmall
 
         [Unsaved(false)]
         private readonly static Dictionary<string, Color> randomClrPerId = [];
-        public Color GetColor(Pawn pawn, Color oldClr, string hashOffset, bool useOldColor = false)
+        public Color GetColor(PawnRenderNode renderNode, Color oldClr, string hashOffset, bool useOldColor = false)
         {
+            var pawn = renderNode.tree.pawn;
             foreach (var alt in alts.Where(x => x.GetState(pawn)))
             {
-                if (alt.GetColor(pawn, oldClr, hashOffset, useOldColor) is Color altClr)
+                if (alt.GetColor(renderNode, oldClr, hashOffset, useOldColor) is Color altClr)
                 {
                     return altClr;
                 }
@@ -60,7 +62,7 @@ namespace BigAndSmall
             {
                 gfxOverride.graphics.OfType<ColorSetting>().Where(x => x != null).Do(x =>
                 {
-                    subDefResult = x.GetColor(pawn, oldClr, hashOffset, useOldColor);
+                    subDefResult = x.GetColor(renderNode, oldClr, hashOffset, useOldColor);
                 });
             }
             if (subDefResult != null)
@@ -124,6 +126,14 @@ namespace BigAndSmall
                 }
                 else GetHostilityStatus(pawn, ref didSet, ref colorsAdded);
 
+            }
+            if (apparelStuff)
+            {
+                if (renderNode.apparel.Stuff is ThingDef stuffThing)
+                {
+                    colorsAdded.Add(renderNode.apparel.def.GetColorForStuff(stuffThing));
+                    didSet = true;
+                }
             }
             if (apparelColorOrFavorite)
             {

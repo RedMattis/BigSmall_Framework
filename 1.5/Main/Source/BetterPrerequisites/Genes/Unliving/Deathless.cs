@@ -248,7 +248,7 @@ namespace BigAndSmall
                 }
                 if (success) return true;
                 // If we're here, we couldn't find a suitable corpse.
-                // Try again in 5 minutes.
+                // Try again in 0.5 to 5 days minutes.
                 ticksToReturn = (int)Rand.Range(0.5f, 5f) * 60000;
                 attempts++;
                 string pawnNameStr = pawn.Name.ToString();

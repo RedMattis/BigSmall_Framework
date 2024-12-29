@@ -118,6 +118,16 @@ namespace BigAndSmall
         //public static ThingDef BS_MechHuman;
         //public static HediffDef BS_MechHumanRace;
 
+        // Categories
+        public static ThingCategoryDef BS_RobotCorpses;
+
+        // Recipes
+        public static RecipeDef BS_ShredRobot;
+        public static RecipeDef BS_SmashRobot;
+        //public static RecipeDef ButcherCorpseMechanoid;
+        //public static RecipeDef SmashCorpseMechanoid;
+        //public static RecipeDef ButcherCorpseFlesh;
+
 
 
         public static IncidentDef StrangerInBlackJoin; // Def of the existing incident for easy acccess.

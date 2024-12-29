@@ -6,6 +6,8 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
+using System.Reflection;
 using Verse;
 //using VariedBodySizes;
 
@@ -22,21 +24,31 @@ namespace BigAndSmall
             harmony.PatchAll();
 
             PregnancyPatches.ApplyPatches();
-            RunDefPatchesWithHotReload(hotReload: false);
-            XenotypeDefPatcher.PatchDefs();
-            ModDefPatcher.PatchDefs();
-            HumanPatcher.PatchRecipes();
+            //RunDefPatchesWithHotReload(hotReload: false);
+            
             NewFoodCategory.SetupFoodCategories();
             ThoughtDefPatcher.PatchDefs();
 
             
-
-            GlobalSettings.Initialize();
             DefAltNamer.Initialize();
-            
+
+            HARCompat.SetupHARThingsIfHARIsActive();
+
+
         }
 
-        public static void RunDefPatchesWithHotReload(bool hotReload)
+        public static void RunBeforeGenerateImpliedDefs(bool hotReload)
+        {
+            if (!hotReload)
+            {
+                GlobalSettings.Initialize();
+            }
+            HumanPatcher.MechanicalSetup();
+            RaceFuser.PreHotreload();
+            RaceFuser.CreateMergedBodyTypes(hotReload);
+        }
+
+        public static void RunDuringGenerateImpliedDefs(bool hotReload)
         {
             // These should probably all be reloaded when the HotReload button is pressed?
             GeneDefPatcher.PatchExistingDefs();
@@ -44,20 +56,14 @@ namespace BigAndSmall
             {
                 //Log.Message($"[Big and Small]: Experimental Options - Active.\n" +
                 //    $"Initializing Merged BodyDefs...");
-                RaceFuser.CreateMergedBodyTypes(hotReload);
+
+                RaceFuser.GenerateCorpses(hotReload);
+                if (!hotReload) HumanPatcher.MechanicalCorpseSetup();
+                XenotypeDefPatcher.PatchDefs();
+                ModDefPatcher.PatchDefs();
+                HumanPatcher.PatchRecipes();
                 //Log.Message($"[Big and Small]: Experimental Setup - Finalized.");
             }
-        }
-    }
-    [Harmony]
-    public static class ReloadPatches
-    {
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(DefGenerator), nameof(DefGenerator.GenerateImpliedDefs_PreResolve))]
-        public static void LoadAllActiveModsPostfix()
-        {
-            BSCore.RunDefPatchesWithHotReload(hotReload: true);
-            
         }
     }
 

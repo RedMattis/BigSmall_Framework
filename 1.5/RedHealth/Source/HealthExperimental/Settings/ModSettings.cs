@@ -108,18 +108,19 @@ namespace RedHealth
     }
     public class RedSettings : ModSettings
     {
-        public static readonly bool activeOnAllPawnsByDefaultDefault = false;
+        public const bool activeOnAllPawnsByDefaultDefault = false;
         public bool _activeOnAllPawnsByDefault = activeOnAllPawnsByDefaultDefault;
 
-        public static readonly bool hideHealthTrackerDefault = false;
+        public const bool hideHealthTrackerDefault = false;
         public bool hideHealthTracker = hideHealthTrackerDefault;
 
-        public static readonly bool disableForAllDefault = false;
+        public const bool disableForAllDefault = false;
         public bool disableForAll = disableForAllDefault;
 
         //public List<HealthAspectWrapper> aspectsHidden = [];
 
-        public float devEventTimeAcceleration = 1f;
+        public const float devEventTimeAccelerationDefault = 1f;
+        public float devEventTimeAcceleration = devEventTimeAccelerationDefault;
         public bool logging = false;
 
         public List<HealthAspectWrapper> aspectsDisabled = [];
@@ -143,7 +144,7 @@ namespace RedHealth
             Scribe_Values.Look(ref showPercentages, "showPercentages", showPercentagesDefault);
             Scribe_Collections.Look(ref aspectsDisabled, "aspectsDisabled", LookMode.Deep);
 
-            Scribe_Values.Look(ref devEventTimeAcceleration, "devEventTimeAcceleration", 1f);
+            Scribe_Values.Look(ref devEventTimeAcceleration, "devEventTimeAcceleration", devEventTimeAccelerationDefault);
             Scribe_Values.Look(ref logging, "logging", false);
 
             base.ExposeData();

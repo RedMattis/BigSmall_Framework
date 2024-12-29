@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props" Condition="Exists('packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props')" />
+  <Import Project="packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.props" Condition="Exists('packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
@@ -114,11 +114,14 @@
     <Compile Include="Hediffs\HediffPatches.cs" />
     <Compile Include="Genes\GeneSetupEvents.cs" />
     <Compile Include="Genes\GeneUI.cs" />
-    <Compile Include="DefPatches\RecipesDefPatches.cs" />
+    <Compile Include="DefPatches\HumanlikeDefPatches.cs" />
     <Compile Include="Hediffs\TakeDamage.cs" />
+    <Compile Include="HotReloadExtension.cs" />
     <Compile Include="Items\ApparelRestrictions.cs" />
+    <Compile Include="Items\EquipNotifyPatches.cs" />
     <Compile Include="ModExtensions\SmartExtension.cs" />
     <Compile Include="ModExtensions\ModExtHelper.cs" />
+    <Compile Include="ModPatches\MiscCompatibility\HumanoidAlienRaces.cs" />
     <Compile Include="Path Operations\SettingsBasedPatches.cs" />
     <Compile Include="Pawn\PawnGeneration\GenerateNewPawnInternal.cs" />
     <Compile Include="Pawn\PawnPatches.cs" />
@@ -269,23 +272,30 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Publicize Include="Assembly-CSharp:RimWorld.Pawn_GeneTracker.xenotype" />
     <Publicize Include="Assembly-CSharp:Verse.Hediff.severityInt" />
     <Publicize Include="Assembly-CSharp:Verse.PawnRenderer.pawn" />
     <Publicize Include="Assembly-CSharp:Verse.PawnRenderer.results" />
     <Publicize Include="Assembly-CSharp:Verse.PawnRenderer+PreRenderResults" />
     <Publicize Include="Assembly-CSharp:Verse.DebugToolsSpawning.PostPawnSpawn" />
+    <Publicize Include="Assembly-CSharp:Verse.RecipeDef.ingredients" />
+    <Publicize Include="Assembly-CSharp:Verse.ThingFilter.allowedDefs" />
+    <Publicize Include="Assembly-CSharp:Verse.ThingFilter.thingDefs" />
+    <Publicize Include="Assembly-CSharp:Verse.ThingDef.verbs" />
+    <Publicize Include="Assembly-CSharp:RimWorld.ThingDefGenerator_Corpses.CalculateMarketValue" />
+    <Publicize Include="Assembly-CSharp:RimWorld.ThingDefGenerator_Corpses.GenerateCorpseDef" />
+    
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props'))" />
-    <Error Condition="!Exists('packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets'))" />
+    <Error Condition="!Exists('packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.props'))" />
+    <Error Condition="!Exists('packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets'))" />
   </Target>
-  <Import Project="packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets" Condition="Exists('packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets')" />
+  <Import Project="packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets" Condition="Exists('packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets')" />
 </Project>

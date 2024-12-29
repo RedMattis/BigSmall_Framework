@@ -133,6 +133,45 @@ namespace BigAndSmall
         }
     }
 
+    [HarmonyPatch(typeof(PawnRenderer), nameof(PawnRenderer.CurRotDrawMode), MethodType.Getter)]
+    public static class RotDrawModePatch
+    {
+        static readonly int maxUses = 1000;
+        public struct PGPRRCache
+        {
+            public Pawn pawn;
+            public BSCache cache;
+            public Rot4 lastRot;
+            public bool hasForcedRotDrawMode;
+            public RotDrawMode rotDrawMode;
+            public int uses;
+        }
+        [ThreadStatic]
+        static PGPRRCache threadStaticCache;
+
+        [HarmonyPostfix]
+        public static void CurRotDrawModePostfix(PawnRenderer __instance, ref RotDrawMode __result, Pawn ___pawn)
+        {
+            if (___pawn == null) return;
+
+            if (threadStaticCache.pawn != ___pawn || threadStaticCache.uses > maxUses)
+            {
+                threadStaticCache.cache = HumanoidPawnScaler.GetCacheUltraSpeed(___pawn, canRegenerate: false);
+                threadStaticCache.pawn = ___pawn;
+                threadStaticCache.hasForcedRotDrawMode = threadStaticCache.cache.forcedRotDrawMode.HasValue;
+                threadStaticCache.rotDrawMode = threadStaticCache.cache.forcedRotDrawMode ?? RotDrawMode.Fresh;
+                threadStaticCache.uses = 0;
+            }
+            if (!threadStaticCache.hasForcedRotDrawMode) return;
+            else
+            {
+                __result = threadStaticCache.rotDrawMode;
+            }
+            threadStaticCache.uses++;
+        }
+    }
+
+
     [HarmonyPatch(typeof(SelectionDrawer), nameof(SelectionDrawer.DrawSelectionBracketFor))]
     public static class SelectionDrawer_DrawSelection_Patch
     {

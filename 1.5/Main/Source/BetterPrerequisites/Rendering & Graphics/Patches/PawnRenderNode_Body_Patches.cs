@@ -3,7 +3,7 @@ using Verse;
 
 namespace BigAndSmall
 {
-    [HarmonyPatch(typeof(PawnRenderNode_Body), "GraphicFor")]
+    [HarmonyPatch(typeof(PawnRenderNode_Body), nameof(PawnRenderNode_Body.GraphicFor))]
     public static class PawnRenderNode_Body_GraphicFor_Patch
     {
         [HarmonyPriority(Priority.VeryLow)]
@@ -24,16 +24,22 @@ namespace BigAndSmall
     {
         public static void CalculateBodyGraphicsForPawn(PawnRenderNode_Body __instance, Pawn pawn, ref Graphic __result, BSCache cache)
         {
-            if (cache.hideBody) { __result = GraphicsHelper.GetBlankMaterial(pawn); return; }
+            if (cache.hideBody) { __result = GraphicsHelper.GetBlankMaterial(); return; }
 
-            if (cache.bodyMaterial?.overrideDesiccated != true && pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Dessicated)
+            bool dessicated = pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Dessicated;
+            if (cache.bodyMaterial?.overrideDesiccated != true && dessicated)
             {
+                Log.Message($"Scipped graphics for {pawn}. {cache.bodyMaterial?.overrideDesiccated}, {dessicated}, {cache.isDefaultCache}");
                 return;
             }
 
             if (cache.bodyGraphicPath is string bodyGraphicPath)
             {
-                __result = GraphicsHelper.TryGetCustomGraphics(pawn, bodyGraphicPath, __result.color, __result.colorTwo, __result.drawSize, cache.bodyMaterial);
+                if (dessicated && cache.bodyDessicatedGraphicPath != null)
+                {
+                    bodyGraphicPath = cache.bodyDessicatedGraphicPath;
+                }
+                __result = GraphicsHelper.TryGetCustomGraphics(__instance, bodyGraphicPath, __result.color, __result.colorTwo, __result.drawSize, cache.bodyMaterial);
                 return;
             }
 

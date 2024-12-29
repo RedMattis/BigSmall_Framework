@@ -146,7 +146,7 @@
         <thingDef>BS_UrbMech</thingDef>
         <overrideDefNamer>Mecha</overrideDefNamer>
         <priority>-10000</priority>
-        <prefixLabel>mecha</prefixLabel>
+        <prefixLabel>mech</prefixLabel>
         <suffixLabel>mech</suffixLabel>
         <isMechanical>true</isMechanical>
 

@@ -27,7 +27,7 @@ namespace BetterPrerequisites
             // Update the Cache
             if (__instance?.pawn != null)
             {
-                var cache = HumanoidPawnScaler.GetCache(__instance.pawn, scheduleForce: 1);
+                var cache = HumanoidPawnScaler.LazyGetCache(__instance.pawn, scheduleForce: 1);
                 GenderMethods.UpdatePawnHairAndHeads(__instance.pawn);
 
                 if (__instance?.pawn?.Drawer?.renderer != null && __instance.pawn.Spawned)

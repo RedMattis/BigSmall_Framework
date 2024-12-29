@@ -17,9 +17,10 @@ namespace BigAndSmall
     }
     public class BigAndSmallCache : GameComponent
     {
+        public static BigAndSmallCache instance = null;
         public static HashSet<PGene> pGenesThatReevaluate = [];
 
-        public static HashSet<BSCache> scribedCache = [];
+        private HashSet<BSCache> scribedCache = [];
         public static bool regenerationAttempted = false;
         public Game game;
 
@@ -33,9 +34,12 @@ namespace BigAndSmall
 
         public static float globalRandNum = 1;
 
+        public static HashSet<BSCache> ScribedCache { get => instance.scribedCache; set => instance.scribedCache = value; }
+
         public BigAndSmallCache(Game game)
         {
             this.game = game;
+            instance = this;
         }
         public override void FinalizeInit()
         {
@@ -72,17 +76,6 @@ namespace BigAndSmall
                 scheduleFullUpdate.Clear();
                 currentlyQueued.Clear();
                 HumanoidPawnScaler.Cache.Clear();
-
-                var allPawns = game?.Maps?.SelectMany(x => x.mapPawns.AllPawns);
-                // Get all pawns from the game and add them to the cache
-                foreach (var pawn in allPawns)
-                {
-                    var id = pawn.ThingID;
-                    foreach (var cache in scribedCache.Where(x => x.id == id))
-                    {
-                        HumanoidPawnScaler.Cache[pawn] = cache;
-                    }
-                }
             }
         }
 
@@ -137,7 +130,7 @@ namespace BigAndSmall
             {
                 // If the queue is not empty, dequeue the first cache and refresh it.
                 var cachedPawn = refreshQueue.Dequeue();
-                if (cachedPawn != null && cachedPawn.Spawned)
+                if (cachedPawn != null && (cachedPawn.Spawned || cachedPawn.Corpse?.Spawned == true))
                 {
                     HumanoidPawnScaler.GetCache(cachedPawn, forceRefresh: true);
                 }
@@ -275,6 +268,12 @@ namespace BigAndSmall
             {
                 // Unless values have already been set, this will just be a cache with default values.
                 result = GetCacheInner(pawn, out newEntry, forceRefresh, canRegenerate: false);
+
+                // Need to check performance of this carefully...
+                if (result.isDefaultCache && CheckForScribedEntry(pawn) is BSCache scribedCache)
+                {
+                    result = scribedCache;
+                }
             }
             if (newEntry)
             {
@@ -286,7 +285,7 @@ namespace BigAndSmall
                 }
                 else
                 {
-                    BigAndSmallCache.scribedCache.Add(result);
+                    BigAndSmallCache.ScribedCache.Add(result);
                     ShedueleForceRegenerate(result, 1);
                 }
             }
@@ -312,6 +311,10 @@ namespace BigAndSmall
                 {
                     pawn.Drawer.renderer.SetAllGraphicsDirty();
                 }
+                if (pawn.Corpse?.Spawned == true)
+                {
+                    pawn.Corpse.RotStageChanged();
+                }
             }
         }
 
@@ -333,7 +336,7 @@ namespace BigAndSmall
         public static BSCache CheckForScribedEntry(Pawn pawn)
         {
             var id = pawn.ThingID;
-            foreach (var cache in BigAndSmallCache.scribedCache.Where(x => x.id == id))
+            foreach (var cache in BigAndSmallCache.ScribedCache.Where(x => x.id == id))
             {
                 Cache[pawn] = cache;
                 cache.pawn = pawn;
@@ -379,6 +382,7 @@ namespace BigAndSmall
         public string headDessicatedGraphicPath = null;
         public CustomMaterial bodyMaterial = null;
         public CustomMaterial headMaterial = null;
+        public RotDrawMode? forcedRotDrawMode = null;
 
         public float bodyRenderSize = 1;
         public float headRenderSize = 1;
@@ -824,6 +828,9 @@ namespace BigAndSmall
                 complexHeadOffsets = allPawnExt.Select(x => x.headDrawData).Where(x => x != null).ToList().GetCombinedOffsetsByRot(headPositionMultiplier);
                 complexBodyOffsets = allPawnExt.Select(x => x.bodyDrawData).Where(x => x != null).ToList().GetCombinedOffsetsByRot();
 
+
+                var forcedRot = allPawnExt.Select(x => x.forcedRotDrawMode).Where(x => x != null);
+                forcedRotDrawMode = forcedRot.EnumerableNullOrEmpty() ? null : forcedRot.First();
                 // Check if the body size, head size, body offset, or head position has changed. If not set approximatelyNoChange to false.
                 approximatelyNoChange = bodyRenderSize.Approx(1) && headRenderSize.Approx(1) && bodyPosOffset.Approx(0) &&
                     headPosMultiplier.Approx(1) && headPositionMultiplier.Approx(1) && worldspaceOffset.Approx(0) &&
@@ -847,7 +854,7 @@ namespace BigAndSmall
                     Log.Warning($"Issue reloading cache of {pawn} ({id}). Removing entire cache so it can be regenerated.");
                     // Reassigning instead of clearing in case it is null for some reason.
                     HumanoidPawnScaler.Cache = new ConcurrentDictionary<Pawn, BSCache>();
-                    BigAndSmallCache.scribedCache = [];
+                    BigAndSmallCache.ScribedCache = [];
                     BigAndSmallCache.regenerationAttempted = true;
                 }
                 throw;
@@ -873,7 +880,12 @@ namespace BigAndSmall
 
         private Gender? GetApparentGender(List<PawnExtension> allExts = null)
         {
-            return allExts.FirstOrDefault(x => x.ApparentGender != null)?.ApparentGender;
+            Gender? gender = allExts.FirstOrDefault(x => x.ApparentGender != null)?.ApparentGender;
+            bool invertApparentGender = allExts.Any(x => x.invertApparentGender);
+
+            if (gender != null && invertApparentGender) gender = gender == Gender.Male ? Gender.Female : Gender.Male;
+            if (gender == null && invertApparentGender) gender = pawn.gender == Gender.Male ? Gender.Female : Gender.Male;
+            return gender;
         }
 
         public void ReevaluateGraphics(List<PawnExtension> otherExts = null, List<PawnExtension> raceExts = null)
@@ -1097,7 +1109,7 @@ namespace BigAndSmall
                     Log.Warning($"Issue updating RaceCache of {pawn} ({id}). Cleaing and regenerating cache.");
                     // Reassigning instead of clearing in case it is null for some reason.
                     HumanoidPawnScaler.Cache = new ConcurrentDictionary<Pawn, BSCache>();
-                    BigAndSmallCache.scribedCache = [];
+                    BigAndSmallCache.ScribedCache = [];
                     BigAndSmallCache.regenerationAttempted = true;
                 }
                 throw;

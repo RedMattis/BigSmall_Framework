@@ -10,12 +10,17 @@ namespace BigAndSmall
     public class FusedBody
     {
         public readonly static Dictionary<string, FusedBody> FusedBodies = [];
+        public readonly static Dictionary<ThingDef, FusedBody> FusedBodyByThing = [];
         public BodyDef generatedBody = null;
         public MergableBody[] mergableBodies = null;
-        public ThingDef thing = null;
+        private ThingDef thing = null;
         public MergableBody fuseSetBody = null;
         public bool fake = false;
         public bool isMechanical = false;
+
+        public MergableBody SourceBody => mergableBodies[0];
+
+        public ThingDef Thing { get => thing; private set => thing = value; }
 
         public FusedBody(BodyDef generatedBody, MergableBody fusetSetBody, bool mechanical, params MergableBody[] mergableBodies)
         {
@@ -26,7 +31,11 @@ namespace BigAndSmall
             FusedBodies[GetKey(mechanical, mergableBodies.Select(x => x.bodyDef).ToArray())] = this;
         }
 
-        public MergableBody SourceBody => mergableBodies[0];
+        public void SetThing(ThingDef thing)
+        {
+            Thing = thing;
+            FusedBodyByThing[thing] = this;
+        }
 
         private static string GetKey(bool mechanical, BodyDef[] bodyDefs)
         {

@@ -9,7 +9,7 @@ namespace BigAndSmall
 {
     public static class GraphicsHelper
     {
-        public static Graphic GetBlankMaterial(Pawn pawn) => GraphicDatabase.Get<Graphic_Multi>("UI/EmptyImage", ShaderUtility.GetSkinShader(pawn), Vector2.one, pawn.story.SkinColor);
+        public static Graphic GetBlankMaterial() => GraphicDatabase.Get<Graphic_Multi>("UI/EmptyImage");
 
         public static Color GetColorFromColourListRange(this List<Color> colorList, float rngValue, float rngValue2)
         {
@@ -28,11 +28,11 @@ namespace BigAndSmall
             return color1 * (1 - interp) + color2 * interp;
         }
 
-        public static Graphic_Multi TryGetCustomGraphics(Pawn pawn, string path, Color colorOne, Color colorTwo, Vector2 drawSize, CustomMaterial data)
+        public static Graphic_Multi TryGetCustomGraphics(PawnRenderNode renderNode, string path, Color colorOne, Color colorTwo, Vector2 drawSize, CustomMaterial data)
         {
             if (data != null)
             {
-                return data.GetGraphic(pawn, path, colorOne, colorTwo, drawSize, data);
+                return data.GetGraphic(renderNode, path, colorOne, colorTwo, drawSize, data);
             }
             else
             {
