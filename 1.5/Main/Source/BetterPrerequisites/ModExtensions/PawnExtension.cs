@@ -106,6 +106,7 @@ namespace BigAndSmall
                 // Needs and Diet
                 CreateIndividualSection("BS_PawnDiet".Translate(), extList, ext => ext.PawnDietDescription),
                 CreateIndividualSection("BS_LockedNeeds".Translate(), extList, ext => ext.LockedNeedsDescription),
+                CreateAggregatedSection("BS_BleedRateDesc".Translate(), extList.Where(x=>x.bleedRate != null).ToList(), ext => ext.bleedRate == null ? 1 : ext.bleedRate, rates => rates.Aggregate(1f, (acc, rate) => acc * rate.Value).ToStringPercent()),
                 CreateIndividualSection("BS_ConsumeSoulOnHit".Translate(), extList, ext => ext.ConsumeSoulOnHitDescription),
                 // Apparel and Restrictions
                 CreateIndividualSection("BS_HasApparelRestrictions".Translate(), extList, ext => ext.apparelRestrictions != null ? "BS_Modified".Translate().CapitalizeFirst() : null),
@@ -318,6 +319,10 @@ namespace BigAndSmall
         public List<Aptitude> aptitudes = null;
         public List<string> AptitudeDescription => aptitudes?.Select((Aptitude x) => x.skill.LabelCap.ToString() + " " + x.level.ToStringWithSign()).ToList();
 
+        public float? bleedRate = null;
+
+        public string BleedRateDescription => bleedRate == null ? null : "BS_BleedRateDesc".Translate(bleedRate.Value.ToStringPercent());
+        //         public string ForceUnarmedDescription => forceUnarmed ? "BS_ForceUnarmedDesc".Translate() : null;
         #region Rendering
         /// <summary>
         /// Prevents head-scaling/offsets from sources other than the pawn's general size.

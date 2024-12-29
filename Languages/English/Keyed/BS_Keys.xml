@@ -78,6 +78,8 @@
   <BS_DroneDesc>is a drone (less affected by death, ...)</BS_DroneDesc>
   <BS_ForceUnarmed>unarmed fighter</BS_ForceUnarmed>
   <BS_ForceUnarmedDesc>uses bionic or unarmed melee attacks</BS_ForceUnarmedDesc>
+  <BS_BleedRate>bleed rate</BS_BleedRate>
+  <BS_BleedRateDesc>bleed rate {0}</BS_BleedRateDesc>
   <BS_ConsumeSoulOnHit>consumes soul energy on kill</BS_ConsumeSoulOnHit>
   <BS_ConsumeSoulOnHitDesc>efficiency {0}</BS_ConsumeSoulOnHitDesc>
   <BS_PawnDiet>pawn diet</BS_PawnDiet>

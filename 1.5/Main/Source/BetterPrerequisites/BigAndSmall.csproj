@@ -137,6 +137,7 @@
     <Compile Include="Rendering &amp; Graphics\Patches\PawnRenderNode_Head_Patches.cs" />
     <Compile Include="Rendering &amp; Graphics\GraphicsHelper.cs" />
     <Compile Include="Rendering &amp; Graphics\BSDrawData.cs" />
+    <Compile Include="Rendering &amp; Graphics\RenderNodes\PawnRenderNode_HSVHair.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\PawnRenderNode_SimpleSwitches.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\UltimateRenderNode.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\ComplexRenderNode.cs" />
@@ -284,7 +285,6 @@
     <Publicize Include="Assembly-CSharp:Verse.ThingDef.verbs" />
     <Publicize Include="Assembly-CSharp:RimWorld.ThingDefGenerator_Corpses.CalculateMarketValue" />
     <Publicize Include="Assembly-CSharp:RimWorld.ThingDefGenerator_Corpses.GenerateCorpseDef" />
-    
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

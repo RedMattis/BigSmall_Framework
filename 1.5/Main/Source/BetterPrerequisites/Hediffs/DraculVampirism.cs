@@ -136,7 +136,7 @@ namespace BigAndSmall
                 foreach (Hediff hediff in pawn.health?.hediffSet.hediffs)
                 {
                     var defName = hediff.def.defName;
-                    if (defName == "VU_DraculAnimalVampirism" || defName == "VU_AnimalReturned")
+                    if (defName == "VU_DraculAnimalVampirism" || hediff.def.GetAllPawnExtensionsOnHediff().Any(x=>x.isUnliving||x.isMechanical))
                     {
                         pawn.health.RemoveHediff(this);
                         break;

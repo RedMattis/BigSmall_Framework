@@ -76,6 +76,7 @@ namespace BigAndSmall
                         {
                             __result /= 3;
                         }
+                        __result *= sizeCache.bleedRateFactor;
 
                     }
                 }

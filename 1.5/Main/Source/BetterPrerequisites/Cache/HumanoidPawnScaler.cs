@@ -439,6 +439,7 @@ namespace BigAndSmall
         public bool injuriesRescaled = false;
         public bool isUnliving = false;
         public BleedRateState bleedRate = BleedRateState.Unchanged;
+        public float bleedRateFactor = 1;
         public bool slowBleeding = false;
         public bool deathlike = false;
         public bool isMechanical = false;
@@ -733,8 +734,6 @@ namespace BigAndSmall
                     apparentAge = Mathf.Min(age, 80);
                 }
 
-
-
                 bool noBlood = activeGenes.Any(x => x.def.defName == "VU_NoBlood") || animalReturned;
                 bool verySlowBleeding = animalVampirism;
                 bool slowBleeding = activeGenes.Any(x => x.def.defName == "BS_SlowBleeding");
@@ -799,7 +798,10 @@ namespace BigAndSmall
                 //isMechanical = geneExts.Any(x => x.isMechanical) || raceCompProps.isMechanical;
                 isUnliving = undeadGenes.Count > 0 || animalUndead || isShambler || allPawnExt.Any(x => x.isUnliving);
                 willBeUndead = willBecomeUndead;
+                bleedRateFactor = allPawnExt.Any(x => x.bleedRate != null) ? allPawnExt.Where(x => x.bleedRate != null).Aggregate(1f, (acc, x) => acc * x.bleedRate.Value) : 1;
+                if (bleedRateFactor == 0) bleedState = BleedRateState.NoBleeding;
                 bleedRate = bleedState;
+                
                 deathlike = animalUndead || allPawnExt.Any(x => x.isDeathlike);
 
                 unarmedOnly = allPawnExt.Any(x => x.unarmedOnly || x.forceUnarmed) ||
