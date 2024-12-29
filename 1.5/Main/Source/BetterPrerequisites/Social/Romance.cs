@@ -1,7 +1,11 @@
 ﻿using HarmonyLib;
 using RimWorld;
+using System.Collections.Generic;
+using System.Reflection.Emit;
+using System.Reflection;
 using UnityEngine;
 using Verse;
+using Verse.Noise;
 
 namespace BigAndSmall
 {
@@ -68,12 +72,60 @@ namespace BigAndSmall
 
         [HarmonyPatch(typeof(Pawn_RelationsTracker), nameof(Pawn_RelationsTracker.CompatibilityWith))]
         [HarmonyPostfix]
+        [HarmonyPriority(Priority.Low)]
         public static void CompatibilityWith_Postfix(ref float __result, Pawn_RelationsTracker __instance, Pawn otherPawn, Pawn ___pawn)
         {
-            __result = GetCompatibilityWith(___pawn, otherPawn, __result);
+            __result = GetCompatibilityWith(___pawn, otherPawn, reductionScale:0.5f, __result);
 
         }
-        public static float GetCompatibilityWith(this Pawn pawn, Pawn otherPawn, float defaultValue = 0)
+
+        [HarmonyTranspiler]
+        [HarmonyPatch(typeof(Pawn_RelationsTracker), nameof(Pawn_RelationsTracker.SecondaryLovinChanceFactor))]
+        public static IEnumerable<CodeInstruction> LovingFactor_Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            // Same as what HAR does, both S&R so this should be best for compatibility.
+            FieldInfo defField = AccessTools.Field(typeof(Thing), nameof(Thing.def));
+            MethodInfo racePropsGetter = AccessTools.PropertyGetter(typeof(Pawn), nameof(Pawn.RaceProps));
+            MethodInfo humanlikeGetter = AccessTools.PropertyGetter(typeof(RaceProperties), nameof(RaceProperties.Humanlike));
+            foreach (CodeInstruction instruction in instructions)
+            {
+                if (instruction.opcode == OpCodes.Ldfld && instruction.OperandIs(defField))
+                {
+                    yield return new CodeInstruction(OpCodes.Callvirt, racePropsGetter);
+                    instruction.opcode = OpCodes.Callvirt;
+                    instruction.operand = humanlikeGetter;
+                }
+                yield return instruction;
+            }
+        }
+        [HarmonyPatch(typeof(Pawn_RelationsTracker), nameof(Pawn_RelationsTracker.SecondaryLovinChanceFactor))]
+        [HarmonyPostfix]
+        [HarmonyPriority(Priority.Low)]
+        public static void LovingFactorPostfix(ref float __result, Pawn_RelationsTracker __instance, Pawn otherPawn, Pawn ___pawn)
+        {
+            __result = GetLovinghanceFactor(___pawn, otherPawn, __result);
+
+        }
+        public static float GetLovinghanceFactor(Pawn pawn, Pawn otherPawn, float result)
+        {
+            if (HumanoidPawnScaler.GetCacheUltraSpeed(pawn) is BSCache cache && HumanoidPawnScaler.GetCacheUltraSpeed(otherPawn) is BSCache cacheTwo)
+            {
+                if (pawn == otherPawn || result <= 0) return result;
+
+                float? compatibility = RomanceTagsExtensions.GetHighestSharedTag(cache, cacheTwo);
+
+                if (pawn.GetStatValue(FlirtChanceDef, cacheStaleAfterTicks: 1000) == 0 || otherPawn.GetStatValue(FlirtChanceDef, cacheStaleAfterTicks: 1000) == 0)
+                    return 0;
+                if (compatibility == null && pawn.def != otherPawn.def)
+                {
+                    return result;
+                }
+                result *= compatibility.Value;
+            }
+            return result;
+        }
+
+        public static float GetCompatibilityWith(this Pawn pawn, Pawn otherPawn, float reductionScale=1f, float oldValue = 0)
         {
             float ConstantPerPawnsPairCompatibilityOffset(int otherPawnID)
             {
@@ -93,15 +145,24 @@ namespace BigAndSmall
                     return 0;
                 if (compatibility == null && pawn.def != otherPawn.def)
                 {
-                    return defaultValue;
+                    return oldValue;
                 }
 
                 float x = Mathf.Abs(cache.apparentAge - cacheTwo.apparentAge);
                 float num = Mathf.Clamp(GenMath.LerpDouble(0f, 20f, 0.45f, -0.45f, x), -0.45f, 0.45f);
                 float num2 = ConstantPerPawnsPairCompatibilityOffset(otherPawn.thingIDNumber);
-                return (num + num2) * compatibility.Value;
+
+                float result = (num + num2) * compatibility.Value;
+                if (result < 1)
+                {
+                    return Mathf.Lerp(1, result, reductionScale);
+                }
+                return Mathf.Max((num + num2) * compatibility.Value, oldValue);
             }
-            return defaultValue;
+            return oldValue;
         }
+
+        
+
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using UnityEngine;
 using Verse;
 using static BigAndSmall.BodyDefFusionsHelper;
@@ -30,6 +31,8 @@ namespace BigAndSmall
                 //DefDatabase<BodyDef>.AllDefsListForReading.Remove(bodyDef);
             });
             //thingDefsAdded.ToList().ForEach(thingDef => DefDatabase<ThingDef>.AllDefsListForReading.Remove(thingDef));
+            //bodyDefsAdded.Clear();
+            //thingDefsAdded.Clear();
         }
         /// <summary>
         /// Merge body parts.
@@ -235,12 +238,11 @@ namespace BigAndSmall
             List<string> secondaryDefNames = bodyTwoArray.Select(x => x.overrideDefNamer ?? x.bodyDef.defName).ToList();
             defNameFull = $"{miniDefPrefix}_{defName}{string.Join("", secondaryDefNames)}".Trim();
 
-            var genBody = new BodyDef
-            {
-                defName = defNameFull,
-                description = bodyOne.bodyDef.description,
-                label = fullLabel // 
-            };
+            BodyDef genBody = defNameFull.TryGetExistingDef<BodyDef>();
+            genBody ??= new BodyDef();
+            genBody.defName = defNameFull;
+            genBody.description = bodyOne.bodyDef.description;
+            genBody.label = fullLabel;
             if (doDebug) Log.Message($"Creating {genBody.defName} from {defNameFull}");
             return genBody;
         }

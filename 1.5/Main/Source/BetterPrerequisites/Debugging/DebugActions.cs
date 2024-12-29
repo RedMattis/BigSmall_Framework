@@ -170,7 +170,7 @@ namespace BigAndSmall.Debugging
         {
             foreach (Pawn pawn in Find.CurrentMap.thingGrid.ThingsAt(UI.MouseCell()).OfType<Pawn>())
             {
-                BigAndSmallCache.scribedCache.RemoveWhere(x => x.pawn == pawn);
+                BigAndSmallCache.ScribedCache.RemoveWhere(x => x.pawn == pawn);
                 BigAndSmallCache.refreshQueue.Clear();
                 BigAndSmallCache.queuedJobs.Clear();
                 BigAndSmallCache.schedulePostUpdate.Clear();

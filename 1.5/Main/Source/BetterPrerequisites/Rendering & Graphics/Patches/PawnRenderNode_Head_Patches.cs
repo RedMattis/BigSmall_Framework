@@ -24,13 +24,18 @@ namespace BigAndSmall
             {
                 if (cache.hideHead) { __result = GraphicsHelper.GetBlankMaterial(); return; }
 
-                if (cache.headMaterial?.overrideDesiccated != true && headNode.tree.pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Dessicated)
+                bool dessicated = headNode.tree.pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Dessicated;
+                if (cache.headMaterial?.overrideDesiccated != true && dessicated)
                 {
                     return;
                 }
 
                 if (cache.headGraphicPath is string headGraphicPath)
                 {
+                    if (dessicated && cache.headDessicatedGraphicPath != null)
+                    {
+                        headGraphicPath = cache.headDessicatedGraphicPath;
+                    }
                     //Debug.Log("DEBUG! HeadGraphicPath: " + headGraphicPath);
                     __result = GraphicsHelper.TryGetCustomGraphics(headNode, headGraphicPath, __result.color, __result.colorTwo, __result.drawSize, cache.headMaterial);
                 }

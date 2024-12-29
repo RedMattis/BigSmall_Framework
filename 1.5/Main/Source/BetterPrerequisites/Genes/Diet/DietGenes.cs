@@ -4,6 +4,9 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -321,7 +324,28 @@ namespace BigAndSmall
             skepThingDefCheck = false;
 
             return true;
-        }  
+        }
+
+        [HarmonyPatch(typeof(CompDrug), nameof(CompDrug.PostIngested))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> PostIngested_Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+            for (int i = 0; i < codes.Count; i++)
+            {
+                // Find the instruction that loads the body size
+                if (codes[i].opcode == OpCodes.Callvirt && codes[i].operand is MethodInfo method && method.Name == "get_BodySize")
+                {
+                    yield return codes[i];
+                    yield return new CodeInstruction(OpCodes.Ldc_R4, 0.8f);
+                    yield return new CodeInstruction(OpCodes.Call, typeof(Mathf).GetMethod(nameof(Mathf.Max), new Type[] { typeof(float), typeof(float) }));
+                }
+                else
+                {
+                    yield return codes[i]; // Yield the original instruction
+                }
+            }
+        }
 
         [HarmonyPatch(typeof(Thing), nameof(Thing.Ingested),
         [

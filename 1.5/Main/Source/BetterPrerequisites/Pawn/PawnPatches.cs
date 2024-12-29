@@ -14,14 +14,22 @@ namespace BigAndSmall
         {
             if (!respawningAfterLoad)
             {
-                float? foodNeed = __instance?.needs?.food?.CurLevelPercentage;
-                Pawn_PostMapInit.RefreshPawnGenes(__instance, forceRefresh: true);
+                Pawn pawn = __instance;
+                float? foodNeed = pawn?.needs?.food?.CurLevelPercentage;
+                Pawn_PostMapInit.RefreshPawnGenes(pawn, forceRefresh: true);
                 if (foodNeed != null)
                 {
-                    __instance.needs.food.CurLevelPercentage = foodNeed.Value;
+                    pawn.needs.food.CurLevelPercentage = foodNeed.Value;
                 }
 
-                __instance.def.modExtensions?.OfType<RaceExtension>()?.FirstOrDefault()?.ApplyTrackerIfMissing(__instance);
+                pawn.def.modExtensions?.OfType<RaceExtension>()?.FirstOrDefault()?.ApplyTrackerIfMissing(pawn);
+
+                var pawnExtensions = ModExtHelper.GetAllPawnExtensions(pawn);
+                int? minAge = pawnExtensions.Max(x => x.babyStartAge);
+                if (minAge != null && pawn.ageTracker.AgeBiologicalYears < minAge)
+                {
+                    pawn.ageTracker.AgeBiologicalTicks = (long)(minAge * 3600000);
+                }
             }
         }
     }

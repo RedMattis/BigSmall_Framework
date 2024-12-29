@@ -1,6 +1,6 @@
 <Defs>
   <!-- Suitable for the mechanical kind of robot blatantly made from steel and bolts. Basically a Diet Soda version of the steel Enforcer-->
-  <ThingDef ParentName="BS_DefaultHumanlike" BS_Alt="ThingDef_AlienRace">
+  <ThingDef ParentName="BS_DefaultHumanlike" Name="BS_UrbMech" BS_Alt="ThingDef_AlienRace">
     <defName>BS_UrbMech</defName>
     <label>mech</label>
     <description>This is a creature largely composed of highly ruggedized machinery.</description>
@@ -48,6 +48,12 @@
       <gestationPeriodDays>18</gestationPeriodDays>
 
       <canBecomeShambler>false</canBecomeShambler>
+
+      <willNeverEat>
+        <li>GoJuice</li> <li>WakeUp</li> <li>Yayo</li>
+        <li>SmokeleafJoint</li> <li>PsychiteTea</li> <li>Flake</li>
+        <li>Luciferium</li> <li>Penoxycyline</li> <li>Beer</li>
+      </willNeverEat>
 
       <!-- <specificMeatDef>Steel</specificMeatDef> -->
       <useMeatFrom IsNull="True"/>

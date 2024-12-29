@@ -64,7 +64,7 @@ namespace BigAndSmall
             if (listStd.ButtonText("BS_ResetCache".Translate()))
             {
                 var pawns = HumanoidPawnScaler.Cache.Keys.Select(x=>x).ToList();
-                BigAndSmallCache.scribedCache = [];
+                BigAndSmallCache.ScribedCache = [];
                 BigAndSmallCache.refreshQueue.Clear();
                 BigAndSmallCache.queuedJobs.Clear();
                 BigAndSmallCache.schedulePostUpdate.Clear();

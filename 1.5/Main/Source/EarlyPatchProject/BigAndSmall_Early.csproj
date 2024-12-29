@@ -1,9 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\BetterPrerequisites\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.props" Condition="Exists('..\BetterPrerequisites\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <Optimize>true</Optimize>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <!--<LangVersion>preview</LangVersion>-->
     <!--<LangVersion>7.3</LangVersion>-->
   </PropertyGroup>
@@ -76,5 +79,20 @@
     <Compile Include="Main_Early.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Publicize Include="Assembly-CSharp:RimWorld.ThingDefGenerator_Corpses.GenerateCorpseDef" />
+  </ItemGroup>
+  
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\BetterPrerequisites\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.props')" Text="$([System.String]::Format('$(ErrorText)', '..\BetterPrerequisites\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.props'))" />
+    <Error Condition="!Exists('..\BetterPrerequisites\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\BetterPrerequisites\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets'))" />
+  </Target>
+  <Import Project="..\BetterPrerequisites\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets" Condition="Exists('..\BetterPrerequisites\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets')" />
 </Project>

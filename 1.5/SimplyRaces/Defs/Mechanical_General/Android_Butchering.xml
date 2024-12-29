@@ -5,35 +5,73 @@
       <parent>Corpses</parent>
     </ThingCategoryDef>
 
-  <RecipeDef ParentName="ButcherCorpseMechanoidBase" Name="BS_ButcherRobotBase" Abstract="True">
-    <!-- <ingredients Inherit="False">
+      <SpecialThingFilterDef>
+    <defName>BS_AllowCorpsesColonistRobot</defName>
+    <label>allow colonist corpses</label>
+    <description>Allow the dead bodies of colonists.</description>
+    <parentCategory>BS_RobotCorpses</parentCategory>
+    <allowedByDefault>false</allowedByDefault>
+    <saveKey>allowCorpsesColonist</saveKey>
+    <workerClass>SpecialThingFilterWorker_CorpsesColonist</workerClass>
+  </SpecialThingFilterDef>
+
+  <SpecialThingFilterDef>
+    <defName>BS_AllowCorpsesSlaveRobot</defName>
+    <label>allow slave corpses</label>
+    <description>Allow the dead bodies of slaves.</description>
+    <parentCategory>BS_RobotCorpses</parentCategory>
+    <allowedByDefault>false</allowedByDefault>
+    <saveKey>allowCorpsesSlave</saveKey>
+    <workerClass>SpecialThingFilterWorker_CorpsesSlave</workerClass>
+  </SpecialThingFilterDef>
+
+  <SpecialThingFilterDef>
+    <defName>BS_AllowCorpsesStrangerRobot</defName>
+    <label>allow stranger corpses</label>
+    <description>Allow the dead bodies of strangers and enemies.</description>
+    <parentCategory>BS_RobotCorpses</parentCategory>
+    <allowedByDefault>false</allowedByDefault>
+    <saveKey>allowCorpsesStranger</saveKey>
+    <workerClass>SpecialThingFilterWorker_CorpsesStranger</workerClass>
+  </SpecialThingFilterDef>
+
+  <RecipeDef Name="BS_ButcherRobotBase" Abstract="True">
+    <workSpeedStat>ButcheryMechanoidSpeed</workSpeedStat>
+    <workSkill>Crafting</workSkill>
+    <efficiencyStat>ButcheryMechanoidEfficiency</efficiencyStat>
+    <effectWorking>ButcherMechanoid</effectWorking>
+    <uiIconThing>Steel</uiIconThing>
+    <ingredients>
       <li>
         <filter>
           <categories>
-            <li>Corpses</li>
+            <li>BS_RobotCorpses</li>
           </categories>
         </filter>
         <count>1</count>
       </li>
-    </ingredients> -->
-    <!-- <defaultIngredientFilter Inherit="False"> -->
-    <defaultIngredientFilter Inherit="False">
+    </ingredients>
+    <specialProducts>
+      <li>Butchery</li>
+    </specialProducts>
+    <fixedIngredientFilter>
       <categories>
         <li>BS_RobotCorpses</li>
       </categories>
-    </defaultIngredientFilter>
-    <!-- <fixedIngredientFilter Inherit="False"> -->
-    <fixedIngredientFilter Inherit="False">
-      <!-- <thingDefs/> -->
-      <categories>
-        <li>BS_RobotCorpses</li>
-      </categories>
-      <specialFiltersToAllow>
-        <li>AllowCorpsesColonist</li>
-        <li MayRequire="Ludeon.RimWorld.Ideology">AllowCorpsesSlave</li>
-        <li>AllowCorpsesStranger</li>
-      </specialFiltersToAllow>
     </fixedIngredientFilter>
+    <defaultIngredientFilter>
+      <categories>
+        <li>BS_RobotCorpses</li>
+      </categories>
+      <specialFiltersToDisallow>
+        <li>BS_AllowCorpsesColonistRobot</li>
+      </specialFiltersToDisallow>
+      <specialFiltersToAllow>
+        <li MayRequire="Ludeon.RimWorld.Ideology">BS_AllowCorpsesSlaveRobot</li>
+        <li>BS_AllowCorpsesStrangerRobot</li>
+      </specialFiltersToAllow>
+    </defaultIngredientFilter>
+    <displayPriority>0</displayPriority>
   </RecipeDef>
 
   <RecipeDef ParentName="BS_ButcherRobotBase">

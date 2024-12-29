@@ -4,14 +4,52 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using UnityEngine;
 using Verse;
+using static HarmonyLib.Code;
 
 namespace BigAndSmall
 {
+    [DefOf]
+    public static class BSEDefs
+    {
+        public static ThingCategoryDef BS_RobotCorpses;
+    }
+
     [HarmonyPatch]
     public static class DefGeneratorPatches
     {
+        public static ThingCategoryDef TrySetToRobotCorpse(ThingCategoryDef previousDef, ThingDef pawnDef)
+        {
+            if (pawnDef.IsMechanicalDef())
+            {
+                return BSEDefs.BS_RobotCorpses;
+            }
+            return previousDef;
+        }
+
+        [HarmonyPatch(typeof(ThingDefGenerator_Corpses), nameof(ThingDefGenerator_Corpses.GenerateCorpseDef))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> GenerateCorpseDef_Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = new List<CodeInstruction>(instructions);
+            var targetMethod = AccessTools.Method(typeof(DefGeneratorPatches), nameof(TrySetToRobotCorpse));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                var code = codes[i];
+                yield return code;
+
+                // Check for loading the CorpsesHumanlike field
+                if (code.opcode == OpCodes.Ldsfld && codes[i].operand is FieldInfo field && field.Name == "CorpsesHumanlike")
+                {
+                    yield return new CodeInstruction(OpCodes.Ldarg_0); // Load the PawnDef (argument 0)
+                    yield return new CodeInstruction(OpCodes.Call, targetMethod);
+                }
+            }
+        }
+
         /// <summary>
         /// This class generates genedefs for the game. We want to run it after the game has loaded all defs and any xenotypes that might be code-generated.
         /// </summary>
