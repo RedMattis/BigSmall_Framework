@@ -1,0 +1,56 @@
+<Defs>
+  <HediffDef Name="BS_SkeletalBase">
+    <defName>BS_Skeletal</defName>
+    <label>skeletal</label>
+    <description>This individual has a skeletal appearance.</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <isBad>false</isBad>
+    <everCurableByItem>false</everCurableByItem>
+    <initialSeverity>1</initialSeverity>
+    <allowMothballIfLowPriorityWorldPawn>true</allowMothballIfLowPriorityWorldPawn>
+    <stages>
+      <li>
+        <painOffset>-10.0</painOffset>
+        <statFactors>
+          <InjuryHealingFactor>0.5</InjuryHealingFactor>
+          <SM_BulletDmgMult>0.7</SM_BulletDmgMult>
+          <Fertility MayRequire="Ludeon.Rimworld.Biotech">0</Fertility>
+        </statFactors>
+        <statOffsets>
+          <ToxicResistance>2</ToxicResistance>
+        </statOffsets>
+      </li>
+    </stages>
+    <renderNodeProperties>
+      <li Class="BigAndSmall.PawnRenderNodeProps_HSVHair">
+        <saturation>0.2</saturation>
+        <valueGradientRemap>
+          <points>
+            <li>(0, 0)</li>
+            <li>(0.1, 0.05)</li>
+            <li>(0.2, 0.2)</li>
+            <li>(0.3, 0.5)</li>
+            <li>(0.75, 0.85)</li>
+            <li>(1.0, 1.0)</li>
+          </points>
+        </valueGradientRemap>
+        <nodeClass>BigAndSmall.PawnRenderNode_HSVHair</nodeClass>
+        <workerClass>PawnRenderNodeWorker_FlipWhenCrawling</workerClass>
+        <rotDrawMode>Dessicated</rotDrawMode>
+        <colorType>Hair</colorType>
+        <skipFlag>Hair</skipFlag>
+        <baseLayer>62</baseLayer>
+        <parentTagDef>Head</parentTagDef>
+      </li>
+    </renderNodeProperties>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <forcedRotDrawMode>Dessicated</forcedRotDrawMode>
+        <isUnliving>true</isUnliving>
+        <bleedRate>0</bleedRate>
+      </li>
+    </modExtensions>
+  </HediffDef>
+
+</Defs>

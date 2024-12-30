@@ -162,7 +162,18 @@ namespace BigAndSmall
                     }
                     else
                     {
-                        var animalHediff = HediffMaker.MakeHediff(HediffDef.Named("VU_AnimalReturned"), pawn);
+                        // Get Rot State
+                        RotStage rotStage = pawn.GetRotStage();
+                        string targetDef = "VU_AnimalReturned";
+                        if (rotStage == RotStage.Dessicated)
+                        {
+                            targetDef = "VU_AnimalReturnedSkeletal";
+                        }
+                        else if (rotStage == RotStage.Rotting)
+                        {
+                            targetDef = "VU_AnimalReturnedRotted";
+                        }
+                        var animalHediff = HediffMaker.MakeHediff(HediffDef.Named(targetDef), pawn);
                         pawn.health.AddHediff(animalHediff);
                     }
 

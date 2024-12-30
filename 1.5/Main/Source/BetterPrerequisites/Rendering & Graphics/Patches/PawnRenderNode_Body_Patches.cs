@@ -29,7 +29,6 @@ namespace BigAndSmall
             bool dessicated = pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Dessicated;
             if (cache.bodyMaterial?.overrideDesiccated != true && dessicated)
             {
-                Log.Message($"Scipped graphics for {pawn}. {cache.bodyMaterial?.overrideDesiccated}, {dessicated}, {cache.isDefaultCache}");
                 return;
             }
 
