@@ -94,6 +94,8 @@ namespace BigAndSmall
                 morphUpRequiresAge = geneExts.Where(x => x.metamorphAtAge != null).Max(x => x.metamorphAtAge);
                 morphDownRequiresAge = geneExts.Where(x => x.retromorphUnderAge != null).Min(x => x.retromorphUnderAge);
                 morphUpRequiresPreg = geneExts.Where(x => x.metamorphIfPregnant).Any();
+                morphUpRequiresDay = geneExts.Where(x => x.metamorphIfDay).Any();
+                morphUpRequiresNight = geneExts.Where(x => x.metamorphIfNight).Any();
             }
         }
         private static MorphManager GetMorphChain(Pawn pawn, List<PawnExtension> geneExts)
