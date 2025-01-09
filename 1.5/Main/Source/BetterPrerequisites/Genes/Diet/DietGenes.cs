@@ -249,7 +249,8 @@ namespace BigAndSmall
         [HarmonyPriority(Priority.High)]
         public static bool WillEatDef_Prefix(ref bool __result, Pawn p, ThingDef food, Pawn getter, bool careIfNotAcceptableForTitle, bool allowVenerated)
         {
-            if (skepThingDefCheck) return true;
+            if (skipThingDefCheck) return true;
+            if (p.IsBloodfeeder() && food == ThingDefOf.HemogenPack) { return __result; }
             if (HumanoidPawnScaler.GetCacheUltraSpeed(p) is BSCache cache)
             {
                 if (p?.DevelopmentalStage == DevelopmentalStage.Baby)  // Yum yum babies can eat chemfuel-based food for simplicity's sake.
@@ -288,7 +289,7 @@ namespace BigAndSmall
             return true;
         }
 
-        private static bool skepThingDefCheck = false;  // To avoid pointless extra checks.
+        private static bool skipThingDefCheck = false;  // To avoid pointless extra checks.
         [HarmonyPatch(typeof(FoodUtility), nameof(FoodUtility.WillEat), new Type[]
         {
             typeof(Pawn),
@@ -301,13 +302,14 @@ namespace BigAndSmall
         [HarmonyPriority(Priority.VeryHigh)]
         public static bool WillEatThing_Prefix(ref bool __result, Pawn p, Thing food, Pawn getter, bool careIfNotAcceptableForTitle, bool allowVenerated)
         {
-            skepThingDefCheck = true;
+            if (p.IsBloodfeeder() && food?.def == ThingDefOf.HemogenPack) { return __result; }
+            skipThingDefCheck = true;
             // Ignore unspawned pawns, it just gets messy because of Ludeon hardcoding.
             if (p?.Spawned == true && HumanoidPawnScaler.GetCacheUltraSpeed(p) is BSCache cache && cache.isHumanlike)
             {
                 if (p?.DevelopmentalStage == DevelopmentalStage.Baby)
                 {
-                    skepThingDefCheck = false;
+                    skipThingDefCheck = false;
                     return true;
                 }
                 List<FilterResult> result = food.GetFilterForFoodThing(cache);
@@ -316,12 +318,12 @@ namespace BigAndSmall
                 if (resultTag.Denied())
                 {
                     __result = false;
-                    skepThingDefCheck = false;
+                    skipThingDefCheck = false;
 
                     return false;
                 }
             }
-            skepThingDefCheck = false;
+            skipThingDefCheck = false;
 
             return true;
         }
@@ -367,6 +369,8 @@ namespace BigAndSmall
                 }
                 var food = __instance;
                 List<FilterResult> result = food.GetFilterForFoodThing(cache);
+
+                if (ingester.IsBloodfeeder() && __instance?.def == ThingDefOf.HemogenPack) { return; }
 
                 var resultTag = result.Fuse();
                 if (resultTag.Denied() && ingester.Faction == Faction.OfPlayerSilentFail)

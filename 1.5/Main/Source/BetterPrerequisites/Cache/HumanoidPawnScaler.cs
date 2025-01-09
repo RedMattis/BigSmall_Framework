@@ -1120,34 +1120,34 @@ namespace BigAndSmall
         }
 
         [Unsaved]
-        public HashSet<Gene> lastActiveGenes = [];
-        [Unsaved]
-        public HashSet<Gene> lastInactiveGenes = [];
+        public HashSet<Gene> recordedActiveGenes = [];
 
         // Ideally this mess should be refactored and fixed. This is a workaround for the logic mess that has built up over 2 years
         // and the various framework merges.
         public void PrerequisiteGeneUpdate()
         {
-            (HashSet<Gene> lActiveGenes, HashSet<Gene> lInactiveGenes) = ([.. lastActiveGenes], lastInactiveGenes.Where(g => !lastActiveGenes.Contains(g)).ToHashSet());
+            HashSet<Gene> lastActiveGenes = [.. recordedActiveGenes];
             if (pawn?.genes != null)
             {
                 var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
                 var allGenes = pawn.genes.GenesListForReading;
-                allGenes.Where(g => g is PGene pGene).Cast<PGene>().ToList().ForEach(pg => pg.ForceRun = true);
+                allGenes.ForEach(g => { if (g is PGene pg) pg.ForceRun = true; });
 
-                lastActiveGenes = activeGenes;
-                lastInactiveGenes = allGenes.Where(x => !lastActiveGenes.Contains(x)).ToHashSet();
-
-                
                 foreach (var gene in pawn.genes.GenesListForReading)
                 {
-                    bool wasActive = lActiveGenes.Contains(gene);
+                    bool wasActive = lastActiveGenes.Contains(gene);
                     bool isActive = activeGenes.Contains(gene);
                     if (wasActive != isActive)
                     {
+                        if (gene is PGene pGene)
+                        {
+                            pGene.ForceRun = true;
+                        }
                         GeneEffectManager.RefreshGeneEffects(gene, active: isActive);
                     }
                 }
+
+                recordedActiveGenes = activeGenes;
             }
         }
 

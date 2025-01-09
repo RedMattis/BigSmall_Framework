@@ -12,10 +12,12 @@ namespace BetterPrerequisites
 {
     public class PGene : Gene
     {
+        private static Gene dummyGene = null;
+        private static bool dummyGeneCreated = false;
         /// <summary>
         /// Avoid recursion by supressing this method when it woudld get called from itself.
         /// </summary>
-        
+
         private int refreshGeneEffectsCountdown = 5;
 
         public bool? previouslyActive = null;
@@ -47,9 +49,33 @@ namespace BetterPrerequisites
         public override bool Active => TryGetGeneActiveCache(base.Active);
 
         public bool ForceRun { get; set; } = false;
+        public static Gene DummyGene { get => !dummyGeneCreated ? MakeDummyGene() : dummyGene; set => dummyGene = value; }
+
         //public CacheTimer Timer { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         //public bool postPostAddDone = false;
+
+        /// <summary>
+        /// Deliberately generate late to avoid getting picked up by random frameworks.
+        /// </summary>
+        public static Gene MakeDummyGene()
+        {
+            dummyGene ??= new Gene
+            {
+                def = new GeneDef()
+                {
+                    defName = "BS_PDummyGene",
+                    label = "BS_RequirementNotMet".Translate().CapitalizeFirst(),
+                    description = "System gene..",
+                    displayCategory = GeneCategoryDefOf.Miscellaneous,
+                    canGenerateInGeneSet = false,
+                    selectionWeight = 0,
+                    selectionWeightCultist = 0,
+                }
+            };
+            dummyGeneCreated = true;
+            return DummyGene;
+        }
 
         public override void PostAdd()
         {
@@ -287,27 +313,32 @@ namespace BetterPrerequisites
             if (!supressPostfix && !supressPostfix2)
             {
                 supressPostfix2 = true;
-
-                if (isSupressedByHediff != this.isSupressedByHediff) { refreshGraphics = true; }
-                if (conditionalsWasValid != conditionalsValid) { refreshGraphics = true; }
-                this.isSupressedByHediff = isSupressedByHediff;
-
-
-                if (result != previouslyActive)
-                {
-                    UpdateOverridenGenes(def, pawn.genes);
-                    GeneEffectManager.GainOrRemovePassion(!result, this);
-                    GeneEffectManager.GainOrRemoveAbilities(!result, this);
-                    GeneEffectManager.ApplyForcedTraits(!result, this);
-                }
-                
                 try
                 {
+                    if (isSupressedByHediff != this.isSupressedByHediff) { refreshGraphics = true; }
+                    if (conditionalsWasValid != conditionalsValid) { refreshGraphics = true; }
+                    this.isSupressedByHediff = isSupressedByHediff;
+
+                    if (result != previouslyActive)
+                    {
+                        UpdateOverridenGenes(def, pawn.genes);
+                        GeneEffectManager.GainOrRemovePassion(!result, this);
+                        GeneEffectManager.GainOrRemoveAbilities(!result, this);
+                        GeneEffectManager.ApplyForcedTraits(!result, this);
+                    }
+                
                     if (previouslyActive != result || refreshGraphics)
                     {
                         if (result)
                         {
                             overriddenByGene = null;
+                        }
+                        else
+                        {
+                            if (pawn != null && overriddenByGene == null && (!prerequisitesValid || !conditionalsValid || isSupressedByHediff || isSupressedByGene))
+                            {
+                                overriddenByGene = DummyGene;
+                            }
                         }
                         if ((def.HasDefinedGraphicProperties || refreshGraphics) && Thread.CurrentThread == BigSmall.mainThread)
                         {

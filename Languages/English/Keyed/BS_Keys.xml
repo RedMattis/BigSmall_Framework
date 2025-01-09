@@ -112,4 +112,6 @@
   <BS_Modified>may restrict apparel</BS_Modified>
 
   <BS_CorpseOf>Corpse of {0}</BS_CorpseOf>
+
+  <BS_RequirementNotMet>requirements not met</BS_RequirementNotMet>
 </LanguageData>

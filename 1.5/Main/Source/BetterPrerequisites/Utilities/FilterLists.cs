@@ -194,7 +194,6 @@ namespace BigAndSmall
                 {
                     allowlist = ListHelpers.UnionNullableLists(listOne.allowlist, listTwo.allowlist) as Allowlist<T>,
                     whitelist = ListHelpers.UnionNullableLists(listOne.whitelist, listTwo.whitelist) as Whitelist<T>,
-                    //whitelist = ListHelpers.IntersectNullableLists(listOne.whitelist, listTwo.whitelist) as Whitelist<T>,
                     blacklist = ListHelpers.UnionNullableLists(listOne.blacklist, listTwo.blacklist) as Blacklist<T>,
                     banlist = ListHelpers.UnionNullableLists(listOne.banlist, listTwo.banlist) as Banlist<T>,
                     acceptlist = ListHelpers.UnionNullableLists(listOne.acceptlist, listTwo.acceptlist) as AcceptList<T>
@@ -202,9 +201,11 @@ namespace BigAndSmall
 
                 return newList;
             }
-            public static FilterListSet<T> MergeFilters<T>(this IEnumerable<FilterListSet<T>> lists) =>
-                !lists.Any() ? null :
-                lists.Aggregate((x, y) => x.MergeFilters(y));
+            public static FilterListSet<T> MergeFilters<T>(this IEnumerable<FilterListSet<T>> lists)
+            {
+                if (!lists.Any()) return null;
+                return lists.Aggregate((x, y) => x.MergeFilters(y));
+            }
         }
 
         public class FilterListSet<T>

@@ -103,6 +103,9 @@ namespace BigAndSmall
         public static ThoughtDef AteHumanlikeMeatDirectCannibal;
         public static ThoughtDef AteHumanlikeMeatDirect;
 
+        [MayRequireIdeology]
+        public static PreceptDef Cannibalism_Acceptable;
+
         [MayRequire("RedMattis.BigSmall.Core")]
         public static ThoughtDef BS_DroneDied;
         [MayRequire("RedMattis.BigSmall.Core")]

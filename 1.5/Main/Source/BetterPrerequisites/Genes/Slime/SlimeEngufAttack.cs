@@ -610,14 +610,22 @@ namespace BigAndSmall
                 {
                     thought_Memory = (Thought_Memory)ThoughtMaker.MakeThought(BSDefs.AteHumanlikeMeatDirectCannibal);
                     attacker.mindState.lastHumanMeatIngestedTick = Find.TickManager.TicksGame;
+                    attacker?.needs?.mood?.thoughts?.memories?.TryGainMemory(thought_Memory);
+                }
+                if (attacker?.ideo?.Ideo is Ideo ideo)
+                {
+                    if (ideo.HasPrecept(PreceptDefOf.Cannibalism_Preferred) ||
+                        ideo.HasPrecept(PreceptDefOf.Cannibalism_RequiredRavenous) ||
+                        ideo.HasPrecept(PreceptDefOf.Cannibalism_RequiredStrong) ||
+                        ideo.HasPrecept(BSDefs.Cannibalism_Acceptable))
+                    {
+                        attacker.mindState.lastHumanMeatIngestedTick = Find.TickManager.TicksGame;
+                    }
                 }
                 else
                 {
                     thought_Memory = (Thought_Memory)ThoughtMaker.MakeThought(BSDefs.AteHumanlikeMeatDirect);
-                }
-                if (attacker?.needs?.mood?.thoughts?.memories != null)
-                {
-                    attacker.needs.mood.thoughts.memories.TryGainMemory(thought_Memory);
+                    attacker?.needs?.mood?.thoughts?.memories?.TryGainMemory(thought_Memory);
                 }
                 foreach(var gene in GeneHelpers.GetAllActiveGenes(attacker))
                 {

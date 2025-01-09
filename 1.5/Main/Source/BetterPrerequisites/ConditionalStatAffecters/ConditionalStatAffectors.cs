@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using System.Collections.Generic;
 using Verse;
 
 namespace BigAndSmall
@@ -13,9 +14,15 @@ namespace BigAndSmall
             {
                 return false;
             }
-            if (req.HasThing && req.Thing.Spawned)
+            bool spawned = req.Thing?.Spawned == true;
+            if (req.HasThing && (spawned || (req.Thing.ParentHolder is PawnFlyer pf && pf.Spawned)))
             {
-                return req.Thing.Map.skyManager.CurSkyGlow < 0.3f; //req.Thing.Position.InSunlight(req.Thing.Map);
+                Thing thing = req.Thing;
+                if (!spawned)
+                {
+                    thing = req.Thing.ParentHolder as PawnFlyer;
+                }
+                return thing.Map.skyManager.CurSkyGlow < 0.3f;
             }
             return false;
         }
@@ -27,11 +34,7 @@ namespace BigAndSmall
 
         public override bool Applies(StatRequest req)
         {
-            if (!ModsConfig.BiotechActive)
-            {
-                return false;
-            }
-            if (req.HasThing && req.Thing.Spawned && req.Thing is Pawn pawn)
+            if (req.Thing?.Spawned == true && req.Thing is Pawn pawn)
             {
                 if (FastAcccess.GetCache(pawn) is BSCache cache)
                 {
@@ -51,11 +54,7 @@ namespace BigAndSmall
 
         public override bool Applies(StatRequest req)
         {
-            if (!ModsConfig.BiotechActive)
-            {
-                return false;
-            }
-            if (req.HasThing && req.Thing.Spawned && req.Thing is Pawn pawn)
+            if (req.Thing?.Spawned == true && req.Thing is Pawn pawn)
             {
                 if (FastAcccess.GetCache(pawn) is BSCache cache)
                 {
@@ -75,11 +74,7 @@ namespace BigAndSmall
 
         public override bool Applies(StatRequest req)
         {
-            if (!ModsConfig.BiotechActive)
-            {
-                return false;
-            }
-            if (req.HasThing && req.Thing.Spawned && req.Thing is Pawn pawn)
+            if (req.Thing?.Spawned == true && req.Thing is Pawn pawn)
             {
                 if (FastAcccess.GetCache(pawn) is BSCache cache)
                 {
@@ -100,11 +95,7 @@ namespace BigAndSmall
 
         public override bool Applies(StatRequest req)
         {
-            if (!ModsConfig.BiotechActive)
-            {
-                return false;
-            }
-            if (req.HasThing && req.Thing.Spawned && req.Thing is Pawn pawn)
+            if (req.Thing?.Spawned == true && req.Thing is Pawn pawn)
             {
                 
                 if (pawn.GetStatValue(StatDefOf.PsychicSensitivity, cacheStaleAfterTicks:10000) >= SensitivityThreshold)

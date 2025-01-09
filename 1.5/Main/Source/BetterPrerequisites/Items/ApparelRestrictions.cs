@@ -44,19 +44,19 @@ namespace BigAndSmall
             if (apparelLayers != null)
             {
                 result = apparelLayers.GetFilterResultFromItemList(apparel.layers).Fuse(result);
-                if (err == "" && !result.Accepted()) err = "BS_CannotWearLayer".Translate();
+                if (err == "" && result.Denied()) err = "BS_CannotWearLayer".Translate();
             }
             if (bodyPartGroups != null)
             {
                 result = bodyPartGroups.GetFilterResultFromItemList(apparel.bodyPartGroups).Fuse(result);
-                if (err == "" && !result.Accepted()) err = "BS_CannotWearBodyPart".Translate();
+                if (err == "" && result.Denied()) err = "BS_CannotWearBodyPart".Translate();
             }
 
             if (exceptNudistFriendly && apparel.countsAsClothingForNudity == false) { result = FilterResult.ForceAllow; return null; }
             if (tags != null && apparel.tags is List<string> apparelTags)
             {
                 result = tags.GetFilterResultFromItemList(apparelTags).Fuse(result);
-                if (err == "" && !result.Accepted()) err = "BS_CannotWearTag".Translate();
+                if (err == "" && result.Denied()) err = "BS_CannotWearTag".Translate();
             }
 
             if (NoApparel)
@@ -191,22 +191,5 @@ namespace BigAndSmall
             };
             return result;
         }
-
-        //public void ExposeData()
-        //{
-        //    Scribe_Values.Look(ref absolutelyNothing, "absolutelyNothing");
-        //    Scribe_Values.Look(ref noOverHead, "noOverHead");
-        //    Scribe_Values.Look(ref noOuterLayer, "noOuterLayer");
-        //    Scribe_Values.Look(ref noMidLayer, "noMidLayer");  
-        //    Scribe_Values.Look(ref noInnerLayer, "noInnerLayer"); 
-        //    Scribe_Values.Look(ref noClothes, "noClothes");
-        //    Scribe_Values.Look(ref noArmor, "noArmor");
-        //    Scribe_Values.Look(ref noFootgear, "noFootgear");
-        //    Scribe_Values.Look(ref noPants, "noPants");
-        //    Scribe_Values.Look(ref exceptNudistFriendly, "exceptNuditFriendly");
-        //    Scribe_Values.Look(ref exceptHats, "exceptHats");
-        //    Scribe_Deep.Look(ref thingFilter, "thingFilter");
-        //    Scribe_Deep.Look(ref tagFilter, "tagFilter");
-        //}
     }
 }

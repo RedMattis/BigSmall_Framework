@@ -7,11 +7,27 @@ namespace BigAndSmall
 {
     public static class ListHelpers
     {
-        public static List<T> IntersectNullableLists<T>(this List<T> list1, List<T> list2) =>
-            (list1 != null && list2 != null) ? list1.Intersect(list2).ToList() : list1 ?? list2;
+        public static List<T> IntersectNullableLists<T>(this List<T> list1, List<T> list2)
+        {
+            if (list1 != null && list2 != null)
+            {
+                var result = (List<T>)Activator.CreateInstance(list1.GetType());
+                result.AddRange(list1.Intersect(list2));
+                return result;
+            }
+            return list1 ?? list2;
+        }
 
-        public static List<T> UnionNullableLists<T>(this List<T> list1, List<T> list2) =>
-            (list1 != null && list2 != null) ? list1.Union(list2).ToList() : list1 ?? list2;
+        public static List<T> UnionNullableLists<T>(this List<T> list1, List<T> list2)
+        {
+            if (list1 != null && list2 != null)
+            {
+                var result = (List<T>)Activator.CreateInstance(list1.GetType());
+                result.AddRange(list1.Union(list2));
+                return result;
+            }
+            return list1 ?? list2;
+        }
 
         public static IEnumerable<TResult> FilterAndTransform<TSource, TResult>(
             this IEnumerable<TSource> source,

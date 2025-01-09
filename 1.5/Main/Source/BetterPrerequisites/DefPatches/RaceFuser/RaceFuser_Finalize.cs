@@ -60,7 +60,6 @@ namespace BigAndSmall
                                 try
                                 {
                                     alienField.SetValue(field.GetValue(newThing), alienField.GetValue(field.GetValue(sThing)));
-                                    Log.Message($"Field: {field.Name}, Value: {field.GetValue(alienField)}");
                                 }
                                 catch (Exception e)
                                 {
@@ -280,19 +279,15 @@ namespace BigAndSmall
                     {
                         var sourceList = field.GetValue(sCorpse);
                         var newList = (IList)Activator.CreateInstance(field.FieldType);
-                        //Log.Message($"Set List Field {field.Name}.");
                         foreach (var item in (IEnumerable)sourceList)
                         {
                             newList.Add(item);
-                            //Log.Message($"--Added Field: {item} to {field.Name}");
                         }
                         field.SetValue(newCorpse, newList);
-                        
                     }
                     else
                     {
                         field.SetValue(newCorpse, field.GetValue(sCorpse));
-                        //Log.Message($"Set Field: {field.Name} to {field.GetValue(newCorpse)}");
                     }
                 }
                 catch (Exception e)
@@ -302,7 +297,7 @@ namespace BigAndSmall
                 }
 
             }
-            Log.Clear();
+            //Log.Clear();
 
             newCorpse.defName = corpseDefName;
             newCorpse.label = "CorpseLabel".Translate(generatedBody.label);
@@ -328,15 +323,8 @@ namespace BigAndSmall
         {
             if (!hotReload)
             {
-                Log.Message($"[BaS] H:{hotReload}: Generating ShortHashes for {newThing.defName} and {newRace.body.defName}.");
                 newThing.shortHash = 0;
-                //ShortHashWrapper.GiveShortHash(newThing);
-                Log.Message($"[BaS]: Generating ShortHashes for body {newRace.body.defName}.");
-
                 newRace.body.shortHash = 0;
-                
-                //ShortHashWrapper.GiveShortHash(newRace.body);
-                Log.Message($"[BaS]: Generated ShortHashes.");
             }
         }
         private static string OutputFullClassAsString(object obj)

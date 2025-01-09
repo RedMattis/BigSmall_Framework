@@ -274,6 +274,7 @@
   </ItemGroup>
   <ItemGroup>
     <Publicize Include="Assembly-CSharp:RimWorld.Pawn_GeneTracker.xenotype" />
+    <Publicize Include="Assembly-CSharp:RimWorld.GeneSet.cachedNonOverriddenGenes" />
     <Publicize Include="Assembly-CSharp:Verse.Hediff.severityInt" />
     <Publicize Include="Assembly-CSharp:Verse.PawnRenderer.pawn" />
     <Publicize Include="Assembly-CSharp:Verse.PawnRenderer.results" />
@@ -299,3 +300,4 @@
   </Target>
   <Import Project="packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets" Condition="Exists('packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets')" />
 </Project>
+
