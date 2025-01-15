@@ -10,23 +10,6 @@ namespace BigAndSmall
 {
     public partial class GeneHelpers
     {
-        public static MethodInfo Notify_GenesChanged_MethodInfo = null;
-        /// <summary>
-        /// Note that this does _not_ cover every case. See Pawn_GeneTracker.Removed, and Pawn_GeneTracker.Added.
-        /// </summary>
-        public static void NotifyGenesUpdated(Pawn pawn, GeneDef geneDef)
-        {
-            if (Notify_GenesChanged_MethodInfo == null)
-            {
-                Notify_GenesChanged_MethodInfo = typeof(Pawn_GeneTracker).GetMethod("Notify_GenesChanged", BindingFlags.NonPublic | BindingFlags.Instance);
-            }
-            Notify_GenesChanged_MethodInfo.Invoke(pawn.genes, new object[] { geneDef });
-
-            //Log.Message($"Notified genes updated for {pawn.Name} with gene {geneDef.defName}.");
-        }
-
-        public static MethodInfo CheckForOverrides_MethodInfo = null;
-
         public static void RefreshAllGenes(Pawn pawn, List<Gene> genesAdded, List<Gene> genesRemoved)
         {
             if (pawn?.genes == null) return;
@@ -63,7 +46,7 @@ namespace BigAndSmall
                     }
                 }
 
-                CheckForOverrides(pawn);
+                pawn.genes.CheckForOverrides();
 
                 // Add all abilities from active genes.
                 foreach (var aGene in genesAdded.Where(g=>g.Active))
@@ -116,7 +99,7 @@ namespace BigAndSmall
                     g.def.beardTagFilter != null || g.def.fur != null || g.def.RandomChosen || g.def.soundCall != null
                     ))
                     {
-                        NotifyGenesUpdated(pawn, nGene.def);
+                        pawn.genes.Notify_GenesChanged(nGene.def);
                     }
                     foreach(var nGene in genesAdded)
                     {
@@ -133,16 +116,6 @@ namespace BigAndSmall
                 BigSmall.performScaleCalculations = true;
             }
             FastAcccess.GetCache(pawn, force: true);
-        }
-
-        public static void CheckForOverrides(Pawn pawn)
-        {
-            if (CheckForOverrides_MethodInfo == null)
-            {
-                CheckForOverrides_MethodInfo = typeof(Pawn_GeneTracker).GetMethod("CheckForOverrides", BindingFlags.NonPublic | BindingFlags.Instance);
-            }
-            // Process Overrides.
-            CheckForOverrides_MethodInfo.Invoke(pawn.genes, []);
         }
 
         public static void CustomGeneAddedOrRemovedEvent(Gene gene, bool added)
@@ -567,7 +540,7 @@ namespace BigAndSmall
             }
 
             ClearCachedGenes(pawn);
-            CheckForOverrides(pawn);
+            pawn.genes.CheckForOverrides();
 
             //var activeGenes = GetAllActiveGenes(pawn);
             List<Gene> allGenesNow = pawn.genes.GenesListForReading.ToList();

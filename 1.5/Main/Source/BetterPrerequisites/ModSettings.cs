@@ -139,6 +139,10 @@ namespace BigAndSmall
             listStd.GapLine();
             CreateSettingCheckbox(listStd, "BS_NormalizeBodyType".Translate(), ref settings.scaleBodyTypes);
 
+            listStd.GapLine();
+            CreateSettingCheckbox(listStd, "BS_SciFiNames".Translate(), ref settings.useSciFiNames);
+            CreateSettingCheckbox(listStd, "BS_FantasyNames".Translate(), ref settings.useFantasyNames);
+
             // Check if in dev-mode
             if (Prefs.DevMode)
             {
@@ -218,6 +222,9 @@ namespace BigAndSmall
         public static readonly bool defaultPreventUndead = false;
         public bool preventUndead = defaultPreventUndead;
 
+        public static readonly bool defaultUseSciFiNaming = false;
+        public bool useSciFiNames = defaultUseSciFiNaming;
+
         public static readonly bool defaultUseFantasyNaming = false;
         public bool useFantasyNames = defaultUseFantasyNaming;
 
@@ -255,6 +262,7 @@ namespace BigAndSmall
             Scribe_Values.Look(ref offsetBodyPos, "offsetBodyPos", defaultOffsetBodyPos);
             Scribe_Values.Look(ref patchPlayerFactions, "patchPlayerFactions", defaultPatchPlayerFactions);
             Scribe_Values.Look(ref preventUndead, "preventUndead", defaultPreventUndead);
+            Scribe_Values.Look(ref useSciFiNames, "useSciFiNames", defaultUseSciFiNaming);
             Scribe_Values.Look(ref useFantasyNames, "useFantasyNames", defaultUseFantasyNaming);
             Scribe_Values.Look(ref inflitratorChance, "inflitratorChance", inflitratorChanceDefault);
             Scribe_Values.Look(ref inflitratorRaidChance, "inflitratorRaidChance", inflitratorRaidChanceDefault);

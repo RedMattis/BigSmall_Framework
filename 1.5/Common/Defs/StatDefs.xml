@@ -125,8 +125,8 @@
     <!--  -->
     <StatDef>
         <defName>BS_SoulPower</defName>
-        <label>anomalous power</label>
-        <description>Anomalous power usually gifted or stolen from dark archotechs.</description>
+        <label>soul power</label>
+        <description>Soul power usually gifted or stolen from dark archotechs.</description>
         <alwaysHide>false</alwaysHide>
         <category>BasicsPawn</category>
         <minValue>0.0</minValue>

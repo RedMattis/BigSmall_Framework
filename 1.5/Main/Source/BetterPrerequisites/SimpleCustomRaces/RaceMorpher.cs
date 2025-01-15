@@ -407,6 +407,7 @@ namespace BigAndSmall
                 for (int idx = hediffsToReapply[pawn].Count - 1; idx >= 0; idx--)
                 {
                     Hediff hediff = hediffsToReapply[pawn][idx];
+                    float severity = hediff.Severity;
 
                     bool canAttach = hediff.Part == null || currentParts.Any(x => x.def.defName == hediff.Part.def.defName && x.customLabel == hediff.Part.customLabel);
 
@@ -422,7 +423,9 @@ namespace BigAndSmall
 
                             else if (hediff.Part == null)
                             {
-                                pawn.health.AddHediff(hediff.def);
+                                var newHediff = HediffMaker.MakeHediff(hediff.def, pawn, null);
+                                newHediff.Severity = severity;
+                                pawn.health.AddHediff(newHediff);
                             }
                             else
                             {
@@ -437,8 +440,10 @@ namespace BigAndSmall
                                 {
                                     try
                                     {
-                                        var resultHediff = pawn.health.AddHediff(hediff.def, part: partMatchingHediff);
-                                        if (resultHediff is Hediff_Injury resultWound && hediff is Hediff_Injury orgInjury)
+                                        var newHediff = HediffMaker.MakeHediff(hediff.def, pawn, partMatchingHediff);
+                                        newHediff.Severity = severity;
+                                        pawn.health.AddHediff(newHediff);
+                                        if (newHediff is Hediff_Injury resultWound && hediff is Hediff_Injury orgInjury)
                                         {
                                             if (orgInjury.IsPermanent() && resultWound.TryGetComp<HediffComp_GetsPermanent>() is HediffComp_GetsPermanent pSetter)
                                             {

@@ -7,6 +7,7 @@ using Verse;
 namespace BetterPrerequisites
 {
 
+    [HarmonyPatch]
     public static class Hediff_Patches
     {
         [HarmonyPriority(Priority.High)]
@@ -15,83 +16,96 @@ namespace BetterPrerequisites
         public static void Hediff_PostRemove(Hediff __instance)
         {
             bool supressMngrChangeMade = false;
-            if (__instance.pawn != null)
+            Pawn pawn = __instance?.pawn;
+            if (pawn != null)
             {
-                if (GeneSuppressorManager.supressedGenesPerPawn_Hediff.Keys.Contains(__instance.pawn))
+                if (pawn.genes != null)
                 {
-                    var suppressDict = GeneSuppressorManager.supressedGenesPerPawn_Hediff[__instance.pawn];
-                    // Remove the Hediff from the Suppressors in the dictionary list.
-                    foreach (var key in suppressDict.Keys)
+                    if (GeneSuppressorManager.supressedGenesPerPawn_Hediff.Keys.Contains(pawn))
                     {
-                        if (suppressDict[key].Contains(__instance.def))
+                        var suppressDict = GeneSuppressorManager.supressedGenesPerPawn_Hediff[pawn];
+                        // Remove the Hediff from the Suppressors in the dictionary list.
+                        foreach (var key in suppressDict.Keys)
                         {
-                            suppressDict[key].Remove(__instance.def);
-                            supressMngrChangeMade = true;
+                            if (suppressDict[key].Contains(__instance.def))
+                            {
+                                suppressDict[key].Remove(__instance.def);
+                                supressMngrChangeMade = true;
+                            }
                         }
-                    }
-                    // Remove all dictionary entries with no suppressors.
-                    foreach (var key in suppressDict.Keys.ToList())
-                    {
-                        if (suppressDict[key].Count == 0)
+                        // Remove all dictionary entries with no suppressors.
+                        foreach (var key in suppressDict.Keys.ToList())
                         {
-                            suppressDict.Remove(key);
-                            supressMngrChangeMade = true;
+                            if (suppressDict[key].Count == 0)
+                            {
+                                suppressDict.Remove(key);
+                                supressMngrChangeMade = true;
+                            }
                         }
                     }
                 }
+            
+                bool requiresRefresh = __instance?.def?.GetAllPawnExtensionsOnHediff() is var extensions && extensions.Any(x => x.RequiresCacheRefresh());
+                if (requiresRefresh || (pawn?.Drawer?.renderer != null && pawn.Spawned))
+                {
+                    if (supressMngrChangeMade)
+                    {
+                        __instance.pawn.Drawer.renderer.SetAllGraphicsDirty();
+                    }
+                    HumanoidPawnScaler.ShedueleForceRegenerateSafe(pawn, 40);
+                }
+                else
+                {
+                    HumanoidPawnScaler.LazyGetCache(pawn, 40);
+                }
             }
+        }
 
-            bool requiresRefresh = __instance?.def?.GetAllPawnExtensionsOnHediff() is var extensions && extensions.Any(x => x.RequiresCacheRefresh());
-            if (requiresRefresh || (__instance?.pawn?.Drawer?.renderer != null && __instance.pawn.Spawned))
-            {
-                if (supressMngrChangeMade)
-                {
-                    __instance.pawn.Drawer.renderer.SetAllGraphicsDirty();
-                }
-                
-                HumanoidPawnScaler.GetCache(__instance.pawn, scheduleForce: 1);
-            }
+        [HarmonyPatch(typeof(Hediff), "OnStageIndexChanged")]
+        [HarmonyPostfix]
+        public static void OnStageIndexChanged(Hediff __instance, int stageIndex)
+        {
+            if (__instance?.pawn?.RaceProps?.Humanlike != true) return;
+            HumanoidPawnScaler.LazyGetCache(__instance.pawn, 60);
         }
 
         [HarmonyPatch(typeof(Hediff), nameof(Hediff.PostAdd))]
         [HarmonyPostfix]
         public static void Hediff_PostAdd(Hediff __instance, DamageInfo? dinfo)
         {
-            var raceProps = __instance?.pawn?.RaceProps;
-            if (raceProps == null || __instance?.pawn?.RaceProps?.Animal == true)
+            var pawn = __instance?.pawn;
+            if (pawn == null)
             {
                 return;
             }
-            var genes = __instance?.pawn?.genes;
-            if (genes == null) return;
-            var geneList = genes.GenesListForReading;
-            if (genes != null && geneList.Count > 0)
-            {
-                bool changeMade = false;
-                try
-                {
-                    PGene.supressPostfix = true;
-                    changeMade = GeneSuppressorManager.TryAddSuppressor(__instance, __instance.pawn);
-                }
-                finally
-                {
-                    PGene.supressPostfix = false;
-                }
-                if (__instance?.pawn?.Drawer?.renderer != null && __instance.pawn.Spawned)
-                {
-                    if (changeMade)
-                    {
-                        __instance.pawn.Drawer.renderer.SetAllGraphicsDirty();
-                    }
-                    HumanoidPawnScaler.GetCache(__instance.pawn, scheduleForce: 1);
-                }
 
-            }
-            bool requiresRefresh = __instance?.def?.GetAllPawnExtensionsOnHediff() is var extensions && extensions.Any(x => x.RequiresCacheRefresh());
-            if (requiresRefresh || (__instance?.pawn?.Drawer?.renderer != null && __instance.pawn.Spawned))
+            var genes = pawn?.genes;
+            if (genes != null)
             {
-                HumanoidPawnScaler.GetCache(__instance.pawn, scheduleForce: 1);
+                var geneList = genes.GenesListForReading;
+                if (genes != null && geneList.Count > 0)
+                {
+                    bool supressorChange = false;
+                    try
+                    {
+                        PGene.supressPostfix = true;
+                        supressorChange = GeneSuppressorManager.TryAddSuppressor(__instance, pawn);
+                    }
+                    finally
+                    {
+                        PGene.supressPostfix = false;
+                    }
+                    if (pawn?.Drawer?.renderer != null && pawn.Spawned)
+                    {
+                        if (supressorChange)
+                        {
+                            pawn.Drawer.renderer.SetAllGraphicsDirty();
+                        }
+                    }
+                }
             }
+
+            HumanoidPawnScaler.LazyGetCache(pawn, 30);
         }
     }
 

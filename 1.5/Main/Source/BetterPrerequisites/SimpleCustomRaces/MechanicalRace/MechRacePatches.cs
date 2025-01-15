@@ -51,6 +51,31 @@ namespace BigAndSmall
             return true;
         }
 
+        /// <summary>
+        /// This patch mostly serves to force Dub's Hygine to respect disabled needs. Dangit! :D
+        /// </summary>
+        [HarmonyPatch(typeof(Pawn_NeedsTracker), "ShouldHaveNeed")]
+        [HarmonyPriority(Priority.Low)]
+        public class Patch_ShouldHaveNeed
+        {
+            public static void Postfix(Pawn_NeedsTracker __instance, ref bool __result, Pawn ___pawn, NeedDef nd)
+            {
+                if (___pawn.health.hediffSet.hediffs.Any())
+                {
+                    foreach (Hediff x in ___pawn.health.hediffSet.hediffs)
+                    {
+                        HediffDef def = x.def;
+                        if (def != null && def.disablesNeeds?.Contains(nd) == true)
+                        {
+                            __result = false;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+
         //[HarmonyPatch(typeof(ThoughtWorker_TranshumanistAppreciation), "CurrentSocialStateInternal", [typeof(Pawn), typeof(Pawn)])]
         //[HarmonyPriority(Priority.Low)]
         //public static class TranshumanistAppreciation_Patch

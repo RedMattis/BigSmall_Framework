@@ -30,6 +30,11 @@ namespace BigAndSmall
             return ExtensionsOnDef<PawnExtension, HediffDef>(hediffDef, parentWhitelist, parentBlacklist, doSort);
         }
 
+        public static List<PawnExtension> GetAllPawnExtensionsOnGene(this GeneDef geneDef, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true)
+        {
+            return ExtensionsOnDef<PawnExtension, GeneDef>(geneDef, parentWhitelist, parentBlacklist, doSort);
+        }
+
 
         public static List<T> GetAllExtensions<T>(this Pawn pawn, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) where T : DefModExtension
         {

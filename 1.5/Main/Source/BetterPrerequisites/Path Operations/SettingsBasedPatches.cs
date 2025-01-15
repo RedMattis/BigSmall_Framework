@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Xml;
 using Verse;
 
@@ -29,12 +30,13 @@ namespace BigAndSmall
     public class PatchOp_AddBionics : PatchOp_IfSettings { protected override bool ShouldApply() => BigSmallMod.settings.surgeryAndBionics; }
     public class PatchOp_FantasyEnabled : PatchOp_IfSettings { protected override bool ShouldApply() => BigSmallMod.settings.useFantasyNames; }
 
+    public class PatchOp_SciFiEnabled : PatchOp_IfSettings { protected override bool ShouldApply() => BigSmallMod.settings.useSciFiNames; }
 
 
     public class PatchOp_ReplaceText : PatchOperationPathed
     {
-        private string oldText;
-        private string newText;
+        private List<string> oldTexts;
+        private List<string> newTexts;
         private bool wholeWordsOnly = false;
 
         protected override bool ApplyWorker(XmlDocument xml)
@@ -44,37 +46,39 @@ namespace BigAndSmall
             XmlNodeList nodes = xml.SelectNodes(xpath);
             if (nodes == null || nodes.Count == 0) return false;
 
-            string oldTextLower = oldText.ToLower();
-
-            foreach (XmlNode node in nodes)
+            for (int i = 0; i < oldTexts.Count; i++)
             {
-                if (node.NodeType == XmlNodeType.Element || node.NodeType == XmlNodeType.Text)
+                string oldTextLower = oldTexts[i].ToLower();
+                string newText = newTexts[i];
+
+                foreach (XmlNode node in nodes)
                 {
-                    // Replace text content in the node
-                    if (!string.IsNullOrEmpty(node.InnerText) && node.InnerText.ToLower().Contains(oldTextLower))
+                    if (node.NodeType == XmlNodeType.Element || node.NodeType == XmlNodeType.Text)
                     {
-
-                        string pattern = wholeWordsOnly
-                        ? @"\b" + Regex.Escape(oldTextLower) + @"\b"  // Regex pattern for whole word replacement
-                        : Regex.Escape(oldTextLower);  // Simple substring replacement pattern
-
-                        node.InnerText = Regex.Replace(node.InnerText, pattern, matchingV =>
+                        // Replace text content in the node
+                        if (!string.IsNullOrEmpty(node.InnerText) && node.InnerText.ToLower().Contains(oldTextLower))
                         {
-                            string matchedText = matchingV.Value;
-                            // Check if the first letter of matched text was uppercase
-                            if (char.IsUpper(matchedText[0]))
-                            {
-                                // Capitalize the first letter of new text
-                                return char.ToUpper(newText[0]) + newText.Substring(1);
-                            }
-                            else
-                            {
-                                // Otherwise, use the new text as-is
-                                return newText;
-                            }
-                        }, RegexOptions.IgnoreCase);
+                            string pattern = wholeWordsOnly
+                            ? @"\b" + Regex.Escape(oldTextLower) + @"\b"  // Regex pattern for whole word replacement
+                            : Regex.Escape(oldTextLower);  // Simple substring replacement pattern
 
-                        result = true;
+                            node.InnerText = Regex.Replace(node.InnerText, pattern, matchingV =>
+                            {
+                                string matchedText = matchingV.Value;
+                                // Check if the first letter of matched text was uppercase
+                                if (char.IsUpper(matchedText[0]))
+                                {
+                                    // Capitalize the first letter of new text
+                                    return char.ToUpper(newText[0]) + newText.Substring(1);
+                                }
+                                else
+                                {
+                                    // Otherwise, use the new text as-is
+                                    return newText;
+                                }
+                            }, RegexOptions.IgnoreCase);
+                            result = true;
+                        }
                     }
                 }
             }

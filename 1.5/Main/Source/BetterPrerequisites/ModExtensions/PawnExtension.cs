@@ -234,7 +234,7 @@ namespace BigAndSmall
         /// Used by PGenes. If it evaluates to False the gene will disable itself.
         /// Useful for werewolf-like beaviour, or genes that deactivate if not drunk or something.
         /// </summary>
-        public List<ConditionalStatAffecter> conditionals;
+        public List<ConditionalStatAffecter> conditionals = null;
         public string ConditionalDescription =>
                 conditionals?.Select(x => $"{x.Label}:\n" +
                 $"{x.statFactors?.Select(y => y.ToString()).ToLineList("  - ", capitalizeItems: true)}" +
@@ -555,6 +555,8 @@ namespace BigAndSmall
         /// More granular version of the above. Currently not working after a Nal's update.
         /// </summary>
         public FacialAnimDisabler facialDisabler = null;
+
+        public bool frequentUpdate = false;
 
         #region Obsolete
         public bool unarmedOnly = false;    // Still plugged in, but the name was kind of bad. Use forceUnarmed instead.

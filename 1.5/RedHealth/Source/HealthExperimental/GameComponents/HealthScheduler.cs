@@ -24,10 +24,12 @@ namespace RedHealth
             instance = this;
         }
 
+        int? lastTick = null;
         public override void GameComponentTick()
         {
             int currentTick = Find.TickManager.TicksGame;
             launchTick ??= currentTick;
+            lastTick ??= currentTick;
             if (currentTick % 500 == 0)
             {
                 if (Main.DoCheapLogging && Prefs.DevMode && Main.settings.devEventTimeAcceleration > 1000)
@@ -40,6 +42,16 @@ namespace RedHealth
                     }
                 }
             }
+            // Run the current tick and the ticks that have passed since the last tick.
+            for (int i = lastTick.Value+1; i <= currentTick; i++)
+            {
+                UpdateSchedule(i);
+            }
+            lastTick = currentTick;
+        }
+
+        private void UpdateSchedule(int currentTick)
+        {
             if (schedule.ContainsKey(currentTick))
             {
                 foreach (var healthEvent in schedule[currentTick])

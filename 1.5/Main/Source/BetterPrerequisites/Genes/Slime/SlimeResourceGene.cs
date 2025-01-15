@@ -111,7 +111,6 @@ namespace BigAndSmall
         {
             base.Tick();
 
-
             // Every 1000 ticks, adjust the resource updwards or downwards based on the target value and whether the pawn is starved or not.
             if (Find.TickManager.TicksGame % 500 == 0)
             {
@@ -143,6 +142,7 @@ namespace BigAndSmall
                 {
                     moveTowards = targetValue;
                 }
+                else if (pawn?.needs?.food == null) { moveTowards = targetValue; } // Probably a CreepJoiner.
                 else
                 {
                     return;
@@ -189,13 +189,7 @@ namespace BigAndSmall
 
                 Value = newValue;
                 SlimeHediff.Severity = Mathf.Clamp(Value, 0.05f, 9999);
-
-                
             }
-            //if (Find.TickManager.TicksGame % 10000 == 0)
-            //{
-            //    RefreshCache();
-            //}
         }
 
         private void RefreshCache()

@@ -127,7 +127,6 @@ namespace BetterPrerequisites
                                     stringBuilder.AppendLine($" - {prerequisite} ({"BP_GeneNotFoundInGame".Translate()})");
                                 }
                             }
-
                         }
                     }
                     __result = stringBuilder.ToString();

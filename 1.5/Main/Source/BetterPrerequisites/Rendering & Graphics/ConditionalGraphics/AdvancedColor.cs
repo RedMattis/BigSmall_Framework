@@ -224,7 +224,16 @@ namespace BigAndSmall
             if (colorsAdded.Count > 0) {
                 if (averageColors)
                 {
-                    finalClr = colorsAdded.Aggregate((x, y) => x + y) / colorsAdded.Count;
+                    float r = 0, g = 0, b = 0;
+                    foreach (var color in colorsAdded)
+                    {
+                        r += color.r;
+                        g += color.g;
+                        b += color.b;
+                    }
+                    int count = colorsAdded.Count;
+                    finalClr = new Color(r / count, g / count, b / count);
+
                     didSet = true;
                 }
                 else

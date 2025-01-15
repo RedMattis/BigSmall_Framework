@@ -1,6 +1,7 @@
 ﻿using BigAndSmall;
 using RimWorld;
 using System.Collections.Generic;
+using System.Linq;
 using Verse;
 
 namespace BetterPrerequisites
@@ -10,21 +11,22 @@ namespace BetterPrerequisites
         /// <summary>
         /// This methods fetches the Gene Extension, which makes it marginally slower than the one which just takes a List of ConditionalStatAffecters.
         /// </summary>
-        public static bool TestConditionals(Gene gene)
+        public static bool TestConditionals(Gene gene, List<PawnExtension> pawnExtensions)
         {
             if (gene == null || gene.def == null) return false;
+            if (pawnExtensions.NullOrEmpty()) return true;
+
             var geneDef = gene.def;
-            if (geneDef.HasModExtension<PawnExtension>())
+            foreach (var pExt in pawnExtensions.Where(x=>x.conditionals != null))
             {
-                var geneExtension = geneDef.GetModExtension<PawnExtension>();
-                bool invert = geneExtension.invert != null && geneExtension.invert == true;
-                if (TestConditionals(gene, geneExtension.conditionals))
+                bool invert = pExt.invert != null && pExt.invert == true;
+                if (TestConditionals(gene, pExt.conditionals))
                 {
-                    return true != invert;
+                    if (invert) return false;
                 }
                 else
                 {
-                    return false != invert;
+                    return false;
                 }
             }
             return true;

@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Assertions;
 using Verse;
 
 
@@ -14,6 +15,15 @@ namespace BigAndSmall
     public static class BS
     {
         public static BSSettings Settings => BigSmallMod.settings;
+
+        private static int internalTick = 0;
+
+        /// <summary>
+        /// Used when you need to make sure ticks aren't randomly skipped. Thanks Ludeon or whatever mod causes this. Ó_ò
+        /// </summary>
+        public static int Tick { get => internalTick; }
+        public static void IncrementTick() => internalTick += 1;
+        public static void SetTick(int tick) => internalTick = tick;
     }
     public class BigAndSmallCache : GameComponent
     {
@@ -48,9 +58,7 @@ namespace BigAndSmall
             var allPawns = PawnsFinder.All_AliveOrDead;
             foreach (var pawn in allPawns.Where(x => x != null && !x.Discarded && !x.Destroyed))
             {
-                if (HumanoidPawnScaler.GetCache(pawn, scheduleForce:1) is BSCache cache)
-                {
-                }
+                if (HumanoidPawnScaler.GetCache(pawn, scheduleForce:1) is BSCache cache) { }
             }
         }
 
@@ -79,42 +87,59 @@ namespace BigAndSmall
             }
         }
 
+        
         public override void GameComponentTick()
         {
+            BS.IncrementTick();
+            int tick = BS.Tick;
+            
             if (queuedJobs.Count > 0)
             {
                 var job = queuedJobs.Dequeue();
                 job();
             }
 
-            int currentTick = Find.TickManager.TicksGame;
+            //int currentTick = Find.TickManager.TicksGame;
+            
 
-            if (schedulePostUpdate.ContainsKey(currentTick))
+            if (schedulePostUpdate.ContainsKey(tick))
             {
-                foreach (var cache in schedulePostUpdate[currentTick])
+                foreach (var cache in schedulePostUpdate[tick])
                 {
                     cache?.DelayedUpdate();
                 }
-                schedulePostUpdate.Remove(currentTick);
+                schedulePostUpdate.Remove(tick);
             }
-            if (scheduleFullUpdate.ContainsKey(currentTick))
+            if (scheduleFullUpdate.ContainsKey(tick))
             {
-                foreach (var cache in scheduleFullUpdate[currentTick])
+                
+                foreach (var cache in scheduleFullUpdate[tick])
                 {
                     var cPawn = cache?.pawn;
-                    if (cPawn != null && !cPawn.Discarded)
+                    try
                     {
-                        HumanoidPawnScaler.GetCache(cPawn, forceRefresh: true);
+                        if (cPawn != null && !cPawn.Discarded)
+                        {
+                            HumanoidPawnScaler.GetCache(cPawn, forceRefresh: true);
+                        }
                     }
-                    currentlyQueued.Remove(cache);
+                    finally
+                    {
+                        currentlyQueued.Remove(cache);
+                    }
                 }
-                scheduleFullUpdate.Remove(currentTick);
+                scheduleFullUpdate.Remove(tick);
             }
 
-            if (currentTick % 100 != 0)
+            if (tick % 100 == 0)
             {
-                return;
+                SlowUpdate(tick);
             }
+            
+        }
+
+        private static void SlowUpdate(int currentTick)
+        {
             globalRandNum = Rand.Value;
 
             // If the queue is empty, enqueue the HumanoidPawnScaler.Cache.
@@ -135,11 +160,11 @@ namespace BigAndSmall
                     HumanoidPawnScaler.GetCache(cachedPawn, forceRefresh: true);
                 }
             }
-            if (currentTick % 1000 != 0)
+            if (BigSmallMod.settings.jesusMode)
             {
-                if (BigSmallMod.settings.jesusMode)
+                if (currentTick % 1000 == 0)
                 {
-                    // Set all needs to full, and mood to max for testing purposes.
+                    // Set all needs to full, and mood to max for testing purposes. Avoids mental breaks when testing, etc.
                     var allPawns = PawnsFinder.AllMapsAndWorld_Alive;
                     foreach (var pawn in allPawns.Where(x => x != null && !x.Discarded && !x.Destroyed))
                     {
@@ -148,27 +173,14 @@ namespace BigAndSmall
                 }
             }
 
-            //if (currentTick % 500 == 0)
-            //{
-            //    HumanoidPawnScaler.permitThreadedCaches = true;
-            //}
-
-
-            //if (Find.TickManager.TicksGame % 500 != 0)
-            //{
-            //    return;
-            //}
-            // Regenerate all pGene caches every 100 ticks.
-            // This is done on a component to save the performance cost of having them check a timer every time
-            // they are called.
             pGenesThatReevaluate = new HashSet<PGene>(pGenesThatReevaluate.Where(x => x != null && x.pawn != null && !x.pawn.Discarded));
-            foreach (var pGene in pGenesThatReevaluate.Where(x=>x.pawn.Spawned))
+            foreach (var pGene in pGenesThatReevaluate.Where(x => x.pawn.Spawned))
             {
                 bool active = pGene.previouslyActive == true;
                 bool newState = pGene.RegenerateState();
                 if (active != newState)
                 {
-                    GeneHelpers.NotifyGenesUpdated(pGene.pawn, pGene.def);
+                    pGene.pawn.genes.Notify_GenesChanged(pGene.def);
                 }
             }
         }
@@ -234,7 +246,7 @@ namespace BigAndSmall
         }
 
         /// <summary>
-        /// Get the cache later, unless paused, then get it now. Mostly to force updates when in character editor, etc.
+        /// ForceRefresh and get the cache... later, unless paused. If pasued get it now. Mostly to force updates when in character editor, etc.
         /// </summary>
         public static BSCache LazyGetCache(Pawn pawn, int scheduleForce = 10) //, bool debug=false)
         {
@@ -242,8 +254,9 @@ namespace BigAndSmall
             {
                 return GetCache(pawn, forceRefresh: true);
             }
-            ShedueleForceRegenerateSafe(pawn, scheduleForce);
-            return GetCache(pawn, canRegenerate: false);
+            var cache = GetCache(pawn, canRegenerate: false);
+            ShedueleForceRegenerate(cache, scheduleForce);
+            return cache;
         }
 
         /// <summary>
@@ -324,7 +337,8 @@ namespace BigAndSmall
             {
                 return;
             }
-            int targetTick = Find.TickManager.TicksGame + delay;
+            Assert.IsTrue(delay > 0, "Delay must be greater than 0.");
+            int targetTick = BS.Tick + delay;
             if (BigAndSmallCache.scheduleFullUpdate.ContainsKey(targetTick) == false)
             {
                 BigAndSmallCache.scheduleFullUpdate[targetTick] = [];
@@ -349,7 +363,7 @@ namespace BigAndSmall
         {
             return pawn != null
                 && BigSmall.performScaleCalculations
-                && (pawn.RaceProps.Humanlike || BigSmallMod.settings.scaleAnimals)
+                && (BigSmallMod.settings.scaleAnimals || pawn.RaceProps.Humanlike)
                 && (pawn.needs != null || pawn.Dead);
         }
     }
@@ -616,7 +630,7 @@ namespace BigAndSmall
             regenerationInProgress = true;
             try
             {
-                int tick = Find.TickManager.TicksGame;
+                int tick = BS.Tick;
                 DevelopmentalStage dStage;
                 try
                 {
@@ -669,7 +683,6 @@ namespace BigAndSmall
                     newFoodCatAllow = BSDefLibrary.FoodCategoryDefs.Where(x => x.DefaultAcceptPawn(pawn, activeGenedefs, pawnDiet).Fuse(pawnDiet.Select(y => y.AcceptFoodCategory(x))).ExplicitlyAllowed()).ToList();
                     newFoodCatDeny = BSDefLibrary.FoodCategoryDefs.Where(x => x.DefaultAcceptPawn(pawn, activeGenedefs, pawnDiet).Fuse(pawnDiet.Select(y => y.AcceptFoodCategory(x))).NeutralOrWorse()).ToList();
 
-                    // Log what filtered it
                     //BSDefLibrary.FoodCategoryDefs.ForEach(x =>
                     //{
                     //    var result = x.DefaultAcceptPawn(pawn, activeGenedefs, pawnDiet);
@@ -957,7 +970,7 @@ namespace BigAndSmall
 
         public void ScheduleUpdate(int delayTicks)
         {
-            int targetTick = Find.TickManager.TicksGame + delayTicks;
+            int targetTick = BS.Tick + delayTicks;
             if (BigAndSmallCache.schedulePostUpdate.ContainsKey(targetTick) == false)
             {
                 BigAndSmallCache.schedulePostUpdate[targetTick] = [];
@@ -988,6 +1001,14 @@ namespace BigAndSmall
             //    .Where(x => x?.def?.modExtensions != null && x.def.modExtensions.Any(y => y is PawnExtension))?
             //    .Select(x => x.def.GetModExtension<PawnExtension>()).ToList();
 
+            
+            foreach(var gene in GeneHelpers.GetAllActiveGenes(pawn))
+            {
+                if (gene is PGene pGene)
+                {
+                    pGene.RefreshEffects();
+                }
+            }
 
             // Traits on pawn
             var traits = pawn.story?.traits?.allTraits;
@@ -1199,8 +1220,6 @@ namespace BigAndSmall
                 newHp = Math.Min(apparelMaxHp, newHp);
                 newHp = Math.Min(newHp, highestSeenDurability);
                 apparel.HitPoints = newHp;
-
-                //Log.Message($"DEBUG: Repairing {apparel.Label} by {accumulatedHp} hp, to {apparel.HitPoints}/{highestSeenDurability}. Was {oldhp}.");
                 accumulatedHp = 0;
                 
             }

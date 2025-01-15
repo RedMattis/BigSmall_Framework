@@ -274,6 +274,8 @@
   </ItemGroup>
   <ItemGroup>
     <Publicize Include="Assembly-CSharp:RimWorld.Pawn_GeneTracker.xenotype" />
+    <Publicize Include="Assembly-CSharp:RimWorld.Pawn_GeneTracker.Notify_GenesChanged" />
+    <Publicize Include="Assembly-CSharp:RimWorld.Pawn_GeneTracker.CheckForOverrides" />
     <Publicize Include="Assembly-CSharp:RimWorld.GeneSet.cachedNonOverriddenGenes" />
     <Publicize Include="Assembly-CSharp:Verse.Hediff.severityInt" />
     <Publicize Include="Assembly-CSharp:Verse.PawnRenderer.pawn" />

@@ -59,8 +59,10 @@ namespace BigAndSmall
                 Color colorOne = graphicSet.colorA.GetColor(this, Color.white, ColorSetting.clrOneKey);
                 Color colorTwo = graphicSet.colorB.GetColor(this, Color.white, ColorSetting.clrTwoKey);
                 ShaderTypeDef shader = props.shader ?? ShaderTypeDefOf.CutoutComplex;
-
+                //ShaderTypeDef shader = props.shader ?? BSDefs.CutoutComplexBlend;
                 
+
+
 
                 return GetCachableGraphics(texPath, Vector2.one, shader, colorOne, colorTwo);
             }

@@ -18,12 +18,10 @@ namespace BetterPrerequisites
         /// Avoid recursion by supressing this method when it woudld get called from itself.
         /// </summary>
 
-        private int refreshGeneEffectsCountdown = 5;
-
         public bool? previouslyActive = null;
         public float lastUpdateTicks = 0f;
-        public float lastUpdate = 0f;
-        //public bool triggerNalFaceDisable = false;
+        public bool overridenByDummy = false;
+        public string disabledReason = null;
 
         private bool initialized = false;
         
@@ -96,21 +94,8 @@ namespace BetterPrerequisites
 
                 foreach(var geneDef in GeneExt.SelectMany(x=>x.hiddenGenes))
                 {
-                    // Add hidden gene
                     pawn.genes.AddGene(geneDef, xenoGene);
                 }
-                // Disable facial animations from Nal's Facial Animation mod
-                //try
-                //{
-                //    if (ModsConfig.IsActive("nals.facialanimation") && geneExt.facialDisabler != null)
-                //    {
-                //        triggerNalFaceDisable = true;
-                //    }
-                //}
-                //catch (Exception e)
-                //{
-                //    Log.Message($"Error in PostAdd: {e.Message}");
-                //}
 
                 if (GeneExt.Any(x=>x.conditionals != null))
                 {
@@ -210,7 +195,7 @@ namespace BetterPrerequisites
         {
             if (GeneExt != null && GeneExt.Any(x=>x.thingDefSwap != null))
             {
-                GeneHelpers.CheckForOverrides(pawn);
+                pawn.genes.CheckForOverrides();
                 var firstValid = GeneExt.Where(x => x.thingDefSwap != null).Select(x => x.thingDefSwap).First();
                 RaceMorpher.SwapThingDef(pawn, firstValid, state, targetPriority:0, source:this);
             }
@@ -261,6 +246,14 @@ namespace BetterPrerequisites
                 }
             }
         }
+        public void RefreshEffects()
+        {
+            if (lastUpdateTicks - Find.TickManager.TicksGame > 1000 || GeneExt.Any(x => x.frequentUpdate))
+            {
+                GeneEffectManager.RefreshGeneEffects(this, Active);
+                lastUpdateTicks = Find.TickManager.TicksGame;
+            }
+        }
 
         // Last run state vars:
         #region Previous
@@ -280,6 +273,10 @@ namespace BetterPrerequisites
             bool prerequisitesValid = true;
             bool conditionalsValid = true;
             bool isSupressedByGene = Overridden;
+            if (isSupressedByGene && overriddenByGene == dummyGene)
+            {
+                isSupressedByGene = false;
+            }
             bool refreshGraphics = false;
 
             // To stop infinite recursion.
@@ -288,11 +285,12 @@ namespace BetterPrerequisites
                 try
                 {
                     supressPostfix = true;
-                    var allPawnGenes = pawn.genes.GenesListForReading;
-                    isSupressedByGene = isSupressedByGene && allPawnGenes.Contains(overriddenByGene);
+                    var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
+                    isSupressedByGene = isSupressedByGene && activeGenes.Contains(overriddenByGene);
 
-                    conditionalsValid = ConditionalManager.TestConditionals(this);
-                    prerequisitesValid = PrerequisiteValidator.Validate(def, pawn);
+                    conditionalsValid = ConditionalManager.TestConditionals(this, GeneExt);
+                    prerequisitesValid = PrerequisiteValidator.Validate(def, pawn, ref disabledReason);
+
                     if (conditionalsValid != this.conditionalsValid || prerequisitesValid != this.prerequisitesValid)
                     {
                         refreshGraphics = true;
@@ -325,41 +323,8 @@ namespace BetterPrerequisites
                         GeneEffectManager.GainOrRemovePassion(!result, this);
                         GeneEffectManager.GainOrRemoveAbilities(!result, this);
                         GeneEffectManager.ApplyForcedTraits(!result, this);
-                    }
-                
-                    if (previouslyActive != result || refreshGraphics)
-                    {
-                        if (result)
-                        {
-                            overriddenByGene = null;
-                        }
-                        else
-                        {
-                            if (pawn != null && overriddenByGene == null && (!prerequisitesValid || !conditionalsValid || isSupressedByHediff || isSupressedByGene))
-                            {
-                                overriddenByGene = DummyGene;
-                            }
-                        }
-                        if ((def.HasDefinedGraphicProperties || refreshGraphics) && Thread.CurrentThread == BigSmall.mainThread)
-                        {
-                            pawn.Drawer.renderer.SetAllGraphicsDirty();
-                        }
-                        // Count down faster if the status changed, but still not every frame.
-                        refreshGeneEffectsCountdown-=2;
-                    }
-                    // Updating effects could get expensive, so only do it either when something changed or just plain
-                    // rarely. The rare check is for changes to equipment, injuries, implants, and stuff like that.
-                    refreshGeneEffectsCountdown--;
-                    if (refreshGeneEffectsCountdown <= 0)
-                    {
-                        refreshGeneEffectsCountdown = 5;
-                        var change = GeneEffectManager.RefreshGeneEffects(this, result);
-
-                        // Check if on main thread
-                        if (change && Thread.CurrentThread == BigSmall.mainThread)
-                        {
-                            pawn.Drawer.renderer.SetAllGraphicsDirty();
-                        }
+                        GeneEffectManager.RefreshGeneEffects(this, result);
+                        HumanoidPawnScaler.ShedueleForceRegenerateSafe(pawn, 2);
                     }
                 }
                 finally
@@ -368,13 +333,8 @@ namespace BetterPrerequisites
                     supressPostfix2 = false;
                 }
 
-                lastUpdate = Time.realtimeSinceStartup;
-                lastUpdateTicks = Find.TickManager.TicksGame;// Time.realtimeSinceStartup;
                 previouslyActive = result;
             }
-
-            
-
             return result;
         }
 
@@ -443,7 +403,9 @@ namespace BetterPrerequisites
             base.ExposeData();
             Scribe_Values.Look(ref initialized, "PGeneInit", false);
             Scribe_Values.Look(ref previouslyActive, "PGeneActive", true);
-            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            Scribe_Values.Look(ref overridenByDummy, "PGeneOverridenByDummy", false);
+            Scribe_Values.Look(ref disabledReason, "PGeneDisabledReason", null);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 BigAndSmallCache.pGenesThatReevaluate.Add(this);
             }

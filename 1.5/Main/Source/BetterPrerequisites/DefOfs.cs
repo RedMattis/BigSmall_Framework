@@ -131,6 +131,9 @@ namespace BigAndSmall
         //public static RecipeDef SmashCorpseMechanoid;
         //public static RecipeDef ButcherCorpseFlesh;
 
+        // Shaders
+        public static ShaderTypeDef CutoutComplexBlend;
+
 
 
         public static IncidentDef StrangerInBlackJoin; // Def of the existing incident for easy acccess.

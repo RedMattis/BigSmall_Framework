@@ -95,7 +95,7 @@ namespace BigAndSmall
             foreach (var gene in genesToRemove)
             {
                 // Run method on each gene
-                GeneHelpers.NotifyGenesUpdated(pawn, gene.def);
+                pawn.genes.Notify_GenesChanged(gene.def);
             }
 
             // Get cache

@@ -114,4 +114,8 @@
   <BS_CorpseOf>Corpse of {0}</BS_CorpseOf>
 
   <BS_RequirementNotMet>requirements not met</BS_RequirementNotMet>
+  <BS_PrerequisitesNotMet>requirements not met: {0}</BS_PrerequisitesNotMet>
+  <BS_PrerequisitesNotMetAnyOf>lacks any of: {0}</BS_PrerequisitesNotMetAnyOf>
+  <BS_PrerequisitesNotMetAllOf>requires all of: {0}</BS_PrerequisitesNotMetAllOf>
+  <BS_PrerequisitesNotMetNoneOf>blocked by: {0}</BS_PrerequisitesNotMetNoneOf>
 </LanguageData>

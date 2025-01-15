@@ -30,9 +30,9 @@
   <PawnKindDef ParentName="BS_BlankPawn" Name="BS_BlankPawn_NoSkills" Abstract="True">
     <skills>
 			<li> <skill>Shooting</skill> <range>0~0</range> </li>
-			<li> <skill>Melee</skill> <range>0~0</range> </li>
+			<li> <skill>Melee</skill> <range>0~2</range> </li>
       <li> <skill>Construction</skill> <range>0~0</range> </li>
-      <li> <skill>Mining</skill> <range>0~0</range> </li>
+      <li> <skill>Mining</skill> <range>0~1</range> </li>
       <li> <skill>Cooking</skill> <range>0~0</range> </li>
       <li> <skill>Plants</skill> <range>0~0</range> </li>
       <li> <skill>Animals</skill> <range>0~0</range> </li>
