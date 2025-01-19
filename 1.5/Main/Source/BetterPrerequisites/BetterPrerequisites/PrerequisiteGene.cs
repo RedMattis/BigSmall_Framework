@@ -44,7 +44,7 @@ namespace BetterPrerequisites
             set => geneExt = value;
         }
 
-        public override bool Active => TryGetGeneActiveCache(base.Active);
+        public override bool Active => TryGetGeneActiveCache();
 
         public bool ForceRun { get; set; } = false;
         public static Gene DummyGene { get => !dummyGeneCreated ? MakeDummyGene() : dummyGene; set => dummyGene = value; }
@@ -205,8 +205,19 @@ namespace BetterPrerequisites
         readonly float updateFrequenceRealTime = 2.0f; //1.5f;
         public static object locker = new object();
 
-        public bool TryGetGeneActiveCache(bool result)
+        public bool TryGetGeneActiveCache()
         {
+            bool result;
+            try
+            {
+                result = base.Active;
+            }
+            catch (Exception e)
+            {
+                Log.Warning($"Prerequisite Gene caught an exception when trying to check the Gene Base active state in " +
+                    $"{MethodBase.GetCurrentMethod().DeclaringType.Name}.{MethodBase.GetCurrentMethod().Name}.\nStackTrace:\n{e.Message}\n{e.StackTrace}");
+                return false;
+            }
             // Skip dead pawns and non-spawned pawns.
             if (pawn != null && !PawnGenerator.IsBeingGenerated(pawn) && !pawn.Dead && pawn.Spawned)
             {
