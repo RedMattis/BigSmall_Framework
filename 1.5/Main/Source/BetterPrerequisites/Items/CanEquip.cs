@@ -146,7 +146,6 @@ namespace BigAndSmall
             if (__result == true)
             {
                 string discard = "";
-                // CanEquipThing
                 __result = CanEquipThing(__result, apparel, p, ref discard);
             }
             
@@ -159,7 +158,6 @@ namespace BigAndSmall
             if (__result == true)
             {
                 string discard = "";
-                // CanEquipThing
                 __result = CanEquipThing(__result, apparel, p, ref discard);
             }
         }
@@ -171,7 +169,6 @@ namespace BigAndSmall
             if (__result == true)
             {
                 string discard = "";
-                // CanEquipThing
                 __result = CanEquipThing(__result, __instance.def, pawn, ref discard);
             }
         }

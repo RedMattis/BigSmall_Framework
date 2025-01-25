@@ -4,6 +4,7 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using Verse;
 
 namespace BigAndSmall
@@ -69,6 +70,24 @@ namespace BigAndSmall
             MigrateThingDefLinks();
             PatchCustomBodyPartDefs();
         }
+
+        //public static void UnpatchHARFromNonHAR()
+        //{
+        //    DefDatabase<ThingDef>.AllDefs.Where(x => !x.GetType().Name.Contains("ThingDef_AlienRace") && x.race != null).Do(x =>
+        //    {
+        //        Log.Message($"[Big and Small] Checking for unpatching need in {x.defName}");
+        //        foreach (var comp in x.comps)
+        //        {
+        //            Log.Message($"[Big and Small] Checking for unpatching need in {x.defName} - {comp.GetType().Name}");
+        //        }
+        //        var removedCount = x.comps.RemoveAll((CompProperties compProperties) => compProperties.GetType().Name.Contains("AlienPartGenerator"));
+        //        if (removedCount > 0)
+        //        {
+        //            Log.Message($"[Big and Small] Removed {removedCount} AlienPartGenerators from {x.defName}");
+        //        }
+        //        Log.Clear();
+        //    });
+        //}
 
         private static List<RecipeDef> AllHumanRecipes()
         {

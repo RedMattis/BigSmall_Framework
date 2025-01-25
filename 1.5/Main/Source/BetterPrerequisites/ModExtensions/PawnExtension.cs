@@ -481,6 +481,8 @@ namespace BigAndSmall
         public bool forceUnarmed = false;
         public string ForceUnarmedDescription => forceUnarmed ? "BS_ForceUnarmedDesc".Translate() : null;
 
+        public bool disableLookChangeDesired = false;
+
         public bool hideInGenePicker = false;
         public bool hideInXenotypeUI = false;
 

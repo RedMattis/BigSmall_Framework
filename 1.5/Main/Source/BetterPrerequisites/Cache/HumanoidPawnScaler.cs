@@ -506,6 +506,8 @@ namespace BigAndSmall
         public bool facialAnimationDisabled = false;
         public bool facialAnimationDisabled_Transform = false; // Used for the ColorAndFur Hediff.
 
+        public bool disableLookChangeDesired = false;
+
         public bool isDrone = false;
         public List<Aptitude> aptitudes = [];
 
@@ -802,6 +804,7 @@ namespace BigAndSmall
 
                 isDrone = allPawnExt.Any(x => x.isDrone);
 
+                this.disableLookChangeDesired = allPawnExt.Any(x => x.disableLookChangeDesired);
 
                 // Check if they are a shambler
                 var isShambler = pawn?.mutant?.Def?.defName?.ToLower().Contains("shambler") == true;

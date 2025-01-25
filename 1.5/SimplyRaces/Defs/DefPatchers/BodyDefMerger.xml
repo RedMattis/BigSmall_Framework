@@ -41,7 +41,7 @@
       </li>
     </substitutions>
 
-    <!-- Special version of the above. Body isn't replaced, but the Tracker can be kept. -->
+    <!-- Special version of the above. Body is replaced, but the Tracker can be kept. -->
     <retainableTrackers>
       <li>
         <target>BS_StandardAndroid</target>

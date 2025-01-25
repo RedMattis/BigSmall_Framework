@@ -214,7 +214,7 @@ namespace BetterPrerequisites
             }
             catch (Exception e)
             {
-                Log.Warning($"Prerequisite Gene caught an exception when trying to check the Gene Base active state in " +
+                Log.Warning($"Prerequisite Gene ({def?.defName}, on Pawn \"{pawn}\") caught an exception when trying to check the Gene Base active state in " +
                     $"{MethodBase.GetCurrentMethod().DeclaringType.Name}.{MethodBase.GetCurrentMethod().Name}.\nStackTrace:\n{e.Message}\n{e.StackTrace}");
                 return false;
             }

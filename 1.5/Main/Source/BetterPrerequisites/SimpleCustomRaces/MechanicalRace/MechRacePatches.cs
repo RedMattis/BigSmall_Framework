@@ -75,6 +75,18 @@ namespace BigAndSmall
             }
         }
 
+        [HarmonyPatch(typeof(Pawn_StyleTracker), "get_CanDesireLookChange")]
+        [HarmonyPriority(int.MaxValue)]
+        public static bool Prefix(Pawn_StyleTracker __instance, ref bool __result)
+        {
+            if (HumanoidPawnScaler.GetCacheUltraSpeed(__instance.pawn) is BSCache cache)
+            {
+                if (cache.isMechanical || cache.disableLookChangeDesired)
+                    return false;
+            }
+            return true;
+        }
+
 
         //[HarmonyPatch(typeof(ThoughtWorker_TranshumanistAppreciation), "CurrentSocialStateInternal", [typeof(Pawn), typeof(Pawn)])]
         //[HarmonyPriority(Priority.Low)]
