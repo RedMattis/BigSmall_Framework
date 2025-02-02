@@ -52,32 +52,50 @@ namespace BigAndSmall
         }
 
         /// <summary>
-        /// This patch mostly serves to force Dub's Hygine to respect disabled needs. Dangit! :D
+        /// This patch mostly serves to force Dub's Hygine to respect disabled needs.
         /// </summary>
         [HarmonyPatch(typeof(Pawn_NeedsTracker), "ShouldHaveNeed")]
-        [HarmonyPriority(Priority.Low)]
-        public class Patch_ShouldHaveNeed
+        [HarmonyPriority(int.MinValue)]
+        [HarmonyPostfix]
+        public static void ShouldHaveNeedPrefix(ref bool __result, Pawn ___pawn, NeedDef nd)
         {
-            public static void Postfix(Pawn_NeedsTracker __instance, ref bool __result, Pawn ___pawn, NeedDef nd)
+            if (___pawn.health?.hediffSet?.hediffs?.Any() == true)
             {
-                if (___pawn.health.hediffSet.hediffs.Any())
+                foreach (Hediff x in ___pawn.health.hediffSet.hediffs)
                 {
-                    foreach (Hediff x in ___pawn.health.hediffSet.hediffs)
+                    if (x?.def != null && x.def.disablesNeeds?.Contains(nd) == true)
                     {
-                        HediffDef def = x.def;
-                        if (def != null && def.disablesNeeds?.Contains(nd) == true)
-                        {
-                            __result = false;
-                            return;
-                        }
+                        __result = false;
                     }
                 }
             }
         }
 
+        /// <summary>
+        /// This patch (again) mostly serves to force Dub's Hygine to respect disabled needs.
+        /// </summar
+        [HarmonyPatch(typeof(Pawn_NeedsTracker), "AddNeed")]
+        [HarmonyPriority(Priority.First+1)]
+        [HarmonyPrefix]
+        public static bool AddNeedPrefix(Pawn ___pawn, NeedDef nd)
+        {
+            if (___pawn.health?.hediffSet?.hediffs?.Any() == true)
+            {
+                foreach (Hediff x in ___pawn.health.hediffSet.hediffs)
+                {
+                    if (x?.def != null && x.def.disablesNeeds?.Contains(nd) == true)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
         [HarmonyPatch(typeof(Pawn_StyleTracker), "get_CanDesireLookChange")]
         [HarmonyPriority(int.MaxValue)]
-        public static bool Prefix(Pawn_StyleTracker __instance, ref bool __result)
+        [HarmonyPrefix]
+        public static bool CanDesireLookChangePrefix(Pawn_StyleTracker __instance, ref bool __result)
         {
             if (HumanoidPawnScaler.GetCacheUltraSpeed(__instance.pawn) is BSCache cache)
             {

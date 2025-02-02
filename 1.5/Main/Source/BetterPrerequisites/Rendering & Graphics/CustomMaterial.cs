@@ -22,13 +22,13 @@ namespace BigAndSmall
         //    return graphic_Multi;
         //}
 
-        public Graphic_Multi GetGraphic(PawnRenderNode pawnRenderNode, string path, Color colorOne, Color colorTwo, Vector2 drawSize, CustomMaterial data)
+        public Graphic GetGraphic(PawnRenderNode pawnRenderNode, string path, Color colorOne, Color colorTwo, Vector2 drawSize, CustomMaterial data)
         {
             colorOne = data.colorA.GetColor(pawnRenderNode, colorOne, ColorSetting.clrOneKey);
             colorTwo = data.colorB.GetColor(pawnRenderNode, colorTwo, ColorSetting.clrTwoKey);
 
-            Graphic_Multi graphic_Multi = GetCachableGraphics(path, drawSize, data.shader, colorOne, colorTwo);
-            return graphic_Multi;
+            Graphic graphic = GetCachableGraphics(path, drawSize, data.shader.Shader, colorOne, colorTwo);
+            return graphic;
         }
     }
 }

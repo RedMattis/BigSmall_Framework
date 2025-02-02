@@ -47,7 +47,7 @@
   </BigAndSmall.GeneAutoPatcherSettings>
 
   <BigAndSmall.GlobalSettings>
-    <defName>BS_GlobalSettings</defName>
+    <defName>BS_GlobalSettingsBiotech</defName>
 
     <alienGeneGroups>
       <li> <!--Bug Heads-->

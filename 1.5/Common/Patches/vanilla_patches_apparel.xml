@@ -1,0 +1,8 @@
+<Patch>
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ThingDef[defName="Apparel_Pants" or defName="Apparel_BasicShirt" or defName="Apparel_Parka"]/apparel/tags</xpath>
+		<value>
+			<li>BS_MedievalBasic</li>
+		</value>
+	</Operation>
+</Patch>

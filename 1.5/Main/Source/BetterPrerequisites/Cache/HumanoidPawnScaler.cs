@@ -56,6 +56,8 @@ namespace BigAndSmall
             base.FinalizeInit();
             // Get all pawns registered in the game.
             var allPawns = PawnsFinder.All_AliveOrDead;
+
+            RaceFuser.PostSaveLoadedSetup();
             foreach (var pawn in allPawns.Where(x => x != null && !x.Discarded && !x.Destroyed))
             {
                 if (HumanoidPawnScaler.GetCache(pawn, scheduleForce:1) is BSCache cache) { }
@@ -376,6 +378,7 @@ namespace BigAndSmall
         public Pawn pawn = null;
         public bool refreshQueued = false;
         public int? lastUpdateTick = null;
+        public int? creationTick = null;
         public bool SameTick => lastUpdateTick == Find.TickManager.TicksGame;
 
         //public CacheTimer Timer { get; set; } = new CacheTimer();
@@ -633,6 +636,7 @@ namespace BigAndSmall
             try
             {
                 int tick = BS.Tick;
+                creationTick ??= BS.Tick;
                 DevelopmentalStage dStage;
                 try
                 {

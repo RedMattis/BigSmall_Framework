@@ -53,7 +53,7 @@ namespace BigAndSmall
             ShaderTypeDef shader = props.shader;
 
      
-            var result = GetCachableGraphics(text, Vector2.one, shader, colorOne, colorTwo);
+            var result = GetCachableGraphics(text, Vector2.one, shader.Shader, colorOne, colorTwo);
             return result;
         }
     }

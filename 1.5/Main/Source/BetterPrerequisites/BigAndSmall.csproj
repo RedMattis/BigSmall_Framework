@@ -122,6 +122,7 @@
     <Compile Include="ModExtensions\SmartExtension.cs" />
     <Compile Include="ModExtensions\ModExtHelper.cs" />
     <Compile Include="ModPatches\MiscCompatibility\HumanoidAlienRaces.cs" />
+    <Compile Include="ModPatches\NalsAnim\FacialAnim_PatchDynamicRaces.cs" />
     <Compile Include="Path Operations\SettingsBasedPatches.cs" />
     <Compile Include="Pawn\PawnGeneration\GenerateNewPawnInternal.cs" />
     <Compile Include="Pawn\PawnPatches.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="Rendering &amp; Graphics\Patches\PawnRenderNode_Head_Patches.cs" />
     <Compile Include="Rendering &amp; Graphics\GraphicsHelper.cs" />
     <Compile Include="Rendering &amp; Graphics\BSDrawData.cs" />
+    <Compile Include="Rendering &amp; Graphics\RenderWorkers\PawnRenderNodeWorker_Various.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\PawnRenderNode_HSVHair.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\PawnRenderNode_SimpleSwitches.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\UltimateRenderNode.cs" />
@@ -288,6 +290,9 @@
     <Publicize Include="Assembly-CSharp:Verse.ThingDef.verbs" />
     <Publicize Include="Assembly-CSharp:RimWorld.ThingDefGenerator_Corpses.CalculateMarketValue" />
     <Publicize Include="Assembly-CSharp:RimWorld.ThingDefGenerator_Corpses.GenerateCorpseDef" />
+    
+    <Publicize Include="Assembly-CSharp:Verse.BodyDef.cachedAllParts" />
+    <Publicize Include="Assembly-CSharp:Verse.BodyDef.CacheDataRecursive" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -302,4 +307,3 @@
   </Target>
   <Import Project="packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets" Condition="Exists('packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets')" />
 </Project>
-

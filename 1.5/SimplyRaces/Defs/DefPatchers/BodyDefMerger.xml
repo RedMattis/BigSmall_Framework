@@ -15,9 +15,7 @@
       <li>Kidney</li>
       <li>Stomach</li>
     </bodyPartToSkip>
-
-
-
+    
     <substitutions>
       <!-- Note that these target only BodyDefs, not ThingDefs. -->
       <li>

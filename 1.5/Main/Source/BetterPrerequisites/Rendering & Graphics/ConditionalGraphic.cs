@@ -87,6 +87,25 @@ namespace BigAndSmall
         }
     }
 
+    public class ChanceByStat
+    {
+        public StatDef statDef;
+        public SimpleCurve curve = [];
+
+        public void LoadDataFromXmlCustom(XmlNode xmlRoot)
+        {
+            var firstElement = xmlRoot.FirstChild;
+            DirectXmlCrossRefLoader.RegisterObjectWantsCrossRef(this, "statDef", firstElement.Name);
+            foreach (XmlNode node in firstElement.ChildNodes)
+            {
+                if (node.NodeType == XmlNodeType.Element)
+                {
+                    curve.Add(new CurvePoint(ParseHelper.FromString<Vector2>(node.InnerText)));
+                }
+            }
+        }
+    }
+
     public abstract class ConditionalGraphic
     {
         public class PartRecord
@@ -102,6 +121,8 @@ namespace BigAndSmall
         public enum AltTrigger
         {
             Colonist,
+            Male,
+            Female,
             SlaveOfColony,
             PrisonerOfColony,
             SlaveOrPrisoner,
@@ -121,11 +142,14 @@ namespace BigAndSmall
         public FilterListSet<string> triggerGeneTag = new();
         public FilterListSet<GeneDef> triggerGene = new();
         public FilterListSet<FlagString> triggerFlags = new();
+        public int randSeed = 0;
         
 
         private List<AltTrigger> triggers = []; // Obsolete. It is too cryptic.
         private List<AltTrigger> triggerConditions = [];
         public float? chanceTrigger = null;
+        public SimpleCurve chanceByAge = null; // 1.0 means 100% chance at age 100.
+        public ChanceByStat chanceByStat = null;
 
         public List<FlagString> replaceFlags = [];
         public List<FlagString> replaceFlagsAndInactive = [];
@@ -234,9 +258,10 @@ namespace BigAndSmall
         /// <returns></returns>
         public bool GetState(Pawn pawn)
         {
+            int seed = pawn.thingIDNumber + pawn.def.defName.GetHashCode() + randSeed;
             if (chanceTrigger != null)
             {
-                using (new RandBlock(pawn.thingIDNumber + pawn.def.defName.GetHashCode()))
+                using (new RandBlock(seed))
                 {
                     if (Rand.Value > chanceTrigger.Value)
                     {
@@ -244,6 +269,31 @@ namespace BigAndSmall
                     }
                 }
             }
+            if (chanceByAge != null)
+            {
+                float age = pawn.ageTracker.AgeBiologicalYearsFloat;
+                float chance = chanceByAge.Evaluate(age);
+                using (new RandBlock(seed))
+                {
+                    if (Rand.Value > chance)
+                    {
+                        return false;
+                    }
+                }
+            }
+            if (chanceByStat != null)
+            {
+                float value = pawn.GetStatValue(chanceByStat.statDef);
+                float chance = chanceByStat.curve.Evaluate(value);
+                using (new RandBlock(seed))
+                {
+                    if (Rand.Value > chance)
+                    {
+                        return false;
+                    }
+                }
+            }
+
             if (!TriggerTagsValid(pawn))
             {
                 return false;
@@ -263,6 +313,8 @@ namespace BigAndSmall
             {
                 AltTrigger.Colonist => pawn.Faction == Faction.OfPlayer,
                 AltTrigger.SlaveOfColony => pawn.HostFaction == Faction.OfPlayer && pawn.IsSlave,
+                AltTrigger.Male => pawn.gender == Gender.Male,
+                AltTrigger.Female => pawn.gender == Gender.Female,
                 AltTrigger.PrisonerOfColony => pawn.HostFaction == Faction.OfPlayer && pawn.IsPrisoner,
                 AltTrigger.SlaveOrPrisoner => pawn.IsSlave || pawn.IsPrisoner,
                 AltTrigger.OfColony => pawn.HostFaction == Faction.OfPlayer || pawn.Faction == Faction.OfPlayer,

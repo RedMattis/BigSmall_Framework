@@ -4,6 +4,15 @@ using System;
 using System.Collections.Generic;
 using Verse;
 
+namespace BigAndSmall
+{
+    public class PawnKindExtension : DefModExtension
+    {
+        public SimpleCurve ageCurve = null;
+        public SimpleCurve psylinkLevels = null;
+    }
+}
+
 namespace BetterPrerequisites
 {
     public class XenotypeExtension : DefModExtension
@@ -12,6 +21,7 @@ namespace BetterPrerequisites
         public bool morphIgnoreGender = false;
         public ThingDef setRace = null;
         public bool forceRace = false;
+        
         //public int? maxAge = null;
         //public Gender? morphGender = null;
 

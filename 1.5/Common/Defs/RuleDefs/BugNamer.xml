@@ -1,6 +1,5 @@
 <Defs>
-  
-  <RulePackDed Name="BP_InsectNamerBase">
+  <RulePackDef Name="BP_InsectNamerBase" Abstract="True">
     <rulePack>
       <include>
         <li>BS_Bug_LastName</li>
@@ -16,7 +15,7 @@
         <li>BugMSuffix->Names/bug_male_s</li>
 			</rulesFiles>
 		</rulePack>
-  </RulePackDed>
+  </RulePackDef>
 
   <RulePackDef ParentName="BP_InsectNamerBase" Name="BS_Bug_NamerFem">
     <defName>BS_Bug_NamerFem</defName>

@@ -17,11 +17,10 @@ namespace BigAndSmall
         private static int lastTick = 0;
         public static void Postfix(ref float __result, Pawn __instance)
         {
-            if (HumanoidPawnScaler.GetCacheUltraSpeed(__instance) is BSCache sizeCache)
+            if (HumanoidPawnScaler.GetCacheUltraSpeed(__instance) is BSCache cache)
             {
-                
-                float newScale = __result * sizeCache.healthMultiplier;
-                if (!sizeCache.injuriesRescaled)
+                float newScale = __result * cache.healthMultiplier;
+                if (!cache.injuriesRescaled)
                 {
                     int thisTick = Find.TickManager.TicksGame;
                     if (thisTick != lastTick)
@@ -47,7 +46,7 @@ namespace BigAndSmall
 
                     }
 
-                    float oldscale = __result * sizeCache.healthMultiplier_previous;
+                    float oldscale = __result * cache.healthMultiplier_previous;
                     // Scale all injuries by the difference between the old and new health multipliers.
                     // This is meant to make sure a pawns injuries don't get more severe if they shrink.
                     // It shouldn't really be needed, but shrinking pawns seem to make their injuries get worse,
@@ -63,14 +62,21 @@ namespace BigAndSmall
                     __instance.health.hediffSet.GetHediffs(ref injuries);
                     foreach (var injury in injuries)
                     {
+                        float injuryScaleThis = injuryScale;
                         injuryRescaling[injury] = injury.Severity;
+                        if (!injury.CanHealNaturally() && (cache.creationTick == null || cache.creationTick == BS.Tick))
+                        {
+                            // Scars should not be scaled at the point of creation, because of how they are created,
+                            // this can result int them getting made much worse.
+                            injuryScaleThis = Math.Min(1, injuryScaleThis);
+                        }
                         injury.severityInt = injury.Severity * injuryScale;
                         if (injury.Severity < 0.05f) // Delete tiny injuries.
                         {
                             injury.severityInt = 0;
                         }
                     }
-                    sizeCache.injuriesRescaled = true;
+                    cache.injuriesRescaled = true;
                 }
                 __result = newScale;
             }

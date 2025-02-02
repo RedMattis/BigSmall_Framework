@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using Verse.Noise;
 using static HarmonyLib.AccessTools;
 
 namespace BigAndSmall
@@ -236,6 +237,23 @@ namespace BigAndSmall
             }
         }
 
+        public static void PostSaveLoadedSetup()
+        {
+            bool partsWereChanged = false;
+            foreach (var td in thingDefsAdded)
+            {
+                if (td.race.body.cachedAllParts.NullOrEmpty())
+                {
+                    td.race.body.CacheDataRecursive(td.race.body.corePart);
+                    partsWereChanged = true;
+                }
+            }
+            if (partsWereChanged)
+            {
+                ModPatches.FacialAnim_PatchDynamicRaces.PatchFaceAdjustmentDict([.. thingDefsAdded]);
+            }
+        }
+
         public static void GenerateCorpses(bool hotReload)
         {
             foreach (var (newThingDef, fused) in FusedBody.FusedBodyByThing.Select(x=> (x.Key, x.Value)))
@@ -315,7 +333,7 @@ namespace BigAndSmall
 
             DirectXmlCrossRefLoader.RegisterListWantsCrossRef(newCorpse.thingCategories, !fused.isMechanical ? ThingCategoryDefOf.CorpsesHumanlike.defName : BSDefs.BS_RobotCorpses.defName, newCorpse);
 
-            thingDefsAdded.Add(newCorpse);
+            //thingDefsAdded.Add(newCorpse);
             DefGenerator.AddImpliedDef(newCorpse, hotReload: hotReload);
         }
 

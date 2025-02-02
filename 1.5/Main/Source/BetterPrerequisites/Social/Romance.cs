@@ -6,6 +6,7 @@ using System.Reflection;
 using UnityEngine;
 using Verse;
 using Verse.Noise;
+using System.Linq;
 
 namespace BigAndSmall
 {
@@ -83,21 +84,59 @@ namespace BigAndSmall
         [HarmonyPatch(typeof(Pawn_RelationsTracker), nameof(Pawn_RelationsTracker.SecondaryLovinChanceFactor))]
         public static IEnumerable<CodeInstruction> LovingFactor_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            // Same as what HAR does, both S&R so this should be best for compatibility.
             FieldInfo defField = AccessTools.Field(typeof(Thing), nameof(Thing.def));
             MethodInfo racePropsGetter = AccessTools.PropertyGetter(typeof(Pawn), nameof(Pawn.RaceProps));
             MethodInfo humanlikeGetter = AccessTools.PropertyGetter(typeof(RaceProperties), nameof(RaceProperties.Humanlike));
-            foreach (CodeInstruction instruction in instructions)
+            List<CodeInstruction> humanlikeInstructions =
+            [
+                new (OpCodes.Callvirt, racePropsGetter),
+                new (OpCodes.Callvirt, humanlikeGetter),
+                new (OpCodes.Ldarg_1),
+                new (OpCodes.Callvirt, racePropsGetter),
+                new (OpCodes.Callvirt, humanlikeGetter)
+            ];
+
+            var codes = new List<CodeInstruction>(instructions);
+            bool done = false;
+            for (int i = 0; i < codes.Count; i++)
             {
-                if (instruction.opcode == OpCodes.Ldfld && instruction.OperandIs(defField))
+                if (i + 3 < codes.Count && !done)
                 {
-                    yield return new CodeInstruction(OpCodes.Callvirt, racePropsGetter);
-                    instruction.opcode = OpCodes.Callvirt;
-                    instruction.operand = humanlikeGetter;
+                    if (codes[i].opcode == OpCodes.Ldfld && codes[i].OperandIs(defField) &&
+                        codes[i + 1].opcode == OpCodes.Ldarg_1 &&
+                        codes[i + 2].opcode == OpCodes.Ldfld && codes[i + 2].OperandIs(defField))
+                    {
+                        codes.RemoveRange(i, 3);
+                        codes.InsertRange(i, humanlikeInstructions);
+                        done = true;
+                        break;
+                    }
                 }
-                yield return instruction;
             }
+            if (!done) Log.Warning("Big and Small: RomanceFactor Transpiler failed. Instruction group not found. Did another mod patch it?");
+            return codes.AsEnumerable();
         }
+
+            //[HarmonyTranspiler]
+            //[HarmonyPatch(typeof(Pawn_RelationsTracker), nameof(Pawn_RelationsTracker.SecondaryLovinChanceFactor))]
+            //public static IEnumerable<CodeInstruction> LovingFactor_Transpiler(IEnumerable<CodeInstruction> instructions)
+            //{
+            //    // Same as what HAR does, both S&R so this should be best for compatibility.
+            //    FieldInfo defField = AccessTools.Field(typeof(Thing), nameof(Thing.def));
+            //    MethodInfo racePropsGetter = AccessTools.PropertyGetter(typeof(Pawn), nameof(Pawn.RaceProps));
+            //    MethodInfo humanlikeGetter = AccessTools.PropertyGetter(typeof(RaceProperties), nameof(RaceProperties.Humanlike));
+            //    foreach (CodeInstruction instruction in instructions)
+            //    {
+            //        if (instruction.opcode == OpCodes.Ldfld && instruction.OperandIs(defField))
+            //        {
+            //            yield return new CodeInstruction(OpCodes.Callvirt, racePropsGetter);
+            //            instruction.opcode = OpCodes.Callvirt;
+            //            instruction.operand = humanlikeGetter;
+            //        }
+            //        yield return instruction;
+            //    }
+            // }
+        
         [HarmonyPatch(typeof(Pawn_RelationsTracker), nameof(Pawn_RelationsTracker.SecondaryLovinChanceFactor))]
         [HarmonyPostfix]
         [HarmonyPriority(Priority.Low)]

@@ -77,7 +77,7 @@ namespace BigAndSmall
             var rng = cache.pawn.GetPawnRNGSeed();
             Gender? gender = cache.GetApparentGender();
             var pathList = GetPaths(cache, gender);
-            if (pathList.Any()) using (new RandBlock(rng))
+            if (!pathList.NullOrEmpty()) using (new RandBlock(rng))
                 {
                     path = pathList?.RandomElement();
                     return true;

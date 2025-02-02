@@ -3,6 +3,7 @@ using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
+using Verse.Noise;
 
 namespace BigAndSmall.Debugging
 {
@@ -210,6 +211,21 @@ namespace BigAndSmall.Debugging
                 {
                     pawn.ageTracker.AgeBiologicalTicks = 0;
                 }
+            }));
+
+            list.Add(new DebugActionNode("Randomise Faction", DebugActionType.ToolMap, delegate
+            {
+                DebugToolsGeneral.GenericRectTool("Randomize Faction", delegate (CellRect rect)
+                {
+                    foreach (IntVec3 item2 in rect)
+                    {
+                        foreach (Pawn item3 in item2.GetThingList(Find.CurrentMap).OfType<Pawn>())
+                        {
+                            if (Find.FactionManager.TryGetRandomNonColonyHumanlikeFaction(out Faction nFaction, false))
+                                item3.SetFaction(nFaction);
+                        }
+                    }
+                });
             }));
 
             //list.Add(new DebugActionNode("Test Diet", DebugActionType.ToolMap, delegate

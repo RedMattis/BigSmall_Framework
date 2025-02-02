@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -28,7 +29,7 @@ namespace BigAndSmall
             return color1 * (1 - interp) + color2 * interp;
         }
 
-        public static Graphic_Multi TryGetCustomGraphics(PawnRenderNode renderNode, string path, Color colorOne, Color colorTwo, Vector2 drawSize, CustomMaterial data)
+        public static Graphic TryGetCustomGraphics(PawnRenderNode renderNode, string path, Color colorOne, Color colorTwo, Vector2 drawSize, CustomMaterial data)
         {
             if (data != null)
             {
@@ -36,7 +37,7 @@ namespace BigAndSmall
             }
             else
             {
-                return GetCachableGraphics(path, drawSize, ShaderTypeDefOf.Cutout, colorOne, colorTwo);
+                return GetCachableGraphics(path, drawSize, ShaderTypeDefOf.Cutout.Shader, colorOne, colorTwo);
             }
         }
 
@@ -65,27 +66,32 @@ namespace BigAndSmall
     public static class RenderingLib
     {
         [Unsaved(false)]
-        private readonly static List<KeyValuePair<(Color, Color), Graphic_Multi>> graphics = [];
-        public static Graphic_Multi GetCachableGraphics(string path, Vector2 drawSize, ShaderTypeDef shader, Color colorOne, Color colorTwo)
+        private readonly static List<KeyValuePair<(Color, Color), Graphic>> graphics = [];
+        public static Graphic GetCachableGraphics(string path, Vector2 drawSize, Shader shader, Color colorOne, Color colorTwo, string maskPath=null, Type graphicClass =null)
         {
-            shader ??= ShaderTypeDefOf.CutoutComplex;
+            shader ??= ShaderTypeDefOf.CutoutComplex.Shader;
 
             for (int i = 0; i < graphics.Count; i++)
             {
                 var grap = graphics[i];
                 var grapMult = grap.Value;
-                if (grapMult.path == path && colorOne.IndistinguishableFrom(graphics[i].Key.Item1) && colorTwo.IndistinguishableFrom(grap.Key.Item2) && grap.Value.Shader == shader.Shader)
+                if (grapMult.path == path && colorOne.IndistinguishableFrom(graphics[i].Key.Item1) && colorTwo.IndistinguishableFrom(grap.Key.Item2) && grap.Value.Shader == shader)
                 {
                     return graphics[i].Value;
                 }
             }
+            Graphic graphic;
+            if (graphicClass == typeof(Graphic_Single))
+            {
+                graphic = GraphicDatabase.Get<Graphic_Single>(path, shader, drawSize, colorOne, colorTwo, data: null, maskPath: null);
+            }
+            else
+            {
+                graphic = GraphicDatabase.Get<Graphic_Multi>(path, shader, drawSize, colorOne, colorTwo, data: null, maskPath: null);
+            }
 
-            Graphic_Multi graphic_Multi = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(path, shader.Shader, drawSize, colorOne, colorTwo);//, data:null, maskPath: null);
-
-            //<T>(string path, Shader shader, Vector2 drawSize, Color color, Color colorTwo, GraphicData data, string maskPath = null) where T : Graphic, new()
-            //Graphic Get(Type graphicClass, string path, Shader shader, Vector2 drawSize, Color color, Color colorTwo, string maskPath = null)
-            graphics.Add(new KeyValuePair<(Color, Color), Graphic_Multi>((colorOne, colorTwo), graphic_Multi));
-            return graphic_Multi;
+            graphics.Add(new KeyValuePair<(Color, Color), Graphic>((colorOne, colorTwo), graphic));
+            return graphic;
         }
     }
 }

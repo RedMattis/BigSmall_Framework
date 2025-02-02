@@ -74,6 +74,7 @@ namespace BigAndSmall
                 parent = genPartParent,
                 def = partDef,
                 customLabel = customLabel,
+                untranslatedCustomLabel = source.untranslatedCustomLabel,
                 coverage = source.coverage,
                 depth = source.depth,
                 height = source.height,

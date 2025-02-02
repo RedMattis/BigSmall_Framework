@@ -30,6 +30,7 @@
       <xpath>//*[self::label or self::description]</xpath>
       <success>Always</success>
       <oldTexts>
+        <li>psychically</li>
         <li>psychic</li>
         <li>bioferrite</li>
         <li>archite</li>
@@ -49,6 +50,7 @@
         <li>microscopic</li>
       </oldTexts>
       <newTexts>
+        <li>arcane</li>
         <li>arcane</li>
         <li>blightsteel</li>
         <li>empyrean</li>

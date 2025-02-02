@@ -11,7 +11,12 @@ namespace BigAndSmall
         public ConditionalGraphicProperties props = new();
         protected ConditionalTexture conditionalPaths = null;
         public AdaptivePathPathList texturePaths = [];
+
+        protected ConditionalTexture conditionalMaskPaths = null;
+        public AdaptivePathPathList maskPaths = [];
         public string GetPath(BSCache cache, string path) => conditionalPaths?.TryGetPath(cache, ref path) == true || texturePaths.TryGetPath(cache, ref path) ? path : path;
+
+        public string GetMaskPath(BSCache cache, string path) => conditionalMaskPaths?.TryGetPath(cache, ref path) == true || maskPaths.TryGetPath(cache, ref path) ? path : path;
 
         public List<ConditionalGraphicsSet> alts = [];
 

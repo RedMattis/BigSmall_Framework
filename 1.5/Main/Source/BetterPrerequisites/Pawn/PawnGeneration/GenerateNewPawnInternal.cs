@@ -16,8 +16,8 @@ namespace BigAndSmall
         {
             try
             {
-                var thingDef = request.KindDef?.race;
-                if (thingDef != null && thingDef.GetRaceExtensions()?.FirstOrDefault() is RaceExtension raceExtension)
+                var race = request.KindDef?.race;
+                if (race != null && race.GetRaceExtensions()?.FirstOrDefault() is RaceExtension raceExtension)
                 {
                     if (raceExtension.femaleGenderChance != null && request.FixedGender == null)
                     {

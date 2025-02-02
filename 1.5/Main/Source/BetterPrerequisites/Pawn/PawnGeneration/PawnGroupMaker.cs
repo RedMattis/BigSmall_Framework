@@ -213,6 +213,24 @@ namespace BigAndSmall
 
         private static void TryModifyPawn(Pawn member)
         {
+            if (member.kindDef.GetModExtension<PawnKindExtension>() is PawnKindExtension pawnKindExt)
+            {
+                if (pawnKindExt.ageCurve != null)
+                {
+                    member.ageTracker.AgeBiologicalTicks = (long)pawnKindExt.ageCurve.Evaluate(Rand.Value) * 3600000;
+                }
+                if (pawnKindExt.psylinkLevels is SimpleCurve psyLinkCurve && ModsConfig.RoyaltyActive)
+                {
+                    int countToSet = (int)psyLinkCurve.Evaluate(Rand.Value);
+
+                    if (countToSet > 0)
+                    {
+                        Hediff_Level hediff_Level = HediffMaker.MakeHediff(HediffDefOf.PsychicAmplifier, member, member.health.hediffSet.GetBrain()) as Hediff_Level;
+                        member.health.AddHediff(hediff_Level);
+                        hediff_Level.SetLevelTo(countToSet);
+                    }
+                }
+            }
             if (member?.RaceProps?.Humanlike != true) return;
             if (member.genes?.Xenotype == null) return;
             if (member.genes.Xenotype.GetModExtension<XenotypeExtension>() is XenotypeExtension xenotypeExt)
