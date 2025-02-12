@@ -8,27 +8,22 @@ namespace BigAndSmall
 {
 
     [StaticConstructorOnStartup]
-    public class GeneGizmo_ResourceSlime : GeneGizmo_Resource
+    public class GeneGizmo_ResourceSlime(BS_GeneSlimePower spGene, List<IGeneResourceDrain> drainGenes, Color barColor, Color barhighlightColor)
+        : GeneGizmo_Resource(spGene, drainGenes, barColor, barhighlightColor)
     {
         private List<Pair<IGeneResourceDrain, float>> tmpDrainGenes = []; // Unused.
-
-        public GeneGizmo_ResourceSlime(Gene_Resource gene, List<IGeneResourceDrain> drainGenes, Color barColor, Color barhighlightColor)
-            : base(gene, drainGenes, barColor, barhighlightColor)
-        {
-            //draggableBar = true;
-        }
 
         protected override string GetTooltip()
         {
             tmpDrainGenes.Clear();
-            string text = $"{gene.ResourceLabel.CapitalizeFirst().Colorize(ColoredText.TipSectionTitleColor)}: {gene.ValueForDisplay} / {gene.MaxForDisplay}\n";
-            if (gene.pawn.IsColonistPlayerControlled || gene.pawn.IsPrisonerOfColony)
+            string text = $"{spGene.ResourceLabel.CapitalizeFirst().Colorize(ColoredText.TipSectionTitleColor)}: {gene.ValueForDisplay} / {gene.MaxForDisplay}\n";
+            if (spGene.pawn.IsColonistPlayerControlled || spGene.pawn.IsPrisonerOfColony)
             {
-                text = text + (string)("BS_AccumulateSlimeUntil".Translate() + ": ") + gene.PostProcessValue(gene.targetValue);
+                text = text + (string)("BS_AccumulateSlimeUntil".Translate() + ": ") + spGene.PostProcessValue(gene.targetValue);
             }
-            if (!gene.def.resourceDescription.NullOrEmpty())
+            if (!spGene.def.resourceDescription.NullOrEmpty())
             {
-                text = text + "\n\n" + gene.def.resourceDescription.Formatted(gene.pawn.Named("PAWN")).Resolve();
+                text = text + "\n\n" + spGene.def.resourceDescription.Formatted(gene.pawn.Named("PAWN")).Resolve();
             }
             return text;
         }

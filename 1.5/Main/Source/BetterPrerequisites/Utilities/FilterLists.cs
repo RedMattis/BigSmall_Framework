@@ -126,18 +126,18 @@ namespace BigAndSmall
 
         public static class FilterHelpers
         {
-            public static FilterResult Fuse(this FilterResult previous, FilterResult next) => (FilterResult)Mathf.Max((int)previous, (int)next);
+            public static FilterResult Max(this FilterResult a, FilterResult b) => (a > b) ? a : b;
+ 
+            public static FilterResult MaxList(this IEnumerable<FilterResult> results) =>
+                results.Aggregate(FilterResult.None, (a, b) => a.Max(b));
 
-            public static FilterResult Fuse(this IEnumerable<FilterResult> results) => results.EnumerableNullOrEmpty() ? FilterResult.None : (FilterResult)results.Max(x=>(int)x);
+            public static FilterResult Fuse(this FilterResult previous, FilterResult next) => previous.Max(next);
+
+            public static FilterResult Fuse(this IEnumerable<FilterResult> results) => results.EnumerableNullOrEmpty() ? FilterResult.None : results.MaxList();
 
             public static FilterResult Fuse(this FilterResult previous, IEnumerable<FilterResult> next) =>
                 next.Fuse().Fuse(previous);
 
-
-            public static bool AnyContains<T>(this IEnumerable<FilterList<T>> aLists, T obj)
-            {
-                return aLists.Any(x => x != null && x.AnyMatch(obj));
-            }
 
             // From single item.
             public static FilterResult GetFilterResult<T>(this IEnumerable<FilterList<T>> filterList, T item)
@@ -150,31 +150,10 @@ namespace BigAndSmall
                 return filterList.Select(x => x.GetFilterResult(item));
             }
 
-            // From List of items.
-            public static IEnumerable<FilterResult> GetFilterResultsFromItemList<T>(this IEnumerable<FilterList<T>> filterList, List<T> itemList)
-            {
-                return filterList.SelectMany(x => itemList.Select(y => x.GetFilterResult(y)));
-            }
+            // From List of items. A bit slow, don't use in performance critical places.
             public static FilterResult GetFilterResultFromItemList<T>(this IEnumerable<FilterList<T>> filterList, List<T> itemList)
             {
                 return filterList.SelectMany(x=> itemList.Select(y => x.GetFilterResult(y))).Fuse(); 
-            }
-
-            // Status Check.
-            public static bool IsLegal(this IEnumerable<FilterResult> results, bool legalIfEmpty = true)
-            {
-                if (!results.Any()) return legalIfEmpty;
-                return results.Fuse().Accepted();
-            }
-            public static bool IsExplicitlyLegal(this IEnumerable<FilterResult> results, bool legalIfEmpty = false)
-            {
-                if (!results.Any()) return legalIfEmpty;
-                return results.Fuse().ExplicitlyAllowed();
-            }
-            public static bool IsBanned(this IEnumerable<FilterResult> results, bool bannedIfEmpty = false)
-            {
-                if (!results.Any()) return bannedIfEmpty;
-                return results.Fuse().Denied();
             }
 
 

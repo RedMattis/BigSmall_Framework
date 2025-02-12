@@ -29,6 +29,7 @@ namespace BigAndSmall
 
     public class RecipeExtension : DefModExtension
     {
+        public bool? isSurgery = null;
         public PawnKindDef pawnKindDef = null;
         public GeneratedRecipeUser conditionalRecipe;
 
@@ -98,7 +99,7 @@ namespace BigAndSmall
             {
                 for (int i = 0; i < tDef.recipes.Count; i++)
                 {
-                    allHumanRecipes.Add(tDef.recipes[i]);
+                    allHumanRecipes.AddDistinct(tDef.recipes[i]);
                 }
             }
 
@@ -107,7 +108,7 @@ namespace BigAndSmall
             {
                 if (allDefsListForReading[j].recipeUsers != null && allDefsListForReading[j].recipeUsers.Contains(tDef))
                 {
-                    allHumanRecipes.Add(allDefsListForReading[j]);
+                    allHumanRecipes.AddDistinct(allDefsListForReading[j]);
                 }
             }
             return allHumanRecipes;
@@ -136,12 +137,20 @@ namespace BigAndSmall
             {
                 foreach (var recipe in humanRecipes.Where(x => !thing.recipes.Contains(x)))
                 {
-                    thing.recipes.Add(recipe);
-                    //Log.Message($"Patched recipe {recipe.defName} to include {thing.defName}");
+                    thing.recipes ??= [];
+                    thing.recipes.AddDistinct(recipe);
                 }
             }
 
             var allRecipes = DefDatabase<RecipeDef>.AllDefs;
+            foreach (var recipe in allRecipes)
+            {
+                var recipeExtensions = recipe.ExtensionsOnDef<RecipeExtension, RecipeDef>();
+                if (recipeExtensions.Any(x => x.isSurgery == true))
+                {
+                    recipe.isSurgeryCached = true;
+                }
+            }
 
             foreach ((ThingDef thing, List<RaceExtension> raceExts) in thingsWithRaceExtension.Where(x => x.raceExts.Any(r => r.SurgeryRecipes.AnyItems())))
             {
@@ -155,7 +164,14 @@ namespace BigAndSmall
                         .Where(x => x.GetModExtension<RecipeExtension>()?.ShouldAddToRace(thing, forceMechanical: forceMechanical) == true);
                     if (recipesFromRecipeExtension.Any())
                     {
-                        recipesFromRecipeExtension.Do(x => x.recipeUsers.Add(thing));
+                        foreach(var recipe in recipesFromRecipeExtension)
+                        {
+                            thing.recipes ??= [];
+                            thing.recipes.AddDistinct(recipe);
+                            //recipe.recipeUsers ??= [];
+                            //recipe.recipeUsers.AddDistinct(thing);
+                            recipe.isSurgeryCached = true;
+                        }
                     }
 
                     var recipesFromAll = allRecipes.Where(x => rFilter.GetFilterResult(x).ExplicitlyAllowed());
@@ -168,13 +184,12 @@ namespace BigAndSmall
 
             // Add recipes with complex conditions
             AddConditionalRecipes(allRecipes);
-
-            foreach (var thing in humanLikes)
+            foreach (var recipe in humanRecipes)
             {
-                foreach (var recipe in humanRecipes.Where(x => !thing.recipes.Contains(x)))
+                foreach (var thing in humanLikes.Where(x=>!x.recipes.Contains(recipe)))
                 {
-                    thing.recipes.Add(recipe);
-                    //Log.Message($"Patched recipe {recipe.defName} to include {thing.defName}");
+                    thing.recipes ??= [];
+                    thing.recipes.AddDistinct(recipe);
                 }
             }
 
@@ -237,23 +252,26 @@ namespace BigAndSmall
         private static void AddConditionalRecipes(IEnumerable<RecipeDef> allRecipes)
         {
             var raceThingListWithoutExt = raceThingList.Where(x => thingsWithRaceExtension.All(y => y.thing != x)).ToList();
-            foreach (var raceThing in raceThingListWithoutExt)
+            foreach (var recipe in allRecipes.Where(x => !x.ExtensionsOnDef<RecipeExtension, RecipeDef>().NullOrEmpty()))
             {
-                bool change = false;
-                foreach (var recipe in allRecipes.Where(x => !x.ExtensionsOnDef<RecipeExtension, RecipeDef>().NullOrEmpty()))
+                var recipeExtensions = recipe.ExtensionsOnDef<RecipeExtension, RecipeDef>();
+                if (recipeExtensions.Any(x => x.isSurgery == true))
                 {
-                    if (recipe.ExtensionsOnDef<RecipeExtension, RecipeDef>().Any(x => x.ShouldAddToRace(raceThing)))
+                    recipe.isSurgeryCached = true;
+                }
+
+                foreach (var raceThing in raceThingListWithoutExt)
+                {
+                    bool change = false;
+
+                    if (recipeExtensions.Any(x => x.ShouldAddToRace(raceThing)))
                     {
                         raceThing.recipes ??= [];
-                        raceThing.recipes.Add(recipe);
-                        change = true;
-                        recipe.recipeUsers.Add(raceThing);
+                        raceThing.recipes.AddDistinct(recipe);
+                        //recipe.recipeUsers ??= [];
+                        //recipe.recipeUsers.AddDistinct(raceThing);
                         //Log.Message($"Patched recipe {recipe.defName} to include {raceThing.defName}");
                     }
-                }
-                if (change)
-                {
-                    raceThing.recipes = raceThing.recipes.Distinct().ToList();
                 }
             }
         }
@@ -285,7 +303,7 @@ namespace BigAndSmall
                     if (!recipe.appliedOnFixedBodyParts.Contains(part))
                     {
 
-                        recipe.appliedOnFixedBodyParts.Add(part);
+                        recipe.appliedOnFixedBodyParts.AddDistinct(part);
                         //Log.Message($"Patched recipe {recipe.defName} to include {part.defName}");
                     }
                 }
@@ -299,7 +317,7 @@ namespace BigAndSmall
                         list = [];
                         partImportsFromDictReverse[part] = list;
                     }
-                    list.Add(kvp.Key);
+                    list.AddDistinct(kvp.Key);
                 }
             }
         }

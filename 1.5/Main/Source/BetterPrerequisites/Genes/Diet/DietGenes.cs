@@ -36,30 +36,32 @@ namespace BigAndSmall
 
     public static class FoodHelper
     {
-        public static List<FilterResult> GetFilterForFoodThing(this Thing food, BSCache cache)
+        public static FilterResult GetFilterForFoodThing(this Thing food, BSCache cache)
         {
             var catForFood = NewFoodCategory.foodCatagoryForFood.TryGetValue(food.def);
-            List<FilterResult> result = [];
+            FilterResult result = FilterResult.None;
             if (catForFood != null)
             {
                 if (cache.newFoodCatDeny?.Contains(catForFood) == true)
                 {
-                    result.Add(FilterResult.Deny);
+                    result.Fuse(FilterResult.Deny);
                 }
                 else if (cache.newFoodCatAllow?.Contains(catForFood) == true)
                 {
-                    result.Add(FilterResult.Allow);
+                    result.Fuse(FilterResult.Allow);
                 }
                 else
                 {
                     var r = catForFood.allowByDefault ? FilterResult.Allow : FilterResult.Deny;
-                    result.Add(catForFood.allowByDefault ? FilterResult.Allow : FilterResult.Deny);
+                    result.Fuse(catForFood.allowByDefault ? FilterResult.Allow : FilterResult.Deny);
                 }
             }
             if (cache.pawnDiet.NullOrEmpty() == false)
             {
-
-                result.AddRange(cache.pawnDiet.Select(diet => diet.FilterForFood(food)));
+                foreach (var diet in cache.pawnDiet)
+                {
+                    result.Fuse(diet.FilterForFood(food));
+                }
             }
             return result;
         }
@@ -145,6 +147,9 @@ namespace BigAndSmall
         public bool alwaysAcceptNutrientPaste = true;
         public bool alwaysAcceptNonIngestible = true;
 
+        public Dictionary<ThingDef, FilterResult> willAcceptCacheThingless = [];
+        public Dictionary<ThingDef, FilterResult> willAcceptCache = [];
+
         public static bool IsNutrientPaste(ThingDef foodDef) => foodDef.defName.Contains("NutrientPaste");
 
         public FilterResult AcceptFoodCategory(NewFoodCategory foodCategory)
@@ -158,6 +163,8 @@ namespace BigAndSmall
 
         public FilterResult FilterForFoodWithoutThing(ThingDef foodDef)
         {
+            if (willAcceptCacheThingless.TryGetValue(foodDef, out FilterResult cachedResult)) return cachedResult;
+
             FilterResult result = FilterForDef(foodDef);
             if (result.PriorityResult() || result.Denied()) return result;
             if (foodCategory != GeneralFoodCategory.Ignore && foodDef.IsIngestible && !foodDef.IsProcessedFood) // No point checking this on actual food items.
@@ -169,8 +176,9 @@ namespace BigAndSmall
                     GeneralFoodCategory.Nothing => false,
                     _ => true
                 };
-                return result.Fuse(foodCatagoryMatch ? FilterResult.Neutral : FilterResult.Deny);
+                result = result.Fuse(foodCatagoryMatch ? FilterResult.Neutral : FilterResult.Deny);
             }
+            willAcceptCacheThingless[foodDef] = result;
             return result;
         }
 
@@ -196,6 +204,7 @@ namespace BigAndSmall
 
         private FilterResult FilterForDef(ThingDef foodDef)
         {
+            if (willAcceptCache.TryGetValue(foodDef, out FilterResult cachedResult)) return cachedResult;
             FilterResult result = FilterResult.Neutral;
             if (alwaysAcceptNonIngestible && !foodDef.IsIngestible) return FilterResult.ForceAllow; // Item is not food, likely a serum or the like.
             if (alwaysAcceptProcessed && foodDef.IsProcessedFood) return FilterResult.ForceAllow; // Processed food (e.g. drugs) is always acceptable.
@@ -207,6 +216,7 @@ namespace BigAndSmall
                 var filterResult = foodFilters.GetFilterResult(foodDef);
                 result = result.Fuse(filterResult);
             }
+            willAcceptCache[foodDef] = result;
             return result;
         }
 
@@ -253,37 +263,50 @@ namespace BigAndSmall
             if (p.IsBloodfeeder() && food == ThingDefOf.HemogenPack) { return __result; }
             if (HumanoidPawnScaler.GetCacheUltraSpeed(p) is BSCache cache)
             {
+                if (cache.willEatDef.TryGetValue(food, out bool cachedResult))
+                {
+                    __result = cachedResult;
+                    return cachedResult;
+                }
+
                 if (p?.DevelopmentalStage == DevelopmentalStage.Baby)  // Yum yum babies can eat chemfuel-based food for simplicity's sake.
                 {
                     return true;
                 }
                 var catForFood = NewFoodCategory.foodCatagoryForFood.TryGetValue(food, null);
-                List<FilterResult> result = [];
+                FilterResult result = FilterResult.None;
                 if (catForFood != null)
                 {
                     if (cache.newFoodCatDeny?.Contains(catForFood) == true)
                     {
-                        result.Add(FilterResult.Deny);
+                        result.Fuse(FilterResult.Deny);
                     }
                     else if (cache.newFoodCatAllow?.Contains(catForFood) == true)
                     {
-                        result.Add(FilterResult.Allow);
+                        result.Fuse(FilterResult.Allow);
                     }
                     else
                     {
-                        result.Add(catForFood.allowByDefault ? FilterResult.Allow : FilterResult.Deny);
+                        result.Fuse(catForFood.allowByDefault ? FilterResult.Allow : FilterResult.Deny);
                     }
                 }
                 if (cache.pawnDiet.NullOrEmpty() == false)
                 {
-                    result.AddRange(cache.pawnDiet.Select(diet => diet.FilterForFoodWithoutThing(food)));
+                    foreach (var diet in cache.pawnDiet)
+                    {
+                        result.Fuse(diet.FilterForFoodWithoutThing(food));
+                    }
                 }
 
-                var resultTag = result.Fuse();
-                if (resultTag.Denied())
+                if (result.Denied())
                 {
+                    cache.willEatDef[food] = false;
                     __result = false;
                     return false;
+                }
+                else
+                {
+                    cache.willEatDef[food] = true;
                 }
             }
             return true;
@@ -307,15 +330,20 @@ namespace BigAndSmall
             // Ignore unspawned pawns, it just gets messy because of Ludeon hardcoding.
             if (p?.Spawned == true && HumanoidPawnScaler.GetCacheUltraSpeed(p) is BSCache cache && cache.isHumanlike)
             {
+                if (cache.willEatDef.TryGetValue(food.def, out bool cachedResult))
+                {
+                    __result = cachedResult;
+                    skipThingDefCheck = true;
+                    return cachedResult;
+                }
                 if (p?.DevelopmentalStage == DevelopmentalStage.Baby)
                 {
                     skipThingDefCheck = false;
                     return true;
                 }
-                List<FilterResult> result = food.GetFilterForFoodThing(cache);
+                FilterResult result = food.GetFilterForFoodThing(cache);
 
-                var resultTag = result.Fuse();
-                if (resultTag.Denied())
+                if (result.Denied())
                 {
                     __result = false;
                     skipThingDefCheck = false;
@@ -368,12 +396,11 @@ namespace BigAndSmall
                     return;
                 }
                 var food = __instance;
-                List<FilterResult> result = food.GetFilterForFoodThing(cache);
+                FilterResult result = food.GetFilterForFoodThing(cache);
 
                 if (ingester.IsBloodfeeder() && __instance?.def == ThingDefOf.HemogenPack) { return; }
 
-                var resultTag = result.Fuse();
-                if (resultTag.Denied() && ingester.Faction == Faction.OfPlayerSilentFail)
+                if (result.Denied() && ingester.Faction == Faction.OfPlayerSilentFail)
                 {
                     __result = 0;
                     Log.Warning($"[BigAndSmall] {ingester?.Name} ate {__instance?.def?.defName} which their gene-diet requirements does not permit" +

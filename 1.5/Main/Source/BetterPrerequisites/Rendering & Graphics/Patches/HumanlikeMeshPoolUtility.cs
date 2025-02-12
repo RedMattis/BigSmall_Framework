@@ -4,6 +4,7 @@ using UnityEngine;
 using Verse;
 using RimWorld;
 using static Verse.PawnRenderer;
+using System.Runtime;
 
 namespace BigAndSmall
 {
@@ -80,7 +81,8 @@ namespace BigAndSmall
                     var posture = ___pawn.GetPosture();
                     threadStaticCache.cachingDisabled = (!disableCache && BigSmallMod.settings.disableTextureCaching) &&
                         (threadStaticCache.cache.totalSizeOffset > 0 || threadStaticCache.cache.scaleMultiplier.linear > 1 || threadStaticCache.cache.renderCacheOff);
-                    threadStaticCache.doOffset = BigSmallMod.settings.offsetBodyPos && ___pawn.GetPosture() == PawnPosture.Standing && ___pawn.RaceProps?.Humanlike == true;
+                    threadStaticCache.doOffset = BigSmallMod.settings.offsetBodyPos && ___pawn.GetPosture() == PawnPosture.Standing &&
+                        (BigSmallMod.settings.offsetAnimalBodyPos || ___pawn.RaceProps?.Humanlike == true);
                     threadStaticCache.doComplexHeadOffset = threadStaticCache.cache.complexHeadOffsets != null;
                     threadStaticCache.doComplexBodyOffset = threadStaticCache.cache.complexBodyOffsets != null;
                     threadStaticCache.rotation = rotOverride ?? ___pawn.Rotation;

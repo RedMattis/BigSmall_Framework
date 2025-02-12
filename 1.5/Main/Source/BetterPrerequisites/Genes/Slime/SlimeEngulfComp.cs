@@ -86,6 +86,10 @@ namespace BigAndSmall
                 Pawn tPawn = target.Pawn;
                 if (tPawn != null)
                 {
+                    foreach (int i in Enumerable.Range(0, Rand.Range(2, 6)))
+                    {
+                        FleckMaker.ThrowDustPuff(target.Cell.ToVector3ShiftedWithAltitude(AltitudeLayer.MoteLow), parent.pawn.Map, 1.5f);
+                    }
                     DoEngulf(parent.pawn, tPawn);
                 }
             }
@@ -99,7 +103,7 @@ namespace BigAndSmall
 
     public class CompAbilityEffect_SlimeEngluf : CompAbilityEffect_SlimeEngluf_Abstract
     {
-        public override CompProperties_AbilityEngluf_Abstract Props => (CompProperties_AbilityEnglufJump)props;
+        public override CompProperties_AbilityEngluf_Abstract Props => (CompProperties_AbilityEngluf)props;
         
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
@@ -107,13 +111,12 @@ namespace BigAndSmall
             Pawn tPawn = target.Pawn;
             if (tPawn != null)
             {
+                foreach (int i in Enumerable.Range(0, Rand.Range(2, 6)))
+                {
+                    FleckMaker.ThrowDustPuff(target.Cell.ToVector3ShiftedWithAltitude(AltitudeLayer.MoteLow), parent.pawn.Map, 1.2f);
+                }
                 DoEngulf(parent.pawn, tPawn);
             }
-        }
-
-        public override bool CanApplyOn(LocalTargetInfo origin, LocalTargetInfo target)
-        {
-            return Valid(target);
         }
     }
 

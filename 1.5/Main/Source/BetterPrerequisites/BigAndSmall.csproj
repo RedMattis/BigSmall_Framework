@@ -100,6 +100,7 @@
   <ItemGroup>
     <Compile Include="Abillities\MeleeAttackAbility.cs" />
     <Compile Include="Cache\CacheAccessProps.cs" />
+    <Compile Include="Cache\CacheVariables.cs" />
     <Compile Include="Debugging\DebugActions.cs" />
     <Compile Include="BSDefLibrary.cs" />
     <Compile Include="Debugging\GeneDebugMenu.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="HotReloadExtension.cs" />
     <Compile Include="Items\ApparelRestrictions.cs" />
     <Compile Include="Items\EquipNotifyPatches.cs" />
+    <Compile Include="Items\Trade and Loot\StockGenerator.cs" />
     <Compile Include="ModExtensions\SmartExtension.cs" />
     <Compile Include="ModExtensions\ModExtHelper.cs" />
     <Compile Include="ModPatches\MiscCompatibility\HumanoidAlienRaces.cs" />
@@ -138,6 +140,7 @@
     <Compile Include="Rendering &amp; Graphics\Patches\PawnRenderNode_Head_Patches.cs" />
     <Compile Include="Rendering &amp; Graphics\GraphicsHelper.cs" />
     <Compile Include="Rendering &amp; Graphics\BSDrawData.cs" />
+    <Compile Include="Rendering &amp; Graphics\RenderWorkers\FAShouldRender.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderWorkers\PawnRenderNodeWorker_Various.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\PawnRenderNode_HSVHair.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\PawnRenderNode_SimpleSwitches.cs" />
@@ -285,12 +288,12 @@
     <Publicize Include="Assembly-CSharp:Verse.PawnRenderer+PreRenderResults" />
     <Publicize Include="Assembly-CSharp:Verse.DebugToolsSpawning.PostPawnSpawn" />
     <Publicize Include="Assembly-CSharp:Verse.RecipeDef.ingredients" />
+    <Publicize Include="Assembly-CSharp:Verse.RecipeDef.isSurgeryCached" />
     <Publicize Include="Assembly-CSharp:Verse.ThingFilter.allowedDefs" />
     <Publicize Include="Assembly-CSharp:Verse.ThingFilter.thingDefs" />
     <Publicize Include="Assembly-CSharp:Verse.ThingDef.verbs" />
     <Publicize Include="Assembly-CSharp:RimWorld.ThingDefGenerator_Corpses.CalculateMarketValue" />
     <Publicize Include="Assembly-CSharp:RimWorld.ThingDefGenerator_Corpses.GenerateCorpseDef" />
-    
     <Publicize Include="Assembly-CSharp:Verse.BodyDef.cachedAllParts" />
     <Publicize Include="Assembly-CSharp:Verse.BodyDef.CacheDataRecursive" />
   </ItemGroup>

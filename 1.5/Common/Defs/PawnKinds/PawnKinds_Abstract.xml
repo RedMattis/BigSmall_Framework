@@ -69,6 +69,7 @@
     <weaponMoney>90~200</weaponMoney>
     <initialWillRange>1~3</initialWillRange>
     <techHediffsMoney>50~100</techHediffsMoney>
+    <apparelIgnorePollution>true</apparelIgnorePollution>
 
     <weaponTags> <li>NeolithicMeleeBasic</li> <li>MedievalMeleeDecent</li> </weaponTags>
     <apparelTags> <li>Neolithic</li> <li>MedievalBasic</li> <li>BS_MedievalBasic</li> </apparelTags>
@@ -123,6 +124,10 @@
     <weaponMoney>150~300</weaponMoney>
     <initialWillRange>2~4</initialWillRange>
     <techHediffsMoney>100~500</techHediffsMoney>
+    <apparelDisallowTags>
+      <li>MedievalLevy</li>
+      <li>MedievalWorker</li>
+    </apparelDisallowTags>
 
     <weaponTags> <li>MedievalMeleeDecent</li> <li>MedievalMeleeAdvanced</li> </weaponTags>
     <apparelTags> <li>BS_MedievalBasic</li> <li>MedievalMilitary</li> <li>MedievalArmorDecent</li> <li>MedievalArmorElite</li> </apparelTags>

@@ -30,10 +30,9 @@
     <skillRequirements>
       <Crafting>10</Crafting>
     </skillRequirements>
-    <recipeUsers>
-      <!-- Literally just here so it gets flagged as surgery -->
+    <!-- <recipeUsers>
       <li>Mech_Scyther</li>
-    </recipeUsers>
+    </recipeUsers> -->
     <researchPrerequisite>
       <li>Prosthetics</li>
     </researchPrerequisite>

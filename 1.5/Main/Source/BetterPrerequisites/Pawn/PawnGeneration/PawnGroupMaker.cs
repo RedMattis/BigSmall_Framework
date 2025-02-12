@@ -225,9 +225,18 @@ namespace BigAndSmall
 
                     if (countToSet > 0)
                     {
-                        Hediff_Level hediff_Level = HediffMaker.MakeHediff(HediffDefOf.PsychicAmplifier, member, member.health.hediffSet.GetBrain()) as Hediff_Level;
-                        member.health.AddHediff(hediff_Level);
-                        hediff_Level.SetLevelTo(countToSet);
+                        // Check if they have it already.
+                        if (member.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.PsychicAmplifier) is Hediff_Level hediff_Level)
+                        {
+                            int level = hediff_Level.level;
+                            hediff_Level.SetLevelTo(countToSet + level);
+                        }
+                        else
+                        {
+                            hediff_Level = HediffMaker.MakeHediff(HediffDefOf.PsychicAmplifier, member, member.health.hediffSet.GetBrain()) as Hediff_Level;
+                            member.health.AddHediff(hediff_Level);
+                            hediff_Level.SetLevelTo(countToSet);
+                        }
                     }
                 }
             }

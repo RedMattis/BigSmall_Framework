@@ -18,7 +18,8 @@
   <BS_NutritionBurnExplain>Nutrition Burn..</BS_NutritionBurnExplain>
   <BS_HungerMultiplierField>Size effect on Hunger</BS_HungerMultiplierField>
   <BS_Rendering>Rendering</BS_Rendering>
-  <BS_SizeOffsetPawn>Size offsets pawn position</BS_SizeOffsetPawn>
+  <BS_SizeOffsetPawn>Size offsets humanoids position</BS_SizeOffsetPawn>
+  <BS_SizeOffsetAnimalPawn>Size offsets animals position.</BS_SizeOffsetAnimalPawn>
   <BS_DisabeVFCachine>Disable Texture Caching (fixes cropped pawns):</BS_DisabeVFCachine>
   <BS_ScalePawnDefault>Scale Pawn. Default values are 1.</BS_ScalePawnDefault>
   <BS_ScaleLargerPawns>Scale Larger Pawns </BS_ScaleLargerPawns>

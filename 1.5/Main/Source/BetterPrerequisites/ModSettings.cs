@@ -127,6 +127,7 @@ namespace BigAndSmall
 
             listStd.Label("BS_Rendering".Translate().AsTipTitle());
             CreateSettingCheckbox(listStd, "BS_SizeOffsetPawn".Translate(), ref settings.offsetBodyPos);
+            CreateSettingCheckbox(listStd, "BS_SizeOffsetAnimalPawn".Translate(), ref settings.offsetAnimalBodyPos);
             CreateSettingCheckbox(listStd, "BS_DisabeVFCachine".Translate(), ref settings.disableTextureCaching);
             listStd.Label("BS_ScalePawnDefault".Translate());
             CreateSettingsSlider(listStd, "BS_ScaleLargerPawns".Translate(), ref settings.visualLargerMult, min: 0.05f, max: 20f, (f) => $"{f:F2}");
@@ -216,6 +217,9 @@ namespace BigAndSmall
         private static readonly bool defaultOffsetBodyPos = true;
         public bool offsetBodyPos = defaultOffsetBodyPos;
 
+        private static readonly bool defaultOffsetAnimalBodyPos = true;
+        public bool offsetAnimalBodyPos = defaultOffsetAnimalBodyPos;
+
         private static readonly bool defaultPatchPlayerFactions = true;
         public bool patchPlayerFactions = defaultPatchPlayerFactions;
 
@@ -260,6 +264,7 @@ namespace BigAndSmall
             Scribe_Values.Look(ref realTimeUpdates, "realTimeUpdates", defaultRealTimeUpdates);
             //Scribe_Values.Look(ref offsetBodyPos, "offsetBodyPos_EXPERIMENTAL", defaultOffsetBodyPos);
             Scribe_Values.Look(ref offsetBodyPos, "offsetBodyPos", defaultOffsetBodyPos);
+            Scribe_Values.Look(ref offsetAnimalBodyPos, "offsetAnimalBodyPos", defaultOffsetAnimalBodyPos);
             Scribe_Values.Look(ref patchPlayerFactions, "patchPlayerFactions", defaultPatchPlayerFactions);
             Scribe_Values.Look(ref preventUndead, "preventUndead", defaultPreventUndead);
             Scribe_Values.Look(ref useSciFiNames, "useSciFiNames", defaultUseSciFiNaming);

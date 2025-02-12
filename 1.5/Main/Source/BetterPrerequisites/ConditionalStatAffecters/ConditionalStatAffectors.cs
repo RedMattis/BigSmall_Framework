@@ -38,7 +38,7 @@ namespace BigAndSmall
             {
                 if (FastAcccess.GetCache(pawn) is BSCache cache)
                 {
-                    if (cache.alcoholmAmount > 0.0f)
+                    if (cache.alcoholAmount > 0.0f)
                     {
                         return true;
                     }
@@ -58,7 +58,7 @@ namespace BigAndSmall
             {
                 if (FastAcccess.GetCache(pawn) is BSCache cache)
                 {
-                    if (cache.alcoholmAmount >= 0.25f)
+                    if (cache.alcoholAmount >= 0.25f)
                     {
                         return true;
                     }
@@ -78,7 +78,7 @@ namespace BigAndSmall
             {
                 if (FastAcccess.GetCache(pawn) is BSCache cache)
                 {
-                    if (cache.alcoholmAmount >= 0.4f)
+                    if (cache.alcoholAmount >= 0.4f)
                     {
                         return true;
                     }

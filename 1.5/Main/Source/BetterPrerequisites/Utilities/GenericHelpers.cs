@@ -44,6 +44,17 @@ namespace BigAndSmall
             }
         }
 
+        public static void AddDistinctRange<T>(this IList<T> list, IEnumerable<T> items)
+        {
+            foreach (var item in items)
+            {
+                if (!list.Contains(item))
+                {
+                    list.Add(item);
+                }
+            }
+        }
+
         // Runs Where and Select in sequence.
         //public static IEnumerable<TResult> SelectWhere<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector)
         //{
