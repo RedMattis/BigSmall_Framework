@@ -1,11 +1,11 @@
 <Patch>
 <!-- TESTING. See if I can get this to run without making them HAR races. -->
-  <!-- <Operation Class="PatchOperationAttributeSet">
+  <Operation Class="PatchOperationAttributeSet">
     <xpath>Defs/ThingDef[@BS_Alt="ThingDef_AlienRace" or defName="BS_Slime" or defName="BS_Sludge" or defName="BS_SpiderPersonRace" or defName="BS_Marlith" or defName="BS_Naga" or defName="BS_GluttonRace" or defName="BS_InsectoidHumanoid_FourArmed" or defName="BS_HumanFouramed"]</xpath>
     <success>Always</success>
     <attribute>Class</attribute>
     <value>AlienRace.ThingDef_AlienRace</value>
-  </Operation> -->
+  </Operation>
 
   <Operation Class="PatchOperationAdd">
     <xpath>Defs/ThingDef[@BS_Alt="ThingDef_AlienRace" or defName="BS_Slime" or defName="BS_Sludge" or defName="BS_SpiderPersonRace" or defName="BS_Marlith" or defName="BS_Naga" or defName="BS_GluttonRace" or defName="BS_InsectoidHumanoid_FourArmed" or defName="BS_HumanFouramed"]</xpath>
