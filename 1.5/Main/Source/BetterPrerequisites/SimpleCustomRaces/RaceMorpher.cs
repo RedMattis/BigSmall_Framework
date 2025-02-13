@@ -334,8 +334,9 @@ namespace BigAndSmall
                     if (comp.GetType().Name.Contains("AlienComp"))
                     {
                         Log.Message($"[Big and Small] Removed AlienComp from {pawn.def.defName} due to (no longer?) being a HAR race.");
-                        pawn.AllComps.Remove(comp);
-                        comp.parent = null;
+                        Log.Message($"[Big and Small] Actually for testing purposes {pawn.def.defName} gets to keep it.");
+                        //pawn.AllComps.Remove(comp);
+                        //comp.parent = null;
                     }
                 }
             }
