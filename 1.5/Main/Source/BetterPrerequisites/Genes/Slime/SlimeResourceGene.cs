@@ -123,8 +123,10 @@ namespace BigAndSmall
                 SlimeHediff.Severity = Mathf.Clamp(Value, 0.05f, 9999);
 
                 float moveTowards;
+                bool hasFoodNeed = pawn?.needs?.food != null;
+                if (!hasFoodNeed) { moveTowards = targetValue; } // Probably a CreepJoiner.
                 // Check if pawn has malnutrition. If so shrink.
-                if (pawn?.health?.hediffSet?.HasHediff(HediffDefOf.Malnutrition) ?? false)
+                else if (pawn?.health?.hediffSet?.HasHediff(HediffDefOf.Malnutrition) ?? false)
                 {
                     moveTowards = 0f;
                 }
@@ -137,7 +139,6 @@ namespace BigAndSmall
                 {
                     moveTowards = targetValue;
                 }
-                else if (pawn?.needs?.food == null) { moveTowards = targetValue; } // Probably a CreepJoiner.
                 else
                 {
                     return;
@@ -172,11 +173,11 @@ namespace BigAndSmall
                 {
                     // Pass
                 }
-                else if (newValue < Value)
+                else if (newValue < Value && hasFoodNeed)
                 {
                     pawn.needs.food.CurLevelPercentage += 0.20f;
                 }
-                else if (newValue > Value)
+                else if (newValue > Value && hasFoodNeed)
                 {
                     // If value change was positive, drain the hunger by 75%, leaving at least 10%
                     pawn.needs.food.CurLevelPercentage = Mathf.Max(0.10f, pawn.needs.food.CurLevelPercentage - 0.50f);

@@ -33,7 +33,17 @@
 		<li>erdelf.humanoidalienraces</li>
 		<li>oskarpotocki.vanillafactionsexpanded.core</li>
 	</loadBefore>
+	<incompatibleWith>
+		<li>erdelf.HumanoidAlienRaces</li>
+	</incompatibleWith>
 	
 	<description>This is a framework for adding custom races and greatly extending the ability to do things with Genes and Hediffs.
-The mod is frequently performance-tested and aims to bring bliss even to the Performance Junkies over at Dubs Discord. If you think you've encountered any performance issues during regular play related to this mod please feel free to inform me.</description>
+The mod is frequently performance-tested and aims to bring bliss even to the Performance Junkies over at Dubs Discord. If you think you've encountered any performance issues during regular play related to this mod please feel free to inform me.
+
+
+Currently incompatible with HAR. A fix is being worked on, but the combination of HAR disliking any generated Races and also expecting everything to be its own Alien-Race is a massive pain to work around.
+
+The current HAR deal-breaker is tattoos. If a pawn does not have tattoos it seems to work fine.
+</description>
+
 </ModMetaData>
