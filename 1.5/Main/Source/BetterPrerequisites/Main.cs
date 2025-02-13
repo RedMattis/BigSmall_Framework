@@ -35,6 +35,10 @@ namespace BigAndSmall
             HARCompat.SetupHARThingsIfHARIsActive();
 
 
+            if (NalsToggles.FALoaded)
+            {
+
+            }
         }
 
         public static void RunBeforeGenerateImpliedDefs(bool hotReload)

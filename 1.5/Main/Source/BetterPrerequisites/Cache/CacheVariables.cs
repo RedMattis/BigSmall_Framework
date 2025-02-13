@@ -146,6 +146,7 @@ namespace BigAndSmall
         public int? randomPickHairColor = null;
 
         public bool facialAnimationDisabled = false;
+        public bool facialAnimationModified = false;
         public bool facialAnimationDisabled_Transform = false; // Used for the ColorAndFur Hediff.
 
         public bool disableLookChangeDesired = false;

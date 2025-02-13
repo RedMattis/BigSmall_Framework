@@ -342,7 +342,7 @@ namespace BigAndSmall
             else if (oldDefType != pawn.def.GetType() && pawn.def.GetType().Name.Contains("ThingDef_AlienRace"))
             {
                 Log.Message($"[Big and Small]: Transformed {pawn} from {oldDefType} to {pawn.def.GetType()}.");
-               
+
                 Log.Warning($"[Big and Small]: Hey LISTEN!\n" +
                     $"----------------------------------------------------------------\n" +
                     $"You've probably just transformed a non-HAR race into a HAR race.\n" +
@@ -361,23 +361,7 @@ namespace BigAndSmall
                     $"HAR不喜欢这样，你可能需要现在保存然后加载保存。这应该会让HAR再次高兴。\n" +
                     $"也许有一天我会修复这个问题，但现在HAR不喜欢任何即时生成的东西，所以你只能绕过它。" +
                     $"----------------------------------------------------------------\n");
-                Log.Message($"[Big and Small]: Hej LYSSNA!\n" +
-                    $"----------------------------------------------------------------\n" +
-                    $"Du har förmodligen precis förvandlat en icke-HAR-ras till en HAR-ras.\n" +
-                    $"HAR gillar inte detta och du behöver förmodligen spara nu och sedan ladda sparningen. Det borde göra HAR glad igen.\n" +
-                    $"Kanske fixar jag detta en dag, men just nu är HAR inte glade av något som genereras på flygande fot så du måste arbeta runt det." +
-                    $"----------------------------------------------------------------\n");
-                Log.Message($"[Stårt å Leetet]: Hörrödeup, VAH!\n" +
-                    $"----------------------------------------------------------------\n" +
-                    $"Hareö fö böveleen precis gått å fövanla en därringa icke-HAAR-ras te en HAAR-ras?\n" +
-                    $"Å nu få du spar ne skiiten åh så lada hela klabbet egen. Ådså lugna fanskapat se kanche litä.\n" +
-                    $"Kanche fixa ja de nån gång, men vettuuu fan tis dess fåru löse u på de ege vis!" +
-                    $"----------------------------------------------------------------\n");
             }
-            //pawn.ageTracker = new Pawn_AgeTracker(pawn);
-
-            //pawn.ageTracker.RecalculateLifeStageIndex
-            // Access cachedLifeStageIndex
 
             int lifeStageIndex = -1;
 

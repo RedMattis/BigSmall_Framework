@@ -555,8 +555,10 @@ namespace BigAndSmall
 
 
                 //facialAnimationDisabled = activeGenes.Any(x => x.def == BSDefs.BS_FacialAnimDisabled);
-                facialAnimationDisabled = allPawnExt.Any(x => x.disableFacialAnimations || x.facialDisabler != null)
+                facialAnimationDisabled = allPawnExt.Any(x => x.disableFacialAnimations)
                     || facialAnimationDisabled_Transform;
+
+
 
                 // Add together bodyPosOffset from GeneExtension.
                 float bodyPosOffset = allPawnExt.Sum(x => x.bodyPosOffset);
@@ -691,6 +693,7 @@ namespace BigAndSmall
             }
             headMaterial = null; bodyMaterial = null;
             headGraphicPath = null; bodyGraphicPath = null;
+            HashSet<PawnExtension> allPawnExt = [.. otherExts, .. raceExts];
 
             //apparentGender = allPawnExt.FirstOrDefault(x => x.ApparentGender != null)?.ApparentGender;
             CalculateGenderAndApparentGender([..otherExts, ..raceExts]);
@@ -712,7 +715,6 @@ namespace BigAndSmall
                 if (headGfxExt.headMaterial != null) headMaterial = headGfxExt.headMaterial;
                 headDessicatedGraphicPath = headGfxExt.GetDessicatedFromHeadPath(headGraphicPath);
             }
-
 
             var extensionsWithBodyPaths = otherExts.Where(x => x.bodyPaths.ValidFor(this));
             extensionsWithBodyPaths = extensionsWithBodyPaths.EnumerableNullOrEmpty() ? raceExts.Where(x => x.bodyPaths.ValidFor(this)) : extensionsWithBodyPaths;
@@ -741,6 +743,14 @@ namespace BigAndSmall
             if (this != defaultCache && pawn?.story?.bodyType != null && pawn?.story?.headType != null)
             {
                 GenderMethods.UpdateBodyHeadAndBeardPostGenderChange(this);
+            }
+
+            // Stay on if it was on before.
+            var faDisabler = allPawnExt.Where(x => x.facialDisabler != null).Select(x => x.facialDisabler);
+            facialAnimationModified =  faDisabler.Any();
+            if (faDisabler.Any())
+            {
+                NalsToggles.ToggleNalsStuff(pawn, faDisabler.First());
             }
         }
 
@@ -916,6 +926,13 @@ namespace BigAndSmall
                 throw;
             }
             pawn.skills?.DirtyAptitudes();
+
+            var faDisabler = allPawnExts.Where(x => x.facialDisabler != null).Select(x => x.facialDisabler);
+            facialAnimationModified = faDisabler.Any();
+            if (faDisabler.Any())
+            {
+                NalsToggles.ToggleNalsStuff(pawn, faDisabler.First());
+            }
         }
 
         [Unsaved]

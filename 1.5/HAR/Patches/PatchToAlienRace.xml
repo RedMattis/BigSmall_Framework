@@ -14,7 +14,7 @@
     </value>
   </Operation>
 
-  <Operation Class="PatchOperationAttributeSet">
+  <!-- <Operation Class="PatchOperationAttributeSet">
     <xpath>Defs/ThingDef[@BS_Alt="ThingDef_AlienRace" or defName="BS_Slime" or defName="BS_Sludge" or defName="BS_SpiderPersonRace" or defName="BS_Marlith" or defName="BS_Naga" or defName="BS_GluttonRace" or defName="BS_InsectoidHumanoid_FourArmed" or defName="BS_HumanFouramed"]</xpath>
     <attribute>Class</attribute>
     <value>ThingDef</value>
@@ -22,10 +22,9 @@
 
   <Operation Class="PatchOperationAdd">
     <xpath>Defs/ThingDef[@BS_Alt="ThingDef_AlienRace" or defName="BS_Slime" or defName="BS_Sludge" or defName="BS_SpiderPersonRace" or defName="BS_Marlith" or defName="BS_Naga" or defName="BS_GluttonRace" or defName="BS_InsectoidHumanoid_FourArmed" or defName="BS_HumanFouramed"]</xpath>
-    <!-- <success>Always</success> -->
     <value>
       <thingClass>Pawn</thingClass>
     </value>
-  </Operation>
+  </Operation> -->
    
 </Patch>
