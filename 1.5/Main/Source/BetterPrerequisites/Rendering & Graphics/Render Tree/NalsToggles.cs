@@ -13,11 +13,19 @@ using static HarmonyLib.Code;
 
 namespace BigAndSmall
 {
-    [HarmonyPatch]
     public static class NalsToggles
     {
         private static bool? faLoaded = null;
         public static bool FALoaded => faLoaded ??= ModsConfig.IsActive("Nals.FacialAnimation");
+        public static void ApplyNLPatches(Harmony harmony)
+        {
+            harmony.Patch(
+                AccessTools.PropertyGetter(typeof(PawnRenderNode), nameof(PawnRenderNode.DebugEnabled)),
+                transpiler: new HarmonyMethod(DebugEnabledTranspiler));
+            harmony.Patch(
+                AccessTools.Method(typeof(PawnRenderTree), "InitializeAncestors"),
+                postfix: new HarmonyMethod(InitializeAncestorsPostfix));
+        }
 
         private static PawnRenderNode GetHead(Pawn pawn)
         {
@@ -29,15 +37,12 @@ namespace BigAndSmall
 
         public static void ToggleNalsStuff(Pawn pawn, FacialAnimDisabler options)
         {
-            return;
             if (FALoaded == true && GetHead(pawn) is PawnRenderNode head && !head.children.NullOrEmpty())
             {
                 foreach (var child in head.children)
                 {
-                    Log.Message($"Child: {child.Worker.GetType()}");
                     if (child.Worker.GetType().ToString().Contains("NLFacial"))
                     {
-                        Log.Message($"Child: {child}");
                         if (child.ToString().Contains("HeadControllerComp"))
                         {
                             child.debugEnabled = !options.headName.Contains("NOT_");
@@ -73,21 +78,25 @@ namespace BigAndSmall
             }
         }
 
-        // Experimental.
-
-        //[HarmonyTranspiler]
-        //[HarmonyPatch(typeof(PawnRenderNode), nameof(PawnRenderNode.DebugEnabled), MethodType.Getter)]
-        //public static IEnumerable<CodeInstruction> DebugEnabledTranspiler(IEnumerable<CodeInstruction> instructions)
-        //{
-        //    var codes = instructions.ToList();
-        //    // Just insert the instructions right at the start, this should render the rest of the method useless unless someone else patches it.
-        //    codes.InsertRange(0,
-        //    [
-        //        new CodeInstruction(OpCodes.Ldarg_0),
-        //        new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PawnRenderNode), nameof(PawnRenderNode.debugEnabled))),
-        //        new CodeInstruction(OpCodes.Ret)
-        //    ]);
-        //    return codes.AsEnumerable();
-        //}
+        public static IEnumerable<CodeInstruction> DebugEnabledTranspiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+            // Just insert the instructions right at the start, this should render the rest of the method useless unless someone else patches it.
+            codes.InsertRange(0,
+            [
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PawnRenderNode), nameof(PawnRenderNode.debugEnabled))),
+                new CodeInstruction(OpCodes.Ret)
+            ]);
+            return codes.AsEnumerable();
+        }
+        public static void InitializeAncestorsPostfix(PawnRenderTree __instance)
+        {
+            if (HumanoidPawnScaler.GetCacheUltraSpeed(__instance.pawn, canRegenerate: false)
+                 is BSCache cache && cache.facialAnimDisabler is FacialAnimDisabler fa)
+            {
+                ToggleNalsStuff(__instance.pawn, fa);
+            }
+        }
     }
 }

@@ -45,7 +45,7 @@ namespace BigAndSmall
             //    return false;
             //}
 
-            if (enemy.BodySize > parent.pawn.BodySize * Props.relativeSizeThreshold)
+            if (enemy.BodySize > parent.pawn.BodySize * Props.GetSizeThreshold(parent.pawn))
             {
                 if (throwMessages)
                 {

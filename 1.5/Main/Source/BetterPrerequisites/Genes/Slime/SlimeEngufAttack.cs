@@ -34,13 +34,13 @@ namespace BigAndSmall
         public static float PowScale(float bodySize) => Mathf.Pow(bodySize, 1.4f);
 
         public float MaxCapacity { get => baseCapacity * PowScale(pawn.BodySize); }
-        public float Fullness => TotalMass / PowScale(pawn.BodySize);
+        public float Fullness => TotalMass / MaxCapacity;
 
         public bool HealsInner => healPerDay > -0.5 || regularHealingMultiplier > -0.5f;
 
         public float TotalMass =>
             innerContainer.Where(x => x is Pawn).Sum(x => PowScale(((Pawn)x).BodySize)) +
-            innerContainer.Where(x => x is Corpse).Sum(x => PowScale(((Corpse)x).InnerPawn.BodySize));
+            innerContainer.Where(x => x is Corpse).Sum(x => PowScale(((Corpse)x).InnerPawn.BodySize*0.5f));
 
         public Hediff EnchumberanceHediff
         {
@@ -227,6 +227,7 @@ namespace BigAndSmall
                     }
                 }
                 bool ejectDownedPrisoner = pawn.health.Downed && pawn.IsPrisonerOfColony;
+                bool inSeriousPain = pawn?.health?.hediffSet?.PainTotal > 0.5f;
                 bool stomachIntact = true;
                 bool torsoIntact = true;
 
@@ -258,7 +259,8 @@ namespace BigAndSmall
                 }
 
                 // If a pawn can't vomit they will take damage to the torso instead. If the torso is destroyed, the contents will spill out.
-                if (ejectDownedPrisoner || (digestionEffiency < 0.51f || stomachIntact == false) && canEject || !torsoIntact || Fullness > 1.25f)
+                if (ejectDownedPrisoner || (inSeriousPain || digestionEffiency < 0.51f || stomachIntact == false)
+                    && canEject || !torsoIntact || Fullness > 1.4f)
                 {
                     // Remove this Hediff
                     pawn.health.RemoveHediff(this);
@@ -471,32 +473,21 @@ namespace BigAndSmall
         {
             var dmgType = damageDef;
             // 20% chance of crushing just so we don't end up with something acid-proof in there forever.
-            if (Rand.Chance(0.20f))
-            {
-                dmgType = DamageDefOf.Crush;
-            }
-
+            if (Rand.Chance(0.20f)) { dmgType = DamageDefOf.Crush; }
 
             bool guilty = true;
 
             float damageAmount = internalBaseDamage * digestionEffiency * globalDamageMultiplier;
 
-            // By frequent reqest, increasing damage if the pawn is much larger than the target. I question the realism of
-            // this, but it's a game and it probably plays better. Using very low scaling because the main purpose of this
-            // is still to be used by enemies to force players to attack them to get their allies back, not to kill stuff.
             if (thing is Pawn innerPawn)
             {
-                // Check if the thing is a baby. If so the attacker is not guilty. Babies can't report crimes. (Realistically enemy babies don't show up either)
-                if (innerPawn.ageTracker.CurLifeStageIndex == 0)
-                {
-                    guilty = false;
-                }
+                if (innerPawn.ageTracker.CurLifeStageIndex == 0) { guilty = false; }
 
                 float sizeRatio = pawn.BodySize / innerPawn.BodySize;
 
                 if (sizeRatio > 2)
                 {
-                    float mult = (sizeRatio - 1) / 2 + 1; //Mathf.Min(3, x);
+                    float mult = (sizeRatio - 1) / 2 + 1;
                     damageAmount *= mult;
                 }
             }
@@ -570,10 +561,12 @@ namespace BigAndSmall
                 return;
             }
 
+            float idd = HumanoidPawnScaler.GetCacheUltraSpeed(pawn, canRegenerate: false)?.internalDamageDivisor ?? 1;
+
             damageType.canInterruptJobs = false;
             damageType.makesBlood = false;
             //damageType.
-            pawn.TakeDamage(new DamageInfo(damageType, damage * selfDamageMultiplier * damageFromSkills * globalDamageMultiplier, intendedTarget: pawn, hitPart: targetPart, armorPenetration: 500,
+            pawn.TakeDamage(new DamageInfo(damageType, damage * selfDamageMultiplier * damageFromSkills * globalDamageMultiplier / idd, intendedTarget: pawn, hitPart: targetPart, armorPenetration: 500,
                     instigatorGuilty: false, instigator: innerPawn, spawnFilth: false));
 
             damageType.canInterruptJobs = canInterruptJobs;
@@ -612,7 +605,7 @@ namespace BigAndSmall
                     attacker.mindState.lastHumanMeatIngestedTick = Find.TickManager.TicksGame;
                     attacker?.needs?.mood?.thoughts?.memories?.TryGainMemory(thought_Memory);
                 }
-                if (attacker?.ideo?.Ideo is Ideo ideo)
+                else if (attacker?.ideo?.Ideo is Ideo ideo)
                 {
                     if (ideo.HasPrecept(PreceptDefOf.Cannibalism_Preferred) ||
                         ideo.HasPrecept(PreceptDefOf.Cannibalism_RequiredRavenous) ||

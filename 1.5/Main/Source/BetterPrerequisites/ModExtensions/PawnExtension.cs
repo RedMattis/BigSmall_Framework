@@ -428,6 +428,7 @@ namespace BigAndSmall
         /// 
         /// </summary>
         public bool pawnDietRacialOverride = false;
+        public float? internalDamageDivisor = 1;
 
         #region Birth
         /// <summary>

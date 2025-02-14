@@ -73,7 +73,7 @@ namespace BigAndSmall
             return nutritionCapMult;
         }
 
-        private static float GetNutritionMultiplier(float scale)
+        public static float GetNutritionMultiplier(float scale)
         {
             float nutritionCapMult = 1;
             if (scale > 1f)

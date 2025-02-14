@@ -65,11 +65,14 @@ namespace BigAndSmall
         }
     }
 
+    public class AdaptivePawnPathDef : Def
+    {
+        public AdaptivePathPathList texturePaths = null;
+    }
+
 
     public class AdaptivePathPathList : List<AdaptivePawnPath>// <T> : List<T> where T : AdaptiveGraphicsData
     {
-        //public static bool didWarn = false;
-
         public bool ValidFor(BSCache cache) => GetPaths(cache) != null;
 
         public bool TryGetPath(BSCache cache, ref string path)

@@ -53,6 +53,7 @@ namespace BigAndSmall
 
         public float healthMultiplier = 1;
         public float healthMultiplier_previous = 1;
+        public float internalDamageDivisor = 1;
 
         public Dictionary<ThingDef, bool> willEatDef = [];
 
@@ -146,8 +147,8 @@ namespace BigAndSmall
         public int? randomPickHairColor = null;
 
         public bool facialAnimationDisabled = false;
-        public bool facialAnimationModified = false;
         public bool facialAnimationDisabled_Transform = false; // Used for the ColorAndFur Hediff.
+        public FacialAnimDisabler facialAnimDisabler = null;
 
         public bool disableLookChangeDesired = false;
 

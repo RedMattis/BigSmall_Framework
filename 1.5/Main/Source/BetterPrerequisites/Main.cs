@@ -37,7 +37,7 @@ namespace BigAndSmall
 
             if (NalsToggles.FALoaded)
             {
-
+                NalsToggles.ApplyNLPatches(harmony);
             }
         }
 

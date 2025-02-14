@@ -10,16 +10,15 @@ namespace BigAndSmall
     public class PawnRenderingProps_Ultimate : PawnRenderNodeProperties
     {
         public ShaderTypeDef shader = null;
-        public ConditionalGraphicsSet conditionalGraphics = new();
-        //public ColorSetting colorA = new();
-        //public ColorSetting colorB = new();
-        //public PathSetting paths = new();
+        protected ConditionalGraphicsSet conditionalGraphics = new();
+        protected GraphicSetDef graphicSetDef = null;
         public Vector4 colorMultiplier = new(1, 1, 1, 1);
         public bool invertEastWest = false;
         public bool mirrorNorth = false;
         public bool autoBodyTypePaths = false;
         public bool autoBodyTypeMasks = false;
 
+        public ConditionalGraphicsSet GraphicSet => graphicSetDef != null ? graphicSetDef.conditionalGraphics : conditionalGraphics;
     }
 
     public class PawnRenderNode_Ultimate : PawnRenderNode
@@ -50,7 +49,7 @@ namespace BigAndSmall
         protected override string TexPathFor(Pawn pawn)
         {
             throw new NotImplementedException($"TexPath is not meant to be used with this RenderNode." +
-                $"Use {nameof(UProps.conditionalGraphics)} ({typeof(ConditionalGraphicsSet)}) instead.");
+                $"Use {nameof(UProps.GraphicSet)} ({typeof(ConditionalGraphicsSet)}) instead.");
         }
         
         public override Graphic GraphicFor(Pawn pawn)
@@ -58,7 +57,7 @@ namespace BigAndSmall
             var props = UProps;
             if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache)
             {
-                var graphicSet = props.conditionalGraphics.GetGraphicsSet(cache);
+                var graphicSet = props.GraphicSet.GetGraphicsSet(cache);
                 var texPath = graphicSet.GetPath(cache, noImage);
                 var maskPath = graphicSet.GetMaskPath(cache, null);
                 var conditionalProps = graphicSet.props.GetGraphicProperties(cache);
@@ -88,8 +87,8 @@ namespace BigAndSmall
                     maskPath = null;
                 }
 
-                Color colorOne = graphicSet.colorA.GetColor(this, Color.white, ColorSetting.clrOneKey);
-                Color colorTwo = graphicSet.colorB.GetColor(this, Color.white, ColorSetting.clrTwoKey);
+                Color colorOne = graphicSet.ColorA.GetColor(this, Color.white, ColorSetting.clrOneKey);
+                Color colorTwo = graphicSet.ColorB.GetColor(this, Color.white, ColorSetting.clrTwoKey);
                 Shader shader = props.shader?.Shader ?? ShaderTypeDefOf.CutoutComplex.Shader;
                 if (UProps.useSkinShader)
                 {
