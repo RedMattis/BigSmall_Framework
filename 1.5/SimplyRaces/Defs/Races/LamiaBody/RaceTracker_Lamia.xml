@@ -19,16 +19,6 @@
     <comps>
       <li Class="BigAndSmall.CompProperties_Race">
         <canSwapAwayFrom>true</canSwapAwayFrom>
-        <!-- <bodyDefOverrideList>
-          <li>Male</li>
-          <li>Thin</li>
-          <li>Hulk</li>
-        </bodyDefOverrideList>
-        <bodyDefOverrideList_Female>
-          <li>Female</li>
-          <li>Thin</li>
-          <li>Hulk</li>
-        </bodyDefOverrideList_Female> -->
       </li>
       <li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="AnimalBehaviours.HediffCompProperties_Floating"/>
     </comps>
@@ -38,6 +28,7 @@
           <Snake>1.0</Snake>
           <Humanlike>0.65</Humanlike>
         </romanceTags>
+        <internalDamageDivisor>0.4</internalDamageDivisor>
         <bodyPosOffset>0.6</bodyPosOffset>
         <renderCacheOff>true</renderCacheOff>
       </li> 
@@ -46,7 +37,6 @@
       </li>
     </modExtensions>
     <renderNodeProperties>
-      <!-- Righthand side -->
       <li Class="BigAndSmall.PawnRenderingProps_Ultimate">
         <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
         <workerClass>BigAndSmall.PawnRenderNodeWorker_BodyTypeOffsets</workerClass>
@@ -54,34 +44,9 @@
         <rotDrawMode>Fresh, Rotting</rotDrawMode>
         <colorType>Skin</colorType>
         <shader>CutoutComplex</shader>
-        
         <conditionalGraphics>
-          <texturePaths>
-            <Body_Hulk>RaceDefaults/Snek/bp_hulk</Body_Hulk>
-    
-            <Body_Male>RaceDefaults/Snek/bp_male</Body_Male>
-            <Body_Female>RaceDefaults/Snek/bp_female</Body_Female>
-            
-            <Body_Fat>RaceDefaults/Snek/bp_fat</Body_Fat>
-            <Body_Thin>RaceDefaults/Snek/bp_default</Body_Thin>
-            <!-- <Body_Child>RaceDefaults/Snek/bp_child</Body_Child>
-            <Body_Baby>RaceDefaults/Snek/bp_child</Body_Baby> -->
-          </texturePaths>
-          <colorA>
-            <replaceFlagsAndInactive><LamiaColorA/></replaceFlagsAndInactive>
-            <skinColor>true</skinColor>
-            <!-- <hairColor>true</hairColor> -->
-            <!-- <averageColors>true</averageColors> -->
-            <brightness>1.03</brightness>
-            <saturation>0.98</saturation>
-            <!-- <maxBrightness>1</maxBrightness> -->
-            <!-- <saturation>1.1</saturation> -->
-          </colorA>
-          <colorB>
-            <replaceFlagsAndInactive><LamiaColorB/></replaceFlagsAndInactive>
-            <hairColor>true</hairColor>
-            <saturation>0.9</saturation>
-          </colorB>
+          <!-- Instead of returning this, send in the properties from the linked def. -->
+          <replacementDef>BS_SnekGraphicSet</replacementDef>
           <alts>
             <li>
               <!-- Hide the tail if we have a snake-gene. No ColorA/B specified since, well, nothing to show.-->
@@ -91,37 +56,51 @@
               <triggerFlags><blacklist><ShowBaseAbdomen/></blacklist></triggerFlags>
               <texturePaths><default>BS_Blank</default></texturePaths>
             </li>
-            <li>
-              <!-- Poor snek lost its tail. -->
-              <triggerBodyPart>
-                <li> <bodyPartDef>BS_SnakeBody</bodyPartDef> <partMissing>true</partMissing> </li>
-                <li> <bodyPartDef>BS_Mech_SnakeBody</bodyPartDef> <partMissing>true</partMissing> </li>
-              </triggerBodyPart>
-              <texturePaths><default>BS_Blank</default></texturePaths>
-            </li>
           </alts>
         </conditionalGraphics>
         <drawSize>(1.625,1.625)</drawSize>
         <drawData>
           <scaleOffsetByBodySize>false</scaleOffsetByBodySize>
-          <dataNorth>
-            <offset>(0, 0, -0.3067)</offset>
-            <layer>79</layer>
-          </dataNorth>
-          <dataSouth>
-            <offset>(0, -0.0001, -0.3067)</offset>
-            <layer>20</layer>
-          </dataSouth>
-          <dataEast>
-            <offset>(-0.3067, -0.0001, -0.3067)</offset>
-            <layer>20</layer>
-          </dataEast>
-          <dataWest>
-            <offset>(0.3067, -0.0001, -0.3067)</offset>
-            <layer>20</layer>
-          </dataWest>
+          <dataNorth> <offset>(0, 0, -0.3067)</offset> <layer>79</layer> </dataNorth>
+          <dataSouth> <offset>(0, -0.0001, -0.3067)</offset> <layer>20</layer> </dataSouth>
+          <dataEast> <offset>(-0.3067, -0.0001, -0.3067)</offset> <layer>20</layer> </dataEast>
+          <dataWest> <offset>(0.3067, -0.0001, -0.3067)</offset> <layer>20</layer> </dataWest>
         </drawData>
       </li>
     </renderNodeProperties>
   </HediffDef>
+
+  <BigAndSmall.GraphicSetDef>
+    <defName>BS_SnekGraphicSet</defName>
+    <conditionalGraphics>
+      <texturePaths>
+        <Body_Hulk>RaceDefaults/Snek/bp_hulk</Body_Hulk>
+        <Body_Male>RaceDefaults/Snek/bp_male</Body_Male>
+        <Body_Female>RaceDefaults/Snek/bp_female</Body_Female>
+        <Body_Fat>RaceDefaults/Snek/bp_fat</Body_Fat>
+        <Body_Thin>RaceDefaults/Snek/bp_default</Body_Thin>
+      </texturePaths>
+      <colorA>
+        <replaceFlagsAndInactive><LamiaColorA/></replaceFlagsAndInactive>
+        <skinColor>true</skinColor>
+        <brightness>1.03</brightness>
+        <saturation>0.98</saturation>
+      </colorA>
+      <colorB>
+        <replaceFlagsAndInactive><LamiaColorB/></replaceFlagsAndInactive>
+        <hairColor>true</hairColor>
+        <saturation>0.9</saturation>
+      </colorB>
+      <alts>
+        <li>
+          <!-- Poor snek lost its tail. -->
+          <triggerBodyPart>
+            <li> <bodyPartDef>BS_SnakeBody</bodyPartDef> <partMissing>true</partMissing> </li>
+            <li> <bodyPartDef>BS_Mech_SnakeBody</bodyPartDef> <partMissing>true</partMissing> </li>
+          </triggerBodyPart>
+          <texturePaths><default>BS_Blank</default></texturePaths>
+        </li>
+      </alts>
+    </conditionalGraphics>
+  </BigAndSmall.GraphicSetDef>
 </Defs>

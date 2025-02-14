@@ -65,7 +65,13 @@ namespace BetterPrerequisites
             if (__instance is PGene && !PawnGenerator.IsBeingGenerated(__instance.pawn) && __instance.Active)
             {
                 HumanoidPawnScaler.LazyGetCache(__instance.pawn);
-                //GeneEffectManager.RefreshGeneEffects(__instance, activate: false);
+
+                var extensions = __instance.def.ExtensionsOnDef<PawnExtension, GeneDef>();
+                if (extensions.NullOrEmpty())
+                {
+                    GeneEffectManager.UpdateHediffs(false, __instance, extensions);
+                    //GeneEffectManager.RefreshGeneEffects(__instance, activate: false);
+                }
             }
         }
 

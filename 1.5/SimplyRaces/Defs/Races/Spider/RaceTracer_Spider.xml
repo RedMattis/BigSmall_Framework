@@ -42,79 +42,32 @@
       </li>
     </comps>
     <renderNodeProperties>
-      <!-- Righthand side -->
-      
-
       <li Class="BigAndSmall.PawnRenderingProps_Ultimate">
         <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
         <workerClass>BigAndSmall.PawnRenderNodeWorker_LazyCentaur</workerClass>
         <parentTagDef>Body</parentTagDef>
         <rotDrawMode>Fresh, Rotting</rotDrawMode>
         <conditionalGraphics>
-          <texturePaths>
-            <li>RaceDefaults/SpooderNew/BS_Spooder</li>
-          </texturePaths>
-          <colorA>
-            <replaceFlagsAndInactive><SpiderColorA/></replaceFlagsAndInactive>
-            <hairColor>true</hairColor>
-            <brightness>0.95</brightness>
-            <alts>
-              <li>
-                <triggers><li>Dead</li></triggers>
-                <hairColor>true</hairColor>
-                <skinColor>true</skinColor> 
-                <saturation>0.6</saturation>
-              </li>
-            </alts>
-          </colorA>
-          <colorB>
-            <replaceFlagsAndInactive><SpiderColorB/></replaceFlagsAndInactive>
-            <favoriteColor>true</favoriteColor>
-            <maxBrightness>0.75</maxBrightness>
-          </colorB>
+          <replacementDef>BS_SpooderGraphicSetUpper</replacementDef>
           <alts>
             <li>
               <triggerGeneTag> <acceptlist> <li>taur</li> </acceptlist> </triggerGeneTag>
               <triggerFlags><blacklist><ShowBaseAbdomen/></blacklist></triggerFlags>
               <texturePaths><default>BS_Blank</default></texturePaths>
             </li>
-            <li>
-              <!-- Poor spooder lost its entire abdomen! -->
-              <triggerBodyPart>
-                <li> <bodyPartDef>BS_SpiderAbdomen</bodyPartDef> <partMissing>true</partMissing> </li>
-                <li> <bodyPartDef>BS_Mech_SpiderAbdomen</bodyPartDef> <partMissing>true</partMissing> </li>
-              </triggerBodyPart>
-              <texturePaths><default>BS_Blank</default></texturePaths>
-            </li>
           </alts>
         </conditionalGraphics>
         <drawSize>(1.1,1.1)</drawSize>
-        
         <drawData>
           <bodyTypeScales>
-            <Fat>1.5</Fat>
-            <Female>1.05</Female>
-            <Hulk>1.1</Hulk>
-            <Thin>0.9</Thin>
+            <Fat>1.5</Fat> <Female>1.05</Female> <Hulk>1.1</Hulk> <Thin>0.9</Thin>
             <Child MayRequire="Ludeon.Rimworld.Ideology">0.9</Child>
             <Baby MayRequire="Ludeon.Rimworld.Ideology">0.75</Baby>
           </bodyTypeScales>
-          <dataNorth>
-            <offset>(0, 0.000, -0.3)</offset>
-            <layer>89.5</layer>
-          </dataNorth>
-          <dataSouth>
-            <offset>(0, -0.000, -0.1)</offset>
-            <layer>89.5</layer>
-          </dataSouth>
-          <dataEast>
-            <offset>(-0.27, 0.0, -0.2)</offset>
-            <layer>89.5</layer>
-          </dataEast>
-          <dataWest>
-            <offset>(0.27, 0.0, -0.12)</offset>
-            <layer>89.5</layer>
-          </dataWest>
+          <dataNorth> <offset>(0, 0.000, -0.3)</offset> <layer>89.5</layer> </dataNorth>
+          <dataSouth> <offset>(0, -0.000, -0.1)</offset> <layer>89.5</layer> </dataSouth>
+          <dataEast> <offset>(-0.27, 0.0, -0.2)</offset> <layer>89.5</layer> </dataEast>
+          <dataWest> <offset>(0.27, 0.0, -0.12)</offset> <layer>89.5</layer> </dataWest>
         </drawData>
       </li>
 
@@ -123,42 +76,12 @@
         <workerClass>BigAndSmall.PawnRenderNodeWorker_LazyCentaur</workerClass>
         <parentTagDef>Body</parentTagDef>
         <rotDrawMode>Fresh, Rotting</rotDrawMode>
-        <!-- <shader>Cutout</shader> -->
         <conditionalGraphics>
-          <texturePaths>
-            <li>RaceDefaults/SpooderNew/BS_SpooderBack</li>
-          </texturePaths>
-          <colorA>
-            <!-- <skinColor>true</skinColor> -->
-            <replaceFlagsAndInactive><SpiderColorA/></replaceFlagsAndInactive>
-            <hairColor>true</hairColor>
-            <brightness>0.95</brightness>
-            <alts>
-              <li>
-                <triggers><li>Dead</li></triggers>
-                <hairColor>true</hairColor>
-                <skinColor>true</skinColor> 
-                <saturation>0.6</saturation>
-              </li>
-            </alts>
-          </colorA>
-          <colorB>
-            <favoriteColor>true</favoriteColor>
-            <maxBrightness>0.75</maxBrightness>
-          </colorB>
+          <replacementDef>BS_SpooderGraphicSetUnder</replacementDef>
           <alts>
             <li>
               <triggerGeneTag> <acceptlist> <li>taur</li> </acceptlist> </triggerGeneTag>
               <triggerFlags><blacklist><ShowBaseAbdomen/></blacklist></triggerFlags>
-              <texturePaths><default>BS_Blank</default></texturePaths>
-            </li>
-            <li>
-              <!-- Poor spooder lost its entire abdomen! -->
-              <triggerBodyPart>
-                <li> <bodyPartDef>BS_SpiderAbdomen</bodyPartDef> <partMissing>true</partMissing> </li>
-                <li> <bodyPartDef>BS_Mech_SpiderAbdomen</bodyPartDef> <partMissing>true</partMissing> </li>
-              </triggerBodyPart>
-              
               <texturePaths><default>BS_Blank</default></texturePaths>
             </li>
           </alts>
@@ -167,10 +90,7 @@
         <visibleFacing> <li>South</li> <li>North</li> </visibleFacing>
         <drawData>
           <bodyTypeScales>
-            <Fat>1.5</Fat>
-            <Female>1.05</Female>
-            <Hulk>1.1</Hulk>
-            <Thin>0.95</Thin>
+            <Fat>1.5</Fat> <Female>1.05</Female> <Hulk>1.1</Hulk> <Thin>0.95</Thin>
             <Child MayRequire="Ludeon.Rimworld.Ideology">0.9</Child>
             <Baby MayRequire="Ludeon.Rimworld.Ideology">0.75</Baby>
           </bodyTypeScales>
@@ -185,6 +105,75 @@
         </drawData>
       </li>
     </renderNodeProperties>
-    
   </HediffDef>
+
+  <BigAndSmall.GraphicSetDef>
+    <defName>BS_SpooderGraphicSetUpper</defName>
+    <conditionalGraphics>
+      <texturePaths> <li>RaceDefaults/SpooderNew/BS_Spooder</li> </texturePaths>
+      <colorA>
+        <replaceFlagsAndInactive><SpiderColorA/></replaceFlagsAndInactive>
+        <hairColor>true</hairColor>
+        <brightness>0.95</brightness>
+        <alts>
+          <li>
+            <triggers><li>Dead</li></triggers>
+            <hairColor>true</hairColor>
+            <skinColor>true</skinColor> 
+            <saturation>0.6</saturation>
+          </li>
+        </alts>
+      </colorA>
+      <colorB>
+        <replaceFlagsAndInactive><SpiderColorB/></replaceFlagsAndInactive>
+        <favoriteColor>true</favoriteColor>
+        <maxBrightness>0.75</maxBrightness>
+      </colorB>
+      <alts>
+        <li>
+          <!-- Poor spooder lost its entire abdomen! -->
+          <triggerBodyPart>
+            <li> <bodyPartDef>BS_SpiderAbdomen</bodyPartDef> <partMissing>true</partMissing> </li>
+            <li> <bodyPartDef>BS_Mech_SpiderAbdomen</bodyPartDef> <partMissing>true</partMissing> </li>
+          </triggerBodyPart>
+          <texturePaths><default>BS_Blank</default></texturePaths>
+        </li>
+      </alts>
+    </conditionalGraphics>
+  </BigAndSmall.GraphicSetDef>
+
+  <BigAndSmall.GraphicSetDef>
+    <defName>BS_SpooderGraphicSetUnder</defName>
+    <conditionalGraphics>
+      <texturePaths>
+        <li>RaceDefaults/SpooderNew/BS_SpooderBack</li>
+      </texturePaths>
+      <colorA>
+        <replaceFlagsAndInactive><SpiderColorA/></replaceFlagsAndInactive>
+        <hairColor>true</hairColor>
+        <brightness>0.95</brightness>
+        <alts>
+          <li>
+            <triggers><li>Dead</li></triggers>
+            <hairColor>true</hairColor>
+            <skinColor>true</skinColor> 
+            <saturation>0.6</saturation>
+          </li>
+        </alts>
+      </colorA>
+      <colorB>
+        <favoriteColor>true</favoriteColor>
+        <maxBrightness>0.75</maxBrightness>
+      </colorB>
+      <alts>
+        <li>
+          <triggerBodyPart>
+            <li> <bodyPartDef>BS_SpiderAbdomen</bodyPartDef> <partMissing>true</partMissing> </li>
+            <li> <bodyPartDef>BS_Mech_SpiderAbdomen</bodyPartDef> <partMissing>true</partMissing> </li>
+          </triggerBodyPart>
+          <texturePaths><default>BS_Blank</default></texturePaths>
+        </li>
+      </alts>
+    </conditionalGraphics>
+  </BigAndSmall.GraphicSetDef>
 </Defs>

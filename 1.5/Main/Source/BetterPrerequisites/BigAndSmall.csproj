@@ -140,12 +140,14 @@
     <Compile Include="Rendering &amp; Graphics\Patches\PawnRenderNode_Head_Patches.cs" />
     <Compile Include="Rendering &amp; Graphics\GraphicsHelper.cs" />
     <Compile Include="Rendering &amp; Graphics\BSDrawData.cs" />
+    <Compile Include="Rendering &amp; Graphics\Render Tree\NalsToggles.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderWorkers\FAShouldRender.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderWorkers\PawnRenderNodeWorker_Various.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\PawnRenderNode_HSVHair.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\PawnRenderNode_SimpleSwitches.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\UltimateRenderNode.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\ComplexRenderNode.cs" />
+    <Compile Include="Rendering &amp; Graphics\RenderWorkers\PawnRenderNode_Apparel.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderWorkers\UltimateRenderNodeWorker.cs" />
     <Compile Include="SimpleCustomRaces\LifeStageWorker_FullyFormedHumanlike.cs" />
     <Compile Include="SimpleCustomRaces\MechanicalRace\FuelNeed.cs" />

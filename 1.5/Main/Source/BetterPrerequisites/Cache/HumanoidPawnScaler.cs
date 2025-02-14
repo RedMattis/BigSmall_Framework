@@ -441,7 +441,6 @@ namespace BigAndSmall
                     .Average(x => x.preventHeadOffsetFactor.Value);
 
 
-
                 CalculateGenderAndApparentGender(allPawnExt);
 
                 bool hasSizeAffliction = ScalingMethods.CheckForSizeAffliction(pawn);
@@ -459,15 +458,6 @@ namespace BigAndSmall
                     newFoodCatAllow = BSDefLibrary.FoodCategoryDefs.Where(x => x.DefaultAcceptPawn(pawn, activeGenedefs, pawnDiet).Fuse(pawnDiet.Select(y => y.AcceptFoodCategory(x))).ExplicitlyAllowed()).ToList();
                     newFoodCatDeny = BSDefLibrary.FoodCategoryDefs.Where(x => x.DefaultAcceptPawn(pawn, activeGenedefs, pawnDiet).Fuse(pawnDiet.Select(y => y.AcceptFoodCategory(x))).NeutralOrWorse()).ToList();
 
-                    //BSDefLibrary.FoodCategoryDefs.ForEach(x =>
-                    //{
-                    //    var result = x.DefaultAcceptPawn(pawn, activeGenedefs, pawnDiet);
-                    //    var result2 = pawnDiet.Select(y => y.AcceptFoodCategory(x)).Fuse();
-                    //    Log.Message($"[Allow] {pawn} can {(result.Fuse(result2).ExplicitlyAllowed() ? "eat" : "not eat")} {x.defName} because {result} and {result2}");
-                    //    Log.Message($"[DENY] {pawn} can {(result.Fuse(result2).NotExplicitlyAllowed() ? "not eat" : "eat")} {x.defName} because {result} and {result2}");
-                    //});
-                    //var whiteListed = pawnDiet.
-
                     ApparelRestrictions appRestrict = new();
                     var appRestrictList = allPawnExt.Where(x => x.apparelRestrictions != null).Select(x => x.apparelRestrictions).ToList();
                     if (appRestrictList.Count > 0)
@@ -482,8 +472,6 @@ namespace BigAndSmall
                 }
 
                 aptitudes = allPawnExt.Where(x => x.aptitudes != null).SelectMany(x => x.aptitudes).ToList();
-
-                //diet = GameUtils.GetDiet(pawn);
 
                 float minimumLearning = pawn.GetStatValue(BSDefs.SM_Minimum_Learning_Speed);
 
@@ -552,11 +540,13 @@ namespace BigAndSmall
                 bool everFertile = activeGenes.Any(x => x.def.defName == "BS_EverFertile");
                 animalFriend = pawn.story?.traits?.allTraits.Any(x => !x.Suppressed && x.def.defName == "BS_AnimalFriend") == true || isMechanical;
 
-
-
                 //facialAnimationDisabled = activeGenes.Any(x => x.def == BSDefs.BS_FacialAnimDisabled);
-                facialAnimationDisabled = allPawnExt.Any(x => x.disableFacialAnimations || x.facialDisabler != null)
+                facialAnimationDisabled = allPawnExt.Any(x => x.disableFacialAnimations)
                     || facialAnimationDisabled_Transform;
+
+                var faDisabler = allPawnExt.Where(x => x.facialDisabler != null).Select(x => x.facialDisabler);
+                facialAnimDisabler = faDisabler.FirstOrFallback(null);
+
 
                 // Add together bodyPosOffset from GeneExtension.
                 float bodyPosOffset = allPawnExt.Sum(x => x.bodyPosOffset);
@@ -569,7 +559,9 @@ namespace BigAndSmall
 
                 this.minimumLearning = minimumLearning;
                 this.growthPointGain = pawn.GetStatValue(BSDefs.SM_GrowthPointAccumulation);
-                //this.foodNeedCapacityMult = pawn.GetStatValue(BSDefs.SM_Food_Need_Capacity);
+                internalDamageDivisor = allPawnExt.Any(x => x.internalDamageDivisor != null)
+                    ? allPawnExt.Where(x => x.internalDamageDivisor != null)
+                    .Aggregate(1f, (acc, x) => acc * x.internalDamageDivisor.Value) : 1;
 
                 isBloodFeeder = IsBloodfeederPatch.IsBloodfeeder(pawn) || allPawnExt.Any(x => x.isBloodfeeder);
                 this.hasSizeAffliction = hasSizeAffliction;
@@ -691,6 +683,7 @@ namespace BigAndSmall
             }
             headMaterial = null; bodyMaterial = null;
             headGraphicPath = null; bodyGraphicPath = null;
+            HashSet<PawnExtension> allPawnExt = [.. otherExts, .. raceExts];
 
             //apparentGender = allPawnExt.FirstOrDefault(x => x.ApparentGender != null)?.ApparentGender;
             CalculateGenderAndApparentGender([..otherExts, ..raceExts]);
@@ -712,7 +705,6 @@ namespace BigAndSmall
                 if (headGfxExt.headMaterial != null) headMaterial = headGfxExt.headMaterial;
                 headDessicatedGraphicPath = headGfxExt.GetDessicatedFromHeadPath(headGraphicPath);
             }
-
 
             var extensionsWithBodyPaths = otherExts.Where(x => x.bodyPaths.ValidFor(this));
             extensionsWithBodyPaths = extensionsWithBodyPaths.EnumerableNullOrEmpty() ? raceExts.Where(x => x.bodyPaths.ValidFor(this)) : extensionsWithBodyPaths;
@@ -742,6 +734,8 @@ namespace BigAndSmall
             {
                 GenderMethods.UpdateBodyHeadAndBeardPostGenderChange(this);
             }
+
+            // Stay on if it was on before.
         }
 
         

@@ -118,6 +118,17 @@ namespace BigAndSmall
             var extensions = gene.def.ExtensionsOnDef<PawnExtension, GeneDef>();
             if (extensions.NullOrEmpty()) return false;
 
+            changeMade = UpdateHediffs(active, gene, extensions, changeMade);
+
+            if (extensions.Any(x => x.forceGender != null || x.ApparentGender != null))
+            {
+                HumanoidPawnScaler.LazyGetCache(gene?.pawn);
+            }
+            return changeMade;
+        }
+
+        public static bool UpdateHediffs(bool active, Gene gene, List<PawnExtension> extensions, bool changeMade=false)
+        {
             try
             {
                 foreach (var extension in extensions)
@@ -131,10 +142,6 @@ namespace BigAndSmall
                 Log.Error($"Error in RefreshGeneEffects: {ex.Message} {ex.StackTrace}");
             }
 
-            if (extensions.Any(x=>x.forceGender != null || x.ApparentGender != null))
-            {
-                HumanoidPawnScaler.LazyGetCache(gene?.pawn);
-            }
             return changeMade;
         }
 

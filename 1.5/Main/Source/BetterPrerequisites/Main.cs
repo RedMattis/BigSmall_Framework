@@ -35,6 +35,10 @@ namespace BigAndSmall
             HARCompat.SetupHARThingsIfHARIsActive();
 
 
+            if (NalsToggles.FALoaded)
+            {
+                NalsToggles.ApplyNLPatches(harmony);
+            }
         }
 
         public static void RunBeforeGenerateImpliedDefs(bool hotReload)

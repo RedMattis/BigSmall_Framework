@@ -10,34 +10,22 @@ namespace BigAndSmall
     public class PawnRenderingProps_Ultimate : PawnRenderNodeProperties
     {
         public ShaderTypeDef shader = null;
-        public ConditionalGraphicsSet conditionalGraphics = new();
-        //public ColorSetting colorA = new();
-        //public ColorSetting colorB = new();
-        //public PathSetting paths = new();
+        protected ConditionalGraphicsSet conditionalGraphics = new();
+        protected GraphicSetDef graphicSetDef = null;
         public Vector4 colorMultiplier = new(1, 1, 1, 1);
         public bool invertEastWest = false;
         public bool mirrorNorth = false;
         public bool autoBodyTypePaths = false;
         public bool autoBodyTypeMasks = false;
 
-    }
-
-    public class PawnRenderNode_UltimateHead : PawnRenderNode_Ultimate
-    {
-        public PawnRenderNode_UltimateHead(Pawn pawn, PawnRenderingProps_Ultimate props, PawnRenderTree tree)
-            : base(pawn, props, tree)
-        {
-        }
-        public override GraphicMeshSet MeshSetFor(Pawn pawn)
-        {
-            return HumanlikeMeshPoolUtility.GetHumanlikeHairSetForPawn(pawn);
-        }
+        public ConditionalGraphicsSet GraphicSet => graphicSetDef != null ? graphicSetDef.conditionalGraphics : conditionalGraphics;
     }
 
     public class PawnRenderNode_Ultimate : PawnRenderNode
     {
         public bool scaleSet = false;
         public Vector2 cachedScale = Vector2.one;
+        private readonly bool useHeadMesh;
 
         readonly string noImage = "BS_Blank";
         PawnRenderingProps_Ultimate UProps => (PawnRenderingProps_Ultimate)props;
@@ -45,11 +33,23 @@ namespace BigAndSmall
             : base(pawn, props, tree)
         {
         }
+        public PawnRenderNode_Ultimate(Pawn pawn, PawnRenderNodeProperties props, PawnRenderTree tree, Apparel apparel) : base(pawn, props, tree)
+        {
+            base.apparel = apparel;
+            useHeadMesh = props.parentTagDef == PawnRenderNodeTagDefOf.ApparelHead;
+            meshSet = MeshSetFor(pawn);
+        }
+        public PawnRenderNode_Ultimate(Pawn pawn, PawnRenderNodeProperties props, PawnRenderTree tree, Apparel apparel, bool useHeadMesh) : base(pawn, props, tree)
+        {
+            base.apparel = apparel;
+            this.useHeadMesh = useHeadMesh;
+            meshSet = MeshSetFor(pawn);
+        }
 
         protected override string TexPathFor(Pawn pawn)
         {
             throw new NotImplementedException($"TexPath is not meant to be used with this RenderNode." +
-                $"Use {nameof(UProps.conditionalGraphics)} ({typeof(ConditionalGraphicsSet)}) instead.");
+                $"Use {nameof(UProps.GraphicSet)} ({typeof(ConditionalGraphicsSet)}) instead.");
         }
         
         public override Graphic GraphicFor(Pawn pawn)
@@ -57,7 +57,7 @@ namespace BigAndSmall
             var props = UProps;
             if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache)
             {
-                var graphicSet = props.conditionalGraphics.GetGraphicsSet(cache);
+                var graphicSet = props.GraphicSet.GetGraphicsSet(cache);
                 var texPath = graphicSet.GetPath(cache, noImage);
                 var maskPath = graphicSet.GetMaskPath(cache, null);
                 var conditionalProps = graphicSet.props.GetGraphicProperties(cache);
@@ -87,8 +87,8 @@ namespace BigAndSmall
                     maskPath = null;
                 }
 
-                Color colorOne = graphicSet.colorA.GetColor(this, Color.white, ColorSetting.clrOneKey);
-                Color colorTwo = graphicSet.colorB.GetColor(this, Color.white, ColorSetting.clrTwoKey);
+                Color colorOne = graphicSet.ColorA.GetColor(this, Color.white, ColorSetting.clrOneKey);
+                Color colorTwo = graphicSet.ColorB.GetColor(this, Color.white, ColorSetting.clrTwoKey);
                 Shader shader = props.shader?.Shader ?? ShaderTypeDefOf.CutoutComplex.Shader;
                 if (UProps.useSkinShader)
                 {
@@ -128,6 +128,35 @@ namespace BigAndSmall
                 parms.facing = parms.facing.Opposite;
             }
             return base.GetMesh(parms);
+        }
+
+        public override GraphicMeshSet MeshSetFor(Pawn pawn)
+        {
+            if (apparel == null)
+            {
+                return base.MeshSetFor(pawn);
+            }
+            if (Props.overrideMeshSize.HasValue)
+            {
+                return MeshPool.GetMeshSetForSize(base.Props.overrideMeshSize.Value.x, base.Props.overrideMeshSize.Value.y);
+            }
+            if (useHeadMesh)
+            {
+                return HumanlikeMeshPoolUtility.GetHumanlikeHeadSetForPawn(pawn);
+            }
+            return HumanlikeMeshPoolUtility.GetHumanlikeBodySetForPawn(pawn);
+        }
+    }
+
+    public class PawnRenderNode_UltimateHead : PawnRenderNode_Ultimate
+    {
+        public PawnRenderNode_UltimateHead(Pawn pawn, PawnRenderingProps_Ultimate props, PawnRenderTree tree)
+            : base(pawn, props, tree)
+        {
+        }
+        public override GraphicMeshSet MeshSetFor(Pawn pawn)
+        {
+            return HumanlikeMeshPoolUtility.GetHumanlikeHairSetForPawn(pawn);
         }
     }
 }

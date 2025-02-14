@@ -17,13 +17,10 @@ namespace BigAndSmall
     {
         private static void GenerateAndRegisterRaceDefs(bool hotReload)
         {
-            // Generate ThingDefs for all BodyDets as long as they don't have "discardNonRobotFusions"
             foreach (var fused in FusedBody.FusedBodies.Values)
-            //.Select(x => (x.generatedBody, x.SourceBody, x)))
             {
                 var generateBody = fused.generatedBody;
                 var source = fused.SourceBody;
-                //var mergableBody = fused.fuseSetBody;
 
                 if (doDebug) Log.Message(GetPartsStringRecursive(generateBody.corePart));
 
@@ -38,22 +35,18 @@ namespace BigAndSmall
 
                 var newRace = new RaceProperties();
 
+                // Make the new Thing using reflection, in case it is a subclass. (Har most likely)
+                newThing ??= sThing.GetType().GetConstructor([]).Invoke([]) as ThingDef;
 
+                // Actually doesn't seem to work
+                //newThing ??= new ThingDef();
 
-
-                // Make the new Thing using reflection, in case it is a subclass. (Har Har Har... HAR!)
-                //newThing ??= sThing.GetType().GetConstructor([]).Invoke([]) as ThingDef;
-
-                // Actually let's try Not doing that. If we can drop HAR stuff then it is probably a benefit due to avoiding weird interactions.
-                newThing ??= new ThingDef();
-
-                //foreach (var field in sThing.GetType().GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
-                foreach (var field in typeof(ThingDef).GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
+                foreach (var field in sThing.GetType().GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
+                //foreach (var field in typeof(ThingDef).GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
                 {
                     try
                     {
-
-                        if (field.FieldType.IsClass && field.GetValue(sThing) != null && field.GetType().Name == "AlienRace.AlienRaceSettings")
+                        if (field.FieldType.IsClass && field.GetValue(sThing) != null && field.GetType().Name.Contains("ThingDef_AlienRace.AlienSettings"))
                         {
                             field.SetValue(newThing, field.GetType().GetConstructor([]).Invoke([]));
                             foreach (var alienField in field.GetType().GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
@@ -79,7 +72,6 @@ namespace BigAndSmall
                         Log.Error($"Failed to copy field {field.Name} from thingDef.");
                         Log.Error(e.ToString());
                     }
-
                 }
 
                 var allThingDefSources = fused.mergableBodies.Select(x => x.thingDef).ToList();
@@ -152,8 +144,6 @@ namespace BigAndSmall
                 newRace.body = generateBody;
                 generateBody.generated = true;
 
-                //body.ResolveReferences();
-
                 var raceExtensions = allThingDefSources.SelectMany(x => x.ExtensionsOnDef<RaceExtension, ThingDef>()).ToList();
                 var newRaceExtension = new RaceExtension(raceExtensions)
                 {
@@ -164,10 +154,6 @@ namespace BigAndSmall
                 newThing.modExtensions.RemoveAll(x => x is RaceExtension);
                 newThing.modExtensions.Add(newRaceExtension);
 
-                if (fused.isMechanical)
-                {
-
-                }
                 if (fused.fuseSetBody is MergableBody fSBody)
                 {
                     var fsThing = fSBody.thingDef;
@@ -212,16 +198,6 @@ namespace BigAndSmall
                 // field is sometimes not present.
                 var hasUnnaturalCorpseField = newRace.GetType().GetField("hasUnnaturalCorpse");
                 hasUnnaturalCorpseField?.SetValue(newRace, false);
-                //GenerateCorpse(hotReload, fused, generateBody, sThing, sRace, newThing, newRace);
-                ////////////////////////
-
-
-
-                // Copy over the recipes, styles, and categories, ...
-
-
-                // Hmm... doesn't seem worth the mess.
-                //newThing.tools = [.. allThingDefSources.Where(x => x.tools != null).SelectMany(x => x?.tools).Where(x => x != null).ToList().Distinct()];
 
                 fused.SetThing(newThing);
 

@@ -261,6 +261,7 @@ namespace BigAndSmall
         {
             if (skipThingDefCheck) return true;
             if (p.IsBloodfeeder() && food == ThingDefOf.HemogenPack) { return __result; }
+            if (p.IsMutant) { return __result; }
             if (HumanoidPawnScaler.GetCacheUltraSpeed(p) is BSCache cache)
             {
                 if (cache.willEatDef.TryGetValue(food, out bool cachedResult))
@@ -326,6 +327,7 @@ namespace BigAndSmall
         public static bool WillEatThing_Prefix(ref bool __result, Pawn p, Thing food, Pawn getter, bool careIfNotAcceptableForTitle, bool allowVenerated)
         {
             if (p.IsBloodfeeder() && food?.def == ThingDefOf.HemogenPack) { return __result; }
+            if (p.IsMutant) { return __result; }
             skipThingDefCheck = true;
             // Ignore unspawned pawns, it just gets messy because of Ludeon hardcoding.
             if (p?.Spawned == true && HumanoidPawnScaler.GetCacheUltraSpeed(p) is BSCache cache && cache.isHumanlike)
@@ -385,6 +387,7 @@ namespace BigAndSmall
         [HarmonyPostfix]
         public static void Ingested_Postfix(Thing __instance, ref float __result, Pawn ingester, float nutritionWanted)
         {
+            if (ingester.IsMutant) { return; }
             // Literally we're skipping the postfix if the character isn't spawned. Why you might ask? Because caravans don't check the food item's
             // Thing, only the ThingDef. This means we can't easily check if the item contains meat/vegtables. So we just skip it for everyone's sanity's sake.
 

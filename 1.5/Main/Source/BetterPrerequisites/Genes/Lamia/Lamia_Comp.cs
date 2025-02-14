@@ -1,10 +1,11 @@
 ﻿using RimWorld;
+using Verse;
 
 namespace BigAndSmall
 {
     public class CompProperties_AbilityLamiaFeast : CompProperties_AbilityEffect
     {
-        public float relativeSizeThreshold = 0.6f;
+        public FloatRange relativeSizeThreshold = new(0.35f, 0.8f);
 
         public float maxHungerPercentThreshold = 0.6f;
 
@@ -25,6 +26,16 @@ namespace BigAndSmall
         public CompProperties_AbilityLamiaFeast()
         {
             compClass = typeof(CompAbilityEffect_LamiaBabyKiller);
+        }
+
+        public float GetSizeThreshold(Pawn pawn)
+        {
+            var sm = HumanoidPawnScaler.GetCacheUltraSpeed(pawn, canRegenerate: false).scaleMultiplier.linear;
+            float divisor = StatWorker_MaxNutritionFromSize.GetNutritionMultiplier(sm);
+            float mNutrition = pawn.GetStatValue(StatDefOf.MaxNutrition) / divisor * pawn.def.GetStatValueAbstract(StatDefOf.MaxNutrition);
+            // Maps maxNut 1 to 0, and 4 to 1.0
+            float asRange = (mNutrition - 1) / 4;
+            return relativeSizeThreshold.ClampToRange(relativeSizeThreshold.LerpThroughRange(asRange));
         }
 
         //public override IEnumerable<string> ExtraStatSummary()

@@ -1,25 +1,38 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
 using System.Linq;
+using Verse;
 
 namespace BigAndSmall
 {
+    public class GraphicSetDef : Def
+    {
+        public ConditionalGraphicsSet conditionalGraphics = new();
+    }
+
     public class ConditionalGraphicsSet : ConditionalGraphic
     {
-        public ColorSetting colorA = new();
-        public ColorSetting colorB = new();
+        public GraphicSetDef replacementDef = null;
+        protected ColorSetting colorA = new();
+        protected ColorSetting colorB = new();
+        protected ColorSettingDef colorADef = null;
+        protected ColorSettingDef colorBDef = null;
         public ConditionalGraphicProperties props = new();
         protected ConditionalTexture conditionalPaths = null;
-        public AdaptivePathPathList texturePaths = [];
-
+        protected AdaptivePathPathList texturePaths = [];
+        protected AdaptivePawnPathDef adaptivePawnPathDef = null;
         protected ConditionalTexture conditionalMaskPaths = null;
         public AdaptivePathPathList maskPaths = [];
-        public string GetPath(BSCache cache, string path) => conditionalPaths?.TryGetPath(cache, ref path) == true || texturePaths.TryGetPath(cache, ref path) ? path : path;
+        public List<ConditionalGraphicsSet> alts = [];
+
+        public ColorSetting ColorA => colorADef?.color ?? colorA;
+        public ColorSetting ColorB => colorBDef?.color ?? colorB;
+        public AdaptivePathPathList TexturePaths => adaptivePawnPathDef?.texturePaths ?? texturePaths;
+        public string GetPath(BSCache cache, string path) => conditionalPaths?.TryGetPath(cache, ref path) == true || TexturePaths.TryGetPath(cache, ref path) ? path : path;
 
         public string GetMaskPath(BSCache cache, string path) => conditionalMaskPaths?.TryGetPath(cache, ref path) == true || maskPaths.TryGetPath(cache, ref path) ? path : path;
 
-        public List<ConditionalGraphicsSet> alts = [];
-
+        public ConditionalGraphicsSet ReturnThis() => replacementDef?.conditionalGraphics ?? this;
         public ConditionalGraphicsSet GetGraphicsSet(BSCache cache)
         {
             foreach (var alt in alts)
@@ -30,7 +43,7 @@ namespace BigAndSmall
                     return altSet;
                 }
             }
-            var target = this;
+            var target = ReturnThis();
             foreach (var gfxOverride in GetGraphicOverrides(cache.pawn))
             {
                 gfxOverride.graphics.OfType<ConditionalGraphicsSet>().Where(x => x != null).Do(x =>
@@ -38,10 +51,7 @@ namespace BigAndSmall
                     target = x;
                 });
             }
-
-
-
-            return this;
+            return ReturnThis();
         }
     }
 }

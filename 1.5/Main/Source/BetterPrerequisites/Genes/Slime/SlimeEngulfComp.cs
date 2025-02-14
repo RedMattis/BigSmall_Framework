@@ -43,7 +43,7 @@ namespace BigAndSmall
 
     public abstract class CompProperties_AbilityEngluf_Abstract : CompProperties_AbilityEffect
     {
-        public float relativeSizeThreshold = 0.8f;
+        public FloatRange relativeSizeThreshold = new(0.35f, 0.8f);
         public float? max = null;
         public int maxAgeStage = 3;
         public float internalBaseDamage = 10f;
@@ -57,6 +57,15 @@ namespace BigAndSmall
         public bool healsScars = false;
         public bool canHealBrain = false;
         public float bodyPartsRegeneratedPerDay = 0;
+
+        public float GetSizeThreshold(Pawn pawn)
+        {
+            var sm = HumanoidPawnScaler.GetCacheUltraSpeed(pawn, canRegenerate:false).scaleMultiplier.linear;
+            float divisor = StatWorker_MaxNutritionFromSize.GetNutritionMultiplier(sm);
+            float mnutrition = pawn.GetStatValue(StatDefOf.MaxNutrition) / divisor * pawn.def.GetStatValueAbstract(StatDefOf.MaxNutrition);
+            float asRange = (mnutrition - 1) / 4;
+            return relativeSizeThreshold.ClampToRange(relativeSizeThreshold.LerpThroughRange(asRange));
+        }
     }
     public class CompProperties_AbilityEnglufJump : CompProperties_AbilityEngluf_Abstract
     {
@@ -88,7 +97,7 @@ namespace BigAndSmall
                 {
                     foreach (int i in Enumerable.Range(0, Rand.Range(2, 6)))
                     {
-                        FleckMaker.ThrowDustPuff(target.Cell.ToVector3ShiftedWithAltitude(AltitudeLayer.MoteLow), parent.pawn.Map, 1.5f);
+                        FleckMaker.ThrowDustPuff(target.Cell.ToVector3ShiftedWithAltitude(AltitudeLayer.MoteLow), parent.pawn.Map, 1);
                     }
                     DoEngulf(parent.pawn, tPawn);
                 }
@@ -113,7 +122,7 @@ namespace BigAndSmall
             {
                 foreach (int i in Enumerable.Range(0, Rand.Range(2, 6)))
                 {
-                    FleckMaker.ThrowDustPuff(target.Cell.ToVector3ShiftedWithAltitude(AltitudeLayer.MoteLow), parent.pawn.Map, 1.2f);
+                    FleckMaker.ThrowDustPuff(target.Cell.ToVector3ShiftedWithAltitude(AltitudeLayer.MoteLow), parent.pawn.Map, 1);
                 }
                 DoEngulf(parent.pawn, tPawn);
             }
@@ -136,11 +145,19 @@ namespace BigAndSmall
             {
                 return false;
             }
-            if (EngulfHediff.PowScale(enemy.BodySize) > EngulfHediff.PowScale(parent.pawn.BodySize) * Props.relativeSizeThreshold)
+            if (parent?.pawn?.health?.hediffSet?.PainTotal > 0.5)
             {
                 if (throwMessages)
                 {
-                    Messages.Message("MessagerTargetTooBigToEngulf".Translate(enemy.Label), enemy, MessageTypeDefOf.RejectInput, historical: false);
+                    Messages.Message("BS_InTooMuchPain".Translate(enemy.Label), enemy, MessageTypeDefOf.RejectInput, historical: false);
+                }
+                return false;
+            }
+            if (EngulfHediff.PowScale(enemy.BodySize) > EngulfHediff.PowScale(parent.pawn.BodySize) * Props.GetSizeThreshold(parent.pawn))
+            {
+                if (throwMessages)
+                {
+                    Messages.Message("BS_TooLargeToSwallow".Translate(enemy.Label), enemy, MessageTypeDefOf.RejectInput, historical: false);
                 }
                 return false;
             }
@@ -150,7 +167,7 @@ namespace BigAndSmall
                 var digestCapacity = parent.pawn.health.capacities.GetLevel(BSDefs.Metabolism);
                 if (digestCapacity <= 0.55f)
                 {
-                    Messages.Message("DigestiveAbillityTooLow".Translate(), MessageTypeDefOf.RejectInput, historical: false);
+                    Messages.Message("DigestiveAbilityTooLow".Translate(), MessageTypeDefOf.RejectInput, historical: false);
                     return false;
                 }
             }
@@ -159,7 +176,7 @@ namespace BigAndSmall
             if (hediff != null)
             {
                 var engulfHediff = (EngulfHediff)hediff;
-                if (engulfHediff.TotalMass + EngulfHediff.PowScale(enemy.BodySize) > engulfHediff.MaxCapacity)
+                if (engulfHediff.TotalMass + EngulfHediff.PowScale(enemy.BodySize) > engulfHediff.MaxCapacity*1.1f)
                 {
                     if (throwMessages)
                     {
@@ -205,7 +222,7 @@ namespace BigAndSmall
 
             engulfHediff.selfDamageMultiplier = Props.selfDamageMultiplier;
             engulfHediff.internalBaseDamage = Props.internalBaseDamage;
-            engulfHediff.baseCapacity = Props.max != null ? Props.max.Value : Props.relativeSizeThreshold ;
+            engulfHediff.baseCapacity = Props.max != null ? Props.max.Value : Props.GetSizeThreshold(parent.pawn);
             engulfHediff.damageDef = Props.damageDef;
 
             engulfHediff.alliesAttackBack = Props.alliesAttackBack;
