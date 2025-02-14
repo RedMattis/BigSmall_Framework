@@ -5,8 +5,8 @@
     <exclude>1.4\HAR\Source</exclude>
     <exclude>1.4\Main\Source</exclude>
     <exclude>1.4\No_HAR\Source</exclude>
-    <exclude>1.5\Experimental\Source</exclude>
     <exclude>1.5\Main\Source</exclude>
+    <exclude>1.5\RedHealth\Source</exclude>
     <exclude>About\.Preview.png-autosave.kra</exclude>
   </Excluded>
 </Configuration>
