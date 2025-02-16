@@ -910,6 +910,11 @@ namespace BigAndSmall
                 throw;
             }
             pawn.skills?.DirtyAptitudes();
+            if (allPawnExts.Any(x=>x.removeTattoos))
+            {
+                pawn.style.BodyTattoo = null;
+                pawn.style.FaceTattoo = null;
+            }
         }
 
         [Unsaved]

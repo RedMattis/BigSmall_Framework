@@ -1,0 +1,68 @@
+<Defs>
+
+  <HediffDef ParentName="BS_DefaultRaceTracker">
+    <defName>BS_JustAHeadTracker</defName>
+    <description>I was told by the customer to engineer them with as big a head as possible. I did exactly what I was told. (Project: "Make anime real", attempt 412)</description>
+    <label>yukkuri</label>
+    <stages Inherit="False">
+      <li>
+        <statFactors>
+          <SM_HeadSize_Cosmetic>1.2</SM_HeadSize_Cosmetic>
+        </statFactors>
+      </li>
+    </stages>
+    <comps>
+      <li Class="BigAndSmall.CompProperties_Race">
+        <canSwapAwayFrom>false</canSwapAwayFrom>
+      </li>
+    </comps>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <bodyPaths>
+          <Female>BS_Blank</Female>
+          <Male>BS_Blank</Male>
+        </bodyPaths>
+        <removeTattoos>true</removeTattoos>
+        <bodyConstantHeadScale>true</bodyConstantHeadScale>
+        <bodyPosOffset>-0.9</bodyPosOffset>
+        <headDrawData>
+          <defaultData>
+            <offset>(0.0, 0, -0.1)</offset>
+          </defaultData>
+        </headDrawData>
+        <apparelRestrictions>
+          <thingDefs>
+          <!--I guess it ... floats or something?-->
+            <allowlist><li>Apparel_ShieldBelt</li></allowlist>
+          </thingDefs>
+          <bodyPartGroups>
+            <whitelist>
+              <li>UpperHead</li>
+              <li>FullHead</li>
+              <li>Eyes</li>
+              <li>Teeth</li>
+              <li>Mouth</li>
+              <li>Neck</li>
+            </whitelist>
+          </bodyPartGroups>
+        </apparelRestrictions>
+        <geneTagFilters><blacklist><li>Furskin</li></blacklist></geneTagFilters>
+        <nullsThoughts>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinUncovered_Disapproved_Male</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinUncovered_Disapproved_Social_Male</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinOrChestUncovered_Disapproved_Male</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinOrChestUncovered_Disapproved_Social_Male</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinChestOrHairUncovered_Disapproved_Male</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinChestOrHairUncovered_Disapproved_Social_Male</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinUncovered_Disapproved_Female</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinUncovered_Disapproved_Social_Female</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinOrChestUncovered_Disapproved_Female</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinOrChestUncovered_Disapproved_Social_Female</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinChestOrHairUncovered_Disapproved_Female</li>
+          <li MayRequire="Ludeon.Rimworld.Ideology">GroinChestOrHairUncovered_Disapproved_Social_Female</li>
+          <li>Naked</li>
+        </nullsThoughts>
+      </li>
+    </modExtensions>
+  </HediffDef>
+</Defs>

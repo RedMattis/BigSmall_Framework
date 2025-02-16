@@ -27,7 +27,7 @@ namespace BigAndSmall
             //RunDefPatchesWithHotReload(hotReload: false);
             
             NewFoodCategory.SetupFoodCategories();
-            ThoughtDefPatcher.PatchDefs();
+            
 
             
             DefAltNamer.Initialize();
@@ -66,6 +66,7 @@ namespace BigAndSmall
                 XenotypeDefPatcher.PatchDefs();
                 ModDefPatcher.PatchDefs();
                 HumanPatcher.PatchRecipes();
+                ThoughtDefPatcher.PatchDefs();
                 //Log.Message($"[Big and Small]: Experimental Setup - Finalized.");
             }
         }

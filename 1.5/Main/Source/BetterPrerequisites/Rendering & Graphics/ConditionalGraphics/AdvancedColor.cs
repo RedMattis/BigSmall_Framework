@@ -32,6 +32,8 @@ namespace BigAndSmall
         public bool apparelColorOrFavorite = false;
         public bool favoriteColor = false;
         public List<Color> colourRange = null;
+        public bool apparelColorA = false;
+        public bool apparelColorB = false;
         public bool apparelStuff = false; // Only works if the item is apparel.
         public Color? color = null;
         public float? saturation = null;
@@ -130,8 +132,16 @@ namespace BigAndSmall
                 else GetHostilityStatus(pawn, ref didSet, ref colorsAdded);
 
             }
-            if (apparelStuff)
+            if (apparelStuff || apparelColorA || apparelColorB)
             {
+                if (apparelColorA && renderNode.apparel.DrawColor is Color drawColor)
+                {
+                    colorsAdded.Add(drawColor);
+                }
+                if (apparelColorB && renderNode.apparel.DrawColor is Color drawColorB)
+                {
+                    colorsAdded.Add(drawColorB);
+                }
                 if (renderNode.apparel.Stuff is ThingDef stuffThing)
                 {
                     colorsAdded.Add(renderNode.apparel.def.GetColorForStuff(stuffThing));

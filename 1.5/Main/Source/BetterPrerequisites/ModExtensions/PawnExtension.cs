@@ -363,6 +363,7 @@ namespace BigAndSmall
         /// </summary>
         public AdaptivePathPathList bodyPaths = [];
         public AdaptivePathPathList bodyDessicatedPaths = [];
+        public bool removeTattoos = false;
         // Gets based on index at the moment. This is a bit lazy. I'll rewrite it properly later.
         public string GetDessicatedFromBodyPath(string path)
         {
