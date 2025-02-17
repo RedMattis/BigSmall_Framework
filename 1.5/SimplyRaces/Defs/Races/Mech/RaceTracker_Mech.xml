@@ -56,6 +56,7 @@
     <modExtensions>
       <li Class="BigAndSmall.PawnExtension">
         <isMechanical>true</isMechanical>
+        <traitIcon>BS_Traits/robot</traitIcon>
         <pawnDiet>BS_ChemRobotDiet</pawnDiet>
         <banAddictionsByDefault>true</banAddictionsByDefault>
         <romanceTags>

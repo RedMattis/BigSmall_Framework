@@ -1,5 +1,8 @@
 <LanguageData>
-  <BS_MechEndo>System Components</BS_MechEndo>
+  <BS_RacialFeatures>Biological Foundation</BS_RacialFeatures>
+  <BS_RacialFeatures_Mech>Mechanical Composition</BS_RacialFeatures_Mech>
+
+  <BS_MechEndo>Core Systems</BS_MechEndo>
   
   <!-- Hardware -->
   <!-- <BS_MechExo>Xenomodulators</BS_MechExo> -->
@@ -12,4 +15,10 @@
   <BS_SupernaturalEndo>Origin</BS_SupernaturalEndo>
   <!-- <BS_SupernaturalEndo>Transient traits</BS_SupernaturalEndo> -->
   <BS_FantasyXeno>Transient forces</BS_FantasyXeno>
+
+
+  <BS_ViewGenetics>Viewing {0}</BS_ViewGenetics>
+  
+  <BS_RacialFeatureDescription>Racial feature list</BS_RacialFeatureDescription>
+  <BS_RacialTraits>Racial Traits</BS_RacialTraits>
 </LanguageData>

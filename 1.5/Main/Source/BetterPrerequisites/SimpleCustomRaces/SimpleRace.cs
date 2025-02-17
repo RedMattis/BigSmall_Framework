@@ -47,7 +47,7 @@ namespace BigAndSmall
 
         public static bool IsMechanical(this Pawn pawn)
         {
-            return pawn.GetAllPawnExtensions().Any(x => x.isMechanical);
+            return pawn.GetAllPawnExtensions().Any(x => x.isMechanical) || pawn.RaceProps.IsMechanoid;
         }
 
         public static bool IsMechanicalDef(this ThingDef def)

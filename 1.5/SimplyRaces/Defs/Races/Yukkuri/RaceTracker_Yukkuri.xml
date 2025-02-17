@@ -18,6 +18,7 @@
     </comps>
     <modExtensions>
       <li Class="BigAndSmall.PawnExtension">
+        <traitIcon>BS_Traits/disguised</traitIcon>
         <bodyPaths>
           <Female>BS_Blank</Female>
           <Male>BS_Blank</Male>

@@ -24,6 +24,7 @@
     </comps>
     <modExtensions>
       <li Class="BigAndSmall.PawnExtension">
+        <traitIcon>BS_Traits/snek</traitIcon>
         <romanceTags>
           <Snake>1.0</Snake>
           <Humanlike>0.65</Humanlike>

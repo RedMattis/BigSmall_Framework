@@ -243,7 +243,14 @@ namespace BigAndSmall
 
                         corpse.comps.RemoveAll((CompProperties compProperties) => compProperties is CompProperties_SpawnerFilth
                             //|| compProperties?.compClass == typeof(CompHarbingerTreeConsumable)
-                            || compProperties is CompProperties_Rottable);
+                            //|| compProperties is CompProperties_Rottable
+                            );
+                        foreach(CompProperties_Rottable rottable in corpse.comps.Where(x => x is CompProperties_Rottable).Cast<CompProperties_Rottable>())
+                        {
+                            rottable.daysToDessicated = 999;
+                            rottable.daysToRotStart = 999;
+                            rottable.rotDamagePerDay = 10;
+                        }
                     }
                 }
             }
@@ -268,8 +275,8 @@ namespace BigAndSmall
                     {
                         raceThing.recipes ??= [];
                         raceThing.recipes.AddDistinct(recipe);
-                        //recipe.recipeUsers ??= [];
-                        //recipe.recipeUsers.AddDistinct(raceThing);
+                        recipe.recipeUsers ??= [];
+                        recipe.recipeUsers.AddDistinct(raceThing);
                         //Log.Message($"Patched recipe {recipe.defName} to include {raceThing.defName}");
                     }
                 }

@@ -335,9 +335,10 @@ namespace BigAndSmall
         }
 
         /// <summary>
-        /// Some old crappy method to clean up broken pawns. Probably best to leave it alone for now...
+        /// This is some old questionable method to clean up broken pawns.
+        /// 
+        /// Probably best to leave it alone for now... It doesn't seem to break anything and might still fix something important.
         /// </summary>
-        /// <param name="pawn"></param>
         public static void UpdatePawnHairAndHeads(Pawn pawn)
         {
             try
@@ -369,20 +370,8 @@ namespace BigAndSmall
                             var newHair = hairDefs.RandomElement();
                             pawn.story.hairDef = newHair;
 
-                            //Log.Message(pawn.Name.ToStringShort + " has a new hairdef: " + newHair.defName);
-                        }
-                        else
-                        {
-                            //Log.Message(pawn.Name.ToStringShort + " has no valid hairs");
                         }
                     }
-                    else
-                    {
-                        //Log.Message(pawn.Name.ToStringShort + $" has a valid hair ({pawn?.story?.hairDef}, with tags {string.Join(", ", pawn?.story?.hairDef?.styleTags?.ToArray())})");
-                    }
-                }
-                else
-                {
                 }
             }
             catch

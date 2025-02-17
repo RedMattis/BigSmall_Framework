@@ -152,9 +152,13 @@
     <Compile Include="SimpleCustomRaces\LifeStageWorker_FullyFormedHumanlike.cs" />
     <Compile Include="SimpleCustomRaces\MechanicalRace\FuelNeed.cs" />
     <Compile Include="SimpleCustomRaces\MechanicalRace\MechRacePatches.cs" />
+    <Compile Include="SimpleCustomRaces\RacialFeaturePanel\RacialTabButton.cs" />
+    <Compile Include="SimpleCustomRaces\RacialFeaturePanel\RacialViewWindow.cs" />
+    <Compile Include="SimpleCustomRaces\RacialFeaturePanel\RaceViewUIManager.cs" />
+    <Compile Include="SimpleCustomRaces\RacialFeaturePanel\RacialFeatureDef.cs" />
     <Compile Include="SimpleCustomRaces\RomanceTags.cs" />
     <Compile Include="SimpleCustomRaces\SimpleRaceCache.cs" />
-    <Compile Include="SimpleCustomRaces\SimpleRaceHediff.cs" />
+    <Compile Include="SimpleCustomRaces\RaceTracker.cs" />
     <Compile Include="SimpleCustomRaces\SimpleRace.cs" />
     <Compile Include="SimpleCustomRaces\SimpleRaceExtension.cs" />
     <Compile Include="ModExtensions\XenotypeExtension.cs" />
@@ -284,6 +288,10 @@
     <Publicize Include="Assembly-CSharp:RimWorld.Pawn_GeneTracker.Notify_GenesChanged" />
     <Publicize Include="Assembly-CSharp:RimWorld.Pawn_GeneTracker.CheckForOverrides" />
     <Publicize Include="Assembly-CSharp:RimWorld.GeneSet.cachedNonOverriddenGenes" />
+    <Publicize Include="Assembly-CSharp:RimWorld.GeneUIUtility.DrawSection" />
+    <Publicize Include="Assembly-CSharp:RimWorld.GeneUIUtility.DoDebugButton" />
+    <Publicize Include="Assembly-CSharp:Verse.Window.resizer" />
+    <Publicize Include="Assembly-CSharp:Verse.WindowResizer.isResizing" />
     <Publicize Include="Assembly-CSharp:Verse.Hediff.severityInt" />
     <Publicize Include="Assembly-CSharp:Verse.PawnRenderer.pawn" />
     <Publicize Include="Assembly-CSharp:Verse.PawnRenderer.results" />

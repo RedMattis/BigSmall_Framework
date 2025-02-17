@@ -4,7 +4,11 @@
     <defName>BS_HumanoidWithTailRace</defName>
     <description>A humanoid... with a tail!</description>
     <label>tailed humanoid</label>
-
+    <modExtensions>
+      <li MayRequire="pathfinding.framework" Class="PathfindingFramework.MovementExtension">
+        <traitIcon>BS_Traits/tail</traitIcon>
+      </li>
+    </modExtensions>
     <comps>
       <li Class="BigAndSmall.CompProperties_Race">
         <canSwapAwayFrom>true</canSwapAwayFrom>
@@ -72,10 +76,5 @@
         </drawData>
       </li>
     </renderNodeProperties>
-    <modExtensions>
-      <li MayRequire="pathfinding.framework" Class="PathfindingFramework.MovementExtension">
-        <movementDef>PF_Movement_Flying</movementDef>
-      </li>
-    </modExtensions>
   </HediffDef>
 </Defs>

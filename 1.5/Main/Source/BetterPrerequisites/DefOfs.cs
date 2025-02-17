@@ -118,8 +118,7 @@ namespace BigAndSmall
         public static BodyPartDef Tail;
         public static BodyPartDef BS_Wing;
 
-        //public static ThingDef BS_MechHuman;
-        //public static HediffDef BS_MechHumanRace;
+        public static RacialFeatureDef BS_Mechanical;
 
         // Categories
         public static ThingCategoryDef BS_RobotCorpses;
@@ -127,9 +126,6 @@ namespace BigAndSmall
         // Recipes
         public static RecipeDef BS_ShredRobot;
         public static RecipeDef BS_SmashRobot;
-        //public static RecipeDef ButcherCorpseMechanoid;
-        //public static RecipeDef SmashCorpseMechanoid;
-        //public static RecipeDef ButcherCorpseFlesh;
 
         // Shaders
         public static ShaderTypeDef CutoutComplexBlend;

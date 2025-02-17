@@ -22,6 +22,7 @@
     </stages>
     <modExtensions>
       <li Class="BigAndSmall.PawnExtension">
+        <traitIcon>BS_Traits/spooder</traitIcon>
         <romanceTags>
           <Spider>1.0</Spider>
           <Humanlike>0.35</Humanlike>
@@ -61,8 +62,8 @@
         <drawData>
           <bodyTypeScales>
             <Fat>1.5</Fat> <Female>1.05</Female> <Hulk>1.1</Hulk> <Thin>0.9</Thin>
-            <Child MayRequire="Ludeon.Rimworld.Ideology">0.9</Child>
-            <Baby MayRequire="Ludeon.Rimworld.Ideology">0.75</Baby>
+            <Child MayRequire="Ludeon.Rimworld.Biotech">0.9</Child>
+            <Baby MayRequire="Ludeon.Rimworld.Biotech">0.75</Baby>
           </bodyTypeScales>
           <dataNorth> <offset>(0, 0.000, -0.3)</offset> <layer>89.5</layer> </dataNorth>
           <dataSouth> <offset>(0, -0.000, -0.1)</offset> <layer>89.5</layer> </dataSouth>
@@ -91,8 +92,8 @@
         <drawData>
           <bodyTypeScales>
             <Fat>1.5</Fat> <Female>1.05</Female> <Hulk>1.1</Hulk> <Thin>0.95</Thin>
-            <Child MayRequire="Ludeon.Rimworld.Ideology">0.9</Child>
-            <Baby MayRequire="Ludeon.Rimworld.Ideology">0.75</Baby>
+            <Child MayRequire="Ludeon.Rimworld.Biotech">0.9</Child>
+            <Baby MayRequire="Ludeon.Rimworld.Biotech">0.75</Baby>
           </bodyTypeScales>
           <dataNorth>
             <offset>(0, 0.0001, -0.3)</offset>

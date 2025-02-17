@@ -170,11 +170,6 @@ namespace BigAndSmall
                         }
                     }
                 }
-                // Replace this with a "hide categories" function later.
-                //if (geneDef?.displayCategory?.defName == "BS_Metamorph")
-                //{
-                //    Dialog_CreateXenotypePatches.hiddenGenes.Add(geneDef);
-                //}
             }
         }
 

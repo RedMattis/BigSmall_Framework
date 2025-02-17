@@ -77,9 +77,8 @@ namespace BigAndSmall
                 }
                 return sb.ToString();
             }
-
-
         }
+
         public static bool TryGetDescription(this List<PawnExtension> extList, out string content)
         {
             StringBuilder sb = new();
@@ -91,6 +90,7 @@ namespace BigAndSmall
                 CreateListSection("BS_SizeByAgeOffset".Translate(), extList, ext => ext.SizeByAgeDescription),
                 CreateListSection("BS_SizeByAgeOffset".Translate(), extList, ext => ext.SizeByAgeMultDescription),
                 // Health and Body Modifications
+                CreateListSection("BS_RacialFeatures".Translate(), extList, ext => ext.RacialFeaturesDescription),
                 CreateListSection("BS_Applies".Translate(), extList, ext => ext.ApplyBodyHediffDescription),
                 CreateListSection("BS_Applies".Translate(), extList, ext => ext.RaceForcedHediffsDesc),
                 CreateListSection("BS_Applies".Translate(), extList, ext => ext.ApplyPartHediffDescription),
@@ -224,6 +224,8 @@ namespace BigAndSmall
         // Used for race-defaults.
         public static PawnExtension defaultPawnExtension = new();
 
+        public string traitIcon = null;
+
         /// <summary>
         /// The order in which this extension is applied.
         /// Higher numbers are applied later, which means they can in some cases overwrite earlier extensions.
@@ -248,6 +250,10 @@ namespace BigAndSmall
         /// Turns off the zoomed-out render cache for the pawn. Useful if your pawn graphics might otherwise get cut off.
         /// </summary>
         public bool renderCacheOff = false;
+
+        public List<RacialFeatureDef> racialFeatures = null;
+
+        public List<TaggedString> RacialFeaturesDescription => racialFeatures?.Select(x => x.LabelCap).ToList();
 
         /// <summary>
         /// Used by Genes. When the gene is added/activated it will apply these hediffs to the pawn.

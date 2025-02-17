@@ -286,7 +286,6 @@ namespace BigAndSmall
             if (pawn?.def == null) return false;
             if (pawn.def == swapTarget) return false;
             bool wasRemovedFromLister = false;
-            //var pos = pawn.Position;
             var map = pawn.Map;
 
             if (!hediffsToReapply.ContainsKey(pawn)) hediffsToReapply[pawn] = [];
@@ -417,8 +416,6 @@ namespace BigAndSmall
                 raceExtension.ApplyTrackerIfMissing(pawn, cache);
             }
             pawn.needs.AddOrRemoveNeedsAsAppropriate();
-
-            //pawn.Drawer.renderer.SetAllGraphicsDirty();
             return true;
         }
 

@@ -21,6 +21,7 @@
     </comps>
     <modExtensions>
       <li Class="BigAndSmall.PawnExtension">
+        <traitIcon>BS_Traits/centaur</traitIcon>
         <romanceTags>
           <Centaur>1.0</Centaur>
           <Humanlike>0.35</Humanlike>

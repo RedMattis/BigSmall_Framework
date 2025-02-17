@@ -565,7 +565,6 @@ namespace BigAndSmall
 
             damageType.canInterruptJobs = false;
             damageType.makesBlood = false;
-            //damageType.
             pawn.TakeDamage(new DamageInfo(damageType, damage * selfDamageMultiplier * damageFromSkills * globalDamageMultiplier / idd, intendedTarget: pawn, hitPart: targetPart, armorPenetration: 500,
                     instigatorGuilty: false, instigator: innerPawn, spawnFilth: false));
 

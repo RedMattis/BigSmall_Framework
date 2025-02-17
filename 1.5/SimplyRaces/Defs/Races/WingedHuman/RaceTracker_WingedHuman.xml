@@ -2,7 +2,7 @@
 
   <HediffDef ParentName="BS_DefaultRaceTracker">
     <defName>BS_HumanoidWithWings_Race</defName>
-    <description>Winged Humanoid</description>
+    <description>This individual has wings.</description>
     <label>winged humanoid</label>
     <comps>
       <li Class="BigAndSmall.CompProperties_Race">
@@ -10,6 +10,14 @@
       </li>
       <li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="AnimalBehaviours.HediffCompProperties_Floating"/>
     </comps>
+    
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <traitIcon>BS_Traits/wings</traitIcon>
+      </li> 
+    </modExtensions>
+
+
     <renderNodeProperties>
       <!-- ...Why did I do this to myself... -->
 

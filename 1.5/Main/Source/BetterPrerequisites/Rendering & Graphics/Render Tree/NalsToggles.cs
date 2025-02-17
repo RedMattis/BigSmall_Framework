@@ -46,6 +46,10 @@ namespace BigAndSmall
                         if (child.ToString().Contains("HeadControllerComp"))
                         {
                             child.debugEnabled = !options.headName.Contains("NOT_");
+                            //if (options.headName.ToLower() != "retain" || options.headName.NullOrEmpty())
+                            //{
+                            //    child.Graphic = GraphicDatabase.Get<Graphic_Multi>(options.headName, ShaderDatabase.CutoutSkin, Vector2.one, Color.white);
+                            //}
                             child.requestRecache = true;
                         }
                         else if (child.ToString().Contains("SkinControllerComp"))

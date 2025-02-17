@@ -71,6 +71,7 @@
   <!-- PatchExtensions -->
   <BS_Applies>applies</BS_Applies>
 
+  <BS_RacialFeatures>Racial Features</BS_RacialFeatures>
   <BS_ApplyBodyHediff>{0}</BS_ApplyBodyHediff>
   <BS_ApplyPartHediff>applies {0} to {1}</BS_ApplyPartHediff>
   <BS_ThingDefSwap>applies race/hybrid race</BS_ThingDefSwap>

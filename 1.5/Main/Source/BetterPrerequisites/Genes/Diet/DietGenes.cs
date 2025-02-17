@@ -12,28 +12,6 @@ using Verse.AI;
 
 namespace BigAndSmall
 {
-    //public class FoodOverride
-    //{
-    //    public ThingDef def;
-    //    public float nutrition;
-
-    //    public void ItemsToEat(Thing foodThing, float nutritionWanted, out int numToEat, out float resultNutrition)
-    //    {
-    //        float nutritionPerItem = nutrition;
-    //        numToEat = Mathf.CeilToInt(nutritionWanted / nutritionPerItem);
-    //        numToEat = Mathf.Min(numToEat, foodThing.stackCount);
-    //        numToEat = Mathf.Min(numToEat, 500);
-    //        resultNutrition = numToEat * nutritionPerItem;
-    //    }
-    //    public void ItemsToEat(ThingDef foodThing, float nutritionWanted, out int numToEat, out float resultNutrition)
-    //    {
-    //        float nutritionPerItem = nutrition;
-    //        numToEat = Mathf.CeilToInt(nutritionWanted / nutritionPerItem);
-    //        numToEat = Mathf.Min(numToEat, 500);
-    //        resultNutrition = numToEat * nutritionPerItem;
-    //    }
-    //}
-
     public static class FoodHelper
     {
         public static FilterResult GetFilterForFoodThing(this Thing food, BSCache cache)
