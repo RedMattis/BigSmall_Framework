@@ -313,7 +313,7 @@ namespace BigAndSmall
                 if (cache.willEatDef.TryGetValue(food.def, out bool cachedResult))
                 {
                     __result = cachedResult;
-                    skipThingDefCheck = true;
+                    skipThingDefCheck = false;
                     return cachedResult;
                 }
                 if (p?.DevelopmentalStage == DevelopmentalStage.Baby)
