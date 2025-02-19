@@ -5,7 +5,7 @@
     <description>A humanoid... with a tail!</description>
     <label>tailed humanoid</label>
     <modExtensions>
-      <li MayRequire="pathfinding.framework" Class="PathfindingFramework.MovementExtension">
+      <li Class="BigAndSmall.PawnExtension">
         <traitIcon>BS_Traits/tail</traitIcon>
       </li>
     </modExtensions>

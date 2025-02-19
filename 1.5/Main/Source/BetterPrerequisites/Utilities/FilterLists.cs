@@ -13,7 +13,7 @@ namespace BigAndSmall
         {
             None,       // No result yet. Can be used to determine if there was a filter hit.
             Neutral,     // Accepts the result, but is a fail-state if explicit permission is required.
-            Allow,      // Accepts the result, priority over Neutral.
+            Allow,      // Allow the result, priority over Neutral.
             Deny,       // Denies the result, but can be overridden by ForceAllow.
             ForceAllow, // Accepts the result. Priority over anything but ForceDeny.
             Banned,  // If this is present, the result is always ForceDeny.
@@ -23,7 +23,7 @@ namespace BigAndSmall
             Acceptlist,
             Whitelist,
             Blacklist,
-            Allowlist,
+            Allowlist, // ForceAllow List basically.
             Banlist
         }
 
@@ -126,12 +126,12 @@ namespace BigAndSmall
 
         public static class FilterHelpers
         {
-            public static FilterResult Max(this FilterResult a, FilterResult b) => (a > b) ? a : b;
+            public static FilterResult Max(FilterResult a, FilterResult b) => (a > b) ? a : b;
  
             public static FilterResult MaxList(this IEnumerable<FilterResult> results) =>
-                results.Aggregate(FilterResult.None, (a, b) => a.Max(b));
+                results.Aggregate(FilterResult.None, Max);
 
-            public static FilterResult Fuse(this FilterResult previous, FilterResult next) => previous.Max(next);
+            public static FilterResult Fuse(this FilterResult previous, FilterResult next) => Max(previous, next);
 
             public static FilterResult Fuse(this IEnumerable<FilterResult> results) => results.EnumerableNullOrEmpty() ? FilterResult.None : results.MaxList();
 

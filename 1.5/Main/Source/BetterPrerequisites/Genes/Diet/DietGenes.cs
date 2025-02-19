@@ -30,7 +30,6 @@ namespace BigAndSmall
                 }
                 else
                 {
-                    var r = catForFood.allowByDefault ? FilterResult.Allow : FilterResult.Deny;
                     result.Fuse(catForFood.allowByDefault ? FilterResult.Allow : FilterResult.Deny);
                 }
             }
@@ -102,7 +101,7 @@ namespace BigAndSmall
                 return result;
             }
 
-            return allowByDefault ? FilterResult.Allow : FilterResult.Neutral; // Accept gets discarded, because we demand explicit acceptance.
+            return allowByDefault ? FilterResult.Allow : FilterResult.Neutral; // Neutral gets discarded, because we demand explicit acceptance.
         }
     }
 

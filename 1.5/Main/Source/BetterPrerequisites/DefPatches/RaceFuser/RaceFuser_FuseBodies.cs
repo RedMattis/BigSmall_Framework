@@ -167,7 +167,6 @@ namespace BigAndSmall
                     .Where(x => Similarity(x, child) != null)?
                     .Select(x => (x, Similarity(x, child)))?
                     .OrderByDescending(x => x.Item2).FirstOrDefault();
-
                 if (similarPart.HasValue && similarPart.Value.x != null)
                 {
                     var similarBodyRec = similarPart.Value.x;
@@ -175,10 +174,10 @@ namespace BigAndSmall
                     unTransfereredParts.Remove(similarBodyRec);
                     partTwoParts.Remove(similarBodyRec);
                 }
-                else
-                {
-                    //Log.Message($"DEBUG: Could not find a similar part for {child.def.defName} in {partTwo.def.defName}");
-                }
+                //else
+                //{
+                //    Log.Message($"DEBUG: Could not find a similar part for {child.def.defName} in {partTwo.def.defName}");
+                //}
             }
 
             // Total Coverage of the body parts.
@@ -196,7 +195,8 @@ namespace BigAndSmall
 
             //if (partTwoParts.Any())
             //{
-            //    Log.Message($"There are {partTwoParts.Count} parts left to merge into {genPart.def.defName}.");
+            //    Log.Message($"[{mergeOne?.bodyDef?.LabelCap}]There are {partTwoParts.Count} parts left to merge into {genPart.def.defName}.\n" +
+            //        $"Parts: {partTwoParts.Select(x => x.def.defName).ToCommaList()}");
             //}
 
             foreach (var part in partTwoParts)
