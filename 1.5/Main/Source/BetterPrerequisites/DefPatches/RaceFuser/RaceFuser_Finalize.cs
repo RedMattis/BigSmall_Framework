@@ -210,6 +210,8 @@ namespace BigAndSmall
 
                 DefGenerator.AddImpliedDef(newThing, hotReload: hotReload);
                 DefGenerator.AddImpliedDef(newRace.body, hotReload: hotReload);
+
+                newThing.ResolveReferences();
             }
         }
 
