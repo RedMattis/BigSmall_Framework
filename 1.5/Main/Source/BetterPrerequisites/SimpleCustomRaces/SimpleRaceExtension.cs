@@ -44,7 +44,16 @@ namespace BigAndSmall
             }
         }
 
-        
+        /// <summary>
+        /// Used only for DefGeneration.
+        /// </summary>
+        public void SetHediff(HediffDef hediff)
+        {
+            raceHediff = null;
+            raceHediffList = [hediff];
+        }
+
+
         public List<PawnExtension> PawnExtensionOnRace => ModExtHelper.ExtensionsOnDefList<PawnExtension, HediffDef>(RaceHediffs);
 
         // Merge with FilterListSet<T> MergeFilters<T>'s extension methods.
@@ -66,7 +75,6 @@ namespace BigAndSmall
             }
         }
 
-        
         public void ApplyTrackerIfMissing(Pawn pawn, BSCache cache=null)
         {
             if (TrackerMissing(pawn))
@@ -87,6 +95,10 @@ namespace BigAndSmall
             {
                 var subs = BodyDefFusionsHelper.GetSubstitutableTrackers(raceHediff);
                 raceHediffsWithSubstitutions.AddRange(subs);
+                if (subs.Count == 0)
+                {
+                    raceHediffsWithSubstitutions.Add(new HashSet<HediffDef> { raceHediff });
+                }
             }
             foreach(var hediffGroup in raceHediffsWithSubstitutions)
             {
@@ -109,7 +121,6 @@ namespace BigAndSmall
                 {
                     allRemovedTrackers.AddRange(cache.raceTrackerHistory);
                 }
-                // Ensure the raceDef is of the "RaceTracker" class or a subclass thereof.
                 foreach (var raceHediff in RaceHediffs)
                 {
                     var targetHediff = raceHediff;
@@ -121,7 +132,7 @@ namespace BigAndSmall
                         targetHediff = validSubstitutes.FirstOrFallback(raceHediff);
                     }
 
-                    if (targetHediff.hediffClass == typeof(RaceTracker))
+                    if (typeof(RaceTracker).IsAssignableFrom(targetHediff.hediffClass))
                     {
                         pawn.health.AddHediff(targetHediff);
                     }

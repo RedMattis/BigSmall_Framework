@@ -89,6 +89,7 @@ namespace BigAndSmall
         public RomanceTags romanceTags = null;
 
         public ApparelRestrictions apparelRestrictions = null;
+        public bool canWield = true;
         //public bool canWearApparel = true;
         //public bool canWearClothing = true;
         //public bool canWearArmor = true;

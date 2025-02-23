@@ -469,6 +469,8 @@ namespace BigAndSmall
                     {
                         apparelRestrictions = null;
                     }
+
+                    canWield = allPawnExt.Any(x => x.canWieldThings == true) || !allPawnExt.Any(x => x.canWieldThings == false);
                 }
 
                 aptitudes = allPawnExt.Where(x => x.aptitudes != null).SelectMany(x => x.aptitudes).ToList();
@@ -894,8 +896,19 @@ namespace BigAndSmall
                         }
                     }
                 }
-
             }
+            if (!canWield)
+            {
+                if (pawn.Spawned && (pawn.IsColonist || pawn.IsPrisonerOfColony))
+                {
+                    pawn.equipment.DropAllEquipment(pawn.Position, forbid: false);
+                }
+                else
+                {
+                    pawn.equipment?.DestroyAllEquipment();
+                }
+            }
+
             banAddictions = allPawnExts.Any(x => x.banAddictionsByDefault);
 
             try

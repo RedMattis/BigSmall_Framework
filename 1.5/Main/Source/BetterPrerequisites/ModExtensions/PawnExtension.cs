@@ -110,6 +110,7 @@ namespace BigAndSmall
                 CreateIndividualSection("BS_ConsumeSoulOnHit".Translate(), extList, ext => ext.ConsumeSoulOnHitDescription),
                 // Apparel and Restrictions
                 CreateIndividualSection("BS_HasApparelRestrictions".Translate(), extList, ext => ext.apparelRestrictions != null ? "BS_Modified".Translate().CapitalizeFirst() : null),
+                CreateIndividualSection("BS_CanWieldThings".Translate(), extList, ext => ext.canWieldThings != null ? "BS_Modified".Translate().CapitalizeFirst() : null),
                 // Thoughts and Relationships
                 CreateAggregatedSection("BS_HasNullThoughtsCount", extList.Where(x=>x.nullsThoughts != null).ToList(), ext => ext.nullsThoughts?.Count ?? 0, counts => counts.Sum().ToString()),
                 CreateListSection("BS_RomanceTags".Translate(), extList, ext => ext.RomanceTagsDescription),
@@ -299,6 +300,8 @@ namespace BigAndSmall
         /// Sets what apparel the pawn can wear. Check in the class for more details.
         /// </summary>
         public ApparelRestrictions apparelRestrictions = null;
+
+        public bool? canWieldThings = null;
 
         /// <summary>
         /// Transforms the pawn into a specific xenotype under some conditions.

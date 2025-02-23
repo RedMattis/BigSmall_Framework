@@ -23,26 +23,37 @@ namespace BigAndSmall
                 return __result;
             }
 
-            if (FastAcccess.GetCache(pawn) is BSCache cache && cache.apparelRestrictions is ApparelRestrictions restrictions)
+            if (FastAcccess.GetCache(pawn) is BSCache cache)
             {
-                var result = restrictions.CanWear(thing);
-                if (result != null)
+                if (cache.apparelRestrictions is ApparelRestrictions restrictions)
                 {
-                    cantReason = result;
-                    return false;
+                    var result = restrictions.CanWear(thing);
+                    if (result != null)
+                    {
+                        cantReason = result;
+                        return false;
+                    }
+                }
+
+
+                // Check if the thing is a weapon or equipment
+                if (thing.IsWeapon)
+                {
+                    if (!cache.canWield)
+                    {
+                        cantReason = "BS_GenePreventsEquipping".Translate();
+                        return false;
+                    }
+
+                    bool hasGenePreventingEquippingAnything = genes.GenesListForReading.Any(x => x.def.defName.Contains("BS_NoEquip"));
+                    if (hasGenePreventingEquippingAnything)
+                    {
+                        cantReason = "BS_GenePreventsEquipping".Translate();
+                        return false;
+                    }
                 }
             }
 
-            // Check if the thing is a weapon or equipment
-            if (thing.IsWeapon)
-            {
-                bool hasGenePreventingEquippingAnything = genes.GenesListForReading.Any(x => x.def.defName.Contains("BS_NoEquip"));
-                if (hasGenePreventingEquippingAnything)
-                {
-                    cantReason = "BS_GenePreventsEquipping".Translate();
-                    return false;
-                }
-            }
             
             if (thing.IsApparel)
             {

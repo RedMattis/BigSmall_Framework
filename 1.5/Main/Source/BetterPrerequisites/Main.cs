@@ -50,6 +50,7 @@ namespace BigAndSmall
             HumanPatcher.MechanicalSetup();
             RaceFuser.PreHotreload();
             RaceFuser.CreateMergedBodyTypes(hotReload);
+            HumanlikeAnimalGenerator.GenerateHumanlikeAnimals(hotReload);
         }
 
         public static void RunDuringGenerateImpliedDefs(bool hotReload)
