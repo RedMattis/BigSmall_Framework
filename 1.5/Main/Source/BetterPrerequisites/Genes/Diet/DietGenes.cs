@@ -22,22 +22,22 @@ namespace BigAndSmall
             {
                 if (cache.newFoodCatDeny?.Contains(catForFood) == true)
                 {
-                    result.Fuse(FilterResult.Deny);
+                    result = result.Fuse(FilterResult.Deny);
                 }
                 else if (cache.newFoodCatAllow?.Contains(catForFood) == true)
                 {
-                    result.Fuse(FilterResult.Allow);
+                    result = result.Fuse(FilterResult.Allow);
                 }
                 else
                 {
-                    result.Fuse(catForFood.allowByDefault ? FilterResult.Allow : FilterResult.Deny);
+                    result = result.Fuse(catForFood.allowByDefault ? FilterResult.Allow : FilterResult.Deny);
                 }
             }
             if (cache.pawnDiet.NullOrEmpty() == false)
             {
                 foreach (var diet in cache.pawnDiet)
                 {
-                    result.Fuse(diet.FilterForFood(food));
+                    result = result.Fuse(diet.FilterForFood(food));
                 }
             }
             return result;
@@ -233,18 +233,21 @@ namespace BigAndSmall
             typeof(bool)
         })]
         [HarmonyPrefix]
-        [HarmonyPriority(Priority.High)]
+        [HarmonyPriority(Priority.VeryHigh)]
         public static bool WillEatDef_Prefix(ref bool __result, Pawn p, ThingDef food, Pawn getter, bool careIfNotAcceptableForTitle, bool allowVenerated)
         {
-            if (skipThingDefCheck) return true;
             if (p.IsBloodfeeder() && food == ThingDefOf.HemogenPack) { return true; }
             if (p.IsMutant) { return true; }
             if (HumanoidPawnScaler.GetCacheUltraSpeed(p) is BSCache cache)
             {
                 if (cache.willEatDef.TryGetValue(food, out bool cachedResult))
                 {
-                    __result = cachedResult;
-                    return cachedResult;
+                    if (cachedResult == false)
+                    {
+                        __result = false;
+                        return false;
+                    }
+                    return true;
                 }
 
                 if (p?.DevelopmentalStage == DevelopmentalStage.Baby)  // Yum yum babies can eat chemfuel-based food for simplicity's sake.
@@ -282,15 +285,17 @@ namespace BigAndSmall
                     __result = false;
                     return false;
                 }
-                else
+                else if (result.NotExplicitlyAllowed())
                 {
                     cache.willEatDef[food] = true;
                 }
+
+                return true;
             }
             return true;
         }
 
-        private static bool skipThingDefCheck = false;  // To avoid pointless extra checks.
+        
         [HarmonyPatch(typeof(FoodUtility), nameof(FoodUtility.WillEat), new Type[]
         {
             typeof(Pawn),
@@ -305,19 +310,18 @@ namespace BigAndSmall
         {
             if (p.IsBloodfeeder() && food?.def == ThingDefOf.HemogenPack) { return true; }
             if (p.IsMutant) { return true; }
-            skipThingDefCheck = true;
+            if (p?.DevelopmentalStage == DevelopmentalStage.Baby) { return true; }
+
             // Ignore unspawned pawns, it just gets messy because of Ludeon hardcoding.
             if (p?.Spawned == true && HumanoidPawnScaler.GetCacheUltraSpeed(p) is BSCache cache && cache.isHumanlike)
             {
                 if (cache.willEatDef.TryGetValue(food.def, out bool cachedResult))
                 {
-                    __result = cachedResult;
-                    skipThingDefCheck = false;
-                    return cachedResult;
-                }
-                if (p?.DevelopmentalStage == DevelopmentalStage.Baby)
-                {
-                    skipThingDefCheck = false;
+                    if (cachedResult == false)
+                    {
+                        __result = false;
+                        return false;
+                    }
                     return true;
                 }
                 FilterResult result = food.GetFilterForFoodThing(cache);
@@ -325,13 +329,9 @@ namespace BigAndSmall
                 if (result.Denied())
                 {
                     __result = false;
-                    skipThingDefCheck = false;
-
                     return false;
                 }
             }
-            skipThingDefCheck = false;
-
             return true;
         }
 

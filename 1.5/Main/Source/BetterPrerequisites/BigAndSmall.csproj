@@ -113,6 +113,10 @@
     <Compile Include="DefPatches\RaceFuser\RaceFuser_Helpers.cs" />
     <Compile Include="Gender and Reproduction\GenderMethods.cs" />
     <Compile Include="Genes\GeneEffectManager.cs" />
+    <Compile Include="Genes\PowerPools\ResourcePoolUtils.cs" />
+    <Compile Include="Genes\Slime\CompProperties_SlimeCost.cs" />
+    <Compile Include="Genes\Slime\GeneGizmo_ResourceSlime.cs" />
+    <Compile Include="Genes\Unliving\ReturningSoul.cs" />
     <Compile Include="Hediffs\HediffPatches.cs" />
     <Compile Include="Genes\GeneSetupEvents.cs" />
     <Compile Include="Genes\GeneUI.cs" />

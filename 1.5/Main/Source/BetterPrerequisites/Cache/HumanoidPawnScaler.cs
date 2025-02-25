@@ -456,7 +456,7 @@ namespace BigAndSmall
                     }
                     var activeGenedefs = activeGenes.Select(x => x.def).ToList();
                     newFoodCatAllow = BSDefLibrary.FoodCategoryDefs.Where(x => x.DefaultAcceptPawn(pawn, activeGenedefs, pawnDiet).Fuse(pawnDiet.Select(y => y.AcceptFoodCategory(x))).ExplicitlyAllowed()).ToList();
-                    newFoodCatDeny = BSDefLibrary.FoodCategoryDefs.Where(x => x.DefaultAcceptPawn(pawn, activeGenedefs, pawnDiet).Fuse(pawnDiet.Select(y => y.AcceptFoodCategory(x))).NeutralOrWorse()).ToList();
+                    newFoodCatDeny = BSDefLibrary.FoodCategoryDefs.Where(x => x.DefaultAcceptPawn(pawn, activeGenedefs, pawnDiet).Fuse(pawnDiet.Select(y => y.AcceptFoodCategory(x))).NotExplicitlyAllowed()).ToList();
 
                     ApparelRestrictions appRestrict = new();
                     var appRestrictList = allPawnExt.Where(x => x.apparelRestrictions != null).Select(x => x.apparelRestrictions).ToList();

@@ -59,7 +59,7 @@ namespace BigAndSmall
             {
                 Log.ErrorOnce($"Attempted to calculate value for disabled stat {stat}; this is meant as a consistency check, either set the stat to neverDisabled or ensure this pawn cannot accidentally use this stat (thing={req.Thing.ToStringSafe()})", 75193282 + stat.index);
             }
-            float nutritionCapMult = 1; //GetBaseValueFor(req);  // This should be 1.
+            float nutritionCapMult = 1;
             if (req.Thing is Pawn pawn)
             {
                 if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache)
@@ -67,7 +67,6 @@ namespace BigAndSmall
                     if (cache.developmentalStage <= DevelopmentalStage.Baby) return 1;
                     float scale = cache.scaleMultiplier.linear;
                     return GetNutritionMultiplier(scale);
-                    //Log.Message($"Debug : {pawn} StatWorker_MaxNutritionFromSize: nutritionCapMult: {nutritionCapMult}");
                 }
             }
             return nutritionCapMult;
