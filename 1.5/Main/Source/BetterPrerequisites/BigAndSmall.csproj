@@ -101,6 +101,7 @@
     <Compile Include="Abillities\MeleeAttackAbility.cs" />
     <Compile Include="Cache\CacheAccessProps.cs" />
     <Compile Include="Cache\CacheVariables.cs" />
+    <Compile Include="Comps\UsableConditions\CompUseEffectQuantityCondition.cs" />
     <Compile Include="Debugging\DebugActions.cs" />
     <Compile Include="BSDefLibrary.cs" />
     <Compile Include="Debugging\GeneDebugMenu.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="Items\ApparelRestrictions.cs" />
     <Compile Include="Items\EquipNotifyPatches.cs" />
     <Compile Include="Items\Trade and Loot\StockGenerator.cs" />
+    <Compile Include="Jobs\JobDriver_UseOnTarget.cs" />
     <Compile Include="ModExtensions\SmartExtension.cs" />
     <Compile Include="ModExtensions\ModExtHelper.cs" />
     <Compile Include="ModPatches\MiscCompatibility\HumanoidAlienRaces.cs" />
