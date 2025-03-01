@@ -74,7 +74,7 @@ namespace BigAndSmall
                 {
                     return;
                 }
-                bool femaleBody = cache.GetApparentGender() == Gender.Female || pawn.gender == Gender.Female;
+                bool femaleBody = cache.GetApparentGender() == Gender.Female;
 
                 if (femaleBody && bodyNakedGraphicPath != null && !bodyNakedGraphicPath.Contains("_Female") && (bodyNakedGraphicPath.Contains("_Thin") || bodyNakedGraphicPath.Contains("_Fat") || bodyNakedGraphicPath.Contains("_Hulk")))
                 {
@@ -140,7 +140,8 @@ namespace BigAndSmall
                 {
                     return false;
                 }
-                return newBody != null && newBody != bodyType;
+                if (newBody == null) return false;
+                return true;
             }
             return false;
         }

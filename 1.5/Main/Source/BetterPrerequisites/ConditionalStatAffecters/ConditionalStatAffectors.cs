@@ -10,10 +10,6 @@ namespace BigAndSmall
 
         public override bool Applies(StatRequest req)
         {
-            if (!ModsConfig.BiotechActive)
-            {
-                return false;
-            }
             bool spawned = req.Thing?.Spawned == true;
             if (req.HasThing && (spawned || (req.Thing.ParentHolder is PawnFlyer pf && pf.Spawned)))
             {

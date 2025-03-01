@@ -19,7 +19,7 @@ namespace BetterPrerequisites
             var geneDef = gene.def;
             foreach (var pExt in pawnExtensions.Where(x=>x.conditionals != null))
             {
-                bool invert = pExt.invert != null && pExt.invert == true;
+                bool invert = pExt.invert == true;
                 if (TestConditionals(gene, pExt.conditionals))
                 {
                     if (invert) return false;
@@ -35,6 +35,7 @@ namespace BetterPrerequisites
         public static bool TestConditionals(Gene gene, List<ConditionalStatAffecter> conditionalStatEffectors)
         {
             if (conditionalStatEffectors != null)
+            {
                 foreach (var statEffector in conditionalStatEffectors)
                 {
                     var stat = StatRequest.For(gene.pawn);
@@ -43,6 +44,7 @@ namespace BetterPrerequisites
                         return false;
                     }
                 }
+            }
             return true;
         }
         public static bool TestConditionals(Pawn pawn, List<ConditionalStatAffecter> conditionalStatEffectors)

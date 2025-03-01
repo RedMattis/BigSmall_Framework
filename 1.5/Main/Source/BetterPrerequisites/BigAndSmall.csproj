@@ -99,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abillities\MeleeAttackAbility.cs" />
+    <Compile Include="BetterPrerequisites\NewGeneDisabler.cs" />
     <Compile Include="Cache\CacheAccessProps.cs" />
     <Compile Include="Cache\CacheVariables.cs" />
     <Compile Include="Debugging\DebugActions.cs" />

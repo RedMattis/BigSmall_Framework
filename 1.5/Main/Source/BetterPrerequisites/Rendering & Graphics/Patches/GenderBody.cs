@@ -65,6 +65,7 @@ namespace BigAndSmall
             public static bool swapBackToMale = false;
             public static bool swapBackToFemale = false;
             [HarmonyPrefix]
+            [HarmonyPriority(Priority.Last)]
             public static void Prefix(Pawn_StoryTracker __instance, IEnumerable<HeadTypeDef> options)
             {
                 var pawn = GetPawnFromStoryTracker(__instance);
@@ -85,6 +86,7 @@ namespace BigAndSmall
             }
 
             [HarmonyPostfix]
+            [HarmonyPriority(Priority.First)]
             public static void Postfix(Pawn_StoryTracker __instance, IEnumerable<HeadTypeDef> options)
             {
                 var pawn = GetPawnFromStoryTracker(__instance);

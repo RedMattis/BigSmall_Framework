@@ -256,8 +256,10 @@ namespace BigAndSmall
                 DirectPawnRelation relation = pilotRelations[idx];
                 try
                 {
-                    target.relations.AddDirectRelation(relation.def, relation.otherPawn);
-                    //Log.Message($"Added (source->other) relation {relation.def.defName} from {target.Name} to {relation.otherPawn}.");
+                    if (!target.relations.DirectRelationExists(relation.def, relation.otherPawn))
+                    {
+                        target.relations.AddDirectRelation(relation.def, relation.otherPawn);
+                    }
                 }
                 catch (Exception e)
                 {

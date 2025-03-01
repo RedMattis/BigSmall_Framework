@@ -28,7 +28,7 @@ namespace BigAndSmall
     public class BigAndSmallCache : GameComponent
     {
         public static BigAndSmallCache instance = null;
-        public static HashSet<PGene> pGenesThatReevaluate = [];
+        public static Dictionary<PGene, bool?> frequentUpdateGenes = [];
 
         private HashSet<BSCache> scribedCache = [];
         public static bool regenerationAttempted = false;
@@ -174,15 +174,25 @@ namespace BigAndSmall
                     }
                 }
             }
-
-            pGenesThatReevaluate = new HashSet<PGene>(pGenesThatReevaluate.Where(x => x != null && x.pawn != null && !x.pawn.Discarded));
-            foreach (var pGene in pGenesThatReevaluate.Where(x => x.pawn.Spawned))
+            bool verySlowUpdate = currentTick % 300 == 0;
+            frequentUpdateGenes = new Dictionary<PGene, bool?>(frequentUpdateGenes.Where(x => x.Key != null && x.Key.pawn != null && !x.Key.pawn.Discarded));
+            if (frequentUpdateGenes.Any())
             {
-                bool active = pGene.previouslyActive == true;
-                bool newState = pGene.RegenerateState();
-                if (active != newState)
+                var fug = frequentUpdateGenes.Where(x => x.Key.pawn.Spawned).ToList();
+                foreach ((var gene, bool? oldState) in fug)
                 {
-                    pGene.pawn.genes.Notify_GenesChanged(pGene.def);
+                    bool stateChange = gene.Active != oldState;
+                    if (verySlowUpdate)
+                    {
+                        // This triggers the Transpiler which will check if the gene should be active or not.
+                        gene.OverrideBy(gene.overriddenByGene);
+                        if (!stateChange) stateChange = gene.Active != stateChange;
+                    }
+                    if (stateChange)
+                    {
+                        frequentUpdateGenes[gene] = gene.Active;
+                        gene.pawn.genes.Notify_GenesChanged(gene.def);
+                    }
                 }
             }
         }
@@ -629,7 +639,6 @@ namespace BigAndSmall
 
                 hasComplexHeadOffsets = complexHeadOffsets != null;
 
-
                 if (isHumanlike)
                 {
                     ReevaluateGraphics(nonRacePawnExt, racePawnExts);
@@ -672,12 +681,12 @@ namespace BigAndSmall
 
         private Gender? GetApparentGender(List<PawnExtension> allExts = null)
         {
-            Gender? gender = allExts.FirstOrDefault(x => x.ApparentGender != null)?.ApparentGender;
+            Gender? apGender = allExts.FirstOrFallback(x => x.ApparentGender != null, null)?.ApparentGender;
             bool invertApparentGender = allExts.Any(x => x.invertApparentGender);
 
-            if (gender != null && invertApparentGender) gender = gender == Gender.Male ? Gender.Female : Gender.Male;
-            if (gender == null && invertApparentGender) gender = pawn.gender == Gender.Male ? Gender.Female : Gender.Male;
-            return gender;
+            if (apGender != null && invertApparentGender) apGender = apGender == Gender.Male ? Gender.Female : Gender.Male;
+            if (apGender == null && invertApparentGender) apGender = pawn.gender == Gender.Male ? Gender.Female : Gender.Male;
+            return apGender;
         }
 
         public void ReevaluateGraphics(List<PawnExtension> otherExts = null, List<PawnExtension> raceExts = null)
@@ -768,6 +777,7 @@ namespace BigAndSmall
         public void DelayedUpdate()
         {
             if (pawn == null || pawn.Dead) { return; }
+
             PrerequisiteGeneUpdate();
 
             pawn.def.modExtensions?.OfType<RaceExtension>()?.FirstOrDefault()?.ApplyTrackerIfMissing(pawn, this);
@@ -914,6 +924,7 @@ namespace BigAndSmall
             try
             {
                 SimpleRaceUpdate(racePawnExts, otherPawnExts, pawn.GetRaceCompProps());
+
             }
             catch (Exception)
             {
@@ -926,6 +937,12 @@ namespace BigAndSmall
                     BigAndSmallCache.regenerationAttempted = true;
                 }
                 throw;
+            }
+            if (genesActivated.Any() || genesDeactivated.Any())
+            {
+                GeneHelpers.RefreshAllGenes(pawn, genesActivated, genesDeactivated);
+                genesDeactivated.Clear();
+                genesActivated.Clear();
             }
             pawn.skills?.DirtyAptitudes();
             if (allPawnExts.Any(x=>x.removeTattoos))

@@ -335,6 +335,12 @@ namespace BigAndSmall
             return true;
         }
 
+        /// <summary>
+        /// This is a patch that fixes so small characters don't overdose so easily.
+        /// 
+        /// It will also make cats and whatever not overdose on beer all the time, but arguably that's a good thing, because it... was stupid.
+        /// </summary>
+        /// <returns></returns>
         [HarmonyPatch(typeof(CompDrug), nameof(CompDrug.PostIngested))]
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> PostIngested_Transpiler(IEnumerable<CodeInstruction> instructions)

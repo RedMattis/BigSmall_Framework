@@ -34,7 +34,7 @@ namespace BetterPrerequisites
 
         }
 
-        public static bool Validate(GeneDef gene, Pawn pawn, ref string reason)
+        public static string Validate(GeneDef gene, Pawn pawn)
         {
             try
             {
@@ -56,14 +56,14 @@ namespace BetterPrerequisites
                                         result = prerequisiteSet.prerequisites.Any(geneName => otherGenes.Any(y => y.def.defName == geneName));
                                         if (!result)
                                         {
-                                            reason = "BS_PrerequisitesNotMetAnyOf".Translate($"{string.Join(", ", prerequisiteSet.prerequisites.Select(GeneDefLabelDefName))}");
+                                            return "BS_PrerequisitesNotMetAnyOf".Translate($"{string.Join(", ", prerequisiteSet.prerequisites.Select(GeneDefLabelDefName))}");
                                         }
                                         break;
                                     case PrerequisiteSet.PrerequisiteType.AllOf:
                                         result = prerequisiteSet.prerequisites.All(geneName => otherGenes.Any(y => y.def.defName == geneName));
                                         if (!result)
                                         {
-                                            reason = "BS_PrerequisitesNotMetAllOf".Translate($"{string.Join(", ", prerequisiteSet.prerequisites.Select(GeneDefLabelDefName))}");
+                                            return "BS_PrerequisitesNotMetAllOf".Translate($"{string.Join(", ", prerequisiteSet.prerequisites.Select(GeneDefLabelDefName))}");
                                         }
                                         break;
                                     case PrerequisiteSet.PrerequisiteType.NoneOf:
@@ -71,24 +71,24 @@ namespace BetterPrerequisites
                                         if (!result)
                                         {
                                             var bannedGenesPresent = prerequisiteSet.prerequisites.Where(geneName => otherGenes.Any(y => y.def.defName == geneName)).ToList();
-                                            reason = "BS_PrerequisitesNotMetNoneOf".Translate($"{string.Join(", ", bannedGenesPresent.Select(GeneDefLabelDefName))}");
+                                            return "BS_PrerequisitesNotMetNoneOf".Translate($"{string.Join(", ", bannedGenesPresent.Select(GeneDefLabelDefName))}");
                                         }
                                         break;
                                 }
                                 if (!result)
                                 {
-                                    return false;
+                                    return "";
                                 }
                             }
                         }
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //Log.Error("Error in PrerequisiteValidator: " + e.Message);
+                Log.Error("Caught Exception in PrerequisiteValidator: " + e.Message);
             }
-            return true;
+            return "";
         }
     }
 }

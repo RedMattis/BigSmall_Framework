@@ -79,32 +79,6 @@ namespace BetterPrerequisites
                 return;
             }
 
-            var genes = pawn?.genes;
-            if (genes != null)
-            {
-                var geneList = genes.GenesListForReading;
-                if (genes != null && geneList.Count > 0)
-                {
-                    bool supressorChange = false;
-                    try
-                    {
-                        PGene.supressPostfix = true;
-                        supressorChange = GeneSuppressorManager.TryAddSuppressor(__instance, pawn);
-                    }
-                    finally
-                    {
-                        PGene.supressPostfix = false;
-                    }
-                    if (pawn?.Drawer?.renderer != null && pawn.Spawned)
-                    {
-                        if (supressorChange)
-                        {
-                            pawn.Drawer.renderer.SetAllGraphicsDirty();
-                        }
-                    }
-                }
-            }
-
             HumanoidPawnScaler.LazyGetCache(pawn, 30);
         }
     }
