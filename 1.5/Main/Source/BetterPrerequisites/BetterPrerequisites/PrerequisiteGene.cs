@@ -7,21 +7,16 @@ using System.Reflection;
 using System.Threading;
 using UnityEngine;
 using Verse;
+using static UnityEngine.Random;
 
 namespace BetterPrerequisites
 {
     public class PGene : Gene
     {
-        private static Gene dummyGene = null;
-        private static bool dummyGeneCreated = false;
-        /// <summary>
-        /// Avoid recursion by supressing this method when it woudld get called from itself.
-        /// </summary>
-
-        public bool? previouslyActive = null;
-        public float lastUpdateTicks = 0f;
-        public bool overridenByDummy = false;
-        public string disabledReason = null;
+        protected bool? previouslyActive = null;
+        protected float lastUpdateTicks = 0f;
+        protected bool overridenByDummy = false;
+        protected string disabledReason = null;
 
         private bool initialized = false;
         
@@ -44,10 +39,10 @@ namespace BetterPrerequisites
             set => geneExt = value;
         }
 
-        public override bool Active => TryGetGeneActiveCache();
+        //public override bool Active => TryGetGeneActiveCache();
 
         public bool ForceRun { get; set; } = false;
-        public static Gene DummyGene { get => !dummyGeneCreated ? MakeDummyGene() : dummyGene; set => dummyGene = value; }
+        
 
         //public CacheTimer Timer { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
@@ -56,24 +51,7 @@ namespace BetterPrerequisites
         /// <summary>
         /// Deliberately generate late to avoid getting picked up by random frameworks.
         /// </summary>
-        public static Gene MakeDummyGene()
-        {
-            dummyGene ??= new Gene
-            {
-                def = new GeneDef()
-                {
-                    defName = "BS_PDummyGene",
-                    label = "BS_RequirementNotMet".Translate().CapitalizeFirst(),
-                    description = "System gene..",
-                    displayCategory = GeneCategoryDefOf.Miscellaneous,
-                    canGenerateInGeneSet = false,
-                    selectionWeight = 0,
-                    selectionWeightCultist = 0,
-                }
-            };
-            dummyGeneCreated = true;
-            return DummyGene;
-        }
+        
 
         public override void PostAdd()
         {
@@ -81,13 +59,15 @@ namespace BetterPrerequisites
             base.PostAdd();
 
             bool needsReevaluation = false;
-
+            bool state = true;
             if (GeneExt != null)
             {
                 if (base.Active && Active)
                 {
+                    state = true;
                     GeneRequestThingSwap(true);
                 }
+                else { state = false; }
 
                 // Check if this is a xenogene.
                 bool xenoGene = pawn.genes.Xenogenes.Any(x => x == this);
@@ -115,13 +95,13 @@ namespace BetterPrerequisites
 
             if (needsReevaluation)
             {
-                BigAndSmallCache.pGenesThatReevaluate.Add(this);
+                BigAndSmallCache.frequentUpdateGenes[this] = state;
             }
         }
 
         public override void PostRemove()
         {
-            BigAndSmallCache.pGenesThatReevaluate.Remove(this);
+            BigAndSmallCache.frequentUpdateGenes.Remove(this);
             base.PostRemove();
             if (GeneExt != null)
             {
@@ -201,43 +181,6 @@ namespace BetterPrerequisites
             }
         }
         
-        readonly float updateFrequence = 125; //1.5f;
-        readonly float updateFrequenceRealTime = 2.0f; //1.5f;
-        public static object locker = new object();
-
-        public bool TryGetGeneActiveCache()
-        {
-            bool result;
-            try
-            {
-                result = base.Active;
-            }
-            catch (Exception e)
-            {
-                Log.Warning($"Prerequisite Gene ({def?.defName}, on Pawn \"{pawn}\") caught an exception when trying to check the Gene Base active state in " +
-                    $"{MethodBase.GetCurrentMethod().DeclaringType.Name}.{MethodBase.GetCurrentMethod().Name}.\nStackTrace:\n{e.Message}\n{e.StackTrace}");
-                return false;
-            }
-            // Skip dead pawns and non-spawned pawns.
-            if (pawn != null && !PawnGenerator.IsBeingGenerated(pawn) && !pawn.Dead && pawn.Spawned)
-            {
-                if (result || ForceRun)
-                {
-                    bool useCache = initialized;
-                    SetupVars();
-                    if (!useCache || ForceRun)
-                    {
-                        ForceRun = false;
-                        RegenerateState();
-                    }
-                    bool newResult = previouslyActive != false;
-                    result = newResult && result;
-                }
-            }
-
-            return result;
-        }
-
         /// <summary>
         /// Mostly because PostAdd doesn't run on save load and stuff like that. But I don't think trying to fetch the ModExtension every time is a good idea.
         /// </summary>
@@ -266,148 +209,7 @@ namespace BetterPrerequisites
             }
         }
 
-        // Last run state vars:
-        #region Previous
-        private bool prerequisitesValid = false;
-        private bool conditionalsValid = false;
-        //private bool isSupressedByGene = false;
-        private bool isSupressedByHediff = false;
-        private bool conditionalsWasValid = false;
 
-        public static bool supressPostfix = false;
-        public static bool supressPostfix2 = false;
-
-        #endregion
-        public bool RegenerateState()
-        {
-            bool result;
-            bool prerequisitesValid = true;
-            bool conditionalsValid = true;
-            bool isSupressedByGene = Overridden;
-            if (isSupressedByGene && overriddenByGene == dummyGene)
-            {
-                isSupressedByGene = false;
-            }
-            bool refreshGraphics = false;
-
-            // To stop infinite recursion.
-            if (!supressPostfix)
-            {
-                try
-                {
-                    supressPostfix = true;
-                    var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
-                    isSupressedByGene = isSupressedByGene && activeGenes.Contains(overriddenByGene);
-
-                    conditionalsValid = ConditionalManager.TestConditionals(this, GeneExt);
-                    prerequisitesValid = PrerequisiteValidator.Validate(def, pawn, ref disabledReason);
-
-                    if (conditionalsValid != this.conditionalsValid || prerequisitesValid != this.prerequisitesValid)
-                    {
-                        refreshGraphics = true;
-                    }
-                    this.conditionalsValid = conditionalsValid;
-                    this.prerequisitesValid = prerequisitesValid;
-
-                }
-                finally
-                {
-                    supressPostfix = false;
-                }
-            }
-            // Outside of the loop so it can supress genes which supresses other genes.
-            bool isSupressedByHediff = GeneSuppressorManager.IsSupressedByHediff(def, pawn);
-            result = prerequisitesValid && conditionalsValid && !isSupressedByGene && !isSupressedByHediff;
-
-            if (!supressPostfix && !supressPostfix2)
-            {
-                supressPostfix2 = true;
-                try
-                {
-                    if (isSupressedByHediff != this.isSupressedByHediff) { refreshGraphics = true; }
-                    if (conditionalsWasValid != conditionalsValid) { refreshGraphics = true; }
-                    this.isSupressedByHediff = isSupressedByHediff;
-
-                    if (result != previouslyActive)
-                    {
-                        UpdateOverridenGenes(def, pawn.genes);
-                        GeneEffectManager.GainOrRemovePassion(!result, this);
-                        GeneEffectManager.GainOrRemoveAbilities(!result, this);
-                        GeneEffectManager.ApplyForcedTraits(!result, this);
-                        GeneEffectManager.RefreshGeneEffects(this, result);
-                        HumanoidPawnScaler.ShedueleForceRegenerateSafe(pawn, 2);
-                    }
-                }
-                finally
-                {
-                    conditionalsWasValid = conditionalsValid;
-                    supressPostfix2 = false;
-                }
-
-                previouslyActive = result;
-            }
-            return result;
-        }
-
-        public static void UpdateOverridenGenes(GeneDef supresserDef, Pawn_GeneTracker __instance, bool forceRemove = false)
-        {
-            try
-            {
-                foreach (var supresserGene in __instance.GenesListForReading)
-                {
-                    if (supresserGene.def.HasModExtension<GeneSuppressor_Gene>())
-                    {
-                        var geneExtension = supresserGene.def.GetModExtension<GeneSuppressor_Gene>();
-
-                        foreach (string supressedGene in geneExtension.supressedGenes)
-                        {
-                            foreach (var item in GeneHelpers.GetGeneByName(__instance.pawn, supressedGene))
-                            {
-
-                                if (supresserGene != null && supresserGene.Active)
-                                {
-                                    if (!item.Overridden)
-                                    {
-                                        item.OverrideBy(supresserGene);
-                                        //Log.Message($"{supresserGene.def.defName} is suppressing {item.def.defName}");
-                                    }
-                                }
-                                else
-                                {
-                                    if (item.overriddenByGene == supresserGene)
-                                    {
-                                        item.OverrideBy(null);
-                                        //Log.Message($"{supresserGene.def.defName} is no longer suppressing {item.def.defName}");
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // If the supressor gene was removed, remove the supression.
-                if (__instance.GenesListForReading.Where(x => x.def == supresserDef).ToList().Count == 0 && supresserDef.HasModExtension<GeneSuppressor_Gene>())
-                {
-                    var geneExtension = supresserDef.GetModExtension<GeneSuppressor_Gene>();
-                    foreach (string supressedGene in geneExtension.supressedGenes)
-                    {
-                        foreach (var item in GeneHelpers.GetActiveGeneByName(__instance.pawn, supressedGene))
-                        {
-                            if (item.overriddenByGene.def == supresserDef)
-                            {
-                                item.OverrideBy(null);
-                                //Log.Message($"{supresserDef.defName} is no longer suprrssing {item}");
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Message("An Error occured when updating overriden genes. If this happened during loading it is 99% likely to be harmless, and can be ignored.");
-                Log.Message($"Caught in {MethodBase.GetCurrentMethod().DeclaringType.Name}.{MethodBase.GetCurrentMethod().Name}: {e.Message}\n{e.StackTrace}");
-            }
-        }
 
         public override void ExposeData()
         {
@@ -418,7 +220,7 @@ namespace BetterPrerequisites
             Scribe_Values.Look(ref disabledReason, "PGeneDisabledReason", null);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                BigAndSmallCache.pGenesThatReevaluate.Add(this);
+                BigAndSmallCache.frequentUpdateGenes.Add(this, null);
             }
         }
     }

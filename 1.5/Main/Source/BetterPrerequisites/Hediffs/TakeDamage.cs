@@ -48,11 +48,7 @@ namespace BigAndSmall
 
                 if (isStab)
                 {
-                    // The multiplier is a value between 0 and 1. 1 is no reduction, 0 is full reduction. Halve the effect of the reduction for
-                    // stab damage.
                     bulletDmgMult = 1 - (1 - bulletDmgMult) / 2;
-
-                    //bulletDmgMult = bulletDmgMult / 2 + 0.5f;
                 }
 
                 if (bulletDmgMult != 1)

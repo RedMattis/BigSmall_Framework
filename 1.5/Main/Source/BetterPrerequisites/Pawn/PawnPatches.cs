@@ -47,18 +47,6 @@ namespace BigAndSmall
         {
             if (__instance != null)
             {
-                foreach (var hediff in __instance.health.hediffSet.hediffs)
-                {
-                    try
-                    {
-                        PGene.supressPostfix = true;
-                        GeneSuppressorManager.TryAddSuppressor(hediff, __instance);
-                    }
-                    finally
-                    {
-                        PGene.supressPostfix = false;
-                    }
-                }
                 GenderMethods.UpdatePawnHairAndHeads(__instance);
 
                 foreach (var gene in GeneHelpers.GetAllActiveGenes(__instance))

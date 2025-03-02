@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using BigAndSmall.DeathActionInner;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,26 @@ using Verse.AI;
 
 namespace BigAndSmall
 {
+    namespace DeathActionInner
+    {
+        public static class InnerDeathWorkerHelper
+        {
+            public static void BigExplosion(Corpse corpse, Pawn posessor, BodyPartRecord mainPart)
+            {
+                if (corpse.InnerPawn.BodySize > 1.5f) { posessor.TakeDamage(new DamageInfo(DamageDefOf.Bomb, 120, hitPart:mainPart)); }
+                else if (corpse.InnerPawn.BodySize > 1) { posessor.TakeDamage(new DamageInfo(DamageDefOf.Bomb, 60, hitPart: mainPart)); }
+                else { posessor.TakeDamage(new DamageInfo(DamageDefOf.Bomb, 30, hitPart: mainPart)); }
+                GenExplosion.DoExplosion(radius: (corpse.InnerPawn.ageTracker.CurLifeStageIndex == 0) ? 1.9f : ((corpse.InnerPawn.ageTracker.CurLifeStageIndex != 1) ? 4.9f : 2.9f), center: posessor.Position, map: posessor.Map, damType: DamageDefOf.Flame, instigator: corpse.InnerPawn);
+            }
+
+            public static void SmallExplosion(Corpse corpse, Pawn posessor, BodyPartRecord mainPart)
+            {
+                posessor.TakeDamage(new DamageInfo(DamageDefOf.Bomb, 20, hitPart: mainPart));
+                GenExplosion.DoExplosion(radius:1.9f, damAmount:10, center: posessor.Position, map: posessor.Map, damType: DamageDefOf.Flame, instigator: corpse.InnerPawn);
+            }
+        }
+    }
+
     public class EngulfHediff : HediffWithComps, IThingHolder
     {
         public bool canEject = true;
@@ -294,6 +315,20 @@ namespace BigAndSmall
                         if (SanguophageUtility.ShouldBeDeathrestingOrInComaInsteadOfDead(innerPawn))
                         {
                             innerPawn.Kill(new DamageInfo(damageDef, 999 * digestionEffiency, armorPenetration: 100, instigator: pawn, intendedTarget: thing, spawnFilth: false));
+
+                            if (innerPawn.RaceProps.DeathActionWorker is DeathActionWorker deathAction && innerPawn.IsShambler == false)
+                            {
+                                if (deathAction is DeathActionWorker_BigExplosion)
+                                {
+                                    // AHAHAHAHAHAHAHAHAHA
+                                    InnerDeathWorkerHelper.BigExplosion(innerPawn.Corpse, pawn, stomach);
+                                }
+                                else if (deathAction.ToString().ToLower().Contains("explosion"))
+                                {
+                                    InnerDeathWorkerHelper.SmallExplosion(innerPawn.Corpse, pawn, stomach);
+                                }
+                            }
+
                         }
                         else if (!innerPawn.IsColonist && innerPawn.health.summaryHealth.SummaryHealthPercent < 0.1f)
                         {
@@ -369,6 +404,8 @@ namespace BigAndSmall
             }
             EnchumberanceHediff.Severity = Fullness;
         }
+
+        
 
         private int countDownToRegenerate = 0;
         private void HealInner(Pawn innerPawn)

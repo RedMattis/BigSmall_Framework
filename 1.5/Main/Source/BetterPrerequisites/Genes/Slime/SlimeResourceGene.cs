@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -6,46 +7,34 @@ using Verse;
 
 namespace BigAndSmall
 {
-
-    [StaticConstructorOnStartup]
-    public class GeneGizmo_ResourceSlime(BS_GeneSlimePower spGene, List<IGeneResourceDrain> drainGenes, Color barColor, Color barhighlightColor)
-        : GeneGizmo_Resource(spGene, drainGenes, barColor, barhighlightColor)
-    {
-        private List<Pair<IGeneResourceDrain, float>> tmpDrainGenes = []; // Unused.
-
-        protected override string GetTooltip()
-        {
-            tmpDrainGenes.Clear();
-            string text = $"{spGene.ResourceLabel.CapitalizeFirst().Colorize(ColoredText.TipSectionTitleColor)}: {gene.ValueForDisplay} / {gene.MaxForDisplay}\n";
-            if (spGene.pawn.IsColonistPlayerControlled || spGene.pawn.IsPrisonerOfColony)
-            {
-                text = text + (string)("BS_AccumulateSlimeUntil".Translate() + ": ") + spGene.PostProcessValue(gene.targetValue);
-            }
-            if (!spGene.def.resourceDescription.NullOrEmpty())
-            {
-                text = text + "\n\n" + spGene.def.resourceDescription.Formatted(gene.pawn.Named("PAWN")).Resolve();
-            }
-            return text;
-        }
-
-        public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
-        {
-            return base.GizmoOnGUI(topLeft, maxWidth, parms);
-        }
-    }
-
     public class BS_GeneSlimeProps : DefModExtension
     {
         public float resourceMaxOffset = 0;
+
+        [Obsolete]
         public float resourceStartOffset = 0;
     }
 
-    public class BS_GeneSlimePower : BS_GenericResource, IGeneResourceDrain
+    public class BS_GeneSlimePower : Gene_Resource, IGeneResourceDrain
     {
+        public int offsetFromGenes = 0;
+        public override float MinLevelForAlert => 0f;
+
         protected override Color BarColor => new ColorInt(30, 60, 120).ToColor;
         protected override Color BarHighlightColor => new ColorInt(50, 100, 150).ToColor;
 
         private Hediff slimeHediff = null;
+        protected float cachedIncrease = 0;
+
+        public override float InitialResourceMax => 1f;
+
+        public override float MaxLevelOffset => 0;
+
+        /// <summary>
+        /// Ignores the `max` value, because it is junk.
+        /// </summary>
+        public override float Max => InitialResourceMax + cachedIncrease;
+        public Gene_Resource Resource => this;
 
         public Hediff SlimeHediff
         {
@@ -61,22 +50,7 @@ namespace BigAndSmall
             set => slimeHediff = value;
         }
 
-        public override float InitialResourceMax => 1f;
-
-        public Gene_Resource Resource => this;
-
-        public bool CanOffset
-        {
-            get
-            {
-                if (Active)
-                {
-                    return !pawn.Deathresting;
-                }
-
-                return false;
-            }
-        }
+        public bool CanOffset => Active;
 
         public float ResourceLossPerDay => def.resourceLossPerDay;
 
@@ -84,23 +58,35 @@ namespace BigAndSmall
 
         public string DisplayLabel => Label + " (" + "Gene".Translate() + ")";
 
-        public override IEnumerable<Gizmo> GetGizmos()
+        
+        public float DefaultTargetValue => Max < 2 ? 1.0f : 0.5f;
+
+        public override void PostAdd()
         {
-            if (!Active)
-            {
-                yield break;
-            }
-            foreach (Gizmo gizmo in base.GetGizmos())
-            {
-                yield return gizmo;
-            }
-            foreach (Gizmo resourceDrainGizmo in GeneResourceDrainUtility.GetResourceDrainGizmos(this))
-            {
-                yield return resourceDrainGizmo;
-            }
+            Reset();
         }
 
+        public override void SetTargetValuePct(float val)
+        {
+            if (float.IsNaN(val) || float.IsNaN(max))
+            {
+                return;
+            }
+            if (val > 1)
+            {
+                val = 1;
+            }
+            targetValue = val * Max;
+        }
 
+        public override void Reset()
+        {
+            CalculateResourceMaxOffset();
+            SetTargetValuePct(DefaultTargetValue);
+            cur = DefaultTargetValue;
+            SlimeHediff.Severity = Mathf.Clamp(Value, 0.05f, 9999);
+            RefreshCache();
+        }
 
         public override void Tick()
         {
@@ -113,7 +99,7 @@ namespace BigAndSmall
                 bool playerControlled = pawn.IsColonist || pawn.IsPrisonerOfColony;
                 if (!playerControlled)
                 {
-                    targetValue = max > 2 ? max * 0.5f : 1.0f;
+                    SetTargetValuePct(max > 2 ? 0.5f : 1.0f);
                 }
 
                 RecalculateMax();
@@ -193,57 +179,26 @@ namespace BigAndSmall
             HumanoidPawnScaler.GetCache(pawn, forceRefresh: true);
         }
 
-        public override void Reset()
+        private void RecalculateMax()
         {
-            cur = Mathf.Max(cur, 0.8f);
-            targetValue = 0.8f;
-            RecalculateMax();
-            RefreshCache();
-        }
+            float currPerccent = cur / max;
+            CalculateResourceMaxOffset();
 
-        private void RecalculateMax(bool setup = false)
-        {
-            // for each active gene with the mod extension BS_GeneSlimeProps, add the resourceMaxOffset to the max value
-            float maxIncrease = GetMaxOffset();
-            float startBonus = GetStartingOffset();
-
-            var newMax = InitialResourceMax + maxIncrease;
+            var newMax = Max;
             // If roughly equal, do nothing. (epsilon)
             if (Mathf.Abs(newMax - max) < 0.03f)
             {
                 return;
             }
-
-            float changePercent = newMax / max;
-
-            max = InitialResourceMax + maxIncrease;
             cur = Mathf.Clamp(cur, 0f, max);
-
-
-            if (setup)
+            if (currPerccent > 0)
             {
-                Value += startBonus;
-                if (changePercent>1)
-                    targetValue *= changePercent;
+                SetTargetValuePct(Mathf.Clamp(currPerccent, 0, 1));
             }
             SlimeHediff.Severity = Mathf.Clamp(Value, 0.05f, 9999);
         }
 
-        private float GetStartingOffset()
-        {
-            float currentBonus = 0;
-            foreach (Gene curGene in GeneHelpers.GetAllActiveGenes(pawn))
-            {
-                if (curGene.def.HasModExtension<BS_GeneSlimeProps>())
-                {
-                    currentBonus += curGene.def.GetModExtension<BS_GeneSlimeProps>().resourceStartOffset;
-                }
-            }
-
-            return currentBonus;
-        }
-
-        private float GetMaxOffset()
+        private float CalculateResourceMaxOffset()
         {
             float increase = 0;
             foreach (Gene curGene in GeneHelpers.GetAllActiveGenes(pawn))
@@ -253,16 +208,9 @@ namespace BigAndSmall
                     increase += curGene.def.GetModExtension<BS_GeneSlimeProps>().resourceMaxOffset;
                 }
             }
-
+            cachedIncrease = increase;
+            max = InitialResourceMax + increase;
             return increase;
-        }
-
-        public override void PostAdd()
-        {
-            cur = 1;
-            base.PostAdd();
-            RecalculateMax(setup:true);
-            RefreshCache();
         }
 
         private Hediff AddOrGetHediff()
@@ -292,59 +240,21 @@ namespace BigAndSmall
             }
             return slimeHedif;
         }
-    }
 
-    public class CompProperties_SlimeCost : CompProperties_PoolCost
-    {
-        public CompProperties_SlimeCost()
+        public override IEnumerable<Gizmo> GetGizmos()
         {
-            compClass = typeof(CompAbilityEffect_SlimeCost);
-        }
-    }
-
-    public class CompAbilityEffect_SlimeCost : CompAbilityEffect_PoolCost
-    {
-        public new CompProperties_SlimeCost Props => (CompProperties_SlimeCost)props;
-        protected override bool HasEnoughResource
-        {
-            // Replace in inherited class.
-            get
+            if (!Active)
             {
-                BS_GeneSlimePower cPower = parent.pawn.genes?.GetFirstGeneOfType<BS_GeneSlimePower>();
-                return cPower != null && cPower.Value >= Props.resourceCost;
+                yield break;
             }
-        }
-
-        public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
-        {
-            base.Apply(target, dest);
-            BS_GeneSlimePower slimePower = parent.pawn.genes?.GetFirstGeneOfType<BS_GeneSlimePower>();
-            ResourcePoolUtils.OffsetResource(parent.pawn, 0f - Props.resourceCost, slimePower);
-            slimePower.SlimeHediff.Severity = Mathf.Clamp(slimePower.Value, 0.05f, 9999);
-        }
-
-        public override bool GizmoDisabled(out string reason)
-        {
-            BS_GeneSlimePower cPower = parent.pawn.genes?.GetFirstGeneOfType<BS_GeneSlimePower>();
-            if (cPower == null)
+            foreach (Gizmo gizmo in base.GetGizmos())
             {
-                reason = "Ability Disabled: Missing Cursed Power Gene";
-                return true;
+                yield return gizmo;
             }
-            if (cPower.Value < Props.resourceCost)
+            foreach (Gizmo resourceDrainGizmo in GeneResourceDrainUtility.GetResourceDrainGizmos(this))
             {
-                reason = "Ability Disabled: Not enough Power";
-                return true;
+                yield return resourceDrainGizmo;
             }
-            float num = TotalostOfQueuedAbilities();
-            float num2 = Props.resourceCost + num;
-            if (Props.resourceCost > float.Epsilon && num2 > cPower.Value)
-            {
-                reason = "Ability Disabled: Not enough Power";
-                return true;
-            }
-            reason = null;
-            return false;
         }
     }
 }

@@ -4,7 +4,7 @@ using Verse;
 
 namespace BigAndSmall
 {
-    public class BS_GeneCursedPower : BS_GenericResource, IGeneResourceDrain
+    public class BS_GeneCursedPower : Gene_Resource, IGeneResourceDrain
     {
         protected override Color BarColor => new ColorInt(128, 3, 128).ToColor;
         protected override Color BarHighlightColor => new ColorInt(148, 22, 148).ToColor;
@@ -29,6 +29,10 @@ namespace BigAndSmall
         public Pawn Pawn => pawn;
 
         public string DisplayLabel => Label + " (" + "Gene".Translate() + ")";
+
+        public override float InitialResourceMax => 1f;
+
+        public override float MinLevelForAlert => 0.15f;
 
         public override void Tick()
         {

@@ -159,7 +159,7 @@ namespace BigAndSmall
 
             public static bool Banned(this FilterResult fResult) => fResult == FilterResult.Banned;
             public static bool Denied(this FilterResult fResult) => fResult == FilterResult.Deny || fResult == FilterResult.Banned;
-            public static bool NeutralOrWorse(this FilterResult fResult) => Denied(fResult) || fResult == FilterResult.Neutral || fResult == FilterResult.None;
+            public static bool NotExplicitlyAllowed(this FilterResult fResult) => Denied(fResult) || fResult == FilterResult.Neutral || fResult == FilterResult.None;
             public static bool Accepted(this FilterResult fResult) => !Denied(fResult);
             public static bool ExplicitlyAllowed(this FilterResult fResult) => fResult == FilterResult.ForceAllow || fResult == FilterResult.Allow;
             public static bool ForceAllowed(this FilterResult fResult) => fResult == FilterResult.ForceAllow;

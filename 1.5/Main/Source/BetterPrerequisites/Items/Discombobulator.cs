@@ -133,57 +133,7 @@ namespace BigAndSmall
             }
         }
 
-        public static void CreateXenogerm(Pawn pawn, bool archite=false, string type="xeno")
-        {
-            // spawn a xenogerm item containing a list of genes of thingClass Xenogerm
-            Xenogerm xenogerm = (Xenogerm)ThingMaker.MakeThing(ThingDefOf.Xenogerm);
-            xenogerm.Initialize([], pawn.genes.xenotypeName, pawn.genes.iconDef);
-
-            // Get pawn's xenogenes
-            List<Gene> targetGenes;
-            if (type == "endo")
-            {
-                targetGenes = pawn.genes.Endogenes.ToList();
-            }
-            else if (type == "allAndInactive")
-            {
-                targetGenes = [.. GeneHelpers.GetAllGenes(pawn)];
-
-                // Filter genes from "weird" sources, e.g. Insector.
-                targetGenes = targetGenes.Where(x => pawn.genes.Xenogenes.Contains(x) || pawn.genes.Endogenes.Contains(x)).ToList();
-            }
-            else if (type == "all")
-            {
-                targetGenes = GeneHelpers.GetAllActiveGenes(pawn).ToList();
-
-                // Filter genes from "weird" sources, e.g. Insector.
-                targetGenes = targetGenes.Where(x => pawn.genes.Xenogenes.Contains(x) || pawn.genes.Endogenes.Contains(x)).ToList();
-            }
-            else
-            {
-                targetGenes = pawn.genes.Xenogenes.ToList();
-            }
-
-            // Add the xenogenes to the xenogerm
-            foreach (var gene in targetGenes)
-            {
-
-                if (!archite && gene.def.biostatArc > 0)
-                {
-                    continue;
-                }
-
-                xenogerm.GeneSet.AddGene(gene.def);
-            }
-
-            try
-            {
-                xenogerm.GeneSet.SetNameDirect(pawn.genes.xenotypeName);
-            }
-            catch { } // This isn't important, so whatever if it fails.
-            
-            GenPlace.TryPlaceThing(xenogerm, pawn.Position, pawn.Map, ThingPlaceMode.Near);
-        }
+        
     }
 
 }

@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 using static BigAndSmall.BodyDefFusionsHelper;
-using static HarmonyLib.AccessTools;
 
 
 namespace BigAndSmall
@@ -158,6 +157,7 @@ namespace BigAndSmall
         }
         private static void MergeRecursively(BodyPartRecord genPart, BodyPartRecord partTwo, List<BodyPartRecord> unTransfereredParts, MergableBody mergeOne)
         {
+            //bool doDebug = mergeOne?.bodyDef?.LabelCap == "Snake-person";
             var partTwoParts = partTwo.parts.Where(x => !(mergeOne.ShouldRemovePart(x.def))).ToList();
             genPart.parts = genPart.parts.Where(x => !(mergeOne.ShouldRemovePart(x.def))).ToList();
 
@@ -174,10 +174,6 @@ namespace BigAndSmall
                     unTransfereredParts.Remove(similarBodyRec);
                     partTwoParts.Remove(similarBodyRec);
                 }
-                //else
-                //{
-                //    Log.Message($"DEBUG: Could not find a similar part for {child.def.defName} in {partTwo.def.defName}");
-                //}
             }
 
             // Total Coverage of the body parts.
@@ -193,12 +189,6 @@ namespace BigAndSmall
                 }
             }
 
-            //if (partTwoParts.Any())
-            //{
-            //    Log.Message($"[{mergeOne?.bodyDef?.LabelCap}]There are {partTwoParts.Count} parts left to merge into {genPart.def.defName}.\n" +
-            //        $"Parts: {partTwoParts.Select(x => x.def.defName).ToCommaList()}");
-            //}
-
             foreach (var part in partTwoParts)
             {
                 if (unTransfereredParts.Contains(part))
@@ -209,10 +199,6 @@ namespace BigAndSmall
                     {
                         continue;
                     }
-
-                    //Log.Message($"\nAdding From SECOND Body");
-
-                    //Log.Message($"Adding {genPart.LabelCap}->{part.LabelCap}");
                     var newPart = ClonePartsRecursive(genPart, part, genPart.body, mergeOne, unTransfereredParts, makeMechanical: false);
                     newPart.coverage *= coverageMultiplier;
                     newPart.parent = genPart;

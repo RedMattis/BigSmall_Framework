@@ -3,9 +3,6 @@ using Verse;
 
 namespace BigAndSmall
 {
-    /// <summary>
-    /// Just copy pasting this from the "Femboy" mod for the simple reason that "Femboy" is a too controversial term to have as a dependency.
-    /// </summary>
     [DefOf]
     public static class BSDefs
     {
@@ -130,10 +127,7 @@ namespace BigAndSmall
         // Shaders
         public static ShaderTypeDef CutoutComplexBlend;
 
-
-
-        public static IncidentDef StrangerInBlackJoin; // Def of the existing incident for easy acccess.
-        //public static IncidentDef WomanInBlueJoin;
+        public static IncidentDef StrangerInBlackJoin;
 
         static BSDefs()
         {

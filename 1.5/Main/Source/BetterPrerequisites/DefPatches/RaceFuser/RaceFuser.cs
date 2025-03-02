@@ -204,7 +204,7 @@ namespace BigAndSmall
 
                                 //MergeBodies(mainBody, secondaryBody, generatedBody);
 
-                                var allPartsTwo = fBody.bodyDef.AllParts.ToList();
+                                var allPartsTwo = fBody.bodyDef.corePart.GetAllBodyPartsRecursive();
                                 var partsToTransfer = allPartsTwo.Where(x => !(bodyOne.ShouldRemovePart(x.def))).ToList();
 
                                 var corePart = genBody.corePart;
@@ -247,17 +247,22 @@ namespace BigAndSmall
             return genBody;
         }
 
-        private static void ReplacePartsWithMechanicalRecursive(BodyPartRecord source, BodyPartRecord genPartParen, BodyDef genBody)
-        {
-
-        }
-
         private static string GetPartsStringRecursive(BodyPartRecord source, string indent = "")
         {
             string result = $"{indent}{source.LabelCap} ({source.coverage * 100:f0}%)\n";
             foreach (var child in source.parts)
             {
                 result += GetPartsStringRecursive(child, indent + "  ");
+            }
+            return result;
+        }
+
+        public static List<BodyPartRecord> GetAllBodyPartsRecursive(this BodyPartRecord source)
+        {
+            List<BodyPartRecord> result = [source];
+            foreach (var child in source.parts)
+            {
+                result.AddRange(GetAllBodyPartsRecursive(child));
             }
             return result;
         }

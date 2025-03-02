@@ -1,0 +1,14 @@
+<Defs>
+  <JobDef>
+    <defName>BS_UseOnTarget</defName>
+    <driverClass>BigAndSmall.JobDriver_UseOnTarget</driverClass>
+    <reportString>Using item on TargetA.</reportString>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+  <!-- <JobDef>
+    <defName>BS_ApplySerum</defName>
+    <driverClass>BigAndSmall.JobDriver_ApplySerum</driverClass>
+    <reportString>injecting serum into TargetA.</reportString>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef> -->
+</Defs>

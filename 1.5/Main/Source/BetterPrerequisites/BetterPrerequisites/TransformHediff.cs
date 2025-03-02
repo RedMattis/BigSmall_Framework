@@ -158,7 +158,6 @@ namespace BetterPrerequisites
                     }
                     if (cache.savedBodyDef != null && DefDatabase<BodyTypeDef>.GetNamed(cache.savedBodyDef) is BodyTypeDef bodyDef)
                     {
-                        Log.Message($"Restoring body type for {pawn.Name} to {bodyDef.defName}");
                         pawn.story.bodyType = bodyDef;
                     }
                     if (cache.savedHeadDef != null && DefDatabase<HeadTypeDef>.GetNamed(cache.savedHeadDef) is HeadTypeDef headDef)

@@ -40,39 +40,8 @@ namespace BigAndSmall
 
                 // Actually doesn't seem to work
                 //newThing ??= new ThingDef();
-
-                foreach (var field in sThing.GetType().GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
                 //foreach (var field in typeof(ThingDef).GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
-                {
-                    try
-                    {
-                        if (field.FieldType.IsClass && field.GetValue(sThing) != null && field.GetType().Name.Contains("ThingDef_AlienRace.AlienSettings"))
-                        {
-                            field.SetValue(newThing, field.GetType().GetConstructor([]).Invoke([]));
-                            foreach (var alienField in field.GetType().GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
-                            {
-                                try
-                                {
-                                    alienField.SetValue(field.GetValue(newThing), alienField.GetValue(field.GetValue(sThing)));
-                                }
-                                catch (Exception e)
-                                {
-                                    Log.Error($"Failed to access field {field.Name}.");
-                                    Log.Error(e.ToString());
-                                }
-                            }
-                        }
-                        else
-                        {
-                            field.SetValue(newThing, field.GetValue(sThing));
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Log.Error($"Failed to copy field {field.Name} from thingDef.");
-                        Log.Error(e.ToString());
-                    }
-                }
+                CopyThingDefFields(sThing, newThing);
 
                 var allThingDefSources = fused.mergableBodies.Select(x => x.thingDef).ToList();
                 newThing.recipes = [.. allThingDefSources.Where(x => x.recipes != null).SelectMany(x => x?.recipes).Where(x => x != null).ToList().Distinct()];
@@ -105,32 +74,7 @@ namespace BigAndSmall
                     newThing.inspectorTabsResolved = newThing.inspectorTabsResolved.Distinct().ToList();
                 }
 
-                foreach (var field in sRace.GetType().GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
-                {
-                    try
-                    {
-                        if (field.FieldType.IsGenericType && field.GetValue(sRace) != null)
-                        {
-                            var sourceList = field.GetValue(sRace);
-                            var newList = (IList)Activator.CreateInstance(field.FieldType);
-                            foreach (var item in (IEnumerable)sourceList)
-                            {
-                                newList.Add(item);
-                            }
-                            field.SetValue(newRace, newList);
-                        }
-                        else
-                        {
-                            field.SetValue(newRace, field.GetValue(sRace));
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Log.Error($"Failed to copy field {field.Name} from race.");
-                        Log.Error(e.ToString());
-                    }
-
-                }
+                CopyRaceProperties(sRace, newRace);
 
 
                 // Set the body of the base race rather than that of the Fuse Set.
@@ -158,37 +102,9 @@ namespace BigAndSmall
                 {
                     var fsThing = fSBody.thingDef;
                     var fsRace = fsThing.race;
-                    newThing.statBases = [.. fsThing.statBases];
-                    foreach (var statBase in fsThing.statBases)
-                    {
-                        newThing.SetStatBaseValue(statBase.stat, statBase.value);
-                    }
                     newThing.butcherProducts = [.. fsThing.butcherProducts];
                     newThing.ingredient = fsThing.ingredient;
-                    // Averaged
-                    newThing.SetStatBaseValue(StatDefOf.PsychicSensitivity, (sThing.GetStatValueAbstract(StatDefOf.PsychicSensitivity) + fsThing.GetStatValueAbstract(StatDefOf.PsychicSensitivity)) / 2);
-                    newThing.SetStatBaseValue(StatDefOf.DeepDrillingSpeed, (sThing.GetStatValueAbstract(StatDefOf.DeepDrillingSpeed) + fsThing.GetStatValueAbstract(StatDefOf.DeepDrillingSpeed)) / 2);
-                    newThing.SetStatBaseValue(StatDefOf.MiningSpeed, (sThing.GetStatValueAbstract(StatDefOf.MiningSpeed) + fsThing.GetStatValueAbstract(StatDefOf.MiningSpeed)) / 2);
-                    newThing.SetStatBaseValue(StatDefOf.MiningYield, (sThing.GetStatValueAbstract(StatDefOf.MiningYield) + fsThing.GetStatValueAbstract(StatDefOf.MiningYield)) / 2);
-                    newThing.SetStatBaseValue(StatDefOf.ConstructionSpeed, (sThing.GetStatValueAbstract(StatDefOf.ConstructionSpeed) + fsThing.GetStatValueAbstract(StatDefOf.ConstructionSpeed)) / 2);
-                    newThing.SetStatBaseValue(StatDefOf.SmoothingSpeed, (sThing.GetStatValueAbstract(StatDefOf.SmoothingSpeed) + fsThing.GetStatValueAbstract(StatDefOf.SmoothingSpeed)) / 2);
-                    newThing.SetStatBaseValue(StatDefOf.PlantHarvestYield, (sThing.GetStatValueAbstract(StatDefOf.PlantHarvestYield) + fsThing.GetStatValueAbstract(StatDefOf.PlantHarvestYield)) / 2);
-                    newThing.SetStatBaseValue(StatDefOf.PlantWorkSpeed, (sThing.GetStatValueAbstract(StatDefOf.PlantWorkSpeed) + fsThing.GetStatValueAbstract(StatDefOf.PlantWorkSpeed)) / 2);
-                    newThing.SetStatBaseValue(StatDefOf.PlantHarvestYield, (sThing.GetStatValueAbstract(StatDefOf.PlantHarvestYield) + fsThing.GetStatValueAbstract(StatDefOf.PlantHarvestYield)) / 2);
-
-                    newThing.SetStatBaseValue(StatDefOf.MoveSpeed, (sThing.GetStatValueAbstract(StatDefOf.MoveSpeed) + fsThing.GetStatValueAbstract(StatDefOf.MoveSpeed)) / 2);
-                    newThing.SetStatBaseValue(StatDefOf.IncomingDamageFactor, (sThing.GetStatValueAbstract(StatDefOf.IncomingDamageFactor) + fsThing.GetStatValueAbstract(StatDefOf.IncomingDamageFactor)) / 2);
-
-                    // Averaged Ceil
-                    newThing.SetStatBaseValue(StatDefOf.PawnBeauty, Mathf.Ceil((sThing.GetStatValueAbstract(StatDefOf.PawnBeauty) + fsThing.GetStatValueAbstract(StatDefOf.PawnBeauty)) / 2));
-
-                    // Max
-                    newThing.SetStatBaseValue(StatDefOf.MarketValue, Mathf.Max(sThing.GetStatValueAbstract(StatDefOf.MarketValue), fsThing.GetStatValueAbstract(StatDefOf.MarketValue)));
-                    newThing.SetStatBaseValue(StatDefOf.Nutrition, Mathf.Max(sThing.GetStatValueAbstract(StatDefOf.Nutrition), fsThing.GetStatValueAbstract(StatDefOf.Nutrition)));
-                    newThing.SetStatBaseValue(StatDefOf.Mass, Mathf.Max(sThing.GetStatValueAbstract(StatDefOf.Mass), fsThing.GetStatValueAbstract(StatDefOf.Mass)));
-                    newThing.SetStatBaseValue(StatDefOf.ToxicResistance, Mathf.Max(sThing.GetStatValueAbstract(StatDefOf.ToxicResistance), fsThing.GetStatValueAbstract(StatDefOf.ToxicResistance)));
-                    newThing.SetStatBaseValue(StatDefOf.ToxicEnvironmentResistance, Mathf.Max(sThing.GetStatValueAbstract(StatDefOf.ToxicEnvironmentResistance), fsThing.GetStatValueAbstract(StatDefOf.ToxicEnvironmentResistance)));
-                    newThing.SetStatBaseValue(StatDefOf.MeleeDodgeChance, Mathf.Max(sThing.GetStatValueAbstract(StatDefOf.MeleeDodgeChance), fsThing.GetStatValueAbstract(StatDefOf.MeleeDodgeChance)));
+                    MergeStatDefValues(fsThing, sThing, newThing);
                 }
 
                 newRace.corpseDef = null;
@@ -215,6 +131,107 @@ namespace BigAndSmall
             }
         }
 
+        public static void MergeStatDefValues(ThingDef priorityThing, ThingDef secondaryThing, ThingDef newThing)
+        {
+            newThing.statBases = [.. priorityThing.statBases];
+            foreach (var statBase in priorityThing.statBases)
+            {
+                newThing.SetStatBaseValue(statBase.stat, statBase.value);
+            }
+
+            // Averaged
+            newThing.SetStatBaseValue(StatDefOf.PsychicSensitivity, (secondaryThing.GetStatValueAbstract(StatDefOf.PsychicSensitivity) + priorityThing.GetStatValueAbstract(StatDefOf.PsychicSensitivity)) / 2);
+            newThing.SetStatBaseValue(StatDefOf.DeepDrillingSpeed, (secondaryThing.GetStatValueAbstract(StatDefOf.DeepDrillingSpeed) + priorityThing.GetStatValueAbstract(StatDefOf.DeepDrillingSpeed)) / 2);
+            newThing.SetStatBaseValue(StatDefOf.MiningSpeed, (secondaryThing.GetStatValueAbstract(StatDefOf.MiningSpeed) + priorityThing.GetStatValueAbstract(StatDefOf.MiningSpeed)) / 2);
+            newThing.SetStatBaseValue(StatDefOf.MiningYield, (secondaryThing.GetStatValueAbstract(StatDefOf.MiningYield) + priorityThing.GetStatValueAbstract(StatDefOf.MiningYield)) / 2);
+            newThing.SetStatBaseValue(StatDefOf.ConstructionSpeed, (secondaryThing.GetStatValueAbstract(StatDefOf.ConstructionSpeed) + priorityThing.GetStatValueAbstract(StatDefOf.ConstructionSpeed)) / 2);
+            newThing.SetStatBaseValue(StatDefOf.SmoothingSpeed, (secondaryThing.GetStatValueAbstract(StatDefOf.SmoothingSpeed) + priorityThing.GetStatValueAbstract(StatDefOf.SmoothingSpeed)) / 2);
+            newThing.SetStatBaseValue(StatDefOf.PlantHarvestYield, (secondaryThing.GetStatValueAbstract(StatDefOf.PlantHarvestYield) + priorityThing.GetStatValueAbstract(StatDefOf.PlantHarvestYield)) / 2);
+            newThing.SetStatBaseValue(StatDefOf.PlantWorkSpeed, (secondaryThing.GetStatValueAbstract(StatDefOf.PlantWorkSpeed) + priorityThing.GetStatValueAbstract(StatDefOf.PlantWorkSpeed)) / 2);
+            newThing.SetStatBaseValue(StatDefOf.PlantHarvestYield, (secondaryThing.GetStatValueAbstract(StatDefOf.PlantHarvestYield) + priorityThing.GetStatValueAbstract(StatDefOf.PlantHarvestYield)) / 2);
+
+            newThing.SetStatBaseValue(StatDefOf.MoveSpeed, (secondaryThing.GetStatValueAbstract(StatDefOf.MoveSpeed) + priorityThing.GetStatValueAbstract(StatDefOf.MoveSpeed)) / 2);
+            newThing.SetStatBaseValue(StatDefOf.IncomingDamageFactor, (secondaryThing.GetStatValueAbstract(StatDefOf.IncomingDamageFactor) + priorityThing.GetStatValueAbstract(StatDefOf.IncomingDamageFactor)) / 2);
+
+            // Averaged Ceil
+            newThing.SetStatBaseValue(StatDefOf.PawnBeauty, Mathf.Ceil((secondaryThing.GetStatValueAbstract(StatDefOf.PawnBeauty) + priorityThing.GetStatValueAbstract(StatDefOf.PawnBeauty)) / 2));
+
+            // Max
+            newThing.SetStatBaseValue(StatDefOf.MarketValue, Mathf.Max(secondaryThing.GetStatValueAbstract(StatDefOf.MarketValue), priorityThing.GetStatValueAbstract(StatDefOf.MarketValue)));
+            newThing.SetStatBaseValue(StatDefOf.Nutrition, Mathf.Max(secondaryThing.GetStatValueAbstract(StatDefOf.Nutrition), priorityThing.GetStatValueAbstract(StatDefOf.Nutrition)));
+            newThing.SetStatBaseValue(StatDefOf.Mass, Mathf.Max(secondaryThing.GetStatValueAbstract(StatDefOf.Mass), priorityThing.GetStatValueAbstract(StatDefOf.Mass)));
+            newThing.SetStatBaseValue(StatDefOf.ToxicResistance, Mathf.Max(secondaryThing.GetStatValueAbstract(StatDefOf.ToxicResistance), priorityThing.GetStatValueAbstract(StatDefOf.ToxicResistance)));
+            newThing.SetStatBaseValue(StatDefOf.ToxicEnvironmentResistance, Mathf.Max(secondaryThing.GetStatValueAbstract(StatDefOf.ToxicEnvironmentResistance), priorityThing.GetStatValueAbstract(StatDefOf.ToxicEnvironmentResistance)));
+            newThing.SetStatBaseValue(StatDefOf.MeleeDodgeChance, Mathf.Max(secondaryThing.GetStatValueAbstract(StatDefOf.MeleeDodgeChance), priorityThing.GetStatValueAbstract(StatDefOf.MeleeDodgeChance)));
+        }
+
+        public static void CopyRaceProperties(RaceProperties sRace, RaceProperties newRace)
+        {
+            foreach (var field in sRace.GetType().GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
+            {
+                try
+                {
+                    var value = field.GetValue(sRace);
+                    if (field.FieldType.IsGenericType && field.FieldType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                    {
+                        field.SetValue(newRace, value);
+                    }
+                    else
+                    {
+                        field.SetValue(newRace, value);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Error($"Failed to copy field {field.Name} from race.");
+                    Log.Error(e.ToString());
+                }
+            }
+        }
+
+        public static void CopyThingDefFields(ThingDef sThing, ThingDef newThing)
+        {
+            foreach (var field in sThing.GetType().GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
+            {
+                try
+                {
+                    if (field.FieldType.IsClass && field.GetValue(sThing) != null && field.GetType().Name.Contains("ThingDef_AlienRace.AlienSettings"))
+                    {
+                        field.SetValue(newThing, field.GetType().GetConstructor([]).Invoke([]));
+                        foreach (var alienField in field.GetType().GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
+                        {
+                            try
+                            {
+                                alienField.SetValue(field.GetValue(newThing), alienField.GetValue(field.GetValue(sThing)));
+                            }
+                            catch (Exception e)
+                            {
+                                Log.Error($"Failed to access field {field.Name}.");
+                                Log.Error(e.ToString());
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var value = field.GetValue(sThing);
+                        if (field.FieldType.IsGenericType && field.FieldType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                        {
+                            field.SetValue(newThing, value);
+                        }
+                        else
+                        {
+                            field.SetValue(newThing, value);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Error($"Failed to copy field {field.Name} from thingDef.");
+                    Log.Error(e.ToString());
+                }
+            }
+        }
+
         public static void PostSaveLoadedSetup()
         {
             bool partsWereChanged = false;
@@ -238,15 +255,15 @@ namespace BigAndSmall
             {
                 var sThing = fused.SourceBody.thingDef;
                 GenerateCorpse(
-                    fused: fused,
                     sThing: sThing,
                     newThing: newThingDef,
+                    isMechanical: fused.isMechanical,
                     hotReload: hotReload
                     );
             }
         }
 
-        private static void GenerateCorpse(FusedBody fused,ThingDef sThing, ThingDef newThing, bool hotReload)
+        private static void GenerateCorpse(ThingDef sThing, ThingDef newThing, bool isMechanical, bool hotReload)
         {
             RaceProperties newRace = newThing.race;
             BodyDef generatedBody = newThing.race.body;
@@ -309,7 +326,7 @@ namespace BigAndSmall
             newThing.race.hasCorpse = true;
 
 
-            DirectXmlCrossRefLoader.RegisterListWantsCrossRef(newCorpse.thingCategories, !fused.isMechanical ? ThingCategoryDefOf.CorpsesHumanlike.defName : BSDefs.BS_RobotCorpses.defName, newCorpse);
+            DirectXmlCrossRefLoader.RegisterListWantsCrossRef(newCorpse.thingCategories, !isMechanical ? ThingCategoryDefOf.CorpsesHumanlike.defName : BSDefs.BS_RobotCorpses.defName, newCorpse);
 
             //thingDefsAdded.Add(newCorpse);
             DefGenerator.AddImpliedDef(newCorpse, hotReload: hotReload);

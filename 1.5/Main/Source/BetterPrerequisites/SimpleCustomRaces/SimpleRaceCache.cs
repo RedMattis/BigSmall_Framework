@@ -10,13 +10,14 @@ namespace BigAndSmall
     {
         private void SimpleRaceUpdate(List<PawnExtension> raceExts, List<PawnExtension> otherPawnExt, List<CompProperties_Race> raceCompProps)
         {
-
             List<PawnExtension> allExt = [.. raceExts, .. otherPawnExt];
+            UpdateGeneOverrideStates();
             Metamorphosis.HandleMetamorph(pawn, allExt);
             ProcessRaceGeneRequirements(raceExts);
             ProcessRaceTraitRequirements(raceExts);
             ProcessRaceHediffRequirements(raceExts);
             ProcessHediffsToRemove(allExt);
+            UpdateGeneOverrideStates();  // Run again here in case Metamorph etc. changed the state.
             raceCompProps.EnsureValidBodyType(this);
             raceCompProps.EnsureValidHeadType(this);
         }
@@ -134,7 +135,7 @@ namespace BigAndSmall
                 hediffsToRemove = pawn.health.hediffSet.hediffs.Where(h => 
                     hediffFilter.GetFilterResult(h.def).Denied() ||
                     // If a chemical dependency and not whitelisted, remove it.
-                    (h is Hediff_Addiction hd && banAddictions && hediffFilter.GetFilterResult(h.def).NeutralOrWorse())
+                    (h is Hediff_Addiction hd && banAddictions && hediffFilter.GetFilterResult(h.def).NotExplicitlyAllowed())
 
                 ).ToList();
             }

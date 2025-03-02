@@ -103,7 +103,7 @@ namespace BigAndSmall.Debugging
 
                     new FloatMenuOption("Spawn Xenogerm", delegate
                     {
-                        Discombobulator.CreateXenogerm(pawn, archite:true, type:"allAndInactive");
+                        CompTargetEffect_CreateXenogerm.CreateXenogerm(pawn, archite:true, endoGenes:true, xenoGenes:true, inactive:true);
                     }),
 
                     new FloatMenuOption("Reapply Genes", delegate

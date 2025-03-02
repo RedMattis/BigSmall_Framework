@@ -415,7 +415,10 @@ namespace BigAndSmall
             {
                 raceExtension.ApplyTrackerIfMissing(pawn, cache);
             }
-            pawn.needs.AddOrRemoveNeedsAsAppropriate();
+            if (pawn?.needs != null)
+            {
+                pawn.needs.AddOrRemoveNeedsAsAppropriate();
+            }
             return true;
         }
 

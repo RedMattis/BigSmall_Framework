@@ -174,9 +174,20 @@ namespace BigAndSmall
                 Rand.PopState();
                 return result;
             }
-            if (HumanoidPawnScaler.GetCacheUltraSpeed(pawn) is BSCache cache && HumanoidPawnScaler.GetCacheUltraSpeed(otherPawn) is BSCache cacheTwo)
+            if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache && HumanoidPawnScaler.GetCache(otherPawn) is BSCache cacheTwo)
             {
                 if (pawn == otherPawn) return 0;
+
+                if (pawn == null || cache.isDefaultCache)
+                {
+                    Log.WarningOnce($"GetCompatibilityWith was called by a Null pawn or a Pawn lacking a proper cache (\"{pawn}\"->\"{otherPawn}\")", 9696961);
+                    return oldValue;
+                }
+                if (otherPawn == null || cacheTwo.isDefaultCache)
+                {
+                    Log.WarningOnce($"GetCompatibilityWith is targeting a Null pawn or a Pawn lacking a proper cache (\"{pawn}\"->\"{otherPawn}\")", 9696962);
+                    return oldValue;
+                }
 
                 float? compatibility = RomanceTagsExtensions.GetHighestSharedTag(cache, cacheTwo);
 

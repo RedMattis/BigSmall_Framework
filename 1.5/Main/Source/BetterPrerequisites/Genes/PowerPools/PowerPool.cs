@@ -5,46 +5,7 @@ using Verse;
 
 namespace BigAndSmall
 {
-    public static class ResourcePoolUtils
-    {
-        public static void OffsetResource(Pawn pawn, float gain, BS_GenericResource gene)
-        {
-            gene.Value += gain;
-        }
-
-        public static float PoolCost(Ability ab)
-        {
-            if (ab.comps != null)
-            {
-                foreach (AbilityComp comp in ab.comps)
-                {
-                    if (comp is CompAbilityEffect_PoolCost compAbilityEffect_PoolCost)
-                    {
-                        return compAbilityEffect_PoolCost.Props.resourceCost;
-                    }
-                }
-            }
-            return 0f;
-        }
-    }
-
-    public abstract class BS_GenericResource : Gene_Resource
-    {
-        public override float InitialResourceMax => 1f;
-        public override float MinLevelForAlert => 0f;
-
-        public override IEnumerable<Gizmo> GetGizmos()
-        {
-            if (!Active)
-            {
-                yield break;
-            }
-            foreach (Gizmo gizmo in base.GetGizmos())
-            {
-                yield return gizmo;
-            }
-        }
-    }
+    
 
     public abstract class CompProperties_PoolCost : CompProperties_AbilityEffect
     {

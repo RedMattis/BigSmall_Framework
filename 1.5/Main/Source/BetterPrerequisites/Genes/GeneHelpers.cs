@@ -461,38 +461,6 @@ namespace BigAndSmall
             cachedGenesField.SetValue(genes, null);
         }
 
-        //public static List<PawnExtension> GetPawnExtensions(this Pawn pawn, bool includeRace=true)
-        //{
-        //    var fromGenes = GetActiveGeneExtensions<PawnExtension>(pawn);
-        //    var fromHediffs = GetNonRaceHediffExtensions<PawnExtension>(pawn);
-        //    if (includeRace)
-        //    {
-        //        fromHediffs.Add(RaceHelper.GetRacePawnExtension(pawn));
-        //    }
-        //    return [.. fromGenes, .. fromHediffs];
-        //}
-
-        //public static List<T> GetActiveGeneExtensions<T>(this Pawn pawn) where T : DefModExtension
-        //{
-        //    var activeGenes = GetAllActiveGenes(pawn);
-        //    if (activeGenes.NullOrEmpty()) return []; ;
-        //    return activeGenes
-        //           .Where(x => x?.def?.modExtensions != null && x.def.HasModExtension<T>())?
-        //           .Select(x => x.def.GetModExtension<T>()).ToList();
-        //}
-
-        //public static List<T> GetNonRaceHediffExtensions<T>(this Pawn pawn) where T : DefModExtension
-        //{
-        //    var hediffExtensions = pawn.health.hediffSet.hediffs.Where(x => (x is not RaceTracker) && x.def.modExtensions != null && x.def.modExtensions.Any(y => y.GetType() == typeof(T)))?
-        //                          .Select(x => x.def.GetModExtension<T>()).ToList();
-        //    return hediffExtensions;
-        //}
-
-        public static List<PawnExtension> GetPawnExt(this Gene gene)
-        {
-            return ModExtHelper.GetAllExtensions<PawnExtension>(gene.pawn, parentWhitelist: [typeof(Gene)]);
-        }
-
         public static List<Gene> GetActiveGenesByName(Pawn pawn, string geneName)
         {
             return GetActiveGenesByNames(pawn, [geneName]);
