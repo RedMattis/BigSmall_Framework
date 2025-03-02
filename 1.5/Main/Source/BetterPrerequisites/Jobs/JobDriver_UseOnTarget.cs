@@ -51,15 +51,22 @@ namespace BigAndSmall
 			this.FailOn(() => !base.TargetThingA.TryGetComp<CompUsable>().CanBeUsedBy(pawn));
 			yield return Toils_Goto.GotoThing(TargetIndex.A, base.TargetThingA.def.hasInteractionCell ? PathEndMode.InteractionCell : PathEndMode.Touch);
 
+
 			if (job.targetB.IsValid)
 			{
 				yield return Toils_Haul.StartCarryThing(TargetIndex.A);
 				yield return Toils_Goto.GotoThing(TargetIndex.B, PathEndMode.Touch).FailOnDespawnedOrNull(TargetIndex.B);
+
+				Toil setTarget = ToilMaker.MakeToil("SetTarget");
+				setTarget.initAction = () => pawn.carryTracker.CarriedThing.TryGetComp<CompTargetable>().selectedTarget = TargetThingB;
+				yield return setTarget;
 			}
 
 			yield return WaitDuration();
 			yield return Use();
 		}
+
+
 
 		private Toil WaitDuration()
 		{
