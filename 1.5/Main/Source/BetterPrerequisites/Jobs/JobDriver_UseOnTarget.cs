@@ -66,7 +66,7 @@ namespace BigAndSmall
 			Thing thing = job.GetTarget(TargetIndex.A).Thing;
 
 			TargetIndex targetIndex = job.targetB.IsValid ? TargetIndex.B : TargetIndex.A;
-			LocalTargetInfo target = base.job.GetTarget(targetIndex);
+			LocalTargetInfo target = job.GetTarget(targetIndex);
 
 			Toil toil = Toils_General.WaitWith(targetIndex, useDuration);
 			toil.WithProgressBarToilDelay(targetIndex);

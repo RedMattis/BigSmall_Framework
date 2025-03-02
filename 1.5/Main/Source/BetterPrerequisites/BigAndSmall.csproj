@@ -126,8 +126,12 @@
     <Compile Include="Hediffs\TakeDamage.cs" />
     <Compile Include="HotReloadExtension.cs" />
     <Compile Include="Items\ApparelRestrictions.cs" />
+    <Compile Include="Items\CompProperties_TargetableExtended.cs" />
     <Compile Include="Items\EquipNotifyPatches.cs" />
+    <Compile Include="Items\Soulstone.cs" />
     <Compile Include="Items\Trade and Loot\StockGenerator.cs" />
+    <Compile Include="Items\TargetApplyHediff.cs" />
+    <Compile Include="Items\XenogermCreators.cs" />
     <Compile Include="Jobs\JobDriver_UseOnTarget.cs" />
     <Compile Include="ModExtensions\SmartExtension.cs" />
     <Compile Include="ModExtensions\ModExtHelper.cs" />
@@ -257,7 +261,7 @@
     <Compile Include="Hediffs\DraculVampirism.cs" />
     <Compile Include="Hediffs\TransitioningHediff.cs" />
     <Compile Include="Hediffs\SizeRays.cs" />
-    <Compile Include="Items\AnimalSizeSerum.cs" />
+    <Compile Include="Items\GeneTools.cs" />
     <Compile Include="Items\Discombobulator.cs" />
     <Compile Include="Items\Reanimator.cs" />
     <Compile Include="Items\StatusBullet.cs" />
