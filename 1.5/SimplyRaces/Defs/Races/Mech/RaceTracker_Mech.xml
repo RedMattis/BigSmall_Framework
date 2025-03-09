@@ -100,12 +100,12 @@
             <li MayRequire="vanillaracesexpanded.fungoid">VRE_GeneInfection</li>
           </banlist>
         </hediffFilters>
-        <geneCategoryFilters>
+        <activeGeneCategoryFilters>
           <blacklist>
             <!-- <li MayRequire="Ludeon.Rimworld.Biotech">Pain</li> -->
             <li MayRequire="Ludeon.Rimworld.Biotech">Reproduction</li>
           </blacklist>
-        </geneCategoryFilters>
+        </activeGeneCategoryFilters>
         <nullsThoughts>
           <li>Pain</li>
           <li>MissingTongue</li>

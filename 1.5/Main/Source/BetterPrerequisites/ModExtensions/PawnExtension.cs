@@ -615,6 +615,13 @@ namespace BigAndSmall
         public FilterListSet<GeneCategoryDef> geneCategoryFilters = null;
         public FilterListSet<string> geneTagFilters = null;
 
+        /// <summary>
+        /// These filters don't remove the gene, but simply block it from being activated.
+        /// </summary>
+        public FilterListSet<GeneDef> activeGeneFilters = null;
+        public FilterListSet<GeneCategoryDef> activeGeneCategoryFilters = null;
+        public FilterListSet<string> activeGeneTagFilters = null;
+
         public FilterListSet<TraitDef> traitFilters = null;
 
         public FilterListSet<HediffDef> hediffFilters = null;
@@ -707,7 +714,13 @@ namespace BigAndSmall
             return immutableEndogenes.Where(x=>x.exclusionTags != null).SelectMany(x => x.exclusionTags).ToList();
         }
 
-        public FilterResult IsGeneLegal(GeneDef gene)
+        /// <summary>
+        /// Checks if a gene is legal for the pawn.
+        /// </summary>
+        /// <param name="gene"></param>
+        /// <param name="removalCheck">If true the gene will be removed when failing legality check. Otherwise it will just be disabled.</param>
+        /// <returns></returns>
+        public FilterResult IsGeneLegal(GeneDef gene, bool removalCheck)
         {
             if (gene == null) return FilterResult.ForceAllow;
             if (AllForcedGenes.Contains(gene)) return FilterResult.ForceAllow;
@@ -726,6 +739,15 @@ namespace BigAndSmall
             if (gene.exclusionTags != null) results.Add(geneTagFilters?.GetFilterResultFromItemList(gene.exclusionTags) ?? FilterResult.Neutral);
             if (gene.descriptionHyperlinks != null) results.Add(geneTagFilters?.GetFilterResultFromItemList(gene.descriptionHyperlinks
                 .Where(x=>x.def is DefTag).Select(x=>x.def.defName).ToList()) ?? FilterResult.Neutral);
+
+            if (!removalCheck)
+            {
+                results.Add(activeGeneFilters?.GetFilterResult(gene) ?? FilterResult.Neutral);
+                if (gene.displayCategory != null) results.Add(activeGeneCategoryFilters?.GetFilterResult(gene.displayCategory) ?? FilterResult.Neutral);
+                if (gene.exclusionTags != null) results.Add(activeGeneTagFilters?.GetFilterResultFromItemList(gene.exclusionTags) ?? FilterResult.Neutral);
+                if (gene.descriptionHyperlinks != null) results.Add(activeGeneTagFilters?.GetFilterResultFromItemList(gene.descriptionHyperlinks
+                    .Where(x => x.def is DefTag).Select(x => x.def.defName).ToList()) ?? FilterResult.Neutral);
+            }
             return results.Fuse();
             //return true;
         }

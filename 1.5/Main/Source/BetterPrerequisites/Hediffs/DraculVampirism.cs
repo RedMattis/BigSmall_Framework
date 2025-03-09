@@ -394,10 +394,10 @@ namespace BigAndSmall
                         // Get the current hediff
                         var hediff = pawn.health.hediffSet.hediffs[i];
                         // If the hediff class is DraculVampirism
-                        if (hediff is DraculVampirism)
+                        if (hediff is DraculVampirism draculVampirism)
                         {
                             // Run the TryReanimate function
-                            var result = (hediff as DraculVampirism).TryReanimate();
+                            var result = draculVampirism.TryReanimate();
                             hdiffFound = true;
 
                             if (result) break;

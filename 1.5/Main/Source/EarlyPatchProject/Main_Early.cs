@@ -42,9 +42,9 @@ namespace BigAndSmall
         
         [HarmonyPatch(typeof(DefGenerator), nameof(DefGenerator.GenerateImpliedDefs_PreResolve))]
         [HarmonyPrefix]
-        public static void GenerateImpliedDefs_Prefix()
+        public static void GenerateImpliedDefs_Prefix(bool hotReload)
         {
-            BSCore.RunBeforeGenerateImpliedDefs(hotReload: true);
+            BSCore.RunBeforeGenerateImpliedDefs(hotReload: hotReload);
         }
         
         

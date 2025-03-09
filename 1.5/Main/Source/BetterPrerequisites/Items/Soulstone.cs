@@ -27,19 +27,19 @@ namespace BigAndSmall
         {
             if (target is Pawn pawn)
             {
-                var scHediff = CompAbilityEffect_ConsumeSoul.MakeGetSoulCollectorHediff(user);
+                var scHediff = CompAbilityEffect_ConsumeSoul.MakeGetSoulCollectorHediff(pawn);
                 scHediff.AddSoulPowerDirect(Props.factor, Props.falloff);
 
                 // Spread blood filith around the area.
-                if (user?.Map != null)
+                if (pawn?.Map != null)
                 {
                     var bloodFilth = ThingDefOf.Filth_Blood;
                     for (int i = 0; i < 2; i++)
                     {
-                        IntVec3 randomCell = user.Position + GenRadial.RadialPattern[i];
-                        if (randomCell.InBounds(user.Map))
+                        IntVec3 randomCell = pawn.Position + GenRadial.RadialPattern[i];
+                        if (randomCell.InBounds(pawn.Map))
                         {
-                            FilthMaker.TryMakeFilth(randomCell, user.Map, bloodFilth, 1);
+                            FilthMaker.TryMakeFilth(randomCell, pawn.Map, bloodFilth, 1);
                         }
                     }
                 }

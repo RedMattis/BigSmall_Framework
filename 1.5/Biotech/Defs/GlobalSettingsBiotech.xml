@@ -78,14 +78,16 @@
     </alienGeneGroups>
 
     <returnedXenotypes>
-      <VU_Returned MayRequire="RedMattis.Undead">0.5</VU_Returned>
-      <VU_Returned_Intact MayRequire="RedMattis.Undead">0.5</VU_Returned_Intact>
+      <VU_Returned_Intact MayRequireAnyOf="RedMattis.Undead,RedMattis.Yokai">0.35</VU_Returned_Intact>
+      <VU_Returned MayRequireAnyOf="RedMattis.Undead,RedMattis.Yokai">0.5</VU_Returned>
+      <VU_ReturnedSkeletal MayRequireAnyOf="RedMattis.Undead,RedMattis.Yokai">0.25</VU_ReturnedSkeletal>
       <VU_Revenant MayRequire="RedMattis.Undead">0.02</VU_Revenant>
     </returnedXenotypes>
 
     <returnedXenotypesColonist>
-      <VU_Returned MayRequire="RedMattis.Undead">0.5</VU_Returned>
-      <VU_Returned_Intact MayRequire="RedMattis.Undead">0.5</VU_Returned_Intact>
+      <VU_Returned_Intact MayRequireAnyOf="RedMattis.Undead,RedMattis.Yokai">0.5</VU_Returned_Intact>
+      <VU_Returned MayRequireAnyOf="RedMattis.Undead,RedMattis.Yokai">0.25</VU_Returned>
+      <VU_ReturnedSkeletal MayRequireAnyOf="RedMattis.Undead,RedMattis.Yokai">0.5</VU_ReturnedSkeletal>
       <VU_Revenant MayRequire="RedMattis.Undead">0.20</VU_Revenant>
     </returnedXenotypesColonist>
 

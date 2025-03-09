@@ -10,11 +10,20 @@ namespace BigAndSmall
 {
     public class PawnRenderNodeWorker_FAOnly : PawnRenderNodeWorker_FlipWhenCrawling
     {
-        
-
+        protected bool initialized = false;
+        protected bool shouldDraw = false;
         public override bool CanDrawNow(PawnRenderNode node, PawnDrawParms parms)
         {
-            if (FALoaded == true)
+            if (!initialized)
+            {
+                shouldDraw = FALoaded;
+                if (HumanoidPawnScaler.GetCache(node.tree.pawn) is BSCache cache && cache.facialAnimationDisabled)
+                {
+                    shouldDraw = false;
+                }
+            }
+
+            if (shouldDraw)
             {
                 return base.CanDrawNow(node, parms);
             }

@@ -135,46 +135,22 @@ namespace BigAndSmall
 
                         // Apply Xenotype
                         var returnedXeno = GlobalSettings.GetRandomReturnedXenotype;
-
-                        //string targetXenotype = "VU_Returned";
-                        //string targetPrefix = "Returned ";
-
-                        //float chanceOfRevenant = (pawn.Faction == Faction.OfPlayerSilentFail) ? 0.2f : 0.02f;
-                        //if (Rand.Chance(chanceOfRevenant))
-                        //{
-                        //    targetXenotype = "VU_Revenant";
-                        //    targetPrefix = "Revenant ";
-                        //}
                         if (pawn.Faction == Faction.OfPlayerSilentFail)
                         {
                             returnedXeno = GlobalSettings.GetRandomReturnedColonistXenotype;
                         }
-                        GeneHelpers.AddAllXenotypeGenes(pawn, returnedXeno, name: $"{returnedXeno.label} {pawn.genes.XenotypeLabel}");
+                        if (returnedXeno == null)
+                        {
+                            Log.Warning("Returned Xenotype is null!");
+                            return false;
+                        }
+                        returnedXeno = ModifyReturnedByRotStage(pawn, returnedXeno);
 
-
-                        //foreach (var def in DefDatabase<XenotypeDef>.AllDefsListForReading.Where(x => x.defName == targetXenotype))
-                        //{
-
-                        //    // Set pawn xenotype to the target xenotype
-                        //    GeneHelpers.AddAllXenotypeGenes(pawn, def, name: targetPrefix + pawn.genes.XenotypeLabel);
-                        //    break;
-                        //}
+                        GeneHelpers.AddAllXenotypeGenes(pawn, returnedXeno, name: $"{returnedXeno.label} {pawn.genes?.XenotypeLabel}");
                     }
                     else
                     {
-                        // Get Rot State
-                        RotStage rotStage = pawn.GetRotStage();
-                        string targetDef = "VU_AnimalReturned";
-                        if (rotStage == RotStage.Dessicated)
-                        {
-                            targetDef = "VU_AnimalReturnedSkeletal";
-                        }
-                        else if (rotStage == RotStage.Rotting)
-                        {
-                            targetDef = "VU_AnimalReturnedRotted";
-                        }
-                        var animalHediff = HediffMaker.MakeHediff(HediffDef.Named(targetDef), pawn);
-                        pawn.health.AddHediff(animalHediff);
+                        pawn.health.AddHediff(GetAnimalReturnedHediff(pawn));
                     }
 
                     // Reanimate
@@ -247,6 +223,36 @@ namespace BigAndSmall
                 pawn.health.RemoveHediff(this);
             }
             return false;
+        }
+
+        public static HediffDef GetAnimalReturnedHediff(Pawn pawn)
+        {
+            RotStage rotStage = pawn.GetRotStage();
+            HediffDef targetDef = BSDefs.VU_AnimalReturned;
+            if (rotStage == RotStage.Dessicated)
+            {
+                targetDef = BSDefs.VU_AnimalReturnedSkeletal;
+            }
+            else if (rotStage == RotStage.Rotting)
+            {
+                targetDef = BSDefs.VU_AnimalReturnedRotted;
+            }
+
+            return targetDef;
+        }
+
+        public static XenotypeDef ModifyReturnedByRotStage(Pawn pawn, XenotypeDef returnedXeno)
+        {
+            if (pawn.GetRotStage() == RotStage.Dessicated && returnedXeno == BSDefs.VU_Returned || returnedXeno == BSDefs.VU_Returned_Intact)
+            {
+                returnedXeno = BSDefs.VU_ReturnedSkeletal;
+            }
+            else if (pawn.GetRotStage() == RotStage.Fresh && returnedXeno == BSDefs.VU_ReturnedSkeletal)
+            {
+                returnedXeno = BSDefs.VU_Returned_Intact;
+            }
+
+            return returnedXeno;
         }
 
         private void EjectCorpse()

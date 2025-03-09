@@ -15,36 +15,11 @@ namespace BetterPrerequisites
         [HarmonyPostfix]
         public static void Hediff_PostRemove(Hediff __instance)
         {
-            bool supressMngrChangeMade = false;
             Pawn pawn = __instance?.pawn;
             if (pawn != null)
             {
-                if (pawn.genes != null)
-                {
-                    if (GeneSuppressorManager.supressedGenesPerPawn_Hediff.Keys.Contains(pawn))
-                    {
-                        var suppressDict = GeneSuppressorManager.supressedGenesPerPawn_Hediff[pawn];
-                        // Remove the Hediff from the Suppressors in the dictionary list.
-                        foreach (var key in suppressDict.Keys)
-                        {
-                            if (suppressDict[key].Contains(__instance.def))
-                            {
-                                suppressDict[key].Remove(__instance.def);
-                                supressMngrChangeMade = true;
-                            }
-                        }
-                        // Remove all dictionary entries with no suppressors.
-                        foreach (var key in suppressDict.Keys.ToList())
-                        {
-                            if (suppressDict[key].Count == 0)
-                            {
-                                suppressDict.Remove(key);
-                                supressMngrChangeMade = true;
-                            }
-                        }
-                    }
-                }
-            
+                bool supressMngrChangeMade = GeneSuppressorManager.TryRemoveSupressorHediff(__instance, pawn);
+
                 bool requiresRefresh = __instance?.def?.GetAllPawnExtensionsOnHediff() is var extensions && extensions.Any(x => x.RequiresCacheRefresh());
                 if (requiresRefresh || (pawn?.Drawer?.renderer != null && pawn.Spawned))
                 {
@@ -60,6 +35,10 @@ namespace BetterPrerequisites
                 }
             }
         }
+
+        
+
+        
 
         [HarmonyPatch(typeof(Hediff), "OnStageIndexChanged")]
         [HarmonyPostfix]
@@ -78,7 +57,7 @@ namespace BetterPrerequisites
             {
                 return;
             }
-
+            GeneSuppressorManager.TryAddSuppressorHediff(__instance, pawn);
             HumanoidPawnScaler.LazyGetCache(pawn, 30);
         }
     }

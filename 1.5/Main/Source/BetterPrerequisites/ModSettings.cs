@@ -95,7 +95,7 @@ namespace BigAndSmall
             }
 
             listStd.Label("BS_ActivateExperimental".Translate().AsTipTitle());
-            CreateSettingCheckbox(listStd, "BS_BodyDefFusions".Translate(), ref settings.experimental);
+            CreateSettingCheckbox(listStd, "BS_ActivateExperimental".Translate(), ref settings.experimental);
             //CreateSettingCheckbox(listStd, "BS_PathRacesFromOtherMods".Translate(), ref settings.pathRacesFromOtherMods);
             listStd.GapLine();
 

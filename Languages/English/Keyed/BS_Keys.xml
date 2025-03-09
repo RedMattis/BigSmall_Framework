@@ -120,4 +120,8 @@
   <BS_PrerequisitesNotMetAnyOf>lacks any of: {0}</BS_PrerequisitesNotMetAnyOf>
   <BS_PrerequisitesNotMetAllOf>requires all of: {0}</BS_PrerequisitesNotMetAllOf>
   <BS_PrerequisitesNotMetNoneOf>blocked by: {0}</BS_PrerequisitesNotMetNoneOf>
+
+  <BS_ConditionForActivationNotMet>activation conditions not met</BS_ConditionForActivationNotMet>
+  <BS_DisabledByHediff>disabled by health status</BS_DisabledByHediff>
+  <BS_DisabledByFilter>gene type category disabled</BS_DisabledByFilter>
 </LanguageData>

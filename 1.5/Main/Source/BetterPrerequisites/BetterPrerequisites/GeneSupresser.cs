@@ -5,6 +5,7 @@ using Verse;
 
 namespace BetterPrerequisites
 {
+    [Obsolete("Use the PawnExtension.activeGeneFilters instead.")]
     public static class GeneSuppressorManager
     {
         // Dictionary of supressed genes and the genes they are supressed by
@@ -14,7 +15,7 @@ namespace BetterPrerequisites
 
         public static Dictionary<string, (long time, bool state)> cache = [];
         
-        public static bool TryAddSuppressor(Hediff supresserHediff, Pawn pawn)
+        public static bool TryAddSuppressorHediff(Hediff supresserHediff, Pawn pawn)
         {
             bool didAddSupressor = false;
             try
@@ -85,30 +86,48 @@ namespace BetterPrerequisites
             return didAddSupressor;
         }
 
+        public static bool TryRemoveSupressorHediff(Hediff __instance, Pawn pawn)
+        {
+            bool supressMngrChangeMade = false;
+            if (GeneSuppressorManager.supressedGenesPerPawn_Hediff.Keys.Contains(pawn))
+            {
+                var suppressDict = GeneSuppressorManager.supressedGenesPerPawn_Hediff[pawn];
+                // Remove the Hediff from the Suppressors in the dictionary list.
+                foreach (var key in suppressDict.Keys)
+                {
+                    if (suppressDict[key].Contains(__instance.def))
+                    {
+                        suppressDict[key].Remove(__instance.def);
+                        supressMngrChangeMade = true;
+                    }
+                }
+                // Remove all dictionary entries with no suppressors.
+                foreach (var key in suppressDict.Keys.ToList())
+                {
+                    if (suppressDict[key].Count == 0)
+                    {
+                        suppressDict.Remove(key);
+                        supressMngrChangeMade = true;
+                    }
+                }
+            }
+
+            return supressMngrChangeMade;
+        }
+
         public static bool IsSupressedByHediff(GeneDef geneDef, Pawn pawn)
         {
-
             if (supressedGenesPerPawn_Hediff.ContainsKey(pawn))
             {
                 var supressedGenes = supressedGenesPerPawn_Hediff[pawn];
                 if (supressedGenes.ContainsKey(geneDef))
                 {
-
                     for (int i = supressedGenes[geneDef].Count - 1; i >= 0; i--)
                     {
                         var supresser = supressedGenes[geneDef][i];
                         if (supressedGenes[geneDef].Any(suppressor => pawn.health.hediffSet.HasHediff(supresser)))
                         {
                             return true;
-                        }
-                        else
-                        {
-                            //Log.Message($"No Hediffs of type {supresser} on pawn ({HediffDef.Named(supresser)})");
-                            //foreach(var hediff in pawn.health.hediffSet.hediffs)
-                            //{
-                            //    Log.Message(hediff.def.defName);
-                            //}
-                            ////supressedGenes.Remove(geneDefName);
                         }
                     }
                 }
@@ -119,11 +138,13 @@ namespace BetterPrerequisites
 
     }
 
+    [Obsolete("Use the PawnExtension.activeGeneFilters instead.")]
     public class GeneSuppressor_Gene : DefModExtension
     {
         public List<string> supressedGenes;
     }
 
+    [Obsolete("Use the PawnExtension.activeGeneFilters instead.")]
     public class GeneSuppressor_Hediff : DefModExtension
     {
         public List<string> supressedGenes = [];

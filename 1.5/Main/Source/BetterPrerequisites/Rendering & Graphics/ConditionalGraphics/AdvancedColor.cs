@@ -47,7 +47,6 @@ namespace BigAndSmall
         public bool averageColors = true;
 
         public List<ColorSetting> alts = [];
-        //public float? alpha = null;
 
         [Unsaved(false)]
         private readonly static Dictionary<string, Color> randomClrPerId = [];
