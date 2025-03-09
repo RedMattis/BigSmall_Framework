@@ -78,6 +78,7 @@ namespace BigAndSmall
             Scribe_Values.Look(ref fullness, props.saveKey, 0f);
         }
 
+        const int tickFrequency = 1000;
         public override void Tick()
         {
             base.Tick();
@@ -89,7 +90,7 @@ namespace BigAndSmall
                     Log.Error("ProductionGeneSettings not found for " + def.defName);
                 }
             }
-            if (Find.TickManager.TicksGame % 1000 == 0 && Active)
+            if (Find.TickManager.TicksGame % tickFrequency == 0 && Active)
             {
                 // If full, produce resources and add to inventory.
                 if (props != null && ActiveAndFull)
@@ -115,20 +116,21 @@ namespace BigAndSmall
                     // Reset progress.
                     fullness = 0;
                 }
-            }
 
-            if (Active)
-            {
-                float num = 1f / GatherResourcesIntervalDays;
-                if (pawn != null)
-                {
-                    num *= PawnUtility.BodyResourceGrowthSpeed(pawn);
-                }
 
-                fullness += num;
-                if (fullness > 1f)
+                if (Active)
                 {
-                    fullness = 1f;
+                    float num = tickFrequency / GatherResourcesIntervalDays;
+                    if (pawn != null)
+                    {
+                        num *= PawnUtility.BodyResourceGrowthSpeed(pawn);
+                    }
+
+                    fullness += num;
+                    if (fullness > 1f)
+                    {
+                        fullness = 1f;
+                    }
                 }
             }
         }

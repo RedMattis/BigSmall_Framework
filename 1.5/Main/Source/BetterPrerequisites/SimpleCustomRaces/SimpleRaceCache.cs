@@ -11,13 +11,13 @@ namespace BigAndSmall
         private void SimpleRaceUpdate(List<PawnExtension> raceExts, List<PawnExtension> otherPawnExt, List<CompProperties_Race> raceCompProps)
         {
             List<PawnExtension> allExt = [.. raceExts, .. otherPawnExt];
-            UpdateGeneOverrideStates();
+            UpdateGeneOverrideStates(allExt);
             Metamorphosis.HandleMetamorph(pawn, allExt);
             ProcessRaceGeneRequirements(raceExts);
             ProcessRaceTraitRequirements(raceExts);
             ProcessRaceHediffRequirements(raceExts);
             ProcessHediffsToRemove(allExt);
-            UpdateGeneOverrideStates();  // Run again here in case Metamorph etc. changed the state.
+            UpdateGeneOverrideStates(allExt);  // Run again here in case Metamorph etc. changed the state.
             raceCompProps.EnsureValidBodyType(this);
             raceCompProps.EnsureValidHeadType(this);
         }
@@ -44,7 +44,7 @@ namespace BigAndSmall
                 raceExts.ForEach(ext => ext.ForcedEndogenes.Where(g => !pawn.HasGene(g)).ToList().ForEach(g => pawn.genes.AddGene(g, false)));
                 raceExts.ForEach(ext => ext.forcedXenogenes?.Where(g => !pawn.HasGene(g)).ToList().ForEach(g => pawn.genes.AddGene(g, true)));
 
-                List<Gene> xenoGenesToRemove = pawn.genes.Xenogenes.Where(g => raceExts.Select(ext => ext.IsGeneLegal(g.def))
+                List<Gene> xenoGenesToRemove = pawn.genes.Xenogenes.Where(g => raceExts.Select(ext => ext.IsGeneLegal(g.def, removalCheck: true))
                     .Aggregate((a, b) => a.Fuse(b)).Denied()).ToList();
                 if (xenoGenesToRemove.Count > 0)
                 {
@@ -55,7 +55,7 @@ namespace BigAndSmall
                         pawn.genes.RemoveGene(gene);
                     }
                 }
-                List<Gene> endogenesToRemove = pawn.genes.Endogenes.Where(g => raceExts.Select(ext => ext.IsGeneLegal(g.def))
+                List<Gene> endogenesToRemove = pawn.genes.Endogenes.Where(g => raceExts.Select(ext => ext.IsGeneLegal(g.def, removalCheck:true))
                     .Aggregate((a, b) => a.Fuse(b)).Denied()).ToList();
                 if (endogenesToRemove.Count > 0)
                 {

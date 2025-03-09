@@ -70,7 +70,7 @@ namespace BigAndSmall
         }
         public static TaggedString GetCustomLabel(TaggedString label, GeneDef gene)
         {
-            if (!label.NullOrEmpty() && DefAltNamer.allGeneRenames.TryGetValue(gene, out var renamer) && DrawGeneSection.pCache != null)
+            if (!label.NullOrEmpty() && DefAltNamer.AllGeneRenames.TryGetValue(gene, out var renamer) && DrawGeneSection.pCache != null)
             {
                 if (DrawGeneSection.pCache.isMechanical && renamer.labelMechanoid is string labelMechanoid)
                 {

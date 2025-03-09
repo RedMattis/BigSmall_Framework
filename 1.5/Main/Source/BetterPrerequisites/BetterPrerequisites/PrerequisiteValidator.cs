@@ -43,7 +43,6 @@ namespace BetterPrerequisites
                     var geneExtension = gene.GetModExtension<GenePrerequisites>();
                     if (geneExtension.prerequisiteSets != null)
                     {
-                        //List<Gene> otherGenes = Helpers.GetAllActiveGenes(pawn);
                         List <Gene> otherGenes = pawn.genes.GenesListForReading.Where(x=>x.overriddenByGene == null).ToList();
                         foreach (var prerequisiteSet in geneExtension.prerequisiteSets)
                         {

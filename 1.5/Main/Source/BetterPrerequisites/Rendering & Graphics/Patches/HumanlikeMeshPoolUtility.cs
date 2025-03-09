@@ -46,7 +46,7 @@ namespace BigAndSmall
     [HarmonyPatch(typeof(PawnRenderer), "ParallelGetPreRenderResults")]
     public static class ParallelGetPreRenderResults_Patch
     {
-        static readonly int maxUses = 1000;
+        static readonly int maxUses = 100;
         public struct PGPRRCache
         {
             public Pawn pawn;
@@ -71,7 +71,7 @@ namespace BigAndSmall
         {
             if (___pawn == null) return;
 
-            if (threadStaticCache.pawn != ___pawn || threadStaticCache.uses > maxUses)
+            if (threadStaticCache.pawn != ___pawn || threadStaticCache.rotation != ___pawn.rotationInt || threadStaticCache.uses > maxUses)
             {
                 threadStaticCache.cache = HumanoidPawnScaler.GetCacheUltraSpeed(___pawn, canRegenerate: false);
                 threadStaticCache.pawn = ___pawn;
@@ -109,10 +109,7 @@ namespace BigAndSmall
             if (!skipOffset && threadStaticCache.doComplexBodyOffset)
             {
                 // Get the rotation.
-                if (threadStaticCache.rotation != ___pawn.Rotation)
-                {
-                    threadStaticCache.uses = 999999999; // Force refresh next time. No need to re-run it won't be visible in practice.
-                }
+                
                 Rot4 orientation = threadStaticCache.rotation;
                 // rotate the offset based on the orientation.
                 switch (orientation.AsInt)

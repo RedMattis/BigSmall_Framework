@@ -38,19 +38,19 @@ namespace BigAndSmall
             Xenogerm xenogerm = (Xenogerm)ThingMaker.MakeThing(ThingDefOf.Xenogerm);
             xenogerm.Initialize([], pawn.genes.xenotypeName, pawn.genes.iconDef);
 
-            List<Gene>  targetGenes = [.. GeneHelpers.GetAllGenes(pawn)];
+            List<Gene> targetGenes = [];
+            var pEndoGenes = pawn.genes.Endogenes.ToList();
+            var pXenoGenes = pawn.genes.Xenogenes.ToList();
 
             // Filter genes from "weird" sources, e.g. Insector.
             targetGenes = targetGenes.Where(x => pawn.genes.Xenogenes.Contains(x) || pawn.genes.Endogenes.Contains(x)).ToList();
-            if (!endoGenes)
+            if (endoGenes)
             {
-                var pEndoGenes = pawn.genes.Endogenes.ToList();
-                targetGenes = targetGenes.Where(x => !pEndoGenes.Contains(x)).ToList();
+                targetGenes.AddRange(pEndoGenes);
             }
-            if (!xenoGenes)
+            if (xenoGenes)
             {
-                var pXenoGenes = pawn.genes.Xenogenes.ToList();
-                targetGenes = targetGenes.Where(x => !pXenoGenes.Contains(x)).ToList();
+                targetGenes.AddRange(pXenoGenes);
             }
             if (!inactive)
             {
@@ -59,6 +59,11 @@ namespace BigAndSmall
             if (!archite)
             {
                 targetGenes = targetGenes.Where(x => x.def.biostatArc == 0).ToList();
+            }
+
+            foreach (var gene in targetGenes)
+            {
+                xenogerm.GeneSet.AddGene(gene.def);
             }
 
             try

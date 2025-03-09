@@ -124,8 +124,8 @@ namespace BigAndSmall
                 bodyDefsAdded.Add(newRace.body);
                 thingDefsAdded.Add(newThing);
 
-                DefGenerator.AddImpliedDef(newThing, hotReload: hotReload);
-                DefGenerator.AddImpliedDef(newRace.body, hotReload: hotReload);
+                DefGenerator.AddImpliedDef(newThing, hotReload: true);
+                DefGenerator.AddImpliedDef(newRace.body, hotReload: true);
 
                 newThing.ResolveReferences();
             }

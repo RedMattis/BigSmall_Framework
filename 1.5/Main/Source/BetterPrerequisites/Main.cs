@@ -55,29 +55,24 @@ namespace BigAndSmall
 
         public static void RunDuringGenerateImpliedDefs(bool hotReload)
         {
-            // These should probably all be reloaded when the HotReload button is pressed?
             GeneDefPatcher.PatchExistingDefs();
+            RaceFuser.GenerateCorpses(hotReload);
+            if (!hotReload) HumanPatcher.MechanicalCorpseSetup();
+            XenotypeDefPatcher.PatchDefs();
+            ModDefPatcher.PatchDefs();
+            HumanPatcher.PatchRecipes();
+            ThoughtDefPatcher.PatchDefs();
             if (BigSmallMod.settings.experimental)
             {
-                //Log.Message($"[Big and Small]: Experimental Options - Active.\n" +
-                //    $"Initializing Merged BodyDefs...");
-
-                RaceFuser.GenerateCorpses(hotReload);
-                if (!hotReload) HumanPatcher.MechanicalCorpseSetup();
-                XenotypeDefPatcher.PatchDefs();
-                ModDefPatcher.PatchDefs();
-                HumanPatcher.PatchRecipes();
-                ThoughtDefPatcher.PatchDefs();
-                //Log.Message($"[Big and Small]: Experimental Setup - Finalized.");
+                // Put the animal stuff here maybe?
             }
         }
     }
 
     public class DefAltNamer : Def
     {
-        public static Dictionary<GeneDef, RenameGene> allGeneRenames = DefDatabase<DefAltNamer>.AllDefs
-            .SelectMany(x => x.geneRenames
-                .Select(y => (y.def, y))).ToDictionary(x => x.Item1, x => x.Item2);
+        public List<RenameGene> geneRenames = [];
+        private static Dictionary<GeneDef, RenameGene> allGeneRenames = [];
         public abstract class Rename
         {
             public string labelMechanoid = null;
@@ -86,14 +81,29 @@ namespace BigAndSmall
         }
         public class RenameGene : Rename { public GeneDef def = null; }
 
+        public static Dictionary<GeneDef, RenameGene> AllGeneRenames => allGeneRenames ??= SetupDict();
+
         public static void Initialize()
         {
-            allGeneRenames = DefDatabase<DefAltNamer>.AllDefs
-                .SelectMany(x => x.geneRenames
-                    .Select(y => (y.def, y))).ToDictionary(x => x.Item1, x => x.Item2);
+            allGeneRenames = SetupDict();
         }
 
-        public List<RenameGene> geneRenames = [];
+        public static Dictionary<GeneDef, RenameGene> SetupDict()
+        {
+            var dansInDataBase = DefDatabase<DefAltNamer>.AllDefs;
+            if (!dansInDataBase.Any())
+            {
+                return [];
+            }
+            var items = DefDatabase<DefAltNamer>.AllDefs
+                .SelectMany(x => x.geneRenames
+                    .Select(y => (y?.def, y)));
+
+            // Remove any null items.
+            items = items.Where(x => x.y != null && x.def != null);
+
+            return items.ToDictionary(x => x.def, x => x.y);
+        }
     }
     public class InfiltratorData
     {
@@ -121,17 +131,22 @@ namespace BigAndSmall
         private static List<List<GeneDef>> alienGeneGroupsDefs = null;
 
         public static XenotypeDef GetRandomReturnedXenotype => globalSettings
-            .Aggregate(new List<XenotypeChance>(), (acc, x) => [.. acc, .. x.Value.returnedXenotypes])
+            .SelectMany(x => x.Value.returnedXenotypes)
             .TryRandomElementByWeight(x => x.chance, out var result) ? result.xenotype : null;
 
         public static XenotypeDef GetRandomReturnedColonistXenotype => globalSettings
-            .Aggregate(new List<XenotypeChance>(), (acc, x) => [.. acc, .. x.Value.returnedXenotypesColonist])
+            .SelectMany(x => x.Value.returnedXenotypesColonist)
             .TryRandomElementByWeight(x => x.chance, out var result) ? result.xenotype : null;
 
 
         public static void Initialize()
         {
+            Log.Message("Initializing GlobalSettings");
             globalSettings = DefDatabase<GlobalSettings>.AllDefs.ToDictionary(x => x.defName);
+
+            Log.Message($"There are {globalSettings.Count} global settings.");
+            Log.Message($"There are {globalSettings.Values.Sum(x => x.returnedXenotypes.Count)} returned xenotypes.");
+            Log.Message($"There are {globalSettings.Values.Sum(x => x.returnedXenotypesColonist.Count)} returned colonist xenotypes.");
         }
 
         public static (XenotypeDef def, InfiltratorData data) GetRandomInfiltratorReplacementXenotype(Pawn pawn, int seed, bool forceNeeded, bool isFullRaid)

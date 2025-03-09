@@ -109,10 +109,15 @@ namespace BigAndSmall
 
         public static void ReanimatePawn(Pawn innerPawn, XenotypeDef xenotype)
         {
+            if (xenotype == BSDefs.VU_Returned)
+            {
+                // A bit hacky, but this whole system is a hack. Something something polishing a turd.
+                // If needed we can make a more robust system, but I doubt we will need it.
+                xenotype = VUReturning.ModifyReturnedByRotStage(innerPawn, xenotype);
+            }
             if (innerPawn?.RaceProps?.Animal == true)
             {
-                var animalHediff = HediffMaker.MakeHediff(HediffDef.Named("VU_AnimalReturned"), innerPawn);
-                innerPawn.health.AddHediff(animalHediff);
+                innerPawn.health.AddHediff(VUReturning.GetAnimalReturnedHediff(innerPawn));
             }
             else if (innerPawn.genes != null)
             {

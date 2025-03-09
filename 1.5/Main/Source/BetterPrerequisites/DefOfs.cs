@@ -64,6 +64,8 @@ namespace BigAndSmall
         public static HediffDef VU_DraculVampirism;
         public static HediffDef VU_DraculAge;
         public static HediffDef VU_AnimalReturned;
+        public static HediffDef VU_AnimalReturnedRotted;
+        public static HediffDef VU_AnimalReturnedSkeletal;
         public static HediffDef VU_DraculAnimalVampirism;
         [MayRequire("RedMattis.BigSmall.Core")]
         public static HediffDef BS_LesserDeathless_Death;
@@ -128,6 +130,14 @@ namespace BigAndSmall
         public static ShaderTypeDef CutoutComplexBlend;
 
         public static IncidentDef StrangerInBlackJoin;
+
+        // Xenotypes
+        [MayRequireAnyOf("RedMattis.Undead,RedMattis.Yokai")]
+        public static XenotypeDef VU_Returned_Intact;
+        [MayRequireAnyOf("RedMattis.Undead,RedMattis.Yokai")]
+        public static XenotypeDef VU_Returned;
+        [MayRequireAnyOf("RedMattis.Undead,RedMattis.Yokai")]
+        public static XenotypeDef VU_ReturnedSkeletal;
 
         static BSDefs()
         {

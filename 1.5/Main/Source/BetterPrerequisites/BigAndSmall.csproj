@@ -47,6 +47,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\..\..\..\..\..\..\..\workshop\content\294100\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="mscorlib">
       <HintPath>..\..\..\..\..\..\RimWorldWin64_Data\Managed\mscorlib.dll</HintPath>
       <Private>False</Private>
@@ -308,6 +316,7 @@
     <Publicize Include="Assembly-CSharp:Verse.ThingFilter.allowedDefs" />
     <Publicize Include="Assembly-CSharp:Verse.ThingFilter.thingDefs" />
     <Publicize Include="Assembly-CSharp:Verse.ThingDef.verbs" />
+    <Publicize Include="Assembly-CSharp:Verse.Thing.rotationInt" />
     <Publicize Include="Assembly-CSharp:RimWorld.CompTargetable.selectedTarget" />
     <Publicize Include="Assembly-CSharp:RimWorld.ThingDefGenerator_Corpses.CalculateMarketValue" />
     <Publicize Include="Assembly-CSharp:RimWorld.ThingDefGenerator_Corpses.GenerateCorpseDef" />

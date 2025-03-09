@@ -1,4 +1,5 @@
 ﻿using BetterPrerequisites;
+using BigAndSmall.FilteredLists;
 using HarmonyLib;
 using RimWorld;
 using System;
@@ -19,24 +20,28 @@ namespace BigAndSmall
         private readonly List<Gene> genesActivated = [];
         private readonly List<Gene> genesDeactivated = [];
 
-        private string GeneShouldBeActive(Gene gene, List<PawnExtension> pawnExts, List<Gene> activeGenes)
+        private string GeneShouldBeActive(Gene gene, List<PawnExtension> genePawnExts, List<PawnExtension> allPawnExts, List<Gene> activeGenes)
         {
-            if (!ConditionalManager.TestConditionals(gene, pawnExts))
+            if (!ConditionalManager.TestConditionals(gene, genePawnExts))
             {
                 return "BS_ConditionForActivationNotMet".Translate().CapitalizeFirst();
-            }
-            if (PrerequisiteValidator.Validate(gene.def, pawn) is string pFailReason && pFailReason != "")
-            {
-                return pFailReason;
             }
             if (GeneSuppressorManager.IsSupressedByHediff(gene.def, pawn))
             {
                 return "BS_DisabledByHediff".Translate().CapitalizeFirst();
             }
+            if (PrerequisiteValidator.Validate(gene.def, pawn) is string pFailReason && pFailReason != "")
+            {
+                return pFailReason;
+            }
+            if (allPawnExts.Select(ext=>ext.IsGeneLegal(gene.def, removalCheck:false)).Fuse().Denied())
+            {
+                return "BS_DisabledByFilter".Translate().CapitalizeFirst();
+            }
             return "";
         }
 
-        private void UpdateGeneOverrideStates()
+        private void UpdateGeneOverrideStates(List<PawnExtension> allPawnExts)
         {
             if (pawn.genes == null)
             {
@@ -46,30 +51,37 @@ namespace BigAndSmall
             var allGenes = pawn.genes.GenesListForReading;
             foreach (var gene in allGenes)
             {
-                if (GeneCache.globalCache.TryGetValue(gene, out var geneCache))
+                if (!GeneCache.globalCache.TryGetValue(gene, out var geneCache))
                 {
-                    var allActiveGenes = GeneHelpers.GetAllActiveGenes(pawn).ToList();
-                    var pawnExts = gene.def.GetAllPawnExtensionsOnGene();
-                    string failReason = GeneShouldBeActive(gene, pawnExts, allActiveGenes);
-                    // For testing purposes disable all gene with the word Aptitude in them
-                    if (failReason != "")
+                    GeneCache.globalCache[gene] = geneCache = new GeneCache(gene);
+                }
+                var allActiveGenes = GeneHelpers.GetAllActiveGenes(pawn).ToList();
+                var genePawnExts = gene.def.GetAllPawnExtensionsOnGene();
+                string failReason = GeneShouldBeActive(gene, genePawnExts, allPawnExts, allActiveGenes);
+                // For testing purposes disable all gene with the word Aptitude in them
+                if (failReason != "")
+                {
+                    if (!geneCache.isOverriden) genesDeactivated.Add(gene);
+                    geneCache.isOverriden = true;
+                    if (gene.Active)
                     {
-                        if (!geneCache.isOverriden) genesDeactivated.Add(gene);
-                        geneCache.isOverriden = true;
+                        // In case it wasn't already disabled, just do it here.
+                        gene.OverrideBy(GeneCache.DummyGene);
                     }
-                    else
+                }
+                else
+                {
+                    if (geneCache.isOverriden) genesActivated.Add(gene);
+                    geneCache.isOverriden = false;
+                    foreach (var supressor in gene.def.ExtensionsOnDef<GeneSuppressor_Gene, GeneDef>())
                     {
-                        if (geneCache.isOverriden) genesActivated.Add(gene);
-                        geneCache.isOverriden = false;
-                        foreach(var supressor in gene.def.ExtensionsOnDef<GeneSuppressor_Gene, GeneDef>())
+                        foreach (string supressedGene in supressor.supressedGenes)
                         {
-                            foreach(string supressedGene in supressor.supressedGenes)
-                            {
-                                allGenes.Where(x => x.def.defName == supressedGene).ToList().ForEach(x => x.overriddenByGene = gene);
-                            }
+                            allGenes.Where(x => x.def.defName == supressedGene).ToList().ForEach(x => x.overriddenByGene = gene);
                         }
                     }
                 }
+
             }
         }
     }
@@ -128,11 +140,11 @@ namespace BigAndSmall
         {
             if (GeneCache.globalCache.TryGetValue(gene, out var cache))
             {
-                return cache.isOverriden ? cache.gene : null;
+                return cache.OverridenBy();
             }
             else
             {
-                GeneCache.globalCache[gene] = new GeneCache(gene);  // Won't have a value, so don't bother returning.
+                GeneCache.globalCache[gene] = new GeneCache(gene);  // Won't have a value yet, so don't bother returning.
             }
             return null;
         }

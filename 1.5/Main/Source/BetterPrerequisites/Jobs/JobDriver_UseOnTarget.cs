@@ -68,7 +68,7 @@ namespace BigAndSmall
 
 
 
-		private Toil WaitDuration()
+        private Toil WaitDuration()
 		{
 			Thing thing = job.GetTarget(TargetIndex.A).Thing;
 

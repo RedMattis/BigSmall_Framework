@@ -277,9 +277,9 @@ namespace BigAndSmall
 
             SetAnimalStatDefValues(humThing, aniThing, newThing, hasHands);
 
-            DefGenerator.AddImpliedDef(newThing, hotReload: hotReload);
-            DefGenerator.AddImpliedDef(newRace.body, hotReload: hotReload);
-            DefGenerator.AddImpliedDef(raceHediff, hotReload: hotReload);
+            DefGenerator.AddImpliedDef(newThing, hotReload: true);
+            DefGenerator.AddImpliedDef(newRace.body, hotReload: true);
+            DefGenerator.AddImpliedDef(raceHediff, hotReload: true);
 
             newThing.ResolveReferences();
             raceHediff.ResolveReferences();
