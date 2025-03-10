@@ -33,5 +33,17 @@ namespace BigAndSmall
         {
             return base.GizmoOnGUI(topLeft, maxWidth, parms);
         }
+
+        protected override float Target
+        {
+            get
+            {
+                return gene.targetValue / gene.Max;
+            }
+            set
+            {
+                gene.SetTargetValuePct(value);
+            }
+        }
     }
 }

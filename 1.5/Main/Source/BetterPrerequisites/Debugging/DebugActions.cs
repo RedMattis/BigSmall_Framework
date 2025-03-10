@@ -163,6 +163,7 @@ namespace BigAndSmall.Debugging
             foreach (Pawn pawn in Find.CurrentMap.thingGrid.ThingsAt(UI.MouseCell()).OfType<Pawn>())
             {
                 HumanoidPawnScaler.GetCache(pawn, forceRefresh: true);
+                Log.Message($"Forced refresh on {pawn.LabelCap}");
             }
         }
 

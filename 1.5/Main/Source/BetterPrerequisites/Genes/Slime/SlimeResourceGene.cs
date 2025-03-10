@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
+using static RimWorld.Building_HoldingPlatform;
 
 namespace BigAndSmall
 {
@@ -23,32 +24,16 @@ namespace BigAndSmall
         protected override Color BarColor => new ColorInt(30, 60, 120).ToColor;
         protected override Color BarHighlightColor => new ColorInt(50, 100, 150).ToColor;
 
-        private Hediff slimeHediff = null;
         protected float cachedIncrease = 0;
 
         public override float InitialResourceMax => 1f;
 
         public override float MaxLevelOffset => 0;
 
-        /// <summary>
-        /// Ignores the `max` value, because it is junk.
-        /// </summary>
         public override float Max => InitialResourceMax + cachedIncrease;
         public Gene_Resource Resource => this;
 
-        public Hediff SlimeHediff
-        {
-            get
-            { 
-                // Check if hediff is null, or not assigned to the pawn.
-                if (slimeHediff == null || pawn?.health?.hediffSet?.HasHediff(slimeHediff.def) != true)
-                {
-                    slimeHediff = AddOrGetHediff();
-                }
-                return slimeHediff;
-            }
-            set => slimeHediff = value;
-        }
+        public Hediff SlimeHediff => GetSlimeHediff();
 
         public bool CanOffset => Active;
 
@@ -59,7 +44,7 @@ namespace BigAndSmall
         public string DisplayLabel => Label + " (" + "Gene".Translate() + ")";
 
         
-        public float DefaultTargetValue => Max < 2 ? 1.0f : 0.5f;
+        public float DefaultTargetValue => Max < 2 ? 1f : 1.5f;
 
         public override void PostAdd()
         {
@@ -82,7 +67,7 @@ namespace BigAndSmall
         public override void Reset()
         {
             CalculateResourceMaxOffset();
-            SetTargetValuePct(DefaultTargetValue);
+            targetValue = DefaultTargetValue;
             cur = DefaultTargetValue;
             SlimeHediff.Severity = Mathf.Clamp(Value, 0.05f, 9999);
             RefreshCache();
@@ -99,7 +84,7 @@ namespace BigAndSmall
                 bool playerControlled = pawn.IsColonist || pawn.IsPrisonerOfColony;
                 if (!playerControlled)
                 {
-                    SetTargetValuePct(max > 2 ? 0.5f : 1.0f);
+                    targetValue = DefaultTargetValue;
                 }
 
                 RecalculateMax();
@@ -154,11 +139,14 @@ namespace BigAndSmall
                     newValue = moveTowards;
                 }
 
-                // If value change was negative, fill the hunger bar somewhat.
-                if (Mathf.Abs(newValue - Value) < 0.05f)
+                // Tiny changs should not prompt a refresh.
+                if (Mathf.Abs(newValue - Value) < 0.01f)
                 {
-                    // Pass
+                    Value = newValue;
+                    SlimeHediff.Severity = Mathf.Clamp(Value, 0.05f, 9999);
+                    return;
                 }
+                // If value change was negative, fill the hunger bar somewhat.
                 else if (newValue < Value && hasFoodNeed)
                 {
                     pawn.needs.food.CurLevelPercentage += 0.20f;
@@ -171,6 +159,7 @@ namespace BigAndSmall
 
                 Value = newValue;
                 SlimeHediff.Severity = Mathf.Clamp(Value, 0.05f, 9999);
+                RefreshCache();
             }
         }
 
@@ -213,33 +202,29 @@ namespace BigAndSmall
             return increase;
         }
 
-        private Hediff AddOrGetHediff()
+        static HediffDef slimeHediffDef = null;
+        public Hediff GetSlimeHediff()
         {
-            // Get all hediffs in the library
-            var hediffs = DefDatabase<HediffDef>.AllDefsListForReading;
+            if (slimeHediffDef == null)
+            {
+                // Get all hediffs in the library
+                var hediffs = DefDatabase<HediffDef>.AllDefsListForReading;
 
-            var hediffList = hediffs.Where(x => x.defName == "BS_SlimeMetabolism");
-            if (hediffList.Count() == 0)
-            {
-                Log.Error("BS_SlimeMetabolism hediff not found in the library.");
-                return null;
+                var hediffList = hediffs.Where(x => x.defName == "BS_SlimeMetabolism");
+                if (hediffList.Count() == 0)
+                {
+                    Log.Error("BS_SlimeMetabolism hediff not found in the library.");
+                    return null;
+                }
+                slimeHediffDef = hediffList.First();
             }
-            var hediff = hediffList.First();
-            Hediff slimeHedif;
-            // Check if we already have the hediff
-            if (pawn.health.hediffSet.HasHediff(hediff))
+            if (!pawn.health.hediffSet.HasHediff(slimeHediffDef))
             {
-                // Get the hediff we added
-                slimeHedif = pawn.health.hediffSet.GetFirstHediffOfDef(hediff);
-                slimeHedif.Severity = 1;
+                pawn.health.AddHediff(slimeHediffDef);
             }
-            else
-            {
-                pawn.health.AddHediff(hediff);
-                slimeHedif = pawn.health.hediffSet.GetFirstHediffOfDef(hediff);
-            }
-            return slimeHedif;
+            return pawn.health.hediffSet.GetFirstHediffOfDef(slimeHediffDef);
         }
+
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
@@ -254,6 +239,16 @@ namespace BigAndSmall
             foreach (Gizmo resourceDrainGizmo in GeneResourceDrainUtility.GetResourceDrainGizmos(this))
             {
                 yield return resourceDrainGizmo;
+            }
+        }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.Look(ref cachedIncrease, "cachedIncrease", 0);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                targetValue *= max;
             }
         }
     }

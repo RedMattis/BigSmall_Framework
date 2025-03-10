@@ -34,7 +34,7 @@ namespace BigAndSmall
             base.Apply(target, dest);
             BS_GeneSlimePower slimePower = parent.pawn.genes?.GetFirstGeneOfType<BS_GeneSlimePower>();
             ResourcePoolUtils.OffsetResource(parent.pawn, 0f - Props.resourceCost, slimePower);
-            slimePower.SlimeHediff.Severity = Mathf.Clamp(slimePower.Value, 0.05f, 9999);
+            slimePower.GetSlimeHediff().Severity = Mathf.Clamp(slimePower.Value, 0.05f, 9999);
         }
 
         public override bool GizmoDisabled(out string reason)
