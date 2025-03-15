@@ -36,8 +36,7 @@
     <color>
       <apparelColorA>true</apparelColorA>
       <brightnessFlat>-0.1</brightnessFlat>
-      <saturation>0.97</saturation>
-      <hueRotate>-0.1</hueRotate>
+      <saturation>0.95</saturation>
       <invertValueIfBelow>0.6</invertValueIfBelow>
       <maxSaturation>0.75</maxSaturation>
       <maxBrightness>0.9</maxBrightness>
@@ -55,7 +54,7 @@
       <temperatureAnalogous>1</temperatureAnalogous>
       <!-- <temperatureComplementary>1</temperatureComplementary> -->
       <brightnessFlat>-0.1</brightnessFlat>
-      <saturation>0.97</saturation>
+      <saturation>0.90</saturation>
       <invertValueIfBelow>0.65</invertValueIfBelow>
       <makeLightSaturationScale>0.5</makeLightSaturationScale>
       <maxSaturation>0.65</maxSaturation>

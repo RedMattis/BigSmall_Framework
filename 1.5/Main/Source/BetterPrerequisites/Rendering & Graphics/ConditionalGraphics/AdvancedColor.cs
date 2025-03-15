@@ -324,7 +324,7 @@ namespace BigAndSmall
                     }
                     else
                     {
-                        hue = hue < coolRangeMid ? Mathf.Lerp(hue, 1, 0.5f) : Mathf.Lerp(hue, warmRange, 0.5f);
+                        hue = hue < coolRangeMid ? Mathf.Lerp(hue, 1, 0.5f) : Mathf.Lerp(hue, warmRange, 0.35f);
                     }
                     hue = Mathf.Lerp(orgHue, hue, temperatureAnalogous.Value);
                 }

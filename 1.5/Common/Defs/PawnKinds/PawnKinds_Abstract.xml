@@ -72,7 +72,7 @@
     <apparelIgnorePollution>true</apparelIgnorePollution>
 
     <weaponTags> <li>NeolithicMeleeBasic</li> <li>MedievalMeleeDecent</li> </weaponTags>
-    <apparelTags> <li>Neolithic</li> <li>MedievalBasic</li> <li>BS_MedievalBasic</li> </apparelTags>
+    <apparelTags> <li>Neolithic</li> <li>BS_MedievalBasicWeather</li> <li>MedievalBasic</li> <li>BS_MedievalBasic</li> </apparelTags>
   </PawnKindDef>
 
   <PawnKindDef ParentName="BS_GenericMedievalBase" Name="BS_MedievalCivilianBase" Abstract="True">
@@ -85,7 +85,7 @@
     <techHediffsMoney>50~100</techHediffsMoney>
 
     <weaponTags> <li>NeolithicMeleeBasic</li> <li>MedievalMeleeDecent</li> </weaponTags>
-    <apparelTags> <li>MedievalBasic</li> <li>BS_MedievalBasic</li> </apparelTags>
+    <apparelTags> <li>BS_MedievalBasicWeather</li> <li>MedievalBasic</li> <li>BS_MedievalBasic</li> </apparelTags>
   </PawnKindDef>
 
   <PawnKindDef ParentName="BS_GenericMedievalBase" Name="BS_MedievalMilitaryBase" Abstract="True">
@@ -127,6 +127,7 @@
     <apparelDisallowTags>
       <li>MedievalLevy</li>
       <li>MedievalWorker</li>
+      <li>BS_MedievalBasicWeather</li>
     </apparelDisallowTags>
 
     <weaponTags> <li>MedievalMeleeDecent</li> <li>MedievalMeleeAdvanced</li> </weaponTags>
