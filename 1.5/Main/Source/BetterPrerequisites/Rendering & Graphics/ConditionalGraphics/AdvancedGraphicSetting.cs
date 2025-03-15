@@ -6,8 +6,13 @@ using Verse;
 
 namespace BigAndSmall
 {
+    public class ConditionalTextureDef : Def
+    {
+        public ConditionalTexture graphic = new();
+    }
     public class ConditionalTexture : ConditionalGraphic
     {
+        public ConditionalTextureDef replacementDef = null;
         public AdaptivePathPathList texturePaths = [];
         public Vector2 drawSize = Vector2.one;
 
@@ -20,6 +25,13 @@ namespace BigAndSmall
             {
                 if (alt.GetState(pawn) == false) { continue; }
                 if (alt.TryGetPath(cache, ref path))
+                {
+                    return true;
+                }
+            }
+            if (replacementDef != null)
+            {
+                if (replacementDef.graphic.TryGetPath(cache, ref path))
                 {
                     return true;
                 }

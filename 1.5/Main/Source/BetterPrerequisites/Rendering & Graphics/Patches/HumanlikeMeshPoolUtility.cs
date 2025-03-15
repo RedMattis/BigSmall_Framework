@@ -92,10 +92,9 @@ namespace BigAndSmall
                     threadStaticCache.uses = 0;
                 }
             }
+            threadStaticCache.uses++;
             if (threadStaticCache.approxNoChange || !threadStaticCache.spawned) return;
 
-
-            threadStaticCache.uses++;
             // If caching disabled...
             if (threadStaticCache.cachingDisabled)
             {

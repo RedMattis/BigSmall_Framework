@@ -163,7 +163,7 @@ namespace BigAndSmall
                     (x.xenoFilter == null || (pawn.genes?.Xenotype is XenotypeDef pXDef && x.xenoFilter.GetFilterResult(pXDef).Accepted()))
                     ).ToList();
             }
-            if (allValidInfiltratorData.Count == 0) return (null, null);
+            if (allValidInfiltratorData.Count == 0 || allValidInfiltratorData.All(x=>x.doubleXenotypes?.Count == 0)) return (null, null);
             // Return xenotype based on chance.
 
             InfiltratorData data;

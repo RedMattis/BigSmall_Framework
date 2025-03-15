@@ -23,7 +23,11 @@ namespace BigAndSmall
             if ( tPawn != null || cPawn != null)
             {
                 lastEatenThing = thing;
-                Pawn ingestedPawn = tPawn == null ? cPawn : tPawn;
+                Pawn ingestedPawn = tPawn ?? cPawn;
+                if (ingestedPawn.genes == null)
+                {
+                    return;
+                }
 
                 int numGenes;
                 if (Rand.Chance(0.75f))

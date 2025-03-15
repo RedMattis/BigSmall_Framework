@@ -142,9 +142,11 @@
     <Compile Include="Pawn\PawnPatches.cs" />
     <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\AdvancedColor.cs" />
     <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\AdvancedGraphicSetting.cs" />
-    <Compile Include="Rendering &amp; Graphics\ConditionalGraphic.cs" />
+    <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\ConditionalGraphic.cs" />
     <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\ConditionalGraphicProperties.cs" />
     <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\ConditionalGraphicsSet.cs" />
+    <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\Flagger.cs" />
+    <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\GraphicsOverride.cs" />
     <Compile Include="Rendering &amp; Graphics\CustomMaterial.cs" />
     <Compile Include="Rendering &amp; Graphics\AdaptivePawnPath.cs" />
     <Compile Include="Rendering &amp; Graphics\Patches\HumanlikeMeshPoolUtility.cs" />
@@ -281,6 +283,7 @@
     <Compile Include="Genes\Vampires\VampireBite.cs" />
     <Compile Include="ModSettings.cs" />
     <Compile Include="UI\SettingsWidgets.cs" />
+    <Compile Include="Utilities\ChanceByStat.cs" />
     <Compile Include="Utilities\EnumBool.cs" />
     <Compile Include="Utilities\FilterLists.cs" />
     <Compile Include="Utilities\GenericHelpers.cs" />
