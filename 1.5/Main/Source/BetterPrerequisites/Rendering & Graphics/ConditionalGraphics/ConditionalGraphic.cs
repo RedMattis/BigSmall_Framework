@@ -9,103 +9,6 @@ using Verse;
 
 namespace BigAndSmall
 {
-    public class FlagString : IEquatable<FlagString>
-    {
-        private const string DEFAULT = "default";
-
-        public string mainTag;
-        public string subTag = DEFAULT;
-        public List<string> extraTags = [];
-
-        public bool Equals(FlagString other) => mainTag == other.mainTag && subTag == other.subTag && extraTags.SequenceEqual(other.extraTags);
-        public override bool Equals(object obj)
-        {
-            if (obj is FlagString other)
-            {
-                return mainTag == other.mainTag && subTag == other.subTag && extraTags.SequenceEqual(other.extraTags);
-            }
-            return false;
-        }
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hash = 17;
-                hash = hash * 23 + (mainTag?.GetHashCode() ?? 0);
-                hash = hash * 23 + (subTag?.GetHashCode() ?? 0);
-                return hash;
-            }
-        }
-        public override string ToString() => $"{mainTag}/{subTag}" + (extraTags.Any() ? $"[{string.Join(",", extraTags)}]" : "");
-
-        public void LoadDataFromXmlCustom(XmlNode xmlRoot)
-        {
-            mainTag = xmlRoot.Name;
-            if (xmlRoot.InnerText != "")
-            {
-                subTag = xmlRoot.InnerText;
-            }
-            extraTags = xmlRoot.Attributes?.OfType<XmlAttribute>().Select(x => x.Value).ToList() ?? [];
-        }
-    }
-
-    public class GraphicsOverride : DefModExtension
-    {
-        public List<FlagString> replaceFlags = [];
-
-        public List<GraphicsOverride> overrideList = [];
-        public float priority = 0;
-        public List<ConditionalGraphic> graphics = [];
-        public Vector2 drawSize = Vector2.one;
-
-        public List<GraphicsOverride> Overrides
-        {
-            get
-            {
-                if (overrideList.Any())
-                {
-                    return [.. overrideList.SelectMany(x => x.Overrides).OrderByDescending(x => x.priority)];
-                }
-                return [this];
-            }
-        }
-    }
-
-    public class Flagger : DefModExtension
-    {
-        public float priority = 0;
-        public List<FlagString> flags = [];
-
-        public static List<FlagString> GetTagStrings(Pawn pawn, bool includeInactive)
-        {
-            var flagList = includeInactive ? ModExtHelper.GetAllExtensionsPlusInactive<Flagger>(pawn) : ModExtHelper.GetAllExtensions<Flagger>(pawn);
-            if (flagList.Any())
-            {
-                return [.. flagList.OrderByDescending(x => x.priority).SelectMany(x => x.flags)];
-            }
-            return [];
-        }
-    }
-
-    public class ChanceByStat
-    {
-        public StatDef statDef;
-        public SimpleCurve curve = [];
-
-        public void LoadDataFromXmlCustom(XmlNode xmlRoot)
-        {
-            var firstElement = xmlRoot.FirstChild;
-            DirectXmlCrossRefLoader.RegisterObjectWantsCrossRef(this, "statDef", firstElement.Name);
-            foreach (XmlNode node in firstElement.ChildNodes)
-            {
-                if (node.NodeType == XmlNodeType.Element)
-                {
-                    curve.Add(new CurvePoint(ParseHelper.FromString<Vector2>(node.InnerText)));
-                }
-            }
-        }
-    }
-
     public abstract class ConditionalGraphic
     {
         public class PartRecord
@@ -132,6 +35,7 @@ namespace BigAndSmall
             Rotted,
             Dessicated,
             HasForcedSkinColorGene,
+            IsRecolored,  // Only works for AdvancedColor.
             BiotechDLC,
             IdeologyDLC,
             AnomalyDLC,
@@ -145,7 +49,7 @@ namespace BigAndSmall
         public int randSeed = 0;
         
 
-        private List<AltTrigger> triggers = []; // Obsolete. It is too cryptic.
+        private List<AltTrigger> triggers = [];
         private List<AltTrigger> triggerConditions = [];
         public float? chanceTrigger = null;
         public SimpleCurve chanceByAge = null; // 1.0 means 100% chance at age 100.
@@ -156,7 +60,7 @@ namespace BigAndSmall
 
         public bool HasGeneTriggers => triggerGeneTag.AnyItems() || triggerGene.AnyItems();
 
-        public List<AltTrigger> Triggers { get => [.. triggerConditions, .. triggers]; set => triggerConditions = value; }
+        public HashSet<AltTrigger> Triggers { get => [.. triggerConditions, .. triggers]; }
 
         public List<GraphicsOverride> GetGraphicOverrides(Pawn pawn)
         {
@@ -254,9 +158,8 @@ namespace BigAndSmall
         /// "False" means skip and keep looking.
         /// "Null" is a valid result, but means that the graphic should be hidden.
         /// </summary>
-        /// <param name="pawn"></param>
         /// <returns></returns>
-        public bool GetState(Pawn pawn)
+        public bool GetState(Pawn pawn, PawnRenderNode node=null)
         {
             int seed = pawn.thingIDNumber + pawn.def.defName.GetHashCode() + randSeed;
             if (chanceTrigger != null)
@@ -281,19 +184,10 @@ namespace BigAndSmall
                     }
                 }
             }
-            if (chanceByStat != null)
+            if (chanceByStat != null && chanceByStat.Evaluate(pawn, seed) == false)
             {
-                float value = pawn.GetStatValue(chanceByStat.statDef);
-                float chance = chanceByStat.curve.Evaluate(value);
-                using (new RandBlock(seed))
-                {
-                    if (Rand.Value > chance)
-                    {
-                        return false;
-                    }
-                }
+                return false;
             }
-
             if (!TriggerTagsValid(pawn))
             {
                 return false;
@@ -323,6 +217,7 @@ namespace BigAndSmall
                 AltTrigger.Rotted => pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Rotting,
                 AltTrigger.Dessicated => pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Dessicated,
                 AltTrigger.HasForcedSkinColorGene => GeneHelpers.GetAllActiveGenes(pawn).Any(x => x.def.skinColorOverride != null),
+                AltTrigger.IsRecolored => node?.apparel.GetComp<CompColorable>()?.Active == true,
                 AltTrigger.BiotechDLC => ModsConfig.BiotechActive,
                 AltTrigger.IdeologyDLC => ModsConfig.IdeologyActive,
                 AltTrigger.AnomalyDLC => ModsConfig.AnomalyActive,

@@ -161,7 +161,7 @@ namespace BigAndSmall.Debugging
 
                     new FloatMenuOption("Set to random xenotype", delegate
                     {
-                        GeneHelpers.RemoveAllGenesSlow_ExceptColor(pawn);
+                        GeneHelpers.RemoveAllGenesSlow(pawn);
                         pawn.genes.SetXenotype(DefDatabase<XenotypeDef>.AllDefs.RandomElement());
                         pawn.TrySwapToXenotypeThingDef();
                     }),
@@ -183,7 +183,7 @@ namespace BigAndSmall.Debugging
 
         public static void SetXenotypeAndRace(Pawn pawn, XenotypeDef xenotype)
         {
-            GeneHelpers.RemoveAllGenesSlow_ExceptColor(pawn);
+            GeneHelpers.RemoveAllGenesSlow(pawn);
             pawn.genes.SetXenotype(xenotype);
             pawn.TrySwapToXenotypeThingDef();
         }
