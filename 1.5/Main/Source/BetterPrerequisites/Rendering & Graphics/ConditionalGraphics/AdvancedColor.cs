@@ -24,6 +24,7 @@ namespace BigAndSmall
         public static List<Color> allLeatherColors = null;
 
         public ColorSettingDef replacementDef = null;
+        public List<ColorSettingDef> altDefs = [];
 
         public Color? color = null;
         public bool hairColor = false;
@@ -86,6 +87,7 @@ namespace BigAndSmall
         [Unsaved(false)]
         private readonly static Dictionary<string, Color> randomClrPerId = [];
 
+        public List<ColorSettingDef> AltDefs => replacementDef == null ? [.. altDefs] : [.. altDefs, replacementDef];
         /// <summary>
         /// A list of all loaded leathers in the game.
         /// </summary>
@@ -101,9 +103,12 @@ namespace BigAndSmall
                     return altClr;
                 }
             }
-            if (replacementDef != null)
+            foreach (var altDef in AltDefs.Where(x => x.color.GetState(pawn, node: renderNode)))
             {
-                return replacementDef.color.GetColor(renderNode, oldClr, hashOffset, useOldColor);
+                if (altDef.color.GetColor(renderNode, oldClr, hashOffset, useOldColor) is Color altClr)
+                {
+                    return altClr;
+                }
             }
 
             Color? subDefResult = null;

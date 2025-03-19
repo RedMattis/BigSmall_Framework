@@ -49,7 +49,17 @@ namespace BigAndSmall
             }
             
             var allGenes = pawn.genes.GenesListForReading;
-            foreach (var gene in allGenes)
+            if (allGenes.NullOrEmpty())
+            {
+                return;
+            }
+
+            IOrderedEnumerable<Gene> orderedGenes = allGenes
+                .OrderByDescending(gene => (gene.def.GetAllPawnExtensionsOnGene() is List<PawnExtension> genePawnExts && genePawnExts.Any())
+                ? genePawnExts.Max(x => x.priority + (x.HasGeneFilter ? 0.5f : 0))
+                : 0);
+
+            foreach (var gene in orderedGenes)
             {
                 if (!GeneCache.globalCache.TryGetValue(gene, out var geneCache))
                 {

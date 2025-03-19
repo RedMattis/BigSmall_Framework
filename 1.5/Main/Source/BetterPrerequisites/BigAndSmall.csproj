@@ -98,6 +98,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abillities\CompAbilityEffect_GiveWithSeverity.cs" />
     <Compile Include="Abillities\MeleeAttackAbility.cs" />
     <Compile Include="BetterPrerequisites\NewGeneDisabler.cs" />
     <Compile Include="Cache\CacheAccessProps.cs" />
@@ -115,9 +116,15 @@
     <Compile Include="DefPatches\RaceFuser\RaceFuser_Helpers.cs" />
     <Compile Include="Gender and Reproduction\GenderMethods.cs" />
     <Compile Include="Genes\GeneEffectManager.cs" />
+    <Compile Include="Genes\PowerPools\CompResourceCost.cs" />
+    <Compile Include="Genes\PowerPools\Comp_DrainsResource.cs" />
+    <Compile Include="Genes\PowerPools\IResourcePool.cs" />
     <Compile Include="Genes\PowerPools\ResourcePoolUtils.cs" />
+    <Compile Include="Genes\PowerPools\Gizmo_ResourceBase.cs" />
     <Compile Include="Genes\Slime\CompProperties_SlimeCost.cs" />
     <Compile Include="Genes\Slime\GeneGizmo_ResourceSlime.cs" />
+    <Compile Include="Genes\Soul\CompProperties_SoulEnergyCost.cs" />
+    <Compile Include="Genes\Soul\SoulResource.cs" />
     <Compile Include="Genes\Unliving\ReturningSoul.cs" />
     <Compile Include="Hediffs\HediffPatches.cs" />
     <Compile Include="Genes\GeneSetupEvents.cs" />
@@ -141,7 +148,7 @@
     <Compile Include="Pawn\PawnGeneration\GenerateNewPawnInternal.cs" />
     <Compile Include="Pawn\PawnPatches.cs" />
     <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\AdvancedColor.cs" />
-    <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\AdvancedGraphicSetting.cs" />
+    <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\ConditionalTexture.cs" />
     <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\ConditionalGraphic.cs" />
     <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\ConditionalGraphicProperties.cs" />
     <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\ConditionalGraphicsSet.cs" />
@@ -165,6 +172,7 @@
     <Compile Include="Rendering &amp; Graphics\RenderNodes\ComplexRenderNode.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderWorkers\PawnRenderNode_Apparel.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderWorkers\UltimateRenderNodeWorker.cs" />
+    <Compile Include="SimpleCustomRaces\CustomButcherProduct.cs" />
     <Compile Include="SimpleCustomRaces\LifeStageWorker_FullyFormedHumanlike.cs" />
     <Compile Include="SimpleCustomRaces\MechanicalRace\FuelNeed.cs" />
     <Compile Include="SimpleCustomRaces\MechanicalRace\MechRacePatches.cs" />
@@ -275,7 +283,6 @@
     <Compile Include="Genes\Lamia\Lamia_Babykiller.cs" />
     <Compile Include="Genes\Lamia\Lamia_Comp.cs" />
     <Compile Include="Genes\Lamia\Lamia_CursedResource.cs" />
-    <Compile Include="Genes\PowerPools\PowerPool.cs" />
     <Compile Include="Genes\Misc\SelfRegenerate.cs" />
     <Compile Include="Genes\Misc\SuccubusGenes.cs" />
     <Compile Include="Genes\Unliving\UnlivingDamagePatch.cs" />
@@ -285,6 +292,7 @@
     <Compile Include="UI\SettingsWidgets.cs" />
     <Compile Include="Utilities\ChanceByStat.cs" />
     <Compile Include="Utilities\EnumBool.cs" />
+    <Compile Include="Utilities\EnumRange.cs" />
     <Compile Include="Utilities\FilterLists.cs" />
     <Compile Include="Utilities\GenericHelpers.cs" />
     <Compile Include="Utilities\ScalingMethods.cs" />

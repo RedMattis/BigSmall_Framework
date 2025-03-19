@@ -122,6 +122,10 @@
   <BS_PrerequisitesNotMetNoneOf>blocked by: {0}</BS_PrerequisitesNotMetNoneOf>
 
   <BS_ConditionForActivationNotMet>activation conditions not met</BS_ConditionForActivationNotMet>
-  <BS_DisabledByHediff>disabled by health status</BS_DisabledByHediff>
+  <BS_DisabledByHediff>disabled by trait or health status</BS_DisabledByHediff>
   <BS_DisabledByFilter>gene type category disabled</BS_DisabledByFilter>
+
+  <BS_NotEnoughSoulEnergy>Not enough soul energy</BS_NotEnoughSoulEnergy>
+  <BS_StopSomething>Stop {0}</BS_StopSomething>
+  <BS_StopActiveDesc>Stops the active effect</BS_StopActiveDesc>
 </LanguageData>
