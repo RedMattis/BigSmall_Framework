@@ -11,6 +11,7 @@ namespace BigAndSmall
         private void SimpleRaceUpdate(List<PawnExtension> raceExts, List<PawnExtension> otherPawnExt, List<CompProperties_Race> raceCompProps)
         {
             List<PawnExtension> allExt = [.. raceExts, .. otherPawnExt];
+
             UpdateGeneOverrideStates(allExt);
             Metamorphosis.HandleMetamorph(pawn, allExt);
             ProcessRaceGeneRequirements(raceExts);

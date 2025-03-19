@@ -164,6 +164,9 @@ namespace BigAndSmall
 
     public class SoulCollector : HediffWithComps
     {
+        protected readonly SoulEnergyTracker soulTracker = new();
+        protected SoulResourceHediff Resource => soulTracker.Resource(pawn);
+
         public void AddSoulPowerDirect(float amount, float exponentialFalloff = 2.5f)
         {
             if (Severity >= 1) { amount /= (Mathf.Pow(Severity, exponentialFalloff)); }
@@ -209,6 +212,9 @@ namespace BigAndSmall
             float gainFromSoulPower = target.GetStatValue(BSDefs.BS_SoulPower) * tuneSPGain;
 
             float preFalloffTotalGain = gainPS + gainFromSoulPower;
+
+            Resource.Value += preFalloffTotalGain * 50;
+
             float actualGain = 0;
             const int itrrCount = 10;
             // This is really just and ugly-looking way to make sure the falloff gets applied reasonably if adding a huge amount at the same time.

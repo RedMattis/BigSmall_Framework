@@ -13,10 +13,12 @@ namespace BigAndSmall
     public class ConditionalTexture : ConditionalGraphic
     {
         public ConditionalTextureDef replacementDef = null;
+        public List<ConditionalTextureDef> altDefs = [];
         public AdaptivePathPathList texturePaths = [];
         public Vector2 drawSize = Vector2.one;
 
         public List<ConditionalTexture> alts = [];
+        public List<ConditionalTextureDef> AltDefs => replacementDef == null ? [..altDefs] : [..altDefs, replacementDef];
 
         public bool TryGetPath(BSCache cache, ref string path)
         {
@@ -29,9 +31,9 @@ namespace BigAndSmall
                     return true;
                 }
             }
-            if (replacementDef != null)
+            foreach(var altDef in AltDefs.Where(x=> x.graphic.GetState(pawn)))
             {
-                if (replacementDef.graphic.TryGetPath(cache, ref path))
+                if (altDef.graphic.TryGetPath(cache, ref path))
                 {
                     return true;
                 }

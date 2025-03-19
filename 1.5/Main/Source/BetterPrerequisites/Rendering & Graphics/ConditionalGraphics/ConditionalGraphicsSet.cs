@@ -13,6 +13,7 @@ namespace BigAndSmall
     public class ConditionalGraphicsSet : ConditionalGraphic
     {
         public GraphicSetDef replacementDef = null;
+        public List<GraphicSetDef> altDefs = [];
         protected ColorSetting colorA = new();
         protected ColorSetting colorB = new();
         protected ColorSettingDef colorADef = null;
@@ -25,6 +26,7 @@ namespace BigAndSmall
         public AdaptivePathPathList maskPaths = [];
         public List<ConditionalGraphicsSet> alts = [];
 
+        public List<GraphicSetDef> AltDefs => replacementDef == null ? [.. altDefs] : [.. altDefs, replacementDef];
         public ColorSetting ColorA => colorADef?.color ?? colorA;
         public ColorSetting ColorB => colorBDef?.color ?? colorB;
         public AdaptivePathPathList TexturePaths => adaptivePawnPathDef?.texturePaths ?? texturePaths;
@@ -32,7 +34,14 @@ namespace BigAndSmall
 
         public string GetMaskPath(BSCache cache, string path) => conditionalMaskPaths?.TryGetPath(cache, ref path) == true || maskPaths.TryGetPath(cache, ref path) ? path : path;
 
-        public ConditionalGraphicsSet ReturnThis() => replacementDef?.conditionalGraphics ?? this;
+        public ConditionalGraphicsSet ReturnThis(BSCache cache)
+        {
+            if (replacementDef?.conditionalGraphics?.GetState(cache.pawn) == true)
+            {
+                return replacementDef.conditionalGraphics;
+            }
+            return this;
+        }
         public ConditionalGraphicsSet GetGraphicsSet(BSCache cache)
         {
             foreach (var alt in alts)
@@ -43,7 +52,14 @@ namespace BigAndSmall
                     return altSet;
                 }
             }
-            var target = ReturnThis();
+            foreach (var altDef in AltDefs.Where(x => x.conditionalGraphics.GetState(cache.pawn)))
+            {
+                if (altDef.conditionalGraphics.GetGraphicsSet(cache) is ConditionalGraphicsSet altSet)
+                {
+                    return altSet;
+                }
+            }
+            var target = ReturnThis(cache);
             foreach (var gfxOverride in GetGraphicOverrides(cache.pawn))
             {
                 gfxOverride.graphics.OfType<ConditionalGraphicsSet>().Where(x => x != null).Do(x =>
@@ -51,7 +67,7 @@ namespace BigAndSmall
                     target = x;
                 });
             }
-            return ReturnThis();
+            return ReturnThis(cache);
         }
     }
 }

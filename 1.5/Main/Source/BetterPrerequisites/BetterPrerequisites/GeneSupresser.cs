@@ -5,7 +5,6 @@ using Verse;
 
 namespace BetterPrerequisites
 {
-    [Obsolete("Use the PawnExtension.activeGeneFilters instead.")]
     public static class GeneSuppressorManager
     {
         // Dictionary of supressed genes and the genes they are supressed by
@@ -131,7 +130,6 @@ namespace BetterPrerequisites
                         }
                     }
                 }
-   
             }
             return false;
         }

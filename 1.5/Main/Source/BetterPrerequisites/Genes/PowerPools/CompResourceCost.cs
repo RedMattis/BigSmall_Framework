@@ -1,12 +1,14 @@
 ﻿using RimWorld;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
 namespace BigAndSmall
 {
-    
-
     public abstract class CompProperties_PoolCost : CompProperties_AbilityEffect
     {
         public float resourceCost;
@@ -64,5 +66,4 @@ namespace BigAndSmall
             return num2;
         }
     }
-
 }

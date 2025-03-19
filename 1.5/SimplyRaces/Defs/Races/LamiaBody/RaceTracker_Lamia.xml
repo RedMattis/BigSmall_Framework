@@ -70,38 +70,4 @@
       </li>
     </renderNodeProperties>
   </HediffDef>
-
-  <BigAndSmall.GraphicSetDef>
-    <defName>BS_SnekGraphicSet</defName>
-    <conditionalGraphics>
-      <texturePaths>
-        <Body_Hulk>RaceDefaults/Snek/bp_hulk</Body_Hulk>
-        <Body_Male>RaceDefaults/Snek/bp_male</Body_Male>
-        <Body_Female>RaceDefaults/Snek/bp_female</Body_Female>
-        <Body_Fat>RaceDefaults/Snek/bp_fat</Body_Fat>
-        <Body_Thin>RaceDefaults/Snek/bp_default</Body_Thin>
-      </texturePaths>
-      <colorA>
-        <replaceFlagsAndInactive><LamiaColorA/></replaceFlagsAndInactive>
-        <skinColor>true</skinColor>
-        <brightness>1.03</brightness>
-        <saturation>0.98</saturation>
-      </colorA>
-      <colorB>
-        <replaceFlagsAndInactive><LamiaColorB/></replaceFlagsAndInactive>
-        <hairColor>true</hairColor>
-        <saturation>0.9</saturation>
-      </colorB>
-      <alts>
-        <li>
-          <!-- Poor snek lost its tail. -->
-          <triggerBodyPart>
-            <li> <bodyPartDef>BS_SnakeBody</bodyPartDef> <partMissing>true</partMissing> </li>
-            <li> <bodyPartDef>BS_Mech_SnakeBody</bodyPartDef> <partMissing>true</partMissing> </li>
-          </triggerBodyPart>
-          <texturePaths><default>BS_Blank</default></texturePaths>
-        </li>
-      </alts>
-    </conditionalGraphics>
-  </BigAndSmall.GraphicSetDef>
 </Defs>

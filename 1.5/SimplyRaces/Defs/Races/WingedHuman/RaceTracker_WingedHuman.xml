@@ -27,17 +27,13 @@
         <workerClass>BigAndSmall.UltimateRenderNodeWorker</workerClass>
         <parentTagDef>Body</parentTagDef>
         <conditionalGraphics>
-          <texturePaths><default>RaceDefaults/Wings/BS_FeatheredWingFront</default></texturePaths>
           <props><replaceFlags><Wings/></replaceFlags></props>
-          <colorA>
-            <replaceFlags><WingColorA/></replaceFlags>
-            <hairColor>true</hairColor> <brightness>0.8</brightness> <saturation>1.06</saturation>
-            <!-- Only triggers for the Default look. -->
-            <alts> <li> <triggers><li>Rotted</li></triggers> <hairColor>true</hairColor> <color>(0.4, 0.3, 0.20)</color> <saturation>0.5</saturation> </li> </alts>
-          </colorA>
+          <conditionalPaths><altDefs><li>BS_FeatheredWingFront</li></altDefs></conditionalPaths>
+          <colorA> <altDefs> <li>BS_WingClrDark_A</li> </altDefs> </colorA>
+          <colorB> <altDefs> <li>BS_WingClrDark_B</li> </altDefs> </colorB>
           <alts>
             <li>
-              <!-- Hide the wings if we have a wing-gene. No ColorA/B specified since, well, nothing to show.-->
+              <!-- Hide the wings if we have a wing-gene.-->
               <triggerGeneTag> <acceptlist><li>Wing</li><li>Wings</li></acceptlist> </triggerGeneTag>
               <triggerFlags><blacklist><ShowBaseWingsRight/></blacklist></triggerFlags>
               <texturePaths><default>BS_Blank</default></texturePaths>
@@ -61,18 +57,10 @@
         <workerClass>BigAndSmall.UltimateRenderNodeWorker</workerClass>
         <parentTagDef>Body</parentTagDef>
         <conditionalGraphics>
-          <texturePaths><default>RaceDefaults/Wings/BS_FeatheredWing</default></texturePaths>
           <props><replaceFlags><Wings/></replaceFlags></props>
-          <colorA>
-            <replaceFlagsAndInactive><WingColorA/></replaceFlagsAndInactive>
-            <hairColor>true</hairColor>
-            <alts> <li> <triggers><li>Rotted</li></triggers> <hairColor>true</hairColor> <color>(0.4, 0.3, 0.20)</color> <saturation>0.5</saturation> </li> </alts>
-          </colorA>
-          <colorB>
-            <replaceFlagsAndInactive><WingColorB/></replaceFlagsAndInactive>
-            <hairColor>true</hairColor> <brightness>0.85</brightness> <saturation>1.1</saturation>
-            <alts> <li> <triggers><li>Rotted</li></triggers> <hairColor>true</hairColor> <color>(0.4, 0.3, 0.20)</color> <saturation>0.5</saturation> </li> </alts>
-          </colorB>
+          <conditionalPaths><altDefs><li>BS_FeatheredWingInner</li></altDefs></conditionalPaths>
+          <colorA> <altDefs> <li>BS_WingClr_A</li> </altDefs> </colorA>
+          <colorB> <altDefs> <li>BS_WingClrSaturated_B</li> </altDefs> </colorB>
           <alts>
             <li>
               <triggerGeneTag> <acceptlist><li>Wing</li><li>Wings</li></acceptlist> </triggerGeneTag>
@@ -102,18 +90,10 @@
         <workerClass>BigAndSmall.UltimateRenderNodeWorker</workerClass>
         <parentTagDef>Body</parentTagDef>
         <conditionalGraphics>
-          <texturePaths><default>RaceDefaults/Wings/BS_FeatheredWingBack</default></texturePaths>
           <props><replaceFlags><Wings/></replaceFlags></props>
-          <colorA>
-            <replaceFlagsAndInactive><WingColorA/></replaceFlagsAndInactive>
-            <hairColor>true</hairColor> <brightness>0.95</brightness> <saturation>1.06</saturation>
-            <alts> <li> <triggers><li>Rotted</li></triggers> <hairColor>true</hairColor> <color>(0.4, 0.3, 0.20)</color> <saturation>0.5</saturation> </li> </alts>
-          </colorA>
-          <colorB>
-            <replaceFlagsAndInactive><WingColorB/></replaceFlagsAndInactive>
-            <hairColor>true</hairColor> <brightness>0.85</brightness> <saturation>1.1</saturation>
-            <alts> <li> <triggers><li>Rotted</li></triggers>  <hairColor>true</hairColor> <color>(0.4, 0.3, 0.20)</color> <saturation>0.5</saturation> </li> </alts>
-          </colorB>
+          <conditionalPaths><altDefs><li>BS_FeatheredWingBack</li></altDefs></conditionalPaths>
+          <colorA> <altDefs> <li>BS_WingClrSaturated_A</li> </altDefs> </colorA>
+          <colorB> <altDefs> <li>BS_WingClrDark_B</li> </altDefs> </colorB>
           <alts>
             <li>
               <triggerGeneTag> <acceptlist><li>Wing</li><li>Wings</li></acceptlist> </triggerGeneTag>
@@ -130,8 +110,6 @@
           </alts>
         </conditionalGraphics>
         <drawSize>(1.23,1.23)</drawSize>
-        
-        <!-- <invertEastWest>true</invertEastWest> -->
         <visibleFacing> <li>West</li> </visibleFacing>
         <drawData> <defaultData> <layer>-2</layer> </defaultData> <dataEast><flip>true</flip></dataEast> </drawData>
       </li>
@@ -142,13 +120,10 @@
         <workerClass>BigAndSmall.UltimateRenderNodeWorker</workerClass>
         <parentTagDef>Body</parentTagDef>
         <conditionalGraphics>
-          <texturePaths><default>RaceDefaults/Wings/BS_FeatheredWingFront</default></texturePaths>
           <props><replaceFlags><Wings/></replaceFlags></props>
-          <colorA>
-            <replaceFlagsAndInactive><WingColorA/></replaceFlagsAndInactive>
-            <hairColor>true</hairColor> <brightness>0.8</brightness> <saturation>1.06</saturation>
-            <alts> <li> <triggers><li>Rotted</li></triggers> <hairColor>true</hairColor> <color>(0.4, 0.3, 0.20)</color> <saturation>0.5</saturation> </li> </alts>
-          </colorA>
+          <conditionalPaths><altDefs><li>BS_FeatheredWingFront</li></altDefs></conditionalPaths>
+          <colorA> <altDefs> <li>BS_WingClrDark_A</li> </altDefs> </colorA>
+          <colorB> <altDefs> <li>BS_WingClrDark_B</li> </altDefs> </colorB>
           <alts>
             <li>
               <triggerGeneTag> <acceptlist><li>Wing</li><li>Wings</li></acceptlist> </triggerGeneTag>
@@ -174,18 +149,10 @@
         <workerClass>BigAndSmall.UltimateRenderNodeWorker</workerClass>
         <parentTagDef>Body</parentTagDef>
         <conditionalGraphics>
-          <texturePaths><default>RaceDefaults/Wings/BS_FeatheredWing</default></texturePaths>
           <props><replaceFlags><Wings/></replaceFlags></props>
-          <colorA>
-            <replaceFlagsAndInactive><WingColorA/></replaceFlagsAndInactive>
-            <hairColor>true</hairColor>
-            <alts> <li> <triggers><li>Rotted</li></triggers> <hairColor>true</hairColor> <color>(0.4, 0.3, 0.20)</color> <saturation>0.5</saturation> </li> </alts>
-          </colorA>
-          <colorB>
-            <replaceFlagsAndInactive><WingColorB/></replaceFlagsAndInactive>
-            <hairColor>true</hairColor> <brightness>0.85</brightness> <saturation>1.1</saturation>
-            <alts> <li> <triggers><li>Rotted</li></triggers> <hairColor>true</hairColor> <color>(0.4, 0.3, 0.20)</color> <saturation>0.5</saturation> </li> </alts>
-          </colorB>
+          <conditionalPaths><altDefs><li>BS_FeatheredWingInner</li></altDefs></conditionalPaths>
+          <colorA> <altDefs> <li>BS_WingClr_A</li> </altDefs> </colorA>
+          <colorB> <altDefs> <li>BS_WingClrSaturated_B</li> </altDefs> </colorB>
           <alts>
             <li>
               <triggerGeneTag> <acceptlist><li>Wing</li><li>Wings</li></acceptlist> </triggerGeneTag>
@@ -215,18 +182,10 @@
         <workerClass>BigAndSmall.UltimateRenderNodeWorker</workerClass>
         <parentTagDef>Body</parentTagDef>
         <conditionalGraphics>
-          <texturePaths><default>RaceDefaults/Wings/BS_FeatheredWingBack</default></texturePaths>
           <props><replaceFlags><Wings/></replaceFlags></props>
-          <colorA>
-            <replaceFlagsAndInactive><WingColorA/></replaceFlagsAndInactive>
-            <hairColor>true</hairColor> <brightness>0.95</brightness> <saturation>1.06</saturation>
-            <alts> <li> <triggers><li>Rotted</li></triggers> <hairColor>true</hairColor> <color>(0.4, 0.3, 0.20)</color> <saturation>0.5</saturation> </li> </alts>
-          </colorA>
-          <colorB>
-            <replaceFlagsAndInactive><WingColorB/></replaceFlagsAndInactive>
-            <hairColor>true</hairColor> <brightness>0.85</brightness> <saturation>1.1</saturation>
-            <alts> <li> <triggers><li>Rotted</li></triggers> <hairColor>true</hairColor> <color>(0.4, 0.3, 0.20)</color> <saturation>0.5</saturation> </li> </alts>
-          </colorB>
+          <conditionalPaths><altDefs><li>BS_FeatheredWingBack</li></altDefs></conditionalPaths>
+          <colorA> <altDefs> <li>BS_WingClrSaturated_A</li> </altDefs> </colorA>
+          <colorB> <altDefs> <li>BS_WingClrDark_B</li> </altDefs> </colorB>
           <alts>
             <li>
               <triggerGeneTag> <acceptlist><li>Wing</li><li>Wings</li></acceptlist> </triggerGeneTag>

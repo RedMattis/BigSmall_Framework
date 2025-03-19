@@ -1,0 +1,25 @@
+<Defs>
+  <BigAndSmall.ConditionalTextureDef>
+    <defName>BS_FeatheredWingFront</defName>
+    <graphic>
+      <replaceFlagsAndInactive><WingPathFront/></replaceFlagsAndInactive>
+      <texturePaths><default>RaceDefaults/Wings/BS_FeatheredWingFront</default></texturePaths>
+    </graphic>
+  </BigAndSmall.ConditionalTextureDef>
+
+  <BigAndSmall.ConditionalTextureDef>
+    <defName>BS_FeatheredWingInner</defName>
+    <graphic>
+      <replaceFlagsAndInactive><WingPathFront/></replaceFlagsAndInactive>
+      <texturePaths><default>RaceDefaults/Wings/BS_FeatheredWing</default></texturePaths>
+    </graphic>
+  </BigAndSmall.ConditionalTextureDef>
+
+  <BigAndSmall.ConditionalTextureDef>
+    <defName>BS_FeatheredWingBack</defName>
+    <graphic>
+      <replaceFlagsAndInactive><WingPathFront/></replaceFlagsAndInactive>
+      <texturePaths><default>RaceDefaults/Wings/BS_FeatheredWingBack</default></texturePaths>
+    </graphic>
+  </BigAndSmall.ConditionalTextureDef>
+</Defs>

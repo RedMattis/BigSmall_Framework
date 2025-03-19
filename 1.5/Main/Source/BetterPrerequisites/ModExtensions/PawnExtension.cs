@@ -504,6 +504,16 @@ namespace BigAndSmall
         public string ConsumeSoulOnHitDescription => consumeSoulOnHit == null ? null : "BS_ConsumeSoulOnHitDesc".Translate($"{100 * consumeSoulOnHit.gainMultiplier:f0}%");
 
         /// <summary>
+        /// If set the pawn will be butchered for this meat instead of the default.
+        /// </summary>
+        public ThingDef meatOverride;
+
+        /// <summary>
+        /// If set the following extra products will be created when the pawn is butchered.
+        /// </summary>
+        public List<CustomButcherProduct> butcherProducts = null;
+
+        /// <summary>
         /// Pawn will be considered...
         /// </summary>
         public bool isUnliving = false;
@@ -643,6 +653,8 @@ namespace BigAndSmall
 
 
         #endregion
+
+        public bool HasGeneFilter => geneFilters != null || geneCategoryFilters != null || geneTagFilters != null;
 
         public float GetSizeFromSizeByAge(float? age)
         {
