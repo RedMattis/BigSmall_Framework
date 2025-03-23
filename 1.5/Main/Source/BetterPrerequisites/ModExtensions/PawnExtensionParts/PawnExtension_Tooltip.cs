@@ -84,6 +84,7 @@ namespace BigAndSmall
                 CreateIndividualSection("BS_PawnDiet".Translate(), extList, ext => ext.PawnDietDescription),
                 CreateIndividualSection("BS_LockedNeeds".Translate(), extList, ext => ext.LockedNeedsDescription),
                 CreateAggregatedSection("BS_BleedRateDesc".Translate(), extList.Where(x=>x.bleedRate != null).ToList(), ext => ext.bleedRate == null ? 1 : ext.bleedRate, rates => rates.Aggregate(1f, (acc, rate) => acc * rate.Value).ToStringPercent()),
+                CreateIndividualSection("SoulPowerFalloffStartDescription".Translate(), extList, ext => ext.SoulPowerFalloffStartDescription),
                 CreateIndividualSection("BS_ConsumeSoulOnHit".Translate(), extList, ext => ext.ConsumeSoulOnHitDescription),
                 // Apparel and Restrictions
                 CreateIndividualSection("BS_HasApparelRestrictions".Translate(), extList, ext => ext.apparelRestrictions != null ? "BS_Modified".Translate().CapitalizeFirst() : null),

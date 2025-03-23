@@ -56,6 +56,55 @@ namespace BigAndSmall
         [MayRequire("RedMattis.BigSmall.Core")]
         public static GeneDef BS_AlienApperanceStandards_Lesser;
 
+        // For Mutants...
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef BS_Instability_Catastrophic;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef BS_CellPandemonium;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef WoundHealing_SuperFast;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef VU_UltraRapidAging;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef BS_VeryFastAging;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef BS_FastAging;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef BS_PainNumb;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef BS_GeneEater;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef BS_ToughSkin;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef BS_NaturalArmor;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef VU_Hermaphromorph;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef BS_SnekEngulf;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef BS_FeedingFrenzy;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef BS_DessicatedBody;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef BS_DessicatedBodyWithHair;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef BS_DessicatedBodyWithGreyHair;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef Beauty_Ugly;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef VU_Unliving;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef VU_Unliving_Resilience;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef VU_NoBlood;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef Sterile;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef ToxResist_Total;
+        [MayRequire("RedMattis.BigSmall.Core")]
+        public static GeneDef BS_GhoulHead;
+
+
         // Hediffs
         public static HediffDef VU_SuccubusBond;
         public static HediffDef VU_SuccubusBond_Victim;

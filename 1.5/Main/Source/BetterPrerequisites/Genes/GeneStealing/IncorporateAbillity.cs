@@ -20,6 +20,7 @@ namespace BigAndSmall
     public class CompProperties_IncorporateEffect : CompAbilityEffect
     {
         public new CompProperties_Incorporate Props => (CompProperties_Incorporate)props;
+
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             var pawn = parent.pawn;
@@ -49,21 +50,27 @@ namespace BigAndSmall
                 return;
             }
 
-            var genesOnCorpse = targetPawn.genes.GenesListForReading;
+            var genesOnCorpse = targetPawn?.genes?.GenesListForReading;
+            List<GeneDef> unpickedGenes = genesOnCorpse?.Select(x => x.def).ToList() ?? [];
+            unpickedGenes.AddRange(MutantToGeneset.GetGenesFromAnomalyCreature(targetPawn).Where(x=>x != null));
+            if (genesOnCorpse == null && unpickedGenes.Count == 0)
+            {
+                // Replace these with messages. Preferably notify the user via a message popup.
+                Log.Warning($"Target {targetPawn} has no valid genes");
+                return;
+            }
 
             var genesToPick = new List<GeneDef>();
             
-            if (genesOnCorpse == null)
-                return;
+            
 
-            if (stealTraits && targetPawn != null)
+            if (stealTraits && targetPawn?.RaceProps?.Humanlike == true)
             {
                 GetGenesFromTraits(targetPawn, genesToPick);
             }
             genePickCount += genesToPick.Count();
-            List<GeneDef> unpickedGenes = genesOnCorpse.Select(x=>x.def).ToList();
 
-            bool isBaseliner = genesOnCorpse.Sum(x => x.def.biostatCpx) == 0;
+            bool isBaseliner = genesOnCorpse != null && genesOnCorpse.Sum(x => x.def.biostatCpx) == 0;
             // Try adding all the baseliner genes.
             if (isBaseliner)
             {

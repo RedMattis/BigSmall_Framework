@@ -117,6 +117,7 @@
     <Compile Include="DefPatches\RaceFuser\RaceFuser_Helpers.cs" />
     <Compile Include="Gender and Reproduction\GenderMethods.cs" />
     <Compile Include="Genes\GeneEffectManager.cs" />
+    <Compile Include="Genes\GeneStealing\IncorporateSpecial.cs" />
     <Compile Include="Genes\PowerPools\CompResourceCost.cs" />
     <Compile Include="Genes\PowerPools\Comp_DrainsResource.cs" />
     <Compile Include="Genes\PowerPools\IResourcePool.cs" />

@@ -298,6 +298,8 @@ namespace BigAndSmall
         public bool hideInGenePicker = false;
         public bool hideInXenotypeUI = false;
 
+        public float soulFalloffStart = 0;
+        public string SoulPowerFalloffStartDescription => soulFalloffStart == 0 ? null : "BS_SoulPowerFalloffDesc".Translate(soulFalloffStart);
         /// <summary>
         /// Trigger the soul-consume effect on hit.
         /// </summary>
