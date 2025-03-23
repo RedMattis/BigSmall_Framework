@@ -19,6 +19,8 @@ namespace BigAndSmall
         public PawnRenderNode_HAnimalPack(Pawn pawn, PawnRenderNodeProperties props, PawnRenderTree tree)
             : base(pawn, props, tree)
         {
+            // kinda ugly, but the props don't get set up properly from the XML when loaded from a PawnRenderTree.
+            props.pawnType = PawnRenderNodeProperties.RenderNodePawnType.Any;
         }
 
         public override GraphicMeshSet MeshSetFor(Pawn pawn)

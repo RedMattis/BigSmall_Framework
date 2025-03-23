@@ -21,6 +21,7 @@ namespace BigAndSmall
                     // In practice this means weapons (equippment) won't work, but armour and hediff-sourced verbs will.
                     if (pawn.equipment != null)
                     {
+                        List<VerbEntry> tempResult = [..__result];
                         List<ThingWithComps> allEquipmentListForReading = pawn.equipment.AllEquipmentListForReading;
                         for (int j = 0; j < allEquipmentListForReading.Count; j++)
                         {
@@ -36,15 +37,19 @@ namespace BigAndSmall
                             }
                             foreach(var verb in allVerbs2)
                             {
-                                for (int veIdx = __result.Count - 1; veIdx >= 0; veIdx--)
+                                for (int veIdx = tempResult.Count - 1; veIdx >= 0; veIdx--)
                                 {
-                                    VerbEntry verbEntry = __result[veIdx];
+                                    VerbEntry verbEntry = tempResult[veIdx];
                                     if (verbEntry.verb.EquipmentSource == allEquipmentListForReading[j])
                                     {
-                                        __result.Remove(verbEntry);
+                                        tempResult.Remove(verbEntry);
                                     }
                                 }
                             }
+                        }
+                        if (tempResult.Count > 0)
+                        {
+                            __result = tempResult;
                         }
                     }
                 }

@@ -430,7 +430,8 @@ namespace BigAndSmall
             // Remove all hediffs
             foreach (var hediff in allHediffs)
             {
-                pawn.health.RemoveHediff(hediff);
+                //pawn.health.RemoveHediff(hediff);
+                pawn.health.hediffSet.hediffs.Remove(hediff);
             }
         }
 
@@ -446,7 +447,7 @@ namespace BigAndSmall
                     Hediff hediff = hediffsToReapply[pawn][idx];
                     float severity = hediff.Severity;
 
-                    bool canAttach = hediff.Part == null || currentParts.Any(x => x.def.defName == hediff.Part.def.defName && x.customLabel == hediff.Part.customLabel);
+                    bool canAttach = hediff.Part == null || currentParts.Any(x => x.def.defName == hediff.Part.def.defName || x.customLabel == hediff.Part.customLabel);
 
                     if (canAttach)
                     {
@@ -460,9 +461,7 @@ namespace BigAndSmall
 
                             else if (hediff.Part == null)
                             {
-                                var newHediff = HediffMaker.MakeHediff(hediff.def, pawn, null);
-                                newHediff.Severity = severity;
-                                pawn.health.AddHediff(newHediff);
+                                pawn.health.hediffSet.hediffs.Add(hediff);
                             }
                             else
                             {
@@ -477,16 +476,9 @@ namespace BigAndSmall
                                 {
                                     try
                                     {
-                                        var newHediff = HediffMaker.MakeHediff(hediff.def, pawn, partMatchingHediff);
-                                        newHediff.Severity = severity;
-                                        pawn.health.AddHediff(newHediff);
-                                        if (newHediff is Hediff_Injury resultWound && hediff is Hediff_Injury orgInjury)
-                                        {
-                                            if (orgInjury.IsPermanent() && resultWound.TryGetComp<HediffComp_GetsPermanent>() is HediffComp_GetsPermanent pSetter)
-                                            {
-                                                pSetter.IsPermanent = true;
-                                            }
-                                        }
+                                        pawn.health.hediffSet.hediffs.Add(hediff);
+                                        hediff.Part = partMatchingHediff;
+                                        hediff.pawn = pawn; // Just to be sure.
                                     }
                                     catch (Exception ex)
                                     {
@@ -507,6 +499,14 @@ namespace BigAndSmall
                         }
                     }
                 }
+                pawn.health.hediffSet.DirtyCache();
+                for (int i = 0; i < pawn.health.hediffSet.hediffs.Count; i++)
+                {
+                    if (pawn.health.hediffSet.hediffs.Count <= i) continue;  // If the count has decreased, skip and move on.
+                    pawn.health.Notify_HediffChanged(pawn.health.hediffSet.hediffs[i]);
+                }
+
+
                 // Find all active genes of type Gene_ChemicalDependency
                 foreach (var chemGene in GeneHelpers.GetAllActiveEndoGenes(pawn).Where(x => x is Gene_ChemicalDependency).Select(x => (Gene_ChemicalDependency)x).ToList())
                 {

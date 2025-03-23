@@ -29,6 +29,7 @@ namespace BigAndSmall
         public bool approximatelyNoChange = true;
         public bool hideHead = false;
         public bool hideBody = false;
+        public bool hideHumanlikeRenderNodes = false;
         public BodyTypesPerGender bodyTypeOverride = null;
         private Gender? apparentGender = null;
         public string bodyGraphicPath = null;
@@ -188,6 +189,7 @@ namespace BigAndSmall
 
             Scribe_Values.Look(ref hideHead, "BS_HideHead", false);
             Scribe_Values.Look(ref hideBody, "BS_HideBody", false);
+            Scribe_Values.Look(ref hideHumanlikeRenderNodes, "BS_HideHumanlikeRenderNodes", false);
 
             Scribe_Values.Look(ref minimumLearning, "BS_MinimumLearning", 0.35f);
             Scribe_Values.Look(ref headSizeMultiplier, "BS_HeadSizeMultiplier", 1);

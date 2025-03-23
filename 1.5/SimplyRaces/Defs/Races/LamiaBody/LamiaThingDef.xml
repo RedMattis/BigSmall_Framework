@@ -9,6 +9,7 @@
     <race>
       <body>BS_SnakeHuman</body>
       <useLeatherFrom>Cobra</useLeatherFrom>
+      <makesFootprints>false</makesFootprints>
       <useMeatFrom>Human</useMeatFrom>
     </race>
     <modExtensions>

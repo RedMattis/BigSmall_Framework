@@ -213,7 +213,10 @@ namespace BigAndSmall
 
             float preFalloffTotalGain = gainPS + gainFromSoulPower;
 
-            Resource.Value += preFalloffTotalGain * 50;
+            if (Resource != null)
+            {
+                Resource.Value += preFalloffTotalGain * 50;
+            }
 
             float actualGain = 0;
             const int itrrCount = 10;

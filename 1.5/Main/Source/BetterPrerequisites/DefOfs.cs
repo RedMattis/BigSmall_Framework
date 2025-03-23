@@ -6,9 +6,10 @@ namespace BigAndSmall
     [DefOf]
     public static class BSDefs
     {
-        //public static StatDef BS_FinalSizeMultiplier;
-        public static StatDef BS_MaxNutritionFromSize;
+        public static StatDef ButcheryFleshEfficiency;
+        public static StatDef ButcheryMechanoidEfficiency;
 
+        public static StatDef BS_MaxNutritionFromSize;
         public static StatDef SM_BodySizeOffset;
         public static StatDef SM_Cosmetic_BodySizeOffset;
         public static StatDef SM_BodySizeMultiplier;

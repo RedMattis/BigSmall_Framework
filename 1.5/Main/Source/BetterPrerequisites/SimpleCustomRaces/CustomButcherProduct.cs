@@ -17,16 +17,18 @@ namespace BigAndSmall
         public float chance = 1f;
         public bool scaleToBodySize = false;
         public bool scaleToBodySizeSquared = false;
+        public bool scaleToButcherEfficiency = false;
 
-        public List<Thing> Apply(Pawn butcher, Pawn entity)
+        public bool TryMake(Pawn butcher, Pawn entity, out Thing thing)
         {
+            thing = null;
             if (thingDef == null)
             {
-                return [];
+                return false;
             }
-            if (Rand.Value > chance)
+            if (!Rand.Chance(chance))
             {
-                return [];
+                return false;
             }
             int num = amount;
             if (scaleToBodySize)
@@ -37,18 +39,29 @@ namespace BigAndSmall
             {
                 num = GenMath.RoundRandom(amount * entity.BodySize * entity.BodySize);
             }
-            if (num <= 0) return [];
+            if (scaleToButcherEfficiency)
+            {
+                if (entity.RaceProps.IsMechanoid)
+                {
+                    num = GenMath.RoundRandom(amount * butcher.GetStatValue(BSDefs.ButcheryMechanoidEfficiency));
+                }
+                else
+                {
+                    num = GenMath.RoundRandom(amount * butcher.GetStatValue(BSDefs.ButcheryFleshEfficiency));
+                }
+            }
+            if (num <= 0) return false;
             else if (num < 1f && Rand.Chance(num))
             {
                 num = 1;
             }
-            Thing thing = ThingMaker.MakeThing(thingDef);
+            thing = ThingMaker.MakeThing(thingDef);
             thing.stackCount = num;
             if (itemQualityRange != null)
             {
                 thing.TryGetComp<CompQuality>()?.SetQuality(itemQualityRange.Value.RandomInRange, ArtGenerationContext.Colony);
             }
-            return new List<Thing> { thing };
+            return true;
         }
     }
 
@@ -86,7 +99,10 @@ namespace BigAndSmall
                 {
                     foreach (var product in ext.butcherProducts)
                     {
-                        product.Apply(butcher, __instance);
+                        if (product.TryMake(butcher, __instance, out Thing thing))
+                        {
+                            resultList.Add(thing);
+                        }
                     }
                 }
             }
