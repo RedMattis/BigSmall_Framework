@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using RimWorld;
+using UnityEngine;
 using Verse;
 using static BigAndSmall.RenderingLib;
 
@@ -27,9 +28,9 @@ namespace BigAndSmall
 
         protected override string TexPathFor(Pawn pawn)
         {
-            if (ComplexProps.isFurskin)
+            if (ComplexProps.isFurskin && pawn.story?.furDef.GetFurBodyGraphicPath(pawn) is string furPath)
             {
-                return pawn.story?.furDef.GetFurBodyGraphicPath(pawn);
+                return furPath;
             }
             else return base.TexPathFor(pawn);
         }
@@ -39,7 +40,7 @@ namespace BigAndSmall
             var props = ComplexProps;
             if (props.isFurskin && pawn.story?.furDef == null)
             {
-                return null;
+                Log.WarningOnce($"[BigAndSmall] {pawn} requested furDef, but it was null", pawn.thingIDNumber ^ 0x3F2A1B);
             }
 
             string text = TexPathFor(pawn);
@@ -50,10 +51,9 @@ namespace BigAndSmall
             }
             Color colorOne = props.colorA.GetColor(this, Color.white, ColorSetting.clrOneKey);
             Color colorTwo = props.colorB.GetColor(this, Color.white, ColorSetting.clrTwoKey);
-            ShaderTypeDef shader = props.shader;
+            Shader shader = props.shader?.Shader ?? ShaderTypeDefOf.CutoutComplex.Shader;
 
-     
-            var result = GetCachableGraphics(text, Vector2.one, shader.Shader, colorOne, colorTwo);
+            var result = GetCachableGraphics(text, Vector2.one, shader, colorOne, colorTwo);
             return result;
         }
     }

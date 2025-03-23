@@ -121,7 +121,6 @@ namespace BigAndSmall
             newThing.recipes = newThing.recipes.Distinct().ToList();
             newThing.tradeTags = ([.. (humThing.tradeTags ?? []), .. (aniThing.tradeTags ?? [])]);
 
-
             // Deduplicate inspector tabs
             if (newThing.inspectorTabs != null)
             {
@@ -244,6 +243,7 @@ namespace BigAndSmall
                 traitIcon = aniPawnKind.lifeStages.Last().bodyGraphicData.texPath + "_east",
                 canWieldThings = hasHands ? null : false,
                 apparelRestrictions = apparelRestrictions,
+                hideHumanlikeRenderNodes = true
             };
             if (!hasHands)
             {

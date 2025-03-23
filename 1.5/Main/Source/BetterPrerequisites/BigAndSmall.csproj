@@ -108,6 +108,7 @@
     <Compile Include="BSDefLibrary.cs" />
     <Compile Include="Debugging\GeneDebugMenu.cs" />
     <Compile Include="DefPatches\RaceFuser\HumanlikeAnimalGenerator.cs" />
+    <Compile Include="DefPatches\RaceFuser\HumanlikeAnimalTemplate.cs" />
     <Compile Include="DefPatches\RaceFuser\RaceFuser.cs" />
     <Compile Include="DefPatches\RaceFuser\RaceFuser_Defs.cs" />
     <Compile Include="DefPatches\RaceFuser\RaceFuser_FuseBodies.cs" />
@@ -140,6 +141,8 @@
     <Compile Include="Items\TargetApplyHediff.cs" />
     <Compile Include="Items\XenogermCreators.cs" />
     <Compile Include="Jobs\JobDriver_UseOnTarget.cs" />
+    <Compile Include="ModExtensions\PawnExtensionParts\PawnExtension_Misc.cs" />
+    <Compile Include="ModExtensions\PawnExtensionParts\PawnExtension_Tooltip.cs" />
     <Compile Include="ModExtensions\SmartExtension.cs" />
     <Compile Include="ModExtensions\ModExtHelper.cs" />
     <Compile Include="ModPatches\MiscCompatibility\HumanoidAlienRaces.cs" />
@@ -161,6 +164,7 @@
     <Compile Include="Rendering &amp; Graphics\Patches\PawnRenderNode_Head_Patches.cs" />
     <Compile Include="Rendering &amp; Graphics\GraphicsHelper.cs" />
     <Compile Include="Rendering &amp; Graphics\BSDrawData.cs" />
+    <Compile Include="Rendering &amp; Graphics\Patches\ShouldAddNodeToTree.cs" />
     <Compile Include="Rendering &amp; Graphics\Render Tree\NalsToggles.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\HumanlikeAnimal\PawnRenderNode_HAnimalPack.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\HumanlikeAnimal\PawnRenderNode_HAnimalPart.cs" />

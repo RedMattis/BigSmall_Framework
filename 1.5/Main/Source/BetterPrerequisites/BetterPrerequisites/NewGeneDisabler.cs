@@ -20,13 +20,14 @@ namespace BigAndSmall
         private readonly List<Gene> genesActivated = [];
         private readonly List<Gene> genesDeactivated = [];
 
-        private string GeneShouldBeActive(Gene gene, List<PawnExtension> genePawnExts, List<PawnExtension> allPawnExts, List<Gene> activeGenes)
+        private string GeneShouldBeActive(Gene gene, List<PawnExtension> genePawnExts, List<PawnExtension> hediffPawnExts, List<PawnExtension> allPawnExts, List<Gene> activeGenes)
         {
             if (!ConditionalManager.TestConditionals(gene, genePawnExts))
             {
                 return "BS_ConditionForActivationNotMet".Translate().CapitalizeFirst();
             }
-            if (GeneSuppressorManager.IsSupressedByHediff(gene.def, pawn))
+            if (GeneSuppressorManager.IsSupressedByHediff(gene.def, pawn)
+                || hediffPawnExts.Select(ext => ext.IsGeneLegal(gene.def, removalCheck: false)).Fuse().Denied())
             {
                 return "BS_DisabledByHediff".Translate().CapitalizeFirst();
             }
@@ -59,6 +60,8 @@ namespace BigAndSmall
                 ? genePawnExts.Max(x => x.priority + (x.HasGeneFilter ? 0.5f : 0))
                 : 0);
 
+            var hediffPawnExts = pawn.GetHediffExtensions<PawnExtension>();
+
             foreach (var gene in orderedGenes)
             {
                 if (!GeneCache.globalCache.TryGetValue(gene, out var geneCache))
@@ -67,7 +70,7 @@ namespace BigAndSmall
                 }
                 var allActiveGenes = GeneHelpers.GetAllActiveGenes(pawn).ToList();
                 var genePawnExts = gene.def.GetAllPawnExtensionsOnGene();
-                string failReason = GeneShouldBeActive(gene, genePawnExts, allPawnExts, allActiveGenes);
+                string failReason = GeneShouldBeActive(gene, genePawnExts, hediffPawnExts, allPawnExts, allActiveGenes);
                 // For testing purposes disable all gene with the word Aptitude in them
                 if (failReason != "")
                 {

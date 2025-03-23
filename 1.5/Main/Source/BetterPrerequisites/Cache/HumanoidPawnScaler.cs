@@ -405,7 +405,7 @@ namespace BigAndSmall
         public bool RegenerateCache()
         {
             if (pawn == null) { throw new Exception("Big & Small: Cannot regenerate Pawn Cache because the Pawn is null."); }
-            if (regenerationInProgress || RaceMorpher.runningRaceSwap)
+            if (regenerationInProgress)
             {
                 HumanoidPawnScaler.GetCache(pawn, scheduleForce: 10);
                 return false;
@@ -557,6 +557,8 @@ namespace BigAndSmall
                 bool everFertile = activeGenes.Any(x => x.def.defName == "BS_EverFertile");
                 animalFriend = pawn.story?.traits?.allTraits.Any(x => !x.Suppressed && x.def.defName == "BS_AnimalFriend") == true || isMechanical;
 
+
+                hideHumanlikeRenderNodes = allPawnExt.Any(x => x.hideHumanlikeRenderNodes);
                 //facialAnimationDisabled = activeGenes.Any(x => x.def == BSDefs.BS_FacialAnimDisabled);
                 facialAnimationDisabled = allPawnExt.Any(x => x.disableFacialAnimations)
                     || facialAnimationDisabled_Transform;

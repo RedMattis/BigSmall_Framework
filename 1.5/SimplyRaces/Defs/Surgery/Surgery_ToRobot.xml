@@ -19,7 +19,7 @@
     <!-- <defName>BS_MechConversion</defName> -->
     <label>make fully bionic</label>
     <description>Build an android body and convert the brain into a superior synthetic form.</description>
-    <uiIconPath>Icons/BS_CommandoHead</uiIconPath>
+    <uiIconPath>BS_Icons/CommandoHead</uiIconPath>
     <jobString>Go go gadget dental floss!</jobString>
     <skillRequirements>
       <Medicine>10</Medicine>

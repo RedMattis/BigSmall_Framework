@@ -113,7 +113,7 @@ namespace BigAndSmall
             {
                 // A bit hacky, but this whole system is a hack. Something something polishing a turd.
                 // If needed we can make a more robust system, but I doubt we will need it.
-                xenotype = VUReturning.ModifyReturnedByRotStage(innerPawn, xenotype);
+                VUReturning.ModifyReturnedByRotStage(innerPawn, ref xenotype);
             }
             if (innerPawn?.RaceProps?.Animal == true)
             {

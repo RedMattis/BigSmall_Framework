@@ -144,7 +144,7 @@ namespace BigAndSmall
                             Log.Warning("Returned Xenotype is null!");
                             return false;
                         }
-                        returnedXeno = ModifyReturnedByRotStage(pawn, returnedXeno);
+                        ModifyReturnedByRotStage(pawn, ref returnedXeno);
 
                         GeneHelpers.AddAllXenotypeGenes(pawn, returnedXeno, name: $"{returnedXeno.label} {pawn.genes?.XenotypeLabel}");
                     }
@@ -241,9 +241,9 @@ namespace BigAndSmall
             return targetDef;
         }
 
-        public static XenotypeDef ModifyReturnedByRotStage(Pawn pawn, XenotypeDef returnedXeno)
+        public static void ModifyReturnedByRotStage(Pawn pawn, ref XenotypeDef returnedXeno)
         {
-            if (pawn.GetRotStage() == RotStage.Dessicated && returnedXeno == BSDefs.VU_Returned || returnedXeno == BSDefs.VU_Returned_Intact)
+            if (pawn.GetRotStage() == RotStage.Dessicated && (returnedXeno == BSDefs.VU_Returned || returnedXeno == BSDefs.VU_Returned_Intact))
             {
                 returnedXeno = BSDefs.VU_ReturnedSkeletal;
             }
@@ -251,8 +251,6 @@ namespace BigAndSmall
             {
                 returnedXeno = BSDefs.VU_Returned_Intact;
             }
-
-            return returnedXeno;
         }
 
         private void EjectCorpse()

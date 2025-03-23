@@ -4,7 +4,7 @@
     <defName>BS_VacuumProof</defName>
     <label>vacuum proof components</label>
     <description>vacuum proof mechanical components.</description>
-    <uiIconPath>Icons/BS_CommandoHead</uiIconPath>
+    <uiIconPath>BS_RaceIcons/Robot</uiIconPath>
     <jobString>proofing components...</jobString>
 
     <effectWorking>Surgery</effectWorking>
