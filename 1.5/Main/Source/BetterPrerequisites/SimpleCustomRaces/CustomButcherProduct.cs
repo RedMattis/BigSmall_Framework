@@ -12,7 +12,7 @@ namespace BigAndSmall
     public class CustomButcherProduct
     {
         public ThingDef thingDef;
-        public int amount = 1;
+        public int count = 1;
         public EnumRange<QualityCategory>? itemQualityRange = null;
         public float chance = 1f;
         public bool scaleToBodySize = false;
@@ -30,24 +30,24 @@ namespace BigAndSmall
             {
                 return false;
             }
-            int num = amount;
+            int num = count;
             if (scaleToBodySize)
             {
-                num = GenMath.RoundRandom(amount * entity.BodySize);
+                num = GenMath.RoundRandom(count * entity.BodySize);
             }
             else if (scaleToBodySizeSquared)
             {
-                num = GenMath.RoundRandom(amount * entity.BodySize * entity.BodySize);
+                num = GenMath.RoundRandom(count * entity.BodySize * entity.BodySize);
             }
             if (scaleToButcherEfficiency)
             {
                 if (entity.RaceProps.IsMechanoid)
                 {
-                    num = GenMath.RoundRandom(amount * butcher.GetStatValue(BSDefs.ButcheryMechanoidEfficiency));
+                    num = GenMath.RoundRandom(count * butcher.GetStatValue(BSDefs.ButcheryMechanoidEfficiency));
                 }
                 else
                 {
-                    num = GenMath.RoundRandom(amount * butcher.GetStatValue(BSDefs.ButcheryFleshEfficiency));
+                    num = GenMath.RoundRandom(count * butcher.GetStatValue(BSDefs.ButcheryFleshEfficiency));
                 }
             }
             if (num <= 0) return false;
