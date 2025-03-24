@@ -282,7 +282,8 @@ namespace BigAndSmall
                         validHeads = possibleHeads.Where(x => headGenes.All(ag => ag.def.forcedHeadTypes.Contains(x))).ToList();
                         if (validHeads.Any())
                         {
-                            Log.Warning($"Couldn't find an appropriate head fitting {pawn}'s genes. One was picked which ignored gender-limits.");
+                            Log.WarningOnce($"Couldn't find an appropriate head fitting {pawn}'s genes. One was picked which ignored gender-limits." +
+                                $"\nThis is usually caused by a pawn of a gender the race-modder did not support.", pawn.thingIDNumber ^ 0x3F2A1A);
                         }
                     }
                     if (banNarrow)

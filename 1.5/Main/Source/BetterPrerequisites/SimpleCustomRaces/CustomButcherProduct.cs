@@ -106,6 +106,7 @@ namespace BigAndSmall
                     }
                 }
             }
+            __result = resultList;
         }
     }
 }
