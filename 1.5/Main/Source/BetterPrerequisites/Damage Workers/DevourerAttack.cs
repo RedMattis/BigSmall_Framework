@@ -106,7 +106,7 @@ namespace BigAndSmall
                 if (nutritionAmount > 0)
                 {
                     instigator.needs.food.CurLevel += nutritionAmount;
-                    EngulfHediff.GetEatenCorpseMeatThoughts(instigator, pawn);
+                    pawn.Ingested(instigator, 1);
                 }
 
             }
