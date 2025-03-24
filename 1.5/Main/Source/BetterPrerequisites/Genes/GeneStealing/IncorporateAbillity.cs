@@ -246,6 +246,7 @@ namespace BigAndSmall
             RemoveGenesOverLimit(parent.pawn, -9);
         }
 
+        // Don't refactor this. It is currently patched by Keyz for Samuel Streamer's run.
         public static bool RemoveGenesOverLimit(Pawn pawn, int limit)
         {
             var xGenes = pawn.genes.Xenogenes;

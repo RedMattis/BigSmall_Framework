@@ -79,7 +79,7 @@ namespace BigAndSmall
                     if (ModsConfig.IsActive("RedMattis.BetterGeneInheritance") && i > 0)
                     {
                         // Invoke the "BGInheritance.BGI_HarmonyPatches.GetChildGenes" method which gives us new genes.
-                        newBabyGenes = (List<GeneDef>)AccessTools.Method("BGInheritance.BGI_HarmonyPatches:GetChildGenes").Invoke(null, [geneticMother, father]);
+                        newBabyGenes = (List<GeneDef>)AccessTools.Method("BGInheritance.External:GetChildGenes").Invoke(null, [geneticMother, father]);
                     }
                     PregnancyUtility.ApplyBirthOutcome_NewTemp(outcome, quality, ritual, genes, geneticMother, birtherThing, father, doctor, lordJobRitual, assignments, preventLetter);
                     newBabyGenes = null;
