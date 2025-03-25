@@ -3,7 +3,7 @@ using Verse;
 
 namespace BigAndSmall
 {
-    internal class GeneEater : Gene
+    public class GeneEater : Gene
     {
         public static Thing lastEatenThing = null;
         public static int lastEatenThingTicks = 0;
@@ -24,10 +24,6 @@ namespace BigAndSmall
             {
                 lastEatenThing = thing;
                 Pawn ingestedPawn = tPawn ?? cPawn;
-                if (ingestedPawn.genes == null)
-                {
-                    return;
-                }
 
                 int numGenes;
                 if (Rand.Chance(0.75f))

@@ -52,7 +52,7 @@ namespace BigAndSmall
 
             var genesOnCorpse = targetPawn?.genes?.GenesListForReading;
             List<GeneDef> unpickedGenes = genesOnCorpse?.Select(x => x.def).ToList() ?? [];
-            unpickedGenes.AddRange(MutantToGeneset.GetGenesFromAnomalyCreature(targetPawn).Where(x=>x != null));
+            unpickedGenes.AddRange(GenesFromSpecial.GetGenesFromAnomalyCreature(targetPawn).Where(x=>x != null));
             if (genesOnCorpse == null && unpickedGenes.Count == 0)
             {
                 // Replace these with messages. Preferably notify the user via a message popup.
@@ -346,6 +346,7 @@ namespace BigAndSmall
                 if (acceptanceReport.Accepted)
                 {
                     GainGene(pawn, pickedGene);
+                    HumanoidPawnScaler.LazyGetCache(pawn);  // Update the cache.
                     Close();
                 }
             }

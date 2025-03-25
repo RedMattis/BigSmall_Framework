@@ -656,10 +656,10 @@ namespace BigAndSmall
                     thought_Memory = (Thought_Memory)ThoughtMaker.MakeThought(BSDefs.AteHumanlikeMeatDirect);
                     attacker?.needs?.mood?.thoughts?.memories?.TryGainMemory(thought_Memory);
                 }
-                foreach(var gene in GeneHelpers.GetAllActiveGenes(attacker))
-                {
-                    gene.Notify_IngestedThing(target, 1);
-                }
+            }
+            foreach (var gene in GeneHelpers.GetAllActiveGenes(attacker))
+            {
+                gene.Notify_IngestedThing(target, 1);
             }
         }
 
