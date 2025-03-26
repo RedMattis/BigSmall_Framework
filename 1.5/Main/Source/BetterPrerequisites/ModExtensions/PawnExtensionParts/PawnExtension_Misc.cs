@@ -53,17 +53,20 @@ namespace BigAndSmall
     public class TransformationGene
     {
         public List<string> genesRequired = [];
+        public int genesRequiredMinCount = 1;
         public List<string> genesForbidden = [];
+        public int genesForbiddenMinCount = 1;
         public List<string> genesToAdd = [];
         public string xenotypeToAdd = null;
         public List<string> genesToRemove = [];
+        public bool removeSelfOnTrigger = true;
 
         public bool TryTransform(Pawn pawn, Gene parentGene)
         {
             if (CanTransform(pawn))
             {
                 // Remove the parent gene. Without this we'd just keep calling this all the time.
-                pawn?.genes?.RemoveGene(parentGene);
+                if (removeSelfOnTrigger) pawn?.genes?.RemoveGene(parentGene);
 
                 // Check if parentGene is a xenogene
                 bool xenoGene = pawn.genes.Xenogenes.Contains(parentGene);
@@ -113,24 +116,21 @@ namespace BigAndSmall
 
         private bool CanTransform(Pawn pawn)
         {
+            var activeGeneNames = GeneHelpers.GetAllActiveGenes(pawn).Select(x=>x.def.defName);
             if (genesRequired.Count > 0)
             {
-                foreach (var gene in genesRequired)
+                int countFound = genesRequired.Where(x => activeGeneNames.Contains(x)).Count();
+                if (countFound < genesRequiredMinCount)
                 {
-                    if (!pawn?.genes?.GenesListForReading?.Any(x => x.def.defName == gene) == true)
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
             if (genesForbidden.Count > 0)
             {
-                foreach (var gene in genesForbidden)
+                int countFound = genesForbidden.Where(x => activeGeneNames.Contains(x)).Count();
+                if (countFound >= genesForbiddenMinCount)
                 {
-                    if (pawn?.genes?.GenesListForReading?.Any(x => x.def.defName == gene) == true)
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
             return true;

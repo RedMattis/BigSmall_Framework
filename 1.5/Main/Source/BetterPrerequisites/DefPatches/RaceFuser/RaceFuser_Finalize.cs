@@ -1,9 +1,11 @@
-﻿using RimWorld;
+﻿using HarmonyLib;
+using RimWorld;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -167,7 +169,7 @@ namespace BigAndSmall
 
         public static void CopyRaceProperties(RaceProperties sRace, RaceProperties newRace)
         {
-            foreach (var field in sRace.GetType().GetFields().Where(x => !x.IsLiteral && !x.IsStatic))
+            foreach (var field in GetDeclaredFields(sRace.GetType()).Where(x => !x.IsStatic))
             {
                 try
                 {

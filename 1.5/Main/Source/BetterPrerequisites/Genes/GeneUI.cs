@@ -20,9 +20,7 @@ namespace BigAndSmall
             {
                 CodeInstruction code = codes[idx];
                 bool runBackgroundPatch = !backgroundPatched && idx > 3 && idx < codes.Count - 2 &&
-                    //(codes[idx - 1].opcode == OpCodes.Ldloc_2) &&
                     codes[idx].IsLdloc() && codes[idx].operand is LocalBuilder lb && lb.LocalIndex == 4 &&
-                    //(codes[idx].IsLdloc() && codes[idx].LocalIndex() == 4) &&
                     (codes[idx + 1].opcode == OpCodes.Callvirt && codes[idx + 1].OperandIs(typeof(CachedTexture).GetMethod("get_Texture")));
 
                 if (runBackgroundPatch)
@@ -49,12 +47,6 @@ namespace BigAndSmall
                     codes.InsertRange(idx+1, newInstructions);
                 }
             }
-
-            //for (int idx = 0; idx < codes.Count; idx++)
-            //{
-            //    CodeInstruction code = codes[idx];
-            //    Log.Message($"{idx}: {code}");
-            //}
 
             return codes;
 

@@ -37,7 +37,7 @@ namespace BigAndSmall
                 for (int tIdx = pawn.story.traits.allTraits.Count - 1; tIdx >= 0; tIdx--)
                 {
                     Trait trait = pawn.story.traits.allTraits[tIdx];
-                    if (trait.sourceGene != null)
+                    if (trait.sourceGene != null && pawn.story.traits.HasTrait(trait.def))
                     {
                         if (genesRemoved.Any(x => x.def == trait.sourceGene.def))
                         {

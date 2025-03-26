@@ -32,6 +32,8 @@
         <li>firstNamePrefix->Uni</li>
         <li>firstNamePrefix->u</li>
         <li>firstNamePrefix->Kay</li>
+        <li>firstNamePrefix->Dr.</li>
+        <li>firstNamePrefix->Gr.</li>
 
         <!--Full-->
         <li>firstNameFull->ECO</li>
@@ -64,7 +66,10 @@
         <li>firstNameFull->Pal</li>
         <li>firstNameFull->Palworld</li>
         <li>firstNameFull->Edge</li>
+        <li>firstNameFull->Bones</li>
         <li>firstNameFull->Axis</li>
+        <li>firstNameFull->Phil</li>
+        <li>firstNameFull->neer</li>
         <li>firstNameFull->Scout</li>
         <li>firstNameFull->Pilot</li>
         <li>firstNameFull->Bolt</li>

@@ -109,6 +109,8 @@
         <li>firstNamePrefix->Mechanic</li>
         <li>firstNamePrefix->Specialist</li>
         <li>firstNamePrefix->Commander</li>
+        <li>firstNamePrefix->Bone</li>
+        <li>firstNamePrefix->Grignr</li>
         <li>firstNamePrefix->Leader</li>
         <li>firstNamePrefix->Chief</li>
         <li>firstNamePrefix->Captain</li>

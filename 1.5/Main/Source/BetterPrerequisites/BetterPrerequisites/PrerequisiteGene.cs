@@ -129,7 +129,7 @@ namespace BetterPrerequisites
             base.Tick();
             int currentTick = Find.TickManager.TicksGame;
             // Every 5000 ticks
-            if (currentTick % 5000 == 0)
+            if (currentTick % 5000 == 0 && Active)
             {
                 // Try triggering transform genes if it exists.
                 GeneExt.ForEach(x=>x.transformGene?.TryTransform(pawn, this));
