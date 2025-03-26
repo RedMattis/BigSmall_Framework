@@ -461,6 +461,8 @@ namespace BigAndSmall
 
                             else if (hediff.Part == null)
                             {
+                                hediff.pawn = pawn;
+                                //hediff.loadID = Find.UniqueIDsManager.GetNextHediffID(); // Not sure if giving a new ID is better or worse.
                                 pawn.health.hediffSet.hediffs.Add(hediff);
                             }
                             else
@@ -479,6 +481,7 @@ namespace BigAndSmall
                                         pawn.health.hediffSet.hediffs.Add(hediff);
                                         hediff.Part = partMatchingHediff;
                                         hediff.pawn = pawn; // Just to be sure.
+                                        //hediff.loadID = Find.UniqueIDsManager.GetNextHediffID();
                                     }
                                     catch (Exception ex)
                                     {
