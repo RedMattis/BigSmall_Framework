@@ -34,7 +34,6 @@ namespace BigAndSmall
             var allDefs = DefDatabase<T>.AllDefsListForReading.Cast<IScoreHolder>();
             if (allDefs.Any())
             {
-                Log.Message($"ScorableList: {allDefs.Count()}");
                 return [.. ScoreCalculator.GetSortedScores(obj, allDefs).Cast<T>()];
             }
             return null;

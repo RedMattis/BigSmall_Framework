@@ -37,17 +37,14 @@ namespace BigAndSmall
             List<(float score, IScoreHolder item)> elements = [];
             foreach (var item in list)
             {
-                Log.Message($"Item: {item}");
                 var score = item.Calculator.GetScoreFor(obj);
                 if (score != null)
                 {
-                    Log.Message($"Score: {score}");
                     elements.Add((score.Value, item));
                 }
             }
             if (elements.Count != 0)
             {
-                Log.Message($"Elements: {elements.Count}");
                 return [.. elements.OrderByDescending(element => element.score).Select(element => element.item)];
             }
             return null;

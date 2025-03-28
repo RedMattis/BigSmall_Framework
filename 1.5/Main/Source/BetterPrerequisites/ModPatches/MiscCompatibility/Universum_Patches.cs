@@ -41,7 +41,6 @@ namespace BigAndSmall
                 MethodInfo methodInfo = AccessTools.Method(sosMethods[i]);
                 if (!(methodInfo == null))
                 {
-                    Log.Message($"Big & Small found Universum and Postfixed ({sosMethods[i]})");
                     yield return methodInfo;
                 }
                 else

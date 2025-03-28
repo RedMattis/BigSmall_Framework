@@ -102,7 +102,6 @@ namespace BigAndSmall
                 {
                     path = geneType == GeneType.Xenogene ? xenoBackgroundPath_Mech : endoBackgroundPath_Mech;
                 }
-                //Log.Message($"DEBUG: Returning Mech-type path: {path}");
             }
             if (path == null)
             {
