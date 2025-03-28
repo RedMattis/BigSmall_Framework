@@ -71,6 +71,17 @@
         </exclusionTags>
       </li>
       <li>
+        <bodyDef>BS_SixArmedHuman</bodyDef>
+        <thingDef>BS_SixArmedHuman</thingDef>
+        <overrideDefNamer>SixArm</overrideDefNamer>
+        <priority>-100</priority>
+        <prefixLabel>six-armed humanlike</prefixLabel>
+        <suffixLabel>six arms</suffixLabel>
+        <exclusionTags>
+          <li>ExtraArms</li>
+        </exclusionTags>
+      </li>
+      <li>
         <bodyDef>BS_HumanoidWithTail_Body</bodyDef>
         <thingDef>BS_HumanoidWithTail</thingDef>
         <overrideDefNamer>Tailed</overrideDefNamer>

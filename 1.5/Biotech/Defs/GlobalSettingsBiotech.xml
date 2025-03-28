@@ -92,6 +92,9 @@
     </returnedXenotypesColonist>
 
     <infiltratorTypes>
+      <!-- 
+        Robots
+      -->
       <li MayRequire="Ludeon.Rimworld.Biotech">
         <disguised>true</disguised>
         <canBeFullRaid>true</canBeFullRaid>
@@ -108,13 +111,11 @@
         </factionFilter>
         <ideologyOf MayRequire="RedMattis.LamiasAndOtherSnakes">LoS_ViperFamily</ideologyOf>
         <thingFilter>
-          <blacklist>
-            <li MayRequire="Ludeon.Rimworld.Anomaly">CreepJoiner</li>
-          </blacklist>
+          <blacklist> <li MayRequire="Ludeon.Rimworld.Anomaly">CreepJoiner</li> </blacklist>
         </thingFilter>
         <doubleXenotypes>
-          <BS_SynthSpy MayRequire="RedMattis.BigSmall.SimpleAndroids">1</BS_SynthSpy>
-          <BS_SynthSpyDerp MayRequire="RedMattis.BigSmall.SimpleAndroids">1</BS_SynthSpyDerp>
+          <BS_SynthSpy MayRequire="RedMattis.BigSmall.SimpleAndroids">10</BS_SynthSpy>
+          <BS_SynthSpyDerp MayRequire="RedMattis.BigSmall.SimpleAndroids">10</BS_SynthSpyDerp>
         </doubleXenotypes>
       </li>
       <li MayRequire="Ludeon.Rimworld.Biotech">
@@ -131,12 +132,11 @@
         </factionFilter>
         <ideologyOf MayRequire="RedMattis.LamiasAndOtherSnakes">LoS_ViperFamily</ideologyOf>
         <thingFilter>
-          <blacklist>
-            <li MayRequire="Ludeon.Rimworld.Anomaly">CreepJoiner</li>
-          </blacklist>
+          <blacklist> <li MayRequire="Ludeon.Rimworld.Anomaly">CreepJoiner</li> </blacklist>
         </thingFilter>
         <doubleXenotypes>
-          <BS_SynthSpy MayRequire="RedMattis.BigSmall.SimpleAndroids">1</BS_SynthSpy>
+          <BS_SynthSpy MayRequire="RedMattis.BigSmall.SimpleAndroids">10</BS_SynthSpy>
+          <BS_NanomachineVampire MayRequire="RedMattis.BigSmall.SimpleAndroids">5</BS_NanomachineVampire>
         </doubleXenotypes>
       </li>
       <li MayRequire="Ludeon.Rimworld.Biotech">
@@ -147,6 +147,9 @@
             <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_HostileAndroids</li>
           </whitelist>
         </factionFilter>
+        <thingFilter>
+          <blacklist> <li MayRequire="Ludeon.Rimworld.Anomaly">CreepJoiner</li> </blacklist>
+        </thingFilter>
         <xenoFilter>
           <whitelist>
             <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_CommandoAndroidAutomata</li>
@@ -154,9 +157,87 @@
           </whitelist>
         </xenoFilter>
         <doubleXenotypes>
-          <BS_Hemohunter MayRequire="RedMattis.BigSmall.SimpleAndroids">1</BS_Hemohunter>
+          <BS_Hemohunter MayRequire="RedMattis.BigSmall.SimpleAndroids">3</BS_Hemohunter>
         </doubleXenotypes>
       </li>
+      <!-- 
+        Undead 
+      -->
+      <li MayRequire="Ludeon.Rimworld.Biotech">
+        <disguised>true</disguised>
+        <canBeFullRaid>false</canBeFullRaid>
+        <factionFilter>
+          <blacklist>
+            <li MayRequire="RedMattis.Heaven">BS_Heaven</li>
+            <li MayRequire="RedMattis.Heaven">BS_Hell</li>
+            <li MayRequire="RedMattis.Heaven">BS_Outcasts</li>
+            <li MayRequire="RedMattis.BSSlimes">BS_SlimeFaction</li>
+            <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_HostileAndroids</li>
+          </blacklist>
+        </factionFilter>
+        <thingFilter>
+          <blacklist> <li MayRequire="Ludeon.Rimworld.Anomaly">CreepJoiner</li> </blacklist>
+        </thingFilter>
+        <doubleXenotypes>
+          <VU_Returned_Intact MayRequire="RedMattis.Undead">2</VU_Returned_Intact>
+        </doubleXenotypes>
+      </li>
+      <li MayRequire="Ludeon.Rimworld.Biotech">
+        <disguised>true</disguised>
+        <canBeFullRaid>false</canBeFullRaid>
+        <factionFilter>
+          <blacklist>
+            <li MayRequire="RedMattis.Heaven">BS_Heaven</li>
+            <li MayRequire="RedMattis.Heaven">BS_Hell</li>
+            <li MayRequire="RedMattis.Heaven">BS_Outcasts</li>
+            <li MayRequire="RedMattis.BSSlimes">BS_SlimeFaction</li>
+            <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_HostileAndroids</li>
+          </blacklist>
+        </factionFilter>
+        <doubleXenotypes>
+          <VU_Lycantrope MayRequire="RedMattis.Undead">3</VU_Lycantrope>
+        </doubleXenotypes>
+      </li>
+      <li MayRequire="Ludeon.Rimworld.Biotech">
+        <disguised>false</disguised>
+        <canOnlyBeFullRaid>true</canOnlyBeFullRaid>
+        <factionFilter>
+          <blacklist>
+            <li MayRequire="RedMattis.BSSlimes">BS_SlimeFaction</li>
+            <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_HostileAndroids</li>
+          </blacklist>
+        </factionFilter>
+        <ideologyOf MayRequire="RedMattis.Undead">VU_Roaming_Undead</ideologyOf>
+        <doubleXenotypes>
+          <!-- Numbers bumped up due to canONLYBeFullRaid-->
+          <VU_Returned_Intact MayRequire="RedMattis.Undead">2</VU_Returned_Intact>
+          <VU_Returned MayRequire="RedMattis.Undead">4</VU_Returned>
+          <VU_ReturnedSkeletal MayRequire="RedMattis.Undead">12</VU_ReturnedSkeletal>
+        </doubleXenotypes>
+      </li>
+      
+      <li MayRequire="Ludeon.Rimworld.Biotech">
+        <disguised>true</disguised>
+        <canBeFullRaid>false</canBeFullRaid>
+        <factionFilter>
+          <blacklist>
+            <li MayRequire="RedMattis.Heaven">BS_Heaven</li>
+            <li MayRequire="RedMattis.Heaven">BS_Hell</li>
+            <li MayRequire="RedMattis.Heaven">BS_Outcasts</li>
+            <li MayRequire="RedMattis.BSSlimes">BS_SlimeFaction</li>
+            <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_HostileAndroids</li>
+          </blacklist>
+        </factionFilter>
+        <ideologyOf MayRequire="RedMattis.Undead">VU_Roaming_Undead</ideologyOf>
+        <doubleXenotypes>
+          <VU_Returned_Intact MayRequire="RedMattis.Undead">3</VU_Returned_Intact>
+          <VU_Succubus MayRequire="RedMattis.Undead">2.5</VU_Succubus>
+          <VU_WhiteRose MayRequire="RedMattis.Undead">2.5</VU_WhiteRose>
+          <VU_Dracul_Mature MayRequire="RedMattis.Undead">2.5</VU_Dracul_Mature>
+          <VU_Dracul_Progenitor MayRequire="RedMattis.Undead">1.0</VU_Dracul_Progenitor>
+        </doubleXenotypes>
+      </li>
+      
     </infiltratorTypes>
   </BigAndSmall.GlobalSettings>
 

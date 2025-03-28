@@ -78,6 +78,7 @@
   <BS_ThingDefSwap>applies race/hybrid race</BS_ThingDefSwap>
   <BS_ThingDefSwapDesc>Apply {0}</BS_ThingDefSwapDesc>
   <BS_DroneDesc>is a drone (less affected by death, ...)</BS_DroneDesc>
+  <BS_NoFamilyRelationsDesc>no family relations</BS_NoFamilyRelationsDesc>
   <BS_ForceUnarmed>unarmed fighter</BS_ForceUnarmed>
   <BS_ForceUnarmedDesc>uses bionic or unarmed melee attacks</BS_ForceUnarmedDesc>
   <BS_BleedRate>bleed rate</BS_BleedRate>

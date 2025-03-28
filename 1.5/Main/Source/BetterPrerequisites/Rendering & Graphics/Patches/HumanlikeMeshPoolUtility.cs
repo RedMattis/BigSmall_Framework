@@ -327,25 +327,45 @@ namespace BigAndSmall
             double bodyRenderSizeD = cache.bodyRenderSize;
             double resultX = __result.x;
             double resultZ = __result.z;
-            if (cache.isHumanlike)
+            
+            if (node.parent != null && node.parent.props.tagDef == BSDefs.Root)
             {
-                if (node is PawnRenderNode_Body)
+                if (cache.isHumanlike)
+                {
+                    if (node is PawnRenderNode_Body)
+                    {
+                        __result.x = (float)(resultX * bodyRenderSizeD);
+                        __result.z = (float)(resultZ * bodyRenderSizeD);
+                    }
+                    else if (node is PawnRenderNode_Head)
+                    {
+                        double headerRenderSizeD = cache.headRenderSize;
+                        __result.x = (float)(resultX * headerRenderSizeD);
+                        __result.z = (float)(resultZ * headerRenderSizeD);
+                    }
+                }
+                else
                 {
                     __result.x = (float)(resultX * bodyRenderSizeD);
                     __result.z = (float)(resultZ * bodyRenderSizeD);
                 }
-                else if (node is PawnRenderNode_Head)
-                {
-                    double headerRenderSizeD = cache.headRenderSize;
-                    __result.x = (float)(resultX * headerRenderSizeD);
-                    __result.z = (float)(resultZ * headerRenderSizeD);
-                }
             }
-            else
-            {
-                __result.x = (float)(resultX * bodyRenderSizeD);
-                __result.z = (float)(resultZ * bodyRenderSizeD);
-            }
+
+            //if (cache.isHumanlike)
+            //{
+            //    if (node.parent is PawnRenderNode_Parent && node.parent.props.tagDef == BSDefs.Root)
+            //    {
+            //        __result.x = (float)(resultX * bodyRenderSizeD);
+            //        __result.z = (float)(resultZ * bodyRenderSizeD);
+            //    }
+            //    else if (node is PawnRenderNode_Head)
+            //    {
+            //        double headerRenderSizeD = cache.headRenderSize;
+            //        __result.x = (float)(resultX * headerRenderSizeD);
+            //        __result.z = (float)(resultZ * headerRenderSizeD);
+            //    }
+            //}
+            
         }
     }
 }

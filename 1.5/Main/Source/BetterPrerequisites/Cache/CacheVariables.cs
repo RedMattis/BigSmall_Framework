@@ -157,6 +157,7 @@ namespace BigAndSmall
         public bool disableLookChangeDesired = false;
 
         public bool isDrone = false;
+        public bool noFamilyRelations = false;
         public List<Aptitude> aptitudes = [];
 
         public List<GeneDef> endogenesRemovedByRace = [];

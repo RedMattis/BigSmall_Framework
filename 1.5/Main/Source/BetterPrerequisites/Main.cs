@@ -111,12 +111,14 @@ namespace BigAndSmall
         public List<XenotypeChance> doubleXenotypes = [];
         public FilterListSet<XenotypeDef> xenoFilter = null;
         public FilterListSet<ThingDef> thingFilter = null;
+        public bool canFactionSwap = true;
         public bool canSwapXeno = false;
         public bool disguised = false;
         public FactionDef ideologyOf = null;
         public bool canBeFullRaid = false;
-
-        public float TotalChance => doubleXenotypes.Sum(x => x.chance);
+        public bool canOnlyBeFullRaid = false;
+        public float? chanceOverride = null;
+        public float TotalChance => chanceOverride ?? doubleXenotypes.Sum(x => x.chance);
     }
 
     public class GlobalSettings : Def
@@ -141,12 +143,7 @@ namespace BigAndSmall
 
         public static void Initialize()
         {
-            Log.Message("Initializing GlobalSettings");
             globalSettings = DefDatabase<GlobalSettings>.AllDefs.ToDictionary(x => x.defName);
-
-            Log.Message($"There are {globalSettings.Count} global settings.");
-            Log.Message($"There are {globalSettings.Values.Sum(x => x.returnedXenotypes.Count)} returned xenotypes.");
-            Log.Message($"There are {globalSettings.Values.Sum(x => x.returnedXenotypesColonist.Count)} returned colonist xenotypes.");
         }
 
         public static (XenotypeDef def, InfiltratorData data) GetRandomInfiltratorReplacementXenotype(Pawn pawn, int seed, bool forceNeeded, bool isFullRaid)
@@ -154,20 +151,23 @@ namespace BigAndSmall
             List<InfiltratorData> allValidInfiltratorData = globalSettings.Values.SelectMany(x => x.infiltratorTypes).ToList();
             if (pawn.Faction != null)
             {
-                allValidInfiltratorData = allValidInfiltratorData.Where(x =>
-                    (x.doubleXenotypes.Any()) &&
+                allValidInfiltratorData = [.. allValidInfiltratorData.Where(x =>
+                    x.doubleXenotypes.Any() &&
+                    (!x.canOnlyBeFullRaid || (x.canOnlyBeFullRaid && isFullRaid)) &&
                     (!isFullRaid || x.canBeFullRaid) &&
                     (!forceNeeded || x.canSwapXeno) &&
                     (x.factionFilter == null || x.factionFilter.GetFilterResult(pawn.Faction.def).Accepted()) &&
                     (x.thingFilter == null || x.thingFilter.GetFilterResult(pawn.def).Accepted()) &&
                     (x.xenoFilter == null || (pawn.genes?.Xenotype is XenotypeDef pXDef && x.xenoFilter.GetFilterResult(pXDef).Accepted()))
-                    ).ToList();
+                    )];
             }
             if (allValidInfiltratorData.Count == 0 || allValidInfiltratorData.All(x=>x.doubleXenotypes?.Count == 0)) return (null, null);
             // Return xenotype based on chance.
 
             InfiltratorData data;
-            using (new RandBlock(seed)) // Ensure we're getting infiltrators from the same "group". Mostly to avoid stupid results like succubi mixed with synths.
+            // Ensure we're getting infiltrators from the same "group" if doing full infiltrator raid.
+            // Mostly to avoid stupid results like succubi mixed with synths.
+            using (new RandBlock(seed)) 
             {
                 data = allValidInfiltratorData.RandomElementByWeight(x => x.TotalChance);
             }

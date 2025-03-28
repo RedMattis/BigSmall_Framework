@@ -211,6 +211,7 @@ namespace BigAndSmall
                 if (pawn != null)
                 {
                     GenSpawn.Spawn(pawn, worker.Position, worker.Map);
+                    pawn.relations.AddDirectRelation(BSDefs.BS_Creator, worker);
                 }
                 return false;
             }

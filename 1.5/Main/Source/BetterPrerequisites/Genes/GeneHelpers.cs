@@ -4,6 +4,7 @@ using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEngine.SceneManagement;
 using Verse;
 
 namespace BigAndSmall
@@ -18,6 +19,10 @@ namespace BigAndSmall
             {
                 foreach (var rGene in genesRemoved)
                 {
+                    foreach(var pe in rGene.def.ExtensionsOnDef<PawnExtension, GeneDef>())
+                    {
+                        GeneEffectManager.RefreshGeneEffects(rGene, active: false, pe);
+                    }
                     // Removes all abilities with missing genes.
                     if (rGene.def.abilities.NullOrEmpty() == false)
                     {
@@ -81,6 +86,10 @@ namespace BigAndSmall
                 }
                 foreach (var geneAdded in genesAdded)
                 {
+                    foreach (var pe in geneAdded.def.ExtensionsOnDef<PawnExtension, GeneDef>())
+                    {
+                        GeneEffectManager.RefreshGeneEffects(geneAdded, active: true, pe);
+                    }
                     geneAdded.PostAdd();
                 }
                 if (genesRemoved.Count > 0)

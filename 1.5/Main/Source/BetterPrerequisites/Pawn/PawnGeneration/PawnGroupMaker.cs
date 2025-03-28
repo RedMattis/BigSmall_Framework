@@ -4,77 +4,11 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Verse;
 
 namespace BigAndSmall
 {
-    public class PilotExtension : DefModExtension
-    {
-        public List<XenotypeChance> xenotypeChances = [];
-        public List<PawnKindDef> pilotPawnkind = [];
-
-        public void GeneratePilot(Pawn pawn)
-        {
-            // Find the first hediff of type Piloted
-            var pilotedHediff = pawn.health.hediffSet.hediffs.Where(x => x is Piloted).FirstOrDefault();
-            if (pilotedHediff == null)
-            {
-                // Generate hediff if it doesn't exist.
-                pilotedHediff = HediffMaker.MakeHediff(DefDatabase<HediffDef>.GetNamed("BS_Piloted"), pawn);
-                pawn.health.AddHediff(pilotedHediff);
-            }
-
-            if (pilotedHediff is Piloted piloted)
-            {
-                // Grab the faction of the pawn.
-                var faction = pawn.Faction;
-
-                var pawnKind = pilotPawnkind.RandomElement();
-
-                // Get a random xenotype from the list of valid xenotypes.
-                var xenotype = xenotypeChances.RandomElementByWeight(x => x.chance).xenotype;
-                var allValid = xenotypeChances.Select(x => x.xenotype).ToList();
-
-                // Spawn a pawn of the ppropriate kind and xenotype.
-                var pilot = PawnGenerator.GeneratePawn(new PawnGenerationRequest(pawnKind, faction, PawnGenerationContext.NonPlayer, allowedXenotypes: allValid, forcedXenotype:xenotype,
-                    forceGenerateNewPawn: true, mustBeCapableOfViolence:true, colonistRelationChanceFactor:0, canGeneratePawnRelations:false, relationWithExtraPawnChanceFactor:0)); // , forcedXenotype: xenotype
-
-
-                if (pilot != null)
-                {
-                    // If the pilot has a weapon that is of the giant type, remove it.
-                    if (pilot.equipment.Primary != null && pilot.equipment.Primary.def.weaponTags.Contains("BS_GiantWeapon"))
-                    {
-                        pilot.equipment.Remove(pilot.equipment.Primary);
-                    }
-
-                    HumanoidPawnScaler.GetCache(pilot, forceRefresh: true);
-                    // If the pilot would be too big, give it the dwarfism trait.
-                    if (pilot.BodySize > piloted.MaxCapacity)
-                    {
-                        var dwarfism = DefDatabase<TraitDef>.GetNamedSilentFail("Dwarfism");
-                        if (dwarfism != null)
-                        {
-                            pilot.story.traits.GainTrait(new Trait(dwarfism));
-                        }
-                    }
-
-                    // Add the pilot to the piloted hediff.
-                    piloted.AddPilot(pilot);
-                    piloted.pawn.health.Notify_HediffChanged(piloted);
-                }
-                else
-                {
-                    Log.Error("BigAndSmall: Error generating pilot for " + pawn.Name);
-                }
-            }
-            else
-            {
-                Log.Error("BigAndSmall: Error generating pilotedHediff for " + pawn.Name);
-            }
-        }
-    }
-
     [HarmonyPatch]
     public static class GeneratePawns_Patch
     {
@@ -144,7 +78,7 @@ namespace BigAndSmall
             }
             catch (Exception e)
             {
-                Log.Error("BigAndSmall: Error generating pilot for " + member.Name + ": " + e.Message);
+                Log.Error($"BigAndSmall: Error in {nameof(ModifyGeneratedPawn)} generating pilot for {member.Name}:\n{e.Message}");
             }
 
             return changed;
@@ -152,46 +86,24 @@ namespace BigAndSmall
 
         private static bool GeneratePilots(bool changed, Pawn member)
         {
-            // Check if the pawnkind has the PilotExtension mod extension.
-            if (member.kindDef.GetModExtension<PilotExtension>() is PilotExtension pilotExtension)
+            try
             {
-                changed = GeneratePilot(changed, member, pilotExtension);
+                // Check if the pawnkind has the PilotExtension mod extension.
+                if (member.kindDef.GetModExtension<PilotExtension>() is PilotExtension pilotExtension)
+                {
+                    changed = GeneratePilot(changed, member, pilotExtension);
+                }
+                // Otherwise check if the Xenotype has one, as a fallback for stuff like the xenotype being added via mods.
+                else if (member.genes?.Xenotype?.GetModExtension<PilotExtension>() is PilotExtension xenotypePilotExtension)
+                {
+                    changed = GeneratePilot(changed, member, xenotypePilotExtension);
+                }
             }
-            // Otherwise check if the Xenotype has one, as a fallback for stuff like the xenotype being added via mods.
-            else if (member.genes?.Xenotype?.GetModExtension<PilotExtension>() is PilotExtension xenotypePilotExtension)
+            catch (Exception e)
             {
-                changed = GeneratePilot(changed, member, xenotypePilotExtension);
+                Log.Error($"BigAndSmall: Error in {nameof(GeneratePilots)} when generating pilot for {member}: {e.Message}");
+
             }
-
-            //// As a fallback, generate pilots with random xenotypes for all pawns that have pilotable genes or hediffs.
-            //else if (member.genes.GenesListForReading.Any(x => x.def.defName == "BS_Pilotable")
-            //    || member.health.hediffSet.hediffs.Any(x => x.def.defName == "BS_Piloted" || x.def.defName == "BATR_Piloted"))
-            //{
-            //    try
-            //    {
-            //        // Get faction xenotypes
-            //        var factionXenotypeSet = member.Faction.def.xenotypeSet;
-            //        var allXenos = DefDatabase<XenotypeDef>.AllDefsListForReading;
-            //        var allValid = allXenos.Where(x => factionXenotypeSet.Contains(x)).ToList();
-
-            //        // Get all xenotypes that don't contain any gene with forced trait "BS_Giant"
-            //        var validXenos = allValid.Where(x => !x.AllGenes.Any(y => y.forcedTraits.Any(t => t.def.defName == "BS_Giant"))).ToList();
-
-            //        var xenotypeChancesFromValid = validXenos.Select(x => new XenotypeChance(x, 1f)).ToList();
-
-            //        if (xenotypeChancesFromValid.Count == 0)
-            //        {
-            //            return changed;
-            //        }
-
-            //        PilotExtension.GeneratePilot(member, xenotypeChancesFromValid);
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        Log.Error("BigAndSmall: Error generating pilot (fallback due to missing pilot defs in pawnkind) for " + member.Name + ": " + e.Message);
-            //    }
-            //}
-
             return changed;
 
             static bool GeneratePilot(bool changed, Pawn member, PilotExtension pilotExtension)
@@ -204,7 +116,7 @@ namespace BigAndSmall
                 }
                 catch (Exception e)
                 {
-                    Log.Error("BigAndSmall: Error generating pilot for " + member.Name + ": " + e.Message);
+                    Log.Error($"BigAndSmall: Error generating pilot for {member.Name}: {e.Message}");
                 }
 
                 return changed;
@@ -215,30 +127,7 @@ namespace BigAndSmall
         {
             if (member.kindDef.GetModExtension<PawnKindExtension>() is PawnKindExtension pawnKindExt)
             {
-                if (pawnKindExt.ageCurve != null)
-                {
-                    member.ageTracker.AgeBiologicalTicks = (long)pawnKindExt.ageCurve.Evaluate(Rand.Value) * 3600000;
-                }
-                if (pawnKindExt.psylinkLevels is SimpleCurve psyLinkCurve && ModsConfig.RoyaltyActive)
-                {
-                    int countToSet = (int)psyLinkCurve.Evaluate(Rand.Value);
-
-                    if (countToSet > 0)
-                    {
-                        // Check if they have it already.
-                        if (member.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.PsychicAmplifier) is Hediff_Level hediff_Level)
-                        {
-                            int level = hediff_Level.level;
-                            hediff_Level.SetLevelTo(countToSet + level);
-                        }
-                        else
-                        {
-                            hediff_Level = HediffMaker.MakeHediff(HediffDefOf.PsychicAmplifier, member, member.health.hediffSet.GetBrain()) as Hediff_Level;
-                            member.health.AddHediff(hediff_Level);
-                            hediff_Level.SetLevelTo(countToSet);
-                        }
-                    }
-                }
+                pawnKindExt.Execute(member);
             }
             if (member?.RaceProps?.Humanlike != true) return;
             if (member.genes?.Xenotype == null) return;
@@ -256,8 +145,16 @@ namespace BigAndSmall
                     }
                 }
             }
+            float chance = BigSmallMod.settings.inflitratorChance;
+            if (Rand.Chance(0.1f)) /// 10% chance to increase the chance of infiltrator in a raid.
+            {
+                chance = Mathf.Min(chance * Rand.Range(1f, 10f), 1f - (1f - chance)/2);
+            }
             bool soloInfiltrator = Rand.Chance(BigSmallMod.settings.inflitratorChance);
-            bool infiltratorRaid = BigSmallMod.settings.inflitratorRaidChance > BigAndSmallCache.globalRandNum;
+
+            // It can only be an infiltrator raid if it is hostile.
+            bool infiltratorRaid = member?.Faction.HostileTo(Faction.OfPlayerSilentFail) == true
+                && BigSmallMod.settings.inflitratorRaidChance > BigAndSmallCache.globalRandNum;
             if ((soloInfiltrator || infiltratorRaid) && member.IsMutant == false)
             {
                 try
@@ -272,14 +169,27 @@ namespace BigAndSmall
                         var prevXenotype = member.genes.Xenotype;
                         member.genes.SetXenotype(xenotype);
                         member.TrySwapToXenotypeThingDef();
-                        if (infiltratorData.disguised)
+                        if (infiltratorData.disguised && prevXenotype != null)
                         {
-                            member.genes.SetXenotype(prevXenotype);  // So they still show up as the previous xenotype.
+                            member.genes.iconDef = null;
+                            member.genes.SetXenotypeDirect(prevXenotype);
                         }
                         if (infiltratorData.ideologyOf != null && ModsConfig.IdeologyActive && Find.FactionManager.AllFactions.Where(x => x.def == infiltratorData.ideologyOf).FirstOrDefault() is Faction firstMatchingFaction)
                         {
                             member.ideo?.SetIdeo(firstMatchingFaction.ideos.PrimaryIdeo);
                         }
+                        // Doesn't work great since animals etc. won't swap with the current logic.
+                        //if (infiltratorRaid
+                        //    && infiltratorData.canFactionSwap
+                        //    && member.Faction.HostileTo(Faction.OfPlayerSilentFail)
+                        //    && infiltratorData.ideologyOf is FactionDef newFaction)
+                        //{
+                        //    var newFactionInstance = Find.FactionManager.AllFactions.Where(x => x.def == newFaction).FirstOrDefault();
+                        //    if (newFactionInstance != null)
+                        //    {
+                        //        member.SetFaction(newFactionInstance);
+                        //    }
+                        //}
                     }
                 }
                 catch (Exception e)

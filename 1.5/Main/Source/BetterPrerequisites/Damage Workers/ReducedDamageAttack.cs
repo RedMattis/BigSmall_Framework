@@ -74,7 +74,22 @@ namespace BigAndSmall
         }
     }
 
-    
+    public class DamageWorker_NoDirectDamage : DamageWorker_AddInjury
+    {
+        public override DamageResult Apply(DamageInfo dinfo, Thing thing)
+        {
+            dinfo.SetAmount(0);
+            dinfo.SetAllowDamagePropagation(false);
+            return base.Apply(dinfo, thing);
+        }
+
+        protected override BodyPartRecord ChooseHitPart(DamageInfo dinfo, Pawn pawn)
+        {
+            return pawn.health.hediffSet.GetRandomNotMissingPart(dinfo.Def, dinfo.Height, BodyPartDepth.Outside);
+        }
+    }
+
+
 
     public class ProjectileGorgonStareProjectile : Projectile
     {

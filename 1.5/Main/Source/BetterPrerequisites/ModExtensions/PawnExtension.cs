@@ -327,6 +327,8 @@ namespace BigAndSmall
         /// Makes colonists care less about the pawn's death, and the pawn care less about death in general.
         /// </summary>
         public bool isDrone = false;
+        public bool noFamilyRelations = false;
+        public string NoFamilyRelationsDescription => noFamilyRelations ? "BS_NoFamilyRelationsDesc".Translate() : null;
         public string DroneDescription => isDrone ? "BS_DroneDesc".Translate() : null;
         private string UnlivingDescription => isUnliving ? "BS_UnlivingDesc".Translate() : null;
         private string DeathlikeDescription => isDeathlike ? "BS_DeathlikeDesc".Translate() : null;
@@ -457,7 +459,9 @@ namespace BigAndSmall
 
         #endregion
 
-        public bool HasGeneFilter => geneFilters != null || geneCategoryFilters != null || geneTagFilters != null;
+        public bool HasActiveGeneFilters => activeGeneFilters != null || activeGeneCategoryFilters != null || activeGeneTagFilters != null;
+        public bool HasGeneRemovalFilters => geneFilters != null || geneCategoryFilters != null || geneTagFilters != null;
+        public bool HasGeneFilters => HasGeneRemovalFilters || HasActiveGeneFilters;
 
         public float GetSizeFromSizeByAge(float? age)
         {

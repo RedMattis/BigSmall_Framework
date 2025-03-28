@@ -50,7 +50,7 @@
         <isMechanical>true</isMechanical>
         <banAddictionsByDefault>true</banAddictionsByDefault>
         <romanceTags/> <!-- No tags at all by default. -->
-        
+        <noFamilyRelations>true</noFamilyRelations>
         <traitFilters>
           <blacklist>
             <!-- <li>BodyPurist</li> -->
