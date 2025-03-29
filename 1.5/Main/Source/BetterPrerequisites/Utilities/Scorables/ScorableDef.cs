@@ -34,7 +34,9 @@ namespace BigAndSmall
             var allDefs = DefDatabase<T>.AllDefsListForReading.OfType<IScoreHolder>();
             if (allDefs.Any())
             {
-                return [.. ScoreCalculator.GetSortedScores(obj, allDefs).OfType<T>()];
+                var result = ScoreCalculator.GetSortedScores(obj, allDefs);
+                if (result != null)
+                    return [.. ScoreCalculator.GetSortedScores(obj, allDefs).OfType<T>()];
             }
             return null;
         }
