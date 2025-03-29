@@ -86,24 +86,18 @@ namespace BigAndSmall
 
         private static bool GeneratePilots(bool changed, Pawn member)
         {
-            try
-            {
-                // Check if the pawnkind has the PilotExtension mod extension.
-                if (member.kindDef.GetModExtension<PilotExtension>() is PilotExtension pilotExtension)
-                {
-                    changed = GeneratePilot(changed, member, pilotExtension);
-                }
-                // Otherwise check if the Xenotype has one, as a fallback for stuff like the xenotype being added via mods.
-                else if (member.genes?.Xenotype?.GetModExtension<PilotExtension>() is PilotExtension xenotypePilotExtension)
-                {
-                    changed = GeneratePilot(changed, member, xenotypePilotExtension);
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error($"BigAndSmall: Error in {nameof(GeneratePilots)} when generating pilot for {member}: {e.Message}");
 
+            // Check if the pawnkind has the PilotExtension mod extension.
+            if (member?.kindDef?.GetModExtension<PilotExtension>() is PilotExtension pilotExtension)
+            {
+                changed = GeneratePilot(changed, member, pilotExtension);
             }
+            // Otherwise check if the Xenotype has one, as a fallback for stuff like the xenotype being added via mods.
+            else if (member?.genes?.Xenotype?.GetModExtension<PilotExtension>() is PilotExtension xenotypePilotExtension)
+            {
+                changed = GeneratePilot(changed, member, xenotypePilotExtension);
+            }
+
             return changed;
 
             static bool GeneratePilot(bool changed, Pawn member, PilotExtension pilotExtension)

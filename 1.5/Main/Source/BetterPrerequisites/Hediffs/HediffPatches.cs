@@ -53,7 +53,7 @@ namespace BetterPrerequisites
         public static void Hediff_PostAdd(Hediff __instance, DamageInfo? dinfo)
         {
             var pawn = __instance?.pawn;
-            if (pawn == null)
+            if (pawn == null || __instance == null)
             {
                 return;
             }

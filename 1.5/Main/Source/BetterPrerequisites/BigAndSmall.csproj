@@ -99,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abillities\CompAbilityEffect_GiveWithSeverity.cs" />
+    <Compile Include="Abillities\Comp_AbilityFleckOnTargetFixed.cs" />
     <Compile Include="Abillities\MeleeAttackAbility.cs" />
     <Compile Include="BetterPrerequisites\NewGeneDisabler.cs" />
     <Compile Include="Cache\CacheAccessProps.cs" />

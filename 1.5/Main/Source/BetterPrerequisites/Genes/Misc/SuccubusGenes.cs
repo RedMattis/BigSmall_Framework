@@ -88,8 +88,8 @@ namespace BigAndSmall
     {
         public static void Postfix(Hediff __instance)
         {
-            if (__instance?.def?.defName == "VRE_PsychicBondBloodlust" && __instance.pawn?.health != null
-                && GeneHelpers.GetAllActiveGenes(__instance.pawn).Any(x=>x.def.defName == "VU_LethalLover"))
+            if (__instance?.def?.defName == "VRE_PsychicBondBloodlust" && __instance?.pawn?.health != null
+                && GeneHelpers.GetAllActiveGenes(__instance.pawn).Any(x=>x.def?.defName == "VU_LethalLover"))
             {
                 try
                 {

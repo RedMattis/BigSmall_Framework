@@ -17,13 +17,33 @@ namespace BigAndSmall
 
         public void GeneratePilot(Pawn pPawn)
         {
-            if (ModsConfig.BiotechActive && pilotableGene != null)
+            var pilotedHediff = pPawn.health.hediffSet.hediffs.Where(x => x is Piloted).FirstOrDefault();
+            if (pilotedHediff == null)
             {
-                pPawn.genes.AddGene(pilotableGene, false);
+                // If no pilotable hediff is found, try searching for the gene that makes the pawn pilotable.
+                // If so and a pilotableGene is set, add it to the pawn first.
+
+                if (ModsConfig.BiotechActive && pilotableGene != null)
+                {
+                    pPawn.genes.AddGene(pilotableGene, false);
+                }
+                // Try to find the gene that makes the pawn pilotable, and apply the hediff if one is found.
+                foreach (var gene in pPawn.genes?.GenesListForReading)
+                {
+                    foreach (var pExt in gene.def.GetAllPawnExtensionsOnGene())
+                    {
+                        if (pExt.applyBodyHediff?.Where(x => x.hediff.comps.Any(x => x is CompProperties_Piloted)).FirstOrDefault()?.hediff is HediffDef pilotableHediff)
+                        {
+                            pilotedHediff = HediffMaker.MakeHediff(pilotableHediff, pPawn);
+                            pPawn.health.AddHediff(pilotedHediff);
+                            goto FoundPilotHediff;
+                        }
+                    }
+                }
             }
+        FoundPilotHediff:
 
             // Find the first hediff of type Piloted
-            var pilotedHediff = pPawn.health.hediffSet.hediffs.Where(x => x is Piloted).FirstOrDefault();
             if (pilotedHediff == null)
             {
                 string pilotedHediffString = pilotableHediff?.def.defName ?? "BS_Piloted";
