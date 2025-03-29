@@ -66,6 +66,7 @@ namespace BigAndSmall
                 CreateListSection("BS_ConditionalDescription".Translate(), extList, ext => ext.ConditionalDescription),
                 CreateListSection("BS_SizeByAgeOffset".Translate(), extList, ext => ext.SizeByAgeDescription),
                 CreateListSection("BS_SizeByAgeOffset".Translate(), extList, ext => ext.SizeByAgeMultDescription),
+                CreateListSection("BS_StatChangesDescriptions".Translate(), extList, ext => ext.StatChangeDescriptions),
                 // Health and Body Modifications
                 CreateListSection("BS_RacialFeatures".Translate(), extList, ext => ext.RacialFeaturesDescription),
                 CreateListSection("BS_Applies".Translate(), extList, ext => ext.ApplyBodyHediffDescription),
@@ -75,6 +76,7 @@ namespace BigAndSmall
                 CreateIndividualSection("BS_ForceUnarmed".Translate(), extList, ext => ext.ForceUnarmedDescription),
                 CreateIndividualSection("BS_PreventDisfigurement".Translate(), extList, ext => ext.PreventDisfigurementDescription),
                 CreateIndividualSection("BS_CanWalkOnCreep".Translate(), extList, ext => ext.CanWalkOnCreepDescription),
+                
                 // Traits and Genetics
                 CreateIndividualSection("ForcedTraits".Translate(), extList, ext => ext.forcedTraits ?? Enumerable.Empty<object>()),
                 CreateIndividualSection("BS_FocedEndoImmutable".Translate(), extList, ext => ext.immutableEndogenes?.Select(e => e.LabelCap)),
@@ -84,13 +86,12 @@ namespace BigAndSmall
                 CreateIndividualSection("BS_PawnDiet".Translate(), extList, ext => ext.PawnDietDescription),
                 CreateIndividualSection("BS_LockedNeeds".Translate(), extList, ext => ext.LockedNeedsDescription),
                 CreateAggregatedSection("BS_BleedRateDesc".Translate(), extList.Where(x=>x.bleedRate != null).ToList(), ext => ext.bleedRate == null ? 1 : ext.bleedRate, rates => rates.Aggregate(1f, (acc, rate) => acc * rate.Value).ToStringPercent()),
-                CreateIndividualSection("SoulPowerFalloffStartDescription".Translate(), extList, ext => ext.SoulPowerFalloffStartDescription),
                 CreateIndividualSection("BS_ConsumeSoulOnHit".Translate(), extList, ext => ext.ConsumeSoulOnHitDescription),
                 // Apparel and Restrictions
                 CreateIndividualSection("BS_HasApparelRestrictions".Translate(), extList, ext => ext.apparelRestrictions != null ? "BS_Modified".Translate().CapitalizeFirst() : null),
                 CreateIndividualSection("BS_CanWieldThings".Translate(), extList, ext => ext.canWieldThings != null ? "BS_Modified".Translate().CapitalizeFirst() : null),
                 // Thoughts and Relationships
-                CreateAggregatedSection("BS_HasNullThoughtsCount", extList.Where(x=>x.nullsThoughts != null).ToList(), ext => ext.nullsThoughts?.Count ?? 0, counts => counts.Sum().ToString()),
+                CreateAggregatedSection("BS_HasNullThoughtsCount", [.. extList.Where(x=>x.nullsThoughts != null)], ext => ext.nullsThoughts?.Count ?? 0, counts => counts.Sum().ToString()),
                 CreateListSection("BS_RomanceTags".Translate(), extList, ext => ext.RomanceTagsDescription),
                 CreateIndividualSection("BS_CreatureTag".Translate(), extList, ext => ext.TagDescriptions)
             ];
