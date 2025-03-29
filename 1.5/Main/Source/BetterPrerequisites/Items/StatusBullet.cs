@@ -9,7 +9,7 @@ namespace BigAndSmall
 
         protected override void Impact(Thing hitThing, bool blockedByShield = false)
         {
-            base.Impact(hitThing, blockedByShield: false);
+            base.Impact(hitThing, blockedByShield: blockedByShield);
             if (Props != null && hitThing != null && hitThing is Pawn pawn)
             {
                 float severity = Props.severity;

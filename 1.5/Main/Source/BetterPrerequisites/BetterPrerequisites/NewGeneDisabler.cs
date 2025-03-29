@@ -57,7 +57,7 @@ namespace BigAndSmall
 
             IOrderedEnumerable<Gene> orderedGenes = allGenes
                 .OrderByDescending(gene => (gene.def.GetAllPawnExtensionsOnGene() is List<PawnExtension> genePawnExts && genePawnExts.Any())
-                ? genePawnExts.Max(x => x.priority + (x.HasGeneFilter ? 0.5f : 0))
+                ? genePawnExts.Max(x => x.priority + (x.HasGeneFilters ? 0.5f : 0))
                 : 0);
 
             var hediffPawnExts = pawn.GetHediffExtensions<PawnExtension>();
@@ -71,7 +71,6 @@ namespace BigAndSmall
                 var allActiveGenes = GeneHelpers.GetAllActiveGenes(pawn).ToList();
                 var genePawnExts = gene.def.GetAllPawnExtensionsOnGene();
                 string failReason = GeneShouldBeActive(gene, genePawnExts, hediffPawnExts, allPawnExts, allActiveGenes);
-                // For testing purposes disable all gene with the word Aptitude in them
                 if (failReason != "")
                 {
                     if (!geneCache.isOverriden) genesDeactivated.Add(gene);
@@ -94,7 +93,6 @@ namespace BigAndSmall
                         }
                     }
                 }
-
             }
         }
     }

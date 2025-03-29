@@ -1,8 +1,7 @@
 <Defs>
-  <!-- TODO: Remove in 1.6 (replaced with hybrid-system) -->
   <BodyDef>
-    <defName>BS_Marlith</defName>
-    <label>multi-limted snake-person</label>
+    <defName>BS_SixArmedHuman</defName>
+    <label>six-armed human</label>
     <corePart>
       <def>Torso</def>
       <height>Middle</height>
@@ -13,7 +12,7 @@
       <parts>
         <li>
           <def>Ribcage</def>
-          <coverage>0.025</coverage>
+          <coverage>0.026</coverage>
           <depth>Inside</depth>
           <groups>
             <li>Torso</li>
@@ -21,7 +20,16 @@
         </li>
         <li>
           <def>Sternum</def>
-          <coverage>0.012</coverage>
+          <coverage>0.015</coverage>
+          <depth>Inside</depth>
+          <groups>
+            <li>Torso</li>
+          </groups>
+        </li>
+        <li>
+          <def>Pelvis</def>
+          <coverage>0.015</coverage>
+          <height>Bottom</height>
           <depth>Inside</depth>
           <groups>
             <li>Torso</li>
@@ -29,7 +37,15 @@
         </li>
         <li>
           <def>Spine</def>
-          <coverage>0.020</coverage>
+          <coverage>0.015</coverage>
+          <depth>Inside</depth>
+          <groups>
+            <li>Torso</li>
+          </groups>
+        </li>
+        <li>
+          <def>Stomach</def>
+          <coverage>0.015</coverage>
           <depth>Inside</depth>
           <groups>
             <li>Torso</li>
@@ -37,7 +53,7 @@
         </li>
         <li>
           <def>Heart</def>
-          <coverage>0.015</coverage>
+          <coverage>0.010</coverage>
           <depth>Inside</depth>
           <groups>
             <li>Torso</li>
@@ -46,15 +62,42 @@
         <li>
           <def>Lung</def>
           <customLabel>left lung</customLabel>
-          <coverage>0.025</coverage>
+          <coverage>0.015</coverage>
+          <depth>Inside</depth>
+          <groups>
+            <li>Torso</li>
+          </groups>
+          <flipGraphic>true</flipGraphic>
+        </li>
+        <li>
+          <def>Lung</def>
+          <customLabel>right lung</customLabel>
+          <coverage>0.015</coverage>
           <depth>Inside</depth>
           <groups>
             <li>Torso</li>
           </groups>
         </li>
         <li>
-          <def>Lung</def>
-          <customLabel>right lung</customLabel>
+          <def>Kidney</def>
+          <customLabel>left kidney</customLabel>
+          <coverage>0.012</coverage>
+          <depth>Inside</depth>
+          <groups>
+            <li>Torso</li>
+          </groups>
+        </li>
+        <li>
+          <def>Kidney</def>
+          <customLabel>right kidney</customLabel>
+          <coverage>0.012</coverage>
+          <depth>Inside</depth>
+          <groups>
+            <li>Torso</li>
+          </groups>
+        </li>
+        <li>
+          <def>Liver</def>
           <coverage>0.025</coverage>
           <depth>Inside</depth>
           <groups>
@@ -63,7 +106,7 @@
         </li>
         <li>
           <def>Neck</def>
-          <coverage>0.050</coverage>
+          <coverage>0.075</coverage>
           <height>Top</height>
           <groups>
             <li>Neck</li>
@@ -826,70 +869,164 @@
           </groups>
         </li>
         <li>
-          <def>BS_SnakeBody</def>
-          <coverage>0.5</coverage>
+          <def>Leg</def>
+          <customLabel>left leg</customLabel>
+          <coverage>0.14</coverage>
           <height>Bottom</height>
           <groups>
             <li>Legs</li>
           </groups>
+          <flipGraphic>true</flipGraphic>
+          <woundAnchorTag>LeftLeg</woundAnchorTag>
           <parts>
             <li>
-              <def>BS_SnakeSpine</def>
-              <coverage>0.03</coverage>
-            </li>
-            <li>
-              <def>Heart</def>
-              <customLabel>second heart</customLabel>
-              <coverage>0.020</coverage>
+              <def>Femur</def>
+              <customLabel>left femur</customLabel>
+              <coverage>0.1</coverage>
               <depth>Inside</depth>
               <groups>
                 <li>Legs</li>
               </groups>
             </li>
             <li>
-              <def>Kidney</def>
-              <customLabel>left kidney</customLabel>
-              <coverage>0.017</coverage>
+              <def>Tibia</def>
+              <customLabel>left tibia</customLabel>
+              <coverage>0.1</coverage>
               <depth>Inside</depth>
               <groups>
                 <li>Legs</li>
               </groups>
             </li>
             <li>
-              <def>Kidney</def>
-              <customLabel>right kidney</customLabel>
-              <coverage>0.017</coverage>
-              <depth>Inside</depth>
-              <groups>
-                <li>Legs</li>
-              </groups>
-            </li>
-            <li>
-              <def>Liver</def>
-              <customLabel>liver</customLabel>
-              <coverage>0.025</coverage>
-              <depth>Inside</depth>
-              <groups>
-                <li>Legs</li>
-              </groups>
-            </li>
-            <li>
-              <def>Stomach</def>
-              <customLabel>snake stomach</customLabel>
-              <coverage>0.050</coverage>
-              <depth>Inside</depth>
-              <groups>
-                <li>Legs</li>
-              </groups>
-            </li>
-            <li>
-              <def>Tail</def>
-              <coverage>0.07</coverage>
-
-              <!--To prevent them from putting on infinite shoes.-->
+              <def>Foot</def>
+              <customLabel>left foot</customLabel>
+              <coverage>0.1</coverage>
               <groups>
                 <li>Feet</li>
               </groups>
+              <flipGraphic>true</flipGraphic>
+              <parts>
+                <li>
+                  <def>Toe</def>
+                  <customLabel>left little toe</customLabel>
+                  <coverage>0.06</coverage>
+                  <groups>
+                    <li>Feet</li>
+                  </groups>
+                </li>
+                <li>
+                  <def>Toe</def>
+                  <customLabel>left fourth toe</customLabel>
+                  <coverage>0.07</coverage>
+                  <groups>
+                    <li>Feet</li>
+                  </groups>
+                </li>
+                <li>
+                  <def>Toe</def>
+                  <customLabel>left middle toe</customLabel>
+                  <coverage>0.08</coverage>
+                  <groups>
+                    <li>Feet</li>
+                  </groups>
+                </li>
+                <li>
+                  <def>Toe</def>
+                  <customLabel>left second toe</customLabel>
+                  <coverage>0.09</coverage>
+                  <groups>
+                    <li>Feet</li>
+                  </groups>
+                </li>
+                <li>
+                  <def>Toe</def>
+                  <customLabel>left big toe</customLabel>
+                  <coverage>0.09</coverage>
+                  <groups>
+                    <li>Feet</li>
+                  </groups>
+                </li>
+              </parts>
+            </li>
+          </parts>
+        </li>
+        <li>
+          <def>Leg</def>
+          <customLabel>right leg</customLabel>
+          <coverage>0.14</coverage>
+          <height>Bottom</height>
+          <groups>
+            <li>Legs</li>
+          </groups>
+          <woundAnchorTag>RightLeg</woundAnchorTag>
+          <parts>
+            <li>
+              <def>Femur</def>
+              <customLabel>right femur</customLabel>
+              <coverage>0.1</coverage>
+              <depth>Inside</depth>
+              <groups>
+                <li>Legs</li>
+              </groups>
+            </li>
+            <li>
+              <def>Tibia</def>
+              <customLabel>right tibia</customLabel>
+              <coverage>0.1</coverage>
+              <depth>Inside</depth>
+              <groups>
+                <li>Legs</li>
+              </groups>
+            </li>
+            <li>
+              <def>Foot</def>
+              <customLabel>right foot</customLabel>
+              <coverage>0.1</coverage>
+              <groups>
+                <li>Feet</li>
+              </groups>
+              <parts>
+                <li>
+                  <def>Toe</def>
+                  <customLabel>right little toe</customLabel>
+                  <coverage>0.06</coverage>
+                  <groups>
+                    <li>Feet</li>
+                  </groups>
+                </li>
+                <li>
+                  <def>Toe</def>
+                  <customLabel>right fourth toe</customLabel>
+                  <coverage>0.07</coverage>
+                  <groups>
+                    <li>Feet</li>
+                  </groups>
+                </li>
+                <li>
+                  <def>Toe</def>
+                  <customLabel>right middle toe</customLabel>
+                  <coverage>0.08</coverage>
+                  <groups>
+                    <li>Feet</li>
+                  </groups>
+                </li>
+                <li>
+                  <def>Toe</def>
+                  <customLabel>right second toe</customLabel>
+                  <coverage>0.09</coverage>
+                  <groups>
+                    <li>Feet</li>
+                  </groups>
+                </li>
+                <li>
+                  <def>Toe</def>
+                  <customLabel>right big toe</customLabel>
+                  <coverage>0.09</coverage>
+                  <groups>
+                    <li>Feet</li>
+                  </groups>
+                </li>
+              </parts>
             </li>
           </parts>
         </li>

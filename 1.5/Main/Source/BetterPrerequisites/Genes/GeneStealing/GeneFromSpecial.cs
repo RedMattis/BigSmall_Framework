@@ -12,7 +12,7 @@ namespace BigAndSmall
     {
         public static List<GeneDef> GetGenesFromAnomalyCreature(Pawn pawn)
         {
-            if (GeneStealDef.GetBestScoredDefForPawn(pawn) is GeneStealDef geneCollection)
+            if (GeneStealDef.GetBestGenesOnPawn(pawn) is GeneStealDef geneCollection)
             {
                 return geneCollection.genes;
             }

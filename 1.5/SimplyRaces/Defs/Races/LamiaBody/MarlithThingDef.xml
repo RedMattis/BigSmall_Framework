@@ -1,5 +1,5 @@
 <Defs>
-
+  <!-- TODO: Remove in 1.6 (replaced with hybrid-system) -->
   <ThingDef ParentName="Human" BS_Alt="ThingDef_AlienRace">
     <defName>BS_Marlith</defName>
     <label>six-armed snake-person</label>

@@ -92,11 +92,19 @@ namespace BigAndSmall
                     if (cur < 0) cur = 0;
                     float oldMax = max;
                     max = pawn.GetStatValue(BSDefs.BS_SoulPower);
-                    if (oldMax != max)
+                    if (max == 0)
                     {
-                        Value = Value * max / oldMax;
+                        pawn.health.RemoveHediff(this);
                     }
-                    refreshState = 0;
+                    else
+                    {
+                        if (oldMax != max)
+                        {
+                            Value = Value * max / oldMax;
+                        }
+                        refreshState = 0;
+                    }
+                    
                 }
             }
         }

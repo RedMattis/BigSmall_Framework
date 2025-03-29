@@ -120,8 +120,8 @@
     <defaultFactionType>PlayerColony</defaultFactionType>
 
     <combatPower>80</combatPower>
-    <apparelMoney>1000~2000</apparelMoney>
-    <weaponMoney>150~300</weaponMoney>
+    <apparelMoney>1000~3000</apparelMoney>
+    <weaponMoney>250~1200</weaponMoney>
     <initialWillRange>2~4</initialWillRange>
     <techHediffsMoney>100~500</techHediffsMoney>
     <apparelDisallowTags>

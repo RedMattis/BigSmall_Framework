@@ -246,4 +246,16 @@
         <hideAtValue>1</hideAtValue>
     </StatDef>
 
+    <!-- <StatDef>
+        <defName>SM_RomanceChance</defName>
+        <label>romance chance</label>
+        <description>affects the chance that the character will respond to romantic advances. A value of zero .</description>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.0</minValue>
+        <toStringStyle>FloatOne</toStringStyle>
+        <defaultBaseValue>1.0</defaultBaseValue>
+        <hideAtValue>1</hideAtValue>
+    </StatDef> -->
+
 </Defs>

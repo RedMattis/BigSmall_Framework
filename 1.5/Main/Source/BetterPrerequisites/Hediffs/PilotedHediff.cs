@@ -185,7 +185,7 @@ namespace BigAndSmall
                 {
                     try { InheritPilotSkills(pilot, pawn); } catch (Exception e) { Log.Warning("Failed to transfer pilot skills: " + e.Message); }
                     try { InheritPilotTraits(pilot); } catch (Exception e) { Log.Warning("Failed to transfer pilot traits: " + e.Message); }
-                    try {InheritRelationships(pilot, pawn); } catch (Exception e) { Log.Warning("Failed to transfer pilot relationships: " + e.Message); }
+                    try { InheritRelationships(pilot, pawn); } catch (Exception e) { Log.Warning("Failed to transfer pilot relationships: " + e.Message); }
                 }
             }
             catch (Exception e)

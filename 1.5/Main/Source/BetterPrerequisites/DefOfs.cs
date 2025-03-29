@@ -23,6 +23,9 @@ namespace BigAndSmall
         [MayRequire("RedMattis.BigSmall.Core")]
         public static StatDef BS_SoulPower;
 
+        // Rendering Nodes
+        public static PawnRenderNodeTagDef Root;
+
         // Traits
         [MayRequire("RedMattis.BigSmall.Core")]
         public static TraitDef BS_Giant;
@@ -110,6 +113,9 @@ namespace BigAndSmall
         public static ThoughtDef BS_DroneDied;
         [MayRequire("RedMattis.BigSmall.Core")]
         public static ThoughtDef BS_DroneLost;
+
+        // PawnRelationDef
+        public static PawnRelationDef BS_Creator;
 
         // BodyPartGroupDefs
         public static BodyPartGroupDef Feet;

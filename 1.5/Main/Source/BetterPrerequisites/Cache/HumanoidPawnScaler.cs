@@ -89,7 +89,6 @@ namespace BigAndSmall
             }
         }
 
-        
         public override void GameComponentTick()
         {
             BS.IncrementTick();
@@ -588,6 +587,7 @@ namespace BigAndSmall
                 attackSpeedUnarmedMultiplier = pawn.GetStatValue(BSDefs.SM_UnarmedAttackSpeed);
 
                 isDrone = allPawnExt.Any(x => x.isDrone);
+                noFamilyRelations = allPawnExt.Any(x => x.noFamilyRelations);
 
                 this.disableLookChangeDesired = allPawnExt.Any(x => x.disableLookChangeDesired);
 
@@ -798,6 +798,31 @@ namespace BigAndSmall
                 if (gene is PGene pGene)
                 {
                     pGene.RefreshEffects();
+                }
+            }
+
+            if (noFamilyRelations)
+            {
+                for (int i = pawn.relations.DirectRelations.Count - 1; i >= 0; i--)
+                {
+                    // Check so the index exists in case a chain reaction occured and removed multiple.
+                    if (pawn.relations.DirectRelations.Count > i)
+                    {
+                        var rel = pawn.relations.DirectRelations[i];
+                        bool isParentRelation = rel.def == PawnRelationDefOf.Parent || rel.def == PawnRelationDefOf.Parent;
+                        if (rel.def.implied || rel.def.inbredChanceOnChild > 0)
+                        {
+                            pawn.relations.TryRemoveDirectRelation(rel.def, rel.otherPawn);
+                        }
+                        if (isParentRelation)
+                        {
+                            var creatorRelation = BSDefs.BS_Creator;
+                            if (creatorRelation != null)
+                            {
+                                pawn.relations.AddDirectRelation(creatorRelation, rel.otherPawn);
+                            }
+                        }
+                    }
                 }
             }
 

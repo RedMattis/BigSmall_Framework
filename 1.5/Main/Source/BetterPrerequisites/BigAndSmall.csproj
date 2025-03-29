@@ -99,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abillities\CompAbilityEffect_GiveWithSeverity.cs" />
+    <Compile Include="Abillities\Comp_AbilityFleckOnTargetFixed.cs" />
     <Compile Include="Abillities\MeleeAttackAbility.cs" />
     <Compile Include="BetterPrerequisites\NewGeneDisabler.cs" />
     <Compile Include="Cache\CacheAccessProps.cs" />
@@ -116,7 +117,7 @@
     <Compile Include="DefPatches\RaceFuser\RaceFuser_FusedBody.cs" />
     <Compile Include="DefPatches\RaceFuser\RaceFuser_Helpers.cs" />
     <Compile Include="Gender and Reproduction\GenderMethods.cs" />
-    <Compile Include="Genes\GeneCollectionDef.cs" />
+    <Compile Include="Genes\GeneStealDef.cs" />
     <Compile Include="Genes\GeneEffectManager.cs" />
     <Compile Include="Genes\GeneStealing\GeneFromSpecial.cs" />
     <Compile Include="Genes\PowerPools\CompResourceCost.cs" />
@@ -145,6 +146,8 @@
     <Compile Include="Jobs\JobDriver_UseOnTarget.cs" />
     <Compile Include="ModExtensions\PawnExtensionParts\PawnExtension_Misc.cs" />
     <Compile Include="ModExtensions\PawnExtensionParts\PawnExtension_Tooltip.cs" />
+    <Compile Include="ModExtensions\PawnKindExtension.cs" />
+    <Compile Include="ModExtensions\PawnKind\Pilotable.cs" />
     <Compile Include="ModExtensions\SmartExtension.cs" />
     <Compile Include="ModExtensions\ModExtHelper.cs" />
     <Compile Include="ModPatches\MiscCompatibility\HumanoidAlienRaces.cs" />
@@ -302,6 +305,12 @@
     <Compile Include="Utilities\FilterLists.cs" />
     <Compile Include="Utilities\GenericHelpers.cs" />
     <Compile Include="Utilities\ScalingMethods.cs" />
+    <Compile Include="Utilities\Scorables\ScorableInferfaces.cs" />
+    <Compile Include="Utilities\Scorables\ScoreCalculator.cs" />
+    <Compile Include="Utilities\Scorables\Scorable.cs" />
+    <Compile Include="Utilities\Scorables\ScorableDef.cs" />
+    <Compile Include="Utilities\Scorables\ScoreData.cs" />
+    <Compile Include="Utilities\Scorables\ScoreKey.cs" />
     <Compile Include="Utilities\Stability.cs" />
     <Compile Include="Utilities\utilities.cs" />
     <Compile Include="BetterPrerequisites\CondtionalAffectors.cs" />
@@ -341,6 +350,7 @@
     <Publicize Include="Assembly-CSharp:Verse.BodyDef.CacheDataRecursive" />
     <Publicize Include="Assembly-CSharp:Verse.RaceProperties.nameGenerator" />
     <Publicize Include="Assembly-CSharp:Verse.RaceProperties.nameGeneratorFemale" />
+    <Publicize Include="Assembly-CSharp:Verse.PawnRenderNode.props" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

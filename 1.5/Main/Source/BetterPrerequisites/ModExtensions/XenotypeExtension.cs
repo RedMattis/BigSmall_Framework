@@ -4,15 +4,6 @@ using System;
 using System.Collections.Generic;
 using Verse;
 
-namespace BigAndSmall
-{
-    public class PawnKindExtension : DefModExtension
-    {
-        public SimpleCurve ageCurve = null;
-        public SimpleCurve psylinkLevels = null;
-    }
-}
-
 namespace BetterPrerequisites
 {
     public class XenotypeExtension : DefModExtension

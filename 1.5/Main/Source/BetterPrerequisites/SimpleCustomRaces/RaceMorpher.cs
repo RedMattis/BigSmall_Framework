@@ -341,26 +341,7 @@ namespace BigAndSmall
             }
             else if (oldDefType != pawn.def.GetType() && pawn.def.GetType().Name.Contains("ThingDef_AlienRace"))
             {
-                Log.Message($"[Big and Small]: Transformed {pawn} from {oldDefType} to {pawn.def.GetType()}.");
-
-                Log.Warning($"[Big and Small]: Hey LISTEN!\n" +
-                    $"----------------------------------------------------------------\n" +
-                    $"You've probably just transformed a non-HAR race into a HAR race.\n" +
-                    $"HAR doesn't like this and you probably need to save now and then load the save. That should make HAR happy again.\n" +
-                    $"Perhaps I'll fix this one day, but right now HAR isn't a fan of anything-generated on the fly so you'll just have to work around it." +
-                    $"----------------------------------------------------------------\n");
-                Log.Message($"[Big and Small]: ちょっと聞いてください！\n" +
-                    $"----------------------------------------------------------------\n" +
-                    $"おそらく非HAR種族をHAR種族に変換しました。\n" +
-                    $"HARはこれを嫌がるので、今すぐ保存してから再度ロードする必要があります。それでHARは再び機嫌が良くなるはずです。\n" +
-                    $"いつかこれを修正するかもしれませんが、今のところHARは動的に生成されたものが好きではないので、これを回避する必要があります。" +
-                    $"----------------------------------------------------------------\n");
-                Log.Message($"[Big and Small]: 嘿，听着！\n" +
-                    $"----------------------------------------------------------------\n" +
-                    $"你可能刚刚将一个非HAR种族转换成了HAR种族。\n" +
-                    $"HAR不喜欢这样，你可能需要现在保存然后加载保存。这应该会让HAR再次高兴。\n" +
-                    $"也许有一天我会修复这个问题，但现在HAR不喜欢任何即时生成的东西，所以你只能绕过它。" +
-                    $"----------------------------------------------------------------\n");
+                // Might need to be reimplemented later if HAR breaks.
             }
 
             int lifeStageIndex = -1;

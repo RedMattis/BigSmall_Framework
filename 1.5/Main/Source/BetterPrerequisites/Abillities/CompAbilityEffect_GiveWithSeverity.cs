@@ -1,5 +1,6 @@
 ﻿
 using RimWorld;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,20 +10,15 @@ using Verse;
 
 namespace BigAndSmall
 {
-    public class CompProperties_AbilityEffect_GiveHediffComplex : CompProperties_AbilityGiveHediff
+    public class CompProperties_AbilityGiveHediffComplex : CompProperties_AbilityGiveHediff
     {
         public StatDef offsetSeverityByStat = null;
         public bool offsetSeverityBodySize = false;
-
-        public CompProperties_AbilityEffect_GiveHediffComplex()
-        {
-            compClass = typeof(CompAbilityEffect_GiveHediffComplex);
-        }
     }
 
     public class CompAbilityEffect_GiveHediffComplex : CompAbilityEffect_WithDuration
     {
-        public new CompProperties_AbilityEffect_GiveHediffComplex Props => (CompProperties_AbilityEffect_GiveHediffComplex)props;
+        public new CompProperties_AbilityGiveHediffComplex Props => (CompProperties_AbilityGiveHediffComplex)props;
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             base.Apply(target, dest);
