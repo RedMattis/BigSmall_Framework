@@ -31,10 +31,10 @@ namespace BigAndSmall
 
         public static List<T> GetSortedScoredDefs<T>(object obj) where T : ScorableDef
         {
-            var allDefs = DefDatabase<T>.AllDefsListForReading.Cast<IScoreHolder>();
+            var allDefs = DefDatabase<T>.AllDefsListForReading.OfType<IScoreHolder>();
             if (allDefs.Any())
             {
-                return [.. ScoreCalculator.GetSortedScores(obj, allDefs).Cast<T>()];
+                return [.. ScoreCalculator.GetSortedScores(obj, allDefs).OfType<T>()];
             }
             return null;
         }

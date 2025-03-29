@@ -260,6 +260,16 @@ namespace BigAndSmall
         public float pregnancySpeedMultiplier = 1;
         #endregion
 
+        /// Stats
+        public float soulFalloffStart = 0;
+        public string SoulPowerFalloffStartDescription => soulFalloffStart == 0 ? null : "BS_SoulPowerFalloffDesc".Translate(soulFalloffStart.ToStringPercentSigned());
+
+        public List<string> StatChangeDescriptions => [.. new List<string>
+        {
+            SoulPowerFalloffStartDescription,
+            // TODO: Add other stats here later.
+        }.Where(x => x != null)];
+
         /// <summary>
         /// Offsets the entire pawn's body up or down.
         /// </summary>
@@ -297,9 +307,6 @@ namespace BigAndSmall
 
         public bool hideInGenePicker = false;
         public bool hideInXenotypeUI = false;
-
-        public float soulFalloffStart = 0;
-        public string SoulPowerFalloffStartDescription => soulFalloffStart == 0 ? null : "BS_SoulPowerFalloffDesc".Translate(soulFalloffStart);
         /// <summary>
         /// Trigger the soul-consume effect on hit.
         /// </summary>

@@ -72,6 +72,7 @@
   <!-- PatchExtensions -->
   <BS_Applies>applies</BS_Applies>
 
+  <BS_StatChangesDescriptions>Effects</BS_StatChangesDescriptions>
   <BS_RacialFeatures>Racial Features</BS_RacialFeatures>
   <BS_ApplyBodyHediff>{0}</BS_ApplyBodyHediff>
   <BS_ApplyPartHediff>applies {0} to {1}</BS_ApplyPartHediff>
@@ -83,7 +84,7 @@
   <BS_ForceUnarmedDesc>uses bionic or unarmed melee attacks</BS_ForceUnarmedDesc>
   <BS_BleedRate>bleed rate</BS_BleedRate>
   <BS_BleedRateDesc>bleed rate {0}</BS_BleedRateDesc>
-  <BS_SoulPowerFalloffDesc>soul accumulation falloff start</BS_SoulPowerFalloffDesc>
+  <BS_SoulPowerFalloffDesc>soul accumulation falloff {0}</BS_SoulPowerFalloffDesc>
   <BS_ConsumeSoulOnHit>consumes soul energy on kill</BS_ConsumeSoulOnHit>
   <BS_ConsumeSoulOnHitDesc>efficiency {0}</BS_ConsumeSoulOnHitDesc>
   <BS_PawnDiet>pawn diet</BS_PawnDiet>
@@ -94,6 +95,7 @@
   <BS_HasApparelRestrictions>alters apparel options</BS_HasApparelRestrictions>
   <BS_HasNullThoughts>disables thoughts</BS_HasNullThoughts>
   <BS_HasNullThoughtsCount>thoughts disabled: {0}</BS_HasNullThoughtsCount>
+  <SoulPowerFalloffStartDescription>soul power soft-cap + {0}%</SoulPowerFalloffStartDescription>
 
   <BS_ConditionalDescription>required conditions to activate</BS_ConditionalDescription>
   <BS_Aptitudes>Aptitudes</BS_Aptitudes>
