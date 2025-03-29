@@ -63,7 +63,7 @@ namespace BigAndSmall
             //Log.Message($"[BigAndSmall] ReturnedReanimation: lastCheckTick: {VUReturning.lastCheckTick}, deadRisingMode: {VUReturning.deadRisingMode}, zombieApocalypseMode: {VUReturning.zombieApocalypseMode}");
 
             // Check if undead
-            if (__instance == null || corpse == null || __instance.IsUndead())
+            if (__instance?.RaceProps == null || corpse == null || __instance.IsUndead())
             {
                 return;
             }
