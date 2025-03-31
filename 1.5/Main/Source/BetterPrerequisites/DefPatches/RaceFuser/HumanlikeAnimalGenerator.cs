@@ -39,7 +39,7 @@ namespace BigAndSmall
 
         public static void GenerateHumanlikeAnimals(bool hotReload)
         {
-            if (ModsConfig.IsActive("RedMattis.Test"))  // Just replace this with the actual mod's name later.
+            if (ModsConfig.IsActive("RedMattis.Test") || ModsConfig.IsActive("RedMattis.MadApril2025"))  // Just replace this with the actual mod's name later.
             {
                 HashSet<ThingDef> thingDefsGenerated = [];
 

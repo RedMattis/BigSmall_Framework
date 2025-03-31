@@ -24,7 +24,7 @@ namespace BigAndSmall
             }
         }
 
-        public void GenderBend(Pawn pawn)
+        public static void GenderBend(Pawn pawn)
         {
             try
             {
