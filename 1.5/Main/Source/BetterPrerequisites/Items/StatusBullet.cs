@@ -13,6 +13,10 @@ namespace BigAndSmall
             if (Props != null && hitThing != null && hitThing is Pawn pawn)
             {
                 float severity = Props.severity;
+                if (Props.scaleSeverityByDamage && def.projectile.damageDef != null)
+                {
+                    severity *= DamageAmount;
+                }
                 float severityPerBodySize = Props.severityPart;
                 if(Props.softScaleSeverityByBodySize && pawn.BodySize > 1)
                 {
@@ -50,10 +54,11 @@ namespace BigAndSmall
     public class ModExtension_StatusAfflicter : DefModExtension
     {
         public HediffDef hediffToAdd = null;
-        public float severity = 0.05f;
+        public float severity = 0.01f;
         public HediffDef hediffToAddToPart = null;
-        public float severityPart = 0.05f;
+        public float severityPart = 0.01f;
         public bool softScaleSeverityByBodySize = false;
+        public bool scaleSeverityByDamage = false;
     }
 
 }

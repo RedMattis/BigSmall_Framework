@@ -134,7 +134,7 @@ namespace BigAndSmall
     [HarmonyPatch(typeof(PawnRenderer), nameof(PawnRenderer.CurRotDrawMode), MethodType.Getter)]
     public static class RotDrawModePatch
     {
-        static readonly int maxUses = 1000;
+        static readonly int maxUses = 100;
         public struct PGPRRCache
         {
             public Pawn pawn;
