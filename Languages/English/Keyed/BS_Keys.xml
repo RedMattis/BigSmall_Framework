@@ -106,7 +106,7 @@
   <BS_FocedEndo>forced endogenes</BS_FocedEndo>
   <BS_FocedXeno>forced xenogene</BS_FocedXeno>
   <BS_SizeByAgeOffset>Size offset at age</BS_SizeByAgeOffset>
-  <BS_SizeByAgeOffset>Size multiplier at age</BS_SizeByAgeOffset>
+  <BS_SizeMultiplayerByAge>Size multiplier at age</BS_SizeMultiplayerByAge>
   <BS_LockedNeeds>Locked needs</BS_LockedNeeds>
 
   <BS_PreventDisfigurementDesc>prevents disfigurement</BS_PreventDisfigurementDesc>

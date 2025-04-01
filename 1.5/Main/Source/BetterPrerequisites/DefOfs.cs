@@ -26,6 +26,9 @@ namespace BigAndSmall
         // Rendering Nodes
         public static PawnRenderNodeTagDef Root;
 
+        // Factions
+        public static FactionDef BS_ZombieFaction;
+
         // Traits
         [MayRequire("RedMattis.BigSmall.Core")]
         public static TraitDef BS_Giant;

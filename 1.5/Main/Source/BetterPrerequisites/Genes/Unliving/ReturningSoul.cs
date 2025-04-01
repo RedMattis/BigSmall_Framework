@@ -72,7 +72,7 @@ namespace BigAndSmall
                 var soul = new ReturningSoulHolder
                 {
                     pawn = pawn,
-                    ticksToReturn = (int)Rand.Range(0.5f, 5f) * 60000,
+                    ticksToReturn = (int)(Rand.Range(0.5f, 5f) * 60000 * BS.Settings.immortalReturnTimeFactor),
                     corpseReturn = modExt.corpseReturn,
                     addCorpseGenes = modExt.addCorpseGenes,
                     addCorpseBionics = modExt.addCorpseBionics
