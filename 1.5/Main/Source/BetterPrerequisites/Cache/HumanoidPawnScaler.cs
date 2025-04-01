@@ -634,6 +634,15 @@ namespace BigAndSmall
 
                 var forcedRot = allPawnExt.Select(x => x.forcedRotDrawMode).Where(x => x != null);
                 forcedRotDrawMode = forcedRot.EnumerableNullOrEmpty() ? null : forcedRot.First();
+                if (forcedRotDrawMode != null)
+                {
+                    // Check so the pawn HAS a rot draw mode.
+                    if (pawn.Corpse?.GetComp<CompRottable>() == null)
+                    {
+                        forcedRotDrawMode = null;
+                    }
+                }
+
                 // Check if the body size, head size, body offset, or head position has changed. If not set approximatelyNoChange to false.
                 approximatelyNoChange = bodyRenderSize.Approx(1) && headRenderSize.Approx(1) && bodyPosOffset.Approx(0) &&
                     headPosMultiplier.Approx(1) && headPositionMultiplier.Approx(1) && worldspaceOffset.Approx(0) &&

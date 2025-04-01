@@ -343,6 +343,11 @@ namespace BigAndSmall
                         __result.x = (float)(resultX * headerRenderSizeD);
                         __result.z = (float)(resultZ * headerRenderSizeD);
                     }
+                    else if (node is PawnRenderNode_HAnimalPart)
+                    {
+                        __result.x = (float)(resultX * bodyRenderSizeD);
+                        __result.z = (float)(resultZ * bodyRenderSizeD);
+                    }
                 }
                 else
                 {
