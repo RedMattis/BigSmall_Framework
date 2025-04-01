@@ -111,6 +111,7 @@ namespace BigAndSmall
             CreateSettingCheckbox(listStd, "BS_PreventUndead".Translate(), ref settings.preventUndead);
             CreateSettingsSlider(listStd, "BS_InflitratorChance".Translate(), ref settings.inflitratorChance, 0f, 1f, (f) => $"{f*100:F1}%");
             CreateSettingsSlider(listStd, "BS_InflitratorRaidChance".Translate(), ref settings.inflitratorRaidChance, 0f, 1f, (f) => $"{f*100:F1}%");
+            CreateSettingsSlider(listStd, "BS_ImmortalReturnFactor".Translate(), ref settings.immortalReturnTimeFactor, 0.01f, 5f, (f) => $"{f * 100:F1}%");
             listStd.GapLine();
             listStd.Label("BS_LowestUsed".Translate());
 
@@ -238,6 +239,9 @@ namespace BigAndSmall
         public static readonly float inflitratorRaidChanceDefault = 0.005f;
         public float inflitratorRaidChance = inflitratorRaidChanceDefault;
 
+        public static readonly float immortalReturnTimeFactorDefault = 1f;
+        public float immortalReturnTimeFactor = immortalReturnTimeFactorDefault;
+
         // DEV Settings
         public static readonly bool defaultJesusMode = false;
         public bool jesusMode = defaultJesusMode;
@@ -271,6 +275,7 @@ namespace BigAndSmall
             Scribe_Values.Look(ref useFantasyNames, "useFantasyNames", defaultUseFantasyNaming);
             Scribe_Values.Look(ref inflitratorChance, "inflitratorChance", inflitratorChanceDefault);
             Scribe_Values.Look(ref inflitratorRaidChance, "inflitratorRaidChance", inflitratorRaidChanceDefault);
+            Scribe_Values.Look(ref immortalReturnTimeFactor, "immortalReturnTimeFactor", immortalReturnTimeFactorDefault);
 
             // Scribe Dev Settings
             Scribe_Values.Look(ref jesusMode, "jesusMode", defaultJesusMode);
