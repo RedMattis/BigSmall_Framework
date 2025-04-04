@@ -73,7 +73,7 @@ namespace BigAndSmall
 
             if (threadStaticCache.pawn != ___pawn || threadStaticCache.rotation != ___pawn.rotationInt || threadStaticCache.uses > maxUses)
             {
-                threadStaticCache.cache = HumanoidPawnScaler.GetCacheUltraSpeed(___pawn, canRegenerate: false);
+                threadStaticCache.cache = HumanoidPawnScaler.GetCache(___pawn, canRegenerate: false);
                 threadStaticCache.pawn = ___pawn;
                 threadStaticCache.approxNoChange = threadStaticCache.cache.approximatelyNoChange;
                 if (!threadStaticCache.approxNoChange)
@@ -134,7 +134,7 @@ namespace BigAndSmall
     [HarmonyPatch(typeof(PawnRenderer), nameof(PawnRenderer.CurRotDrawMode), MethodType.Getter)]
     public static class RotDrawModePatch
     {
-        static readonly int maxUses = 100;
+        static readonly int maxUses = 1000;
         public struct PGPRRCache
         {
             public Pawn pawn;
