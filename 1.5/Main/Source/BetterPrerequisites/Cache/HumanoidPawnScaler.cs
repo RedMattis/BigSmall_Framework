@@ -754,7 +754,16 @@ namespace BigAndSmall
             var btpg = new BodyTypesPerGender();
             btpg.AddRange(otherExts.SelectMany(x => x.bodyTypes));
             if (btpg.Count == 0) btpg.AddRange(raceExts.SelectMany(x => x.bodyTypes));
+            bool btoWasNull = bodyTypeOverride == null;
             bodyTypeOverride = btpg.Count == 0 ? null : btpg;
+
+            // We just removed an override, to be safe we'll reset the body and then reeveluate it.
+            // The reason for this is to make it possible to restore a customb body to a vanilla one.
+            // Normally any custom body is otherwise rejected since it could be from another mod.
+            if (bodyTypeOverride == null && btoWasNull == false)
+            {
+                PawnGenerator.GetBodyTypeFor(pawn);
+            }
 
             // Set body/hair/etc. from mostly other sources.
             if (this != defaultCache && pawn?.story?.bodyType != null && pawn?.story?.headType != null)
@@ -801,7 +810,6 @@ namespace BigAndSmall
             //    .Where(x => x?.def?.modExtensions != null && x.def.modExtensions.Any(y => y is PawnExtension))?
             //    .Select(x => x.def.GetModExtension<PawnExtension>()).ToList();
 
-            
             foreach(var gene in GeneHelpers.GetAllActiveGenes(pawn))
             {
                 if (gene is PGene pGene)

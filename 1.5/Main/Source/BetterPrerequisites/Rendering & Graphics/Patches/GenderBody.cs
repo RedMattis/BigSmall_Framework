@@ -16,7 +16,7 @@ namespace BigAndSmall
         {
             if (pawn != null && HumanoidPawnScaler.GetCache(pawn) is BSCache cache)
             {
-                if (bodyType == GeneticBodyType.Standard && pawn.IsAdult())
+                if (bodyType == GeneticBodyType.Standard)
                 {
                     Gender apparentGender = cache.GetApparentGender();
                     if (GenderMethods.TryBodyGenderBodyUpdate(pawn.story.bodyType, apparentGender, cache, out BodyTypeDef newBody))
@@ -34,12 +34,20 @@ namespace BigAndSmall
         [HarmonyPostfix]
         public static void PawnGenerator_GetBodyTypeFor(Pawn pawn, ref BodyTypeDef __result)
         {
-            if (pawn != null && HumanoidPawnScaler.GetCache(pawn) is BSCache cache && pawn.IsAdult())
+            if (pawn != null && HumanoidPawnScaler.GetCache(pawn) is BSCache cache)
             {
                 Gender apparentGender = cache.GetApparentGender();
                 if (GenderMethods.TryBodyGenderBodyUpdate(pawn.story.bodyType, apparentGender, cache, out BodyTypeDef newBody))
                 {
-                    __result = newBody;
+                    // Only continue if... we would be replacing an empty result, 
+                    if (__result == null
+                        // Or... replacing with any custom body.
+                        || !GenderMethods.VanillaBodyTypesPlus.Contains(newBody)
+                        // Or... the old result was NOT a custom body.
+                        || GenderMethods.VanillaBodyTypesPlus.Contains(__result))
+                    {
+                        __result = newBody;
+                    }
                 }
             }
         }
@@ -49,7 +57,7 @@ namespace BigAndSmall
         [HarmonyPostfix]
         public static void PawnGenerator_GenerateBodyType(Pawn pawn)
         {
-            if (pawn != null && HumanoidPawnScaler.GetCache(pawn) is BSCache cache && pawn.IsAdult())
+            if (pawn != null && HumanoidPawnScaler.GetCache(pawn) is BSCache cache)
             {
                 Gender apparentGender = cache.GetApparentGender();
                 if (GenderMethods.TryBodyGenderBodyUpdate(pawn.story.bodyType, apparentGender, cache, out BodyTypeDef newBody))
