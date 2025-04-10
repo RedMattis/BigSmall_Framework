@@ -13,23 +13,33 @@ namespace BigAndSmall
         public BodyTypeDef bodyType = null;
         public bool isDefault = false;
         public HashSet<Gender> apparentGender = [];
-        //private List<string> genderTags = [];
+        public HashSet<DevelopmentalStage> developmentalStage = [];
         public void LoadDataFromXmlCustom(XmlNode xmlRoot)
         {
-            List<string> genderTags = [.. xmlRoot.InnerText.Split(',')];
-            for (int idx = genderTags.Count - 1; idx >= 0; idx--)
+            List<string> tags = [.. xmlRoot.InnerText.Split(',')];
+            for (int idx = tags.Count - 1; idx >= 0; idx--)
             {
-                string genderStr = genderTags[idx];
+                string genderStr = tags[idx];
                 if (Enum.TryParse(genderStr, out Gender gender))
                 {
                     apparentGender.Add(gender);
-                    genderTags.RemoveAt(idx);
+                    tags.RemoveAt(idx);
                 }
                 else if (genderStr == "Default" || genderStr == "Any")
                 {
                     isDefault = true;
-                    genderTags.RemoveAt(idx);
+                    tags.RemoveAt(idx);
                 }
+                else if (Enum.TryParse(genderStr, out DevelopmentalStage stage))
+                {
+                    developmentalStage.Add(stage);
+                    tags.RemoveAt(idx);
+                }
+            }
+            if (developmentalStage.Count == 0)  // Default to Adult & None.
+            {
+                developmentalStage.Add(DevelopmentalStage.Adult);
+                developmentalStage.Add(DevelopmentalStage.None);
             }
             string bodyDefName = xmlRoot.Name;
             string mayRequireMod = xmlRoot.Attributes?["MayRequire"]?.Value;
@@ -38,14 +48,18 @@ namespace BigAndSmall
     }
     public class BodyTypesPerGender : List<GenderBodyType>
     {
-        public List<GenderBodyType> BodytypesForGender(Gender gender)
+        public List<GenderBodyType> BodytypesForGender(Pawn pawn, Gender gender)
         {
-            List<GenderBodyType> genderMatch = this.Where(x => x.apparentGender.Contains(gender)).ToList();
-            if (genderMatch.Count == 0)
+            var genderMatch = this.Where(x => x.apparentGender.Contains(gender)).ToList();
+            var developmentalMatches = this.Where(x => x.developmentalStage.Contains(pawn.DevelopmentalStage)).ToList();
+            var intersectMatch = genderMatch.Intersect(developmentalMatches).ToList();
+            if (intersectMatch.Any()) return intersectMatch;
+            if (genderMatch.Count == 0 && developmentalMatches.Count > 0) return developmentalMatches;
+            if (developmentalMatches.Count == 0)
             {
-                genderMatch = this.Where(x => x.isDefault).ToList();
+                developmentalMatches = [.. this.Where(x => x.isDefault)];
             }
-            return genderMatch;
+            return developmentalMatches;
         }
 
         public void LoadDataFromXmlCustom(XmlNode xmlRoot)
@@ -100,48 +114,43 @@ namespace BigAndSmall
             }
         }
 
-        private static HashSet<BodyTypeDef> vanillaBodyTypesPlus = null;
-        public static HashSet<BodyTypeDef> VanillaBodyTypesPlus
-        {
-            get
-            {
-                if (vanillaBodyTypesPlus != null) return vanillaBodyTypesPlus;
-                HashSet<BodyTypeDef> baseGame = [BodyTypeDefOf.Male, BodyTypeDefOf.Female, BodyTypeDefOf.Thin, BodyTypeDefOf.Fat, BodyTypeDefOf.Hulk];
-                if (ModsConfig.BiotechActive)
-                {
-                    baseGame.Add(BodyTypeDefOf.Baby);
-                    baseGame.Add(BodyTypeDefOf.Child);
-                }
-                return vanillaBodyTypesPlus = baseGame;
-            }
-        }
-
         private static HashSet<BodyTypeDef> standardBodyTypes = null;
         public static HashSet<BodyTypeDef> StandardBodyTypes => standardBodyTypes ??= [BodyTypeDefOf.Male, BodyTypeDefOf.Female];
-
-        public static bool IsBodyStandard(this BodyTypeDef bodyType)
-        {
-            return StandardBodyTypes.Contains(bodyType);
-        }
+        private static HashSet<BodyTypeDef> vanillaBodyTypesPlus = null;
+        public static HashSet<BodyTypeDef> VanillaBodyTypesPlus => vanillaBodyTypesPlus ??= [.. StandardBodyTypes, BodyTypeDefOf.Thin, BodyTypeDefOf.Fat, BodyTypeDefOf.Hulk, BodyTypeDefOf.Baby, BodyTypeDefOf.Child];
+        public static bool IsBodyStandard(this BodyTypeDef bodyType) => StandardBodyTypes.Contains(bodyType);
         public static bool TryBodyGenderBodyUpdate(BodyTypeDef bodyType, Gender apparentGender, BSCache cache, out BodyTypeDef newBody)
         {
-
             var harLegalBodies = HARCompat.TryGetHarBodiesForThingdef(cache?.pawn?.def);
             newBody = null;
-            if (IsBodyStandard(bodyType))
+
+            if (TryGetBodyTypeOverride(cache, cache.pawn, apparentGender, out BodyTypeDef body))
             {
-                newBody = apparentGender switch
-                {
-                    Gender.Male => BodyTypeDefOf.Male,
-                    Gender.Female => BodyTypeDefOf.Female,
-                    _ => null
-                };
                 if (harLegalBodies != null && !harLegalBodies.Contains(newBody))
                 {
                     return false;
                 }
+                newBody = body;
                 if (newBody == null) return false;
-                return true;
+                else return true;
+            }
+            if (cache.pawn.IsAdult())
+            {
+                if (IsBodyStandard(bodyType))
+                {
+                    newBody = apparentGender switch
+                    {
+                        Gender.Male => BodyTypeDefOf.Male,
+                        Gender.Female => BodyTypeDefOf.Female,
+                        _ => null
+                    };
+                    if (harLegalBodies != null && !harLegalBodies.Contains(newBody))
+                    {
+                        return false;
+                    }
+                    if (newBody == null) return false;
+                    else return true;
+                }
             }
             return false;
         }
@@ -192,25 +201,18 @@ namespace BigAndSmall
 
             // 
             var harLegalBodies = HARCompat.TryGetHarBodiesForThingdef(cache?.pawn?.def);
+            
 
             if (updateBody && harLegalBodies == null)
             {
                 bool adult = pawn.IsAdult();
                 var currentBody = pawn.story?.bodyType;
-                if (cache.bodyTypeOverride != null && adult)
+                if (TryGetBodyTypeOverride(cache, pawn, apparentGender, out BodyTypeDef body))
                 {
-                    var bodyTypeOverride = cache.bodyTypeOverride.BodytypesForGender(apparentGender);
-                    // A bit lazy, but if the body-type was added from this mod then it we can safely handle it.
-                    vanillaBodyTypesPlus.AddRange(bodyTypeOverride.Select(x => x.bodyType));
-                    if (bodyTypeOverride.Any())
-                    {
-                        using (new RandBlock(pawn.GetPawnRNGSeed()))
-                        {
-                            pawn.story.bodyType = bodyTypeOverride.RandomElement().bodyType;
-                            goto Head;
-                        }
-                    }
+                    pawn.story.bodyType = body;
+                    goto Head;
                 }
+
                 if (currentBody != null && !VanillaBodyTypesPlus.Contains(currentBody))
                 {
                     // Skip. We don't want to change the bodytype if it's is from an unkown source and not forced.
@@ -334,6 +336,24 @@ namespace BigAndSmall
                 }
                 //.BodyTypeToGeneticBodyType().ToBodyType(pawn);
             }
+        }
+
+        private static bool TryGetBodyTypeOverride(BSCache cache, Pawn pawn, Gender apparentGender, out BodyTypeDef bodyType)
+        {
+            bodyType = null;
+            if (cache.bodyTypeOverride != null)
+            {
+                var bodyTypeOverride = cache.bodyTypeOverride.BodytypesForGender(pawn, apparentGender);
+                if (bodyTypeOverride.Any())
+                {
+                    using (new RandBlock(pawn.GetPawnRNGSeed()))
+                    {
+                        bodyType = bodyTypeOverride.RandomElement().bodyType;
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         /// <summary>
