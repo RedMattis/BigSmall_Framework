@@ -170,20 +170,6 @@ namespace BigAndSmall
         public AdaptivePathPathList bodyPaths = [];
         public AdaptivePathPathList bodyDessicatedPaths = [];
         public bool removeTattoos = false;
-        // Gets based on index at the moment. This is a bit lazy. I'll rewrite it properly later.
-        public string GetDessicatedFromBodyPath(string path)
-        {
-            int indexOf = bodyPaths.FindIndex(x => x.texturePath == path);
-            if (!bodyDessicatedPaths.NullOrEmpty())
-            {
-                if (indexOf >= 0 && indexOf < bodyDessicatedPaths.Count)
-                {
-                    return bodyDessicatedPaths[indexOf].texturePath;
-                }
-                else return bodyDessicatedPaths.First().texturePath;
-            }
-            return null;
-        }
 
         public RotDrawMode? forcedRotDrawMode = null;
         /// <summary>
@@ -191,20 +177,6 @@ namespace BigAndSmall
         /// </summary>
         public AdaptivePathPathList headPaths = [];
         public AdaptivePathPathList headDessicatedPaths = [];
-
-        public string GetDessicatedFromHeadPath(string path)
-        {
-            int indexOf = headPaths.FindIndex(x => x.texturePath == path);
-            if (!headDessicatedPaths.NullOrEmpty())
-            {
-                if (indexOf >= 0 && indexOf < headDessicatedPaths.Count)
-                {
-                    return headDessicatedPaths[indexOf].texturePath;
-                }
-                else return headDessicatedPaths.First().texturePath;
-            }
-            return null;
-        }
 
         /// <summary>
         /// If set this lets you disabe a renderNode type on the pawn.

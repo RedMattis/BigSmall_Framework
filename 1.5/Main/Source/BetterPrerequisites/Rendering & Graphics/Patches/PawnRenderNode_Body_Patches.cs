@@ -11,8 +11,6 @@ namespace BigAndSmall
         public static void Postfix(PawnRenderNode_Body __instance, ref Pawn pawn, ref Graphic __result)
         {
             if (__result == null) return;
-            //var debugCache = HumanoidPawnScaler.GetCache(pawn, reevaluateGraphics: true);
-
             if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache && !cache.isDefaultCache && cache.isHumanlike)
             {
                 BodyGraphics.CalculateBodyGraphicsForPawn(__instance, pawn, ref __result, cache);
@@ -27,17 +25,22 @@ namespace BigAndSmall
             if (cache.hideBody) { __result = GraphicsHelper.GetBlankMaterial(); return; }
 
             bool dessicated = pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Dessicated;
-            if (cache.bodyMaterial?.overrideDesiccated != true && dessicated)
+            if (dessicated)
             {
-                return;
+                if (cache.bodyDessicatedGraphicPath != null)
+                {
+                    var dessicatedBodyPath = cache.bodyDessicatedGraphicPath;
+                    __result = GraphicsHelper.TryGetCustomGraphics(__instance, dessicatedBodyPath, __result.color, __result.colorTwo, __result.drawSize, cache.bodyMaterial);
+                    return;
+                }
+                if (cache.bodyMaterial?.overrideDesiccated != true)
+                {
+                    return;
+                }
+                
             }
-
             if (cache.bodyGraphicPath is string bodyGraphicPath)
             {
-                if (dessicated && cache.bodyDessicatedGraphicPath != null)
-                {
-                    bodyGraphicPath = cache.bodyDessicatedGraphicPath;
-                }
                 __result = GraphicsHelper.TryGetCustomGraphics(__instance, bodyGraphicPath, __result.color, __result.colorTwo, __result.drawSize, cache.bodyMaterial);
                 return;
             }
