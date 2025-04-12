@@ -113,10 +113,12 @@ namespace BigAndSmall
 
             if (Props.doKill)
             {
+                ApplySoulless(victim);
                 victim.Kill(null);
             }
             else if (Props.doEnslave)
             {
+                ApplySoulless(victim);
                 // If Ideology is active, enslave the pawn.
                 if (ModsConfig.IdeologyActive)
                 {
@@ -130,9 +132,6 @@ namespace BigAndSmall
                     victim.guest.CapturedBy(Faction.OfPlayer, attacker);
                 }
             }
-            
-            ApplySoulless(victim);
-
             HumanoidPawnScaler.GetCache(attacker, forceRefresh: true);
         }
 
