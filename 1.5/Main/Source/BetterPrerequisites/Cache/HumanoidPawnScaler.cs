@@ -761,6 +761,9 @@ namespace BigAndSmall
             headDessicatedGraphicPath = null;
             bodyDessicatedGraphicPath = null;
 
+            headMaterial = allPawnExt.FirstOrFallback(x => x.headMaterial != null, null)?.headMaterial;
+            bodyMaterial = allPawnExt.FirstOrFallback(x => x.bodyMaterial != null, null)?.bodyMaterial;
+
             // Prefer grabbing Head & Body from the same source
             PawnExtension bestHeadSrc = null;
             if (bestHeadPaths.Count != 0)
@@ -769,6 +772,10 @@ namespace BigAndSmall
                 {
                     var headPath = bestHeadPaths.RandomElement();
                     (headGraphicPath, bestHeadSrc) = (headPath.Item1.GetPaths(this, forceGender: apparentGender).RandomElement(), headPath.Item2);
+                    if (headPath.Item2.headMaterial != null)
+                    {
+                        headMaterial = headPath.Item2.headMaterial;
+                    }
                 }
             }
             if (bestHeadDeadPaths.Count != 0)
@@ -797,6 +804,10 @@ namespace BigAndSmall
                     using (new RandBlock(pawnRNGSeed))
                     {
                         bodyGraphicPath = bestHeadSrc.bodyPaths.GetPaths(this, forceGender: apparentGender).RandomElement();
+                        if (bestHeadSrc.bodyMaterial != null)
+                        {
+                            bodyMaterial = bestHeadSrc.bodyMaterial;
+                        }
                     }
                 }
                 else
@@ -805,6 +816,10 @@ namespace BigAndSmall
                     using (new RandBlock(pawnRNGSeed))
                     {
                         (bodyGraphicPath, bestBodySrc) = (bodyPath.Item1.GetPaths(this, forceGender: apparentGender).RandomElement(), bodyPath.Item2);
+                        if (bodyPath.Item2.bodyMaterial != null)
+                        {
+                            bodyMaterial = bodyPath.Item2.bodyMaterial;
+                        }
                     }
                 }
             }
