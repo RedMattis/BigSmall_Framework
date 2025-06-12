@@ -1,0 +1,107 @@
+<Defs>
+  <!-- WoodLog -->
+  <RecipeDef>
+    <defName>BS_MakeAndroidFuelFromChemfuel_CookingStation</defName>
+    <label>inefficiently make android fuel from chemfuel</label>
+    <description>Make processed fuel suitable for safe use use by androids, slower and less efficient than using a refinery.</description>
+    <jobString>Refining android fuel.</jobString>
+    <effectWorking>Cremate</effectWorking>
+    <soundWorking>Recipe_Cremate</soundWorking>
+    <workAmount>1000</workAmount>
+    <workSpeedStat>DrugCookingSpeed</workSpeedStat>
+    <workSkill>Cooking</workSkill>
+    <requiredGiverWorkType>Cooking</requiredGiverWorkType>
+    <recipeUsers>
+      <li>Campfire</li>
+      <li>ElectricStove</li>
+      <li>FueledStove</li>
+    </recipeUsers>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Chemfuel</li>
+          </thingDefs>
+        </filter>
+        <count>50</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>Chemfuel</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <products>
+      <BS_AndroidFuel>5</BS_AndroidFuel>
+    </products>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>BS_MakeAndroidFuelFromWood_CookingStation</defName>
+    <label>inefficiently make android fuel from wood</label>
+    <description>Make processed fuel suitable for safe use use by androids\n\nVery Slow and inefficient compared to using chemfuel or a refinery.</description>
+    <jobString>Refining android fuel.</jobString>
+    <effectWorking>Cremate</effectWorking>
+    <soundWorking>Recipe_Cremate</soundWorking>
+    <workAmount>3000</workAmount>
+    <workSpeedStat>DrugCookingSpeed</workSpeedStat>
+    <workSkill>Cooking</workSkill>
+    <requiredGiverWorkType>Cooking</requiredGiverWorkType>
+    <recipeUsers>
+      <li>Campfire</li>
+      <li>ElectricStove</li>
+      <li>FueledStove</li>
+    </recipeUsers>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>WoodLog</li>
+          </thingDefs>
+        </filter>
+        <count>100</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>WoodLog</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <products>
+      <BS_AndroidFuel>2</BS_AndroidFuel>
+    </products>
+  </RecipeDef>
+
+
+  <RecipeDef>
+    <defName>BS_MakeAndroidFuelFromChemfuel_Refinery</defName>
+    <label>make android fuel from chemfuel</label>
+    <description>Make processed fuel suitable for safe use use by androids.</description>
+    <jobString>Refining android fuel.</jobString>
+    <effectWorking>Cremate</effectWorking>
+    <soundWorking>Recipe_Cremate</soundWorking>
+    <workAmount>250</workAmount>
+    <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
+    <recipeUsers>
+      <li>BiofuelRefinery</li>
+    </recipeUsers>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Chemfuel</li>
+          </thingDefs>
+        </filter>
+        <count>50</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>Chemfuel</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <products>
+      <BS_AndroidFuel>8</BS_AndroidFuel>
+    </products>
+  </RecipeDef>
+</Defs>

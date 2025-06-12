@@ -1,0 +1,72 @@
+<Defs>
+  <RedHealth.HealthAspect>
+    <defName>RED_OverallHealth</defName>
+    <label>Health State</label>
+    <labelSimple>overall health</labelSimple>
+    <description>Overall health is a measure of how well the body is functioning. It is a key indicator of longevity and quality of life.</description>
+    <!-- This is basically the main component and not an aspect, so don't add it automatically. -->
+    <addAutomatically>false</addAutomatically> 
+    <nullifyingGenes>
+      <li MayRequire="Ludeon.RimWorld.Biotech">DiseaseFree</li>
+      <li MayRequire="Ludeon.RimWorld.Biotech">Ageless</li>
+    </nullifyingGenes>
+    <nullifyingHediffs>
+      <li MayRequire="Ludeon.RimWorld.Anomaly">Ghoul</li>
+    </nullifyingHediffs>
+    <validFleshTypes>
+      <li>Normal</li>
+      <li>Insectoid</li>
+    </validFleshTypes>
+    <thresholds>
+      <li>
+        <label>flawless</label>
+        <!--This will only show if the pawn has total immunity to health issues-->
+        <threshold>-9999</threshold>
+        <description>No health risks.</description>
+        <labelColor>(128,255,128)</labelColor>
+      </li>
+      <li>
+        <label>good</label>
+        <threshold>0</threshold>
+        <description>New health issues are unlikely.</description>
+        <labelColor>(128,255,128)</labelColor>
+      </li>
+      <li>
+        <threshold>0.4</threshold>
+        <label>decent</label>
+        <description>Health issues can be expected to occur, though rarely</description>
+      </li>
+      <li>
+        <threshold>0.5</threshold>
+        <label>bad</label>
+        <description>Health issues can be expected to occur quite frequently.</description>
+        <labelColor>(255,255,64)</labelColor>
+      </li>
+      <li>
+        <threshold>0.6</threshold>
+        <label>worsening</label>
+        <description>Significnat risk of health issues starting to pile up.</description>
+        <labelColor>(255,200,0)</labelColor>
+      </li>
+      <li>
+        <threshold>0.7</threshold>
+        <label>severe</label>
+        <description>Health issues and dangerous complicated can be expected to pile up rapidly.</description>
+        <labelColor>(255,165,0)</labelColor>
+      </li>
+      <li>
+        <threshold>0.8</threshold> <!--RIP-->
+        <label>critical</label>
+        <description>Death is likely around the corner.</description>
+        <labelColor>(255,0,0)</labelColor>
+      </li>
+      <li>
+        <!--The "Just Die Already Tier"-->
+        <threshold>1</threshold>
+        <label>terminal</label>
+        <description>Death is probably less around the corner, more sitting in the room sipping tea.</description>
+        <labelColor>(255,0,0)</labelColor>
+      </li>
+    </thresholds>
+  </RedHealth.HealthAspect>
+</Defs>

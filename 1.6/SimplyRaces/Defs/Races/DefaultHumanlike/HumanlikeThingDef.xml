@@ -1,0 +1,14 @@
+<Defs>
+  <!-- You still need to add BS_Alt="ThingDef_AlienRace" to your custom race. It doesn't get inherited. -->
+  <ThingDef ParentName="Human" Name="BS_DefaultHumanlike" Abstract="True" BS_Alt="ThingDef_AlienRace">
+    <label>race-that-the-author-forgot-to-give-a-name</label>
+    <description>A race with a neglected description.</description>
+    <statBases>
+    </statBases>
+    <race>
+      <!-- Just disabled to avoid generating a ton of unnatural corpses. -->
+      <hasUnnaturalCorpse>false</hasUnnaturalCorpse>
+      <useMeatFrom>Human</useMeatFrom>
+    </race>
+  </ThingDef>
+</Defs>

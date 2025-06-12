@@ -1,0 +1,72 @@
+<Defs>
+  <ThingDef Name="BS_AndroidFuel">  <!--MealBase-->
+    <defName>BS_AndroidFuel</defName>
+    <label>android fuel</label>
+    <description>Processed energy-packed fuel suitable for safe use use by androids.</description>
+    <thingClass>ThingWithComps</thingClass>
+    <category>Item</category>
+    <drawerType>MapMeshOnly</drawerType>
+    <thingCategories>
+      <li>Foods</li>
+      <li>FoodMeals</li>
+    </thingCategories>
+    <graphicData>
+      <texPath>Items/BS_AndroidFuel</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <statBases>
+      <MaxHitPoints>50</MaxHitPoints>
+      <Flammability>2.0</Flammability>
+      <Beauty>0</Beauty>
+      <DeteriorationRate>0.1</DeteriorationRate>
+      <MarketValue>16</MarketValue>
+      <Mass>0.1</Mass>
+      <WorkToMake>450</WorkToMake>
+      <Nutrition>1.4</Nutrition>
+    </statBases>
+    <useHitPoints>true</useHitPoints>
+    <healthAffectsPrice>false</healthAffectsPrice>
+    <selectable>true</selectable>
+    <altitudeLayer>Item</altitudeLayer>
+    <stackLimit>75</stackLimit>
+    <tickerType>Normal</tickerType>
+    <socialPropernessMatters>true</socialPropernessMatters>
+    <pathCost>14</pathCost>
+    <allowedArchonexusCount>40</allowedArchonexusCount>
+    <resourceReadoutPriority>Last</resourceReadoutPriority>
+    <drawGUIOverlay>true</drawGUIOverlay>
+    <uiIconForStackCount>1</uiIconForStackCount>
+    <alwaysHaulable>true</alwaysHaulable>
+    <ingestible>
+      <foodType>Fluid</foodType>
+      <maxNumToIngestAtOnce>200</maxNumToIngestAtOnce>
+      <preferability>MealLavish</preferability>
+      <tasteThought>AteFineMeal</tasteThought>
+      <optimalityOffsetHumanlikes>16</optimalityOffsetHumanlikes>
+      <optimalityOffsetFeedingAnimals>-10</optimalityOffsetFeedingAnimals>
+      <ingestEffect>EatVegetarian</ingestEffect>
+      <ingestHoldUsesTable>false</ingestHoldUsesTable>
+      <useEatingSpeedStat>false</useEatingSpeedStat>
+      <chairSearchRadius>0</chairSearchRadius>
+      <!-- <ingestSound>Meal_Eat</ingestSound> -->
+      <ingestSound>Recipe_Cremate</ingestSound>
+    </ingestible>
+    <comps>
+      <li Class="CompProperties_Explosive">
+        <explosiveRadius>1.1</explosiveRadius>
+        <explosiveDamageType>Flame</explosiveDamageType>
+        <explosiveExpandPerStackcount>0.037</explosiveExpandPerStackcount>
+        <startWickOnDamageTaken>
+          <li>Flame</li>
+        </startWickOnDamageTaken>
+        <startWickHitPointsPercent>0.333</startWickHitPointsPercent>
+        <preExplosionSpawnThingDef>Filth_Fuel</preExplosionSpawnThingDef>
+        <preExplosionSpawnChance>1</preExplosionSpawnChance>
+        <wickTicks>70~150</wickTicks>
+      </li>
+      <li Class="CompProperties_Forbiddable" />
+    </comps>
+  </ThingDef>
+
+
+</Defs>

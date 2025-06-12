@@ -1,0 +1,121 @@
+<Defs>
+  <BigAndSmall.DefAltNamer>
+    <defName>BS_GeneRenamer</defName>
+    <geneRenames>
+      <li MayRequire="RedMattis.BigSmall.Core">
+        <def>BS_PsychicWarrior</def>
+        <labelBloodfeeder>archite control</labelBloodfeeder>
+        <labelMechanoid>mechanite control</labelMechanoid>
+      </li>
+      <li MayRequire="RedMattis.BigSmall.Core">
+        <def>BS_NoFood_Hemogenic</def>
+        <labelMechanoid>hemo-fueled</labelMechanoid>
+      </li>
+      <li>
+        <def>Deathrest</def>
+        <labelMechanoid>stasis cycle</labelMechanoid>
+      </li>
+      <li>
+        <def>DarkVision</def>
+        <labelMechanoid>hyperspectral sensors</labelMechanoid>
+      </li>
+      <li>
+        <def>ArchiteMetabolism</def>
+        <labelMechanoid>glittertech optimizations</labelMechanoid>
+      </li>
+      <li MayRequire="RedMattis.BigSmall.Core">
+        <def>BS_JotunArchiteMetabolism</def>
+        <labelMechanoid>mechtech optimizations</labelMechanoid>
+      </li>
+      <li MayRequire="RedMattis.BigSmall.Core">
+        <def>BS_NoFood</def>
+        <labelMechanoid>vanometric systems</labelMechanoid>
+        <labelBloodfeeder>hemogen-eater</labelBloodfeeder>
+      </li>
+      <li MayRequire="RedMattis.BigSmall.Core">
+        <def>BS_Fast_TotalHealing</def>
+        <labelMechanoid>regenererative nanomachines</labelMechanoid>
+      </li>
+      <li MayRequire="RedMattis.BigSmall.Core">
+        <def>VU_DarknessWoundHealing_Fast</def>
+        <labelMechanoid>fast darkness self-repairs</labelMechanoid>
+      </li>
+      <li MayRequire="RedMattis.BigSmall.Core">
+        <def>VU_DarknessWoundHealing_UltraFast</def>
+        <labelMechanoid>exceptional darkness self-repairs</labelMechanoid>
+      </li>
+      <li>
+        <def>WoundHealing_Slow</def>
+        <labelMechanoid>poor self-repair</labelMechanoid>
+      </li>
+      <li>
+        <def>WoundHealing_Fast</def>
+        <labelMechanoid>great self-repair</labelMechanoid>
+      </li>
+      <li>
+        <def>WoundHealing_SuperFast</def>
+        <labelMechanoid>amazing self-repair</labelMechanoid>
+      </li>
+      <li MayRequire="RedMattis.BigSmall.Core">
+        <def>WoundHealing_VerySlow</def>
+        <labelMechanoid>terrible self-repair</labelMechanoid>
+      </li>
+      <li MayRequire="RedMattis.BigSmall.Core">
+        <def>WoundHealing_UltraFast</def>
+        <labelMechanoid>ultra self-repairs</labelMechanoid>
+      </li>
+      <li MayRequire="RedMattis.BigSmall.Core">
+        <def>VU_Unliving_Resilience</def>
+        <labelMechanoid>extremely rugged subsystems</labelMechanoid>
+      </li>
+      <li MayRequire="RedMattis.BigSmall.Core">
+        <def>VU_Lesser_Unliving_Resilience</def>
+        <labelMechanoid>rugged subsystems</labelMechanoid>
+      </li>
+      <li MayRequire="RedMattis.BigSmall.Core">
+        <def>BS_ShortPregnancy</def>
+        <labelMechanoid>fast gestation</labelMechanoid>
+      </li>
+      <li MayRequire="RedMattis.BigSmall.Core">
+        <def>BS_CellPandemonium</def>
+        <labelMechanoid>rogue nanomachines</labelMechanoid>
+      </li>
+      <li MayRequire="RedMattis.BigSmall.Core">
+        <def>BS_Instability_Catastrophic</def>
+        <labelMechanoid>nanomachine discord</labelMechanoid>
+      </li>
+      <li>
+        <def>Instability_Mild</def>
+        <labelMechanoid>nanomachine drift</labelMechanoid>
+      </li>
+      <li>
+        <def>Instability_Major</def>
+        <labelMechanoid>desyncronized nanomachines</labelMechanoid>
+      </li>
+      <li MayRequire="RedMattis.BigSmall.Core">
+        <def>BS_GeneStabilizing_Moderate</def>
+        <labelMechanoid>nanomechanical synergy</labelMechanoid>
+      </li>
+      <li MayRequire="RedMattis.BigSmall.Core">
+        <def>BS_GeneStabilizing_Great</def>
+        <labelMechanoid>nanomechanical harmony</labelMechanoid>
+      </li>
+      <li MayRequire="RedMattis.BigSmall.Core">
+        <def>BS_GeneStabilizing_Extreme</def>
+        <labelMechanoid>nanomechanical tranquility</labelMechanoid>
+      </li>
+      <li MayRequire="RedMattis.BigSmall.Core">
+        <def>BS_ToughSkin</def>
+        <labelMechanoid>reinforced exterior</labelMechanoid>
+      </li>
+      <li MayRequire="RedMattis.BigSmall.Core">
+        <def>BS_NaturalArmor</def>
+        <labelMechanoid>integrated armor</labelMechanoid>
+      </li>
+      <li MayRequire="RedMattis.BigSmall.Core">
+        <def>BS_NaturalArmor_Great</def>
+        <labelMechanoid>nanomanifold materials</labelMechanoid>
+      </li>
+    </geneRenames>
+  </BigAndSmall.DefAltNamer>
+</Defs>

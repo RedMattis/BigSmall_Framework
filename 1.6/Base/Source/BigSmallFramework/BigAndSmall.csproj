@@ -1,0 +1,372 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.props" Condition="Exists('packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <!--<LangVersion>preview</LangVersion>-->
+    <!--<LangVersion>7.3</LangVersion>-->
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F0272DF1-D703-495D-8F95-48D6BAB3A0B9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BigAndSmall</RootNamespace>
+    <AssemblyName>BigAndSmall</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Assemblies\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\..\..\..\..\..\..\..\workshop\content\294100\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="0PrepatcherAPI, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Zetrith.Prepatcher.1.2.0\lib\net472\0PrepatcherAPI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="mscorlib">
+      <HintPath>..\..\..\..\..\..\RimWorldWin64_Data\Managed\mscorlib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>..\..\..\..\..\..\RimWorldWin64_Data\Managed\System.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Core">
+      <HintPath>..\..\..\..\..\..\RimWorldWin64_Data\Managed\System.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <HintPath>..\..\..\..\..\..\RimWorldWin64_Data\Managed\System.Xml.Linq.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <HintPath>..\..\..\..\..\..\RimWorldWin64_Data\Managed\System.Data.DataSetExtensions".dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data">
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Xml">
+      <HintPath>..\..\..\..\..\..\RimWorldWin64_Data\Managed\System.Xml.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>..\..\..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\..\..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Abillities\CompAbilityEffect_GiveWithSeverity.cs" />
+    <Compile Include="Abillities\Comp_AbilityFleckOnTargetFixed.cs" />
+    <Compile Include="Abillities\MeleeAttackAbility.cs" />
+    <Compile Include="BetterPrerequisites\NewGeneDisabler.cs" />
+    <Compile Include="Cache\BS.cs" />
+    <Compile Include="Cache\BSCacheExtensions.cs" />
+    <Compile Include="Cache\BSCache_GameComponent.cs" />
+    <Compile Include="Cache\CacheAccessProps.cs" />
+    <Compile Include="Cache\CacheVariables.cs" />
+    <Compile Include="Comps\UsableConditions\CompUseEffectQuantityCondition.cs" />
+    <Compile Include="Debugging\DebugActions.cs" />
+    <Compile Include="BSDefLibrary.cs" />
+    <Compile Include="Debugging\GeneDebugMenu.cs" />
+    <Compile Include="DefPatches\RaceFuser\HumanlikeAnimalGenerator.cs" />
+    <Compile Include="DefPatches\RaceFuser\HumanlikeAnimalTemplate.cs" />
+    <Compile Include="DefPatches\RaceFuser\RaceFuser.cs" />
+    <Compile Include="DefPatches\RaceFuser\RaceFuser_Defs.cs" />
+    <Compile Include="DefPatches\RaceFuser\RaceFuser_FuseBodies.cs" />
+    <Compile Include="DefPatches\RaceFuser\RaceFuser_Finalize.cs" />
+    <Compile Include="DefPatches\RaceFuser\RaceFuser_FusedBody.cs" />
+    <Compile Include="DefPatches\RaceFuser\RaceFuser_Helpers.cs" />
+    <Compile Include="Gender and Reproduction\GenderMethods.cs" />
+    <Compile Include="Genes\GeneStealDef.cs" />
+    <Compile Include="Genes\GeneEffectManager.cs" />
+    <Compile Include="Genes\GeneStealing\GeneFromSpecial.cs" />
+    <Compile Include="Genes\LockedNeed.cs" />
+    <Compile Include="Genes\PowerPools\CompResourceCost.cs" />
+    <Compile Include="Genes\PowerPools\Comp_DrainsResource.cs" />
+    <Compile Include="Genes\PowerPools\IResourcePool.cs" />
+    <Compile Include="Genes\PowerPools\ResourcePoolUtils.cs" />
+    <Compile Include="Genes\PowerPools\Gizmo_ResourceBase.cs" />
+    <Compile Include="Genes\Slime\CompProperties_SlimeCost.cs" />
+    <Compile Include="Genes\Slime\GeneGizmo_ResourceSlime.cs" />
+    <Compile Include="Genes\Soul\CompProperties_SoulEnergyCost.cs" />
+    <Compile Include="Genes\Soul\SoulResource.cs" />
+    <Compile Include="Genes\TickdownGene.cs" />
+    <Compile Include="Genes\Unliving\ReturningSoul.cs" />
+    <Compile Include="Hediffs\HediffHelpers.cs" />
+    <Compile Include="Hediffs\HediffPatches.cs" />
+    <Compile Include="Genes\GeneSetupEvents.cs" />
+    <Compile Include="Genes\GeneUI.cs" />
+    <Compile Include="DefPatches\HumanlikeDefPatches.cs" />
+    <Compile Include="Hediffs\TakeDamage.cs" />
+    <Compile Include="HotReloadExtension.cs" />
+    <Compile Include="Items\ApparelRestrictions.cs" />
+    <Compile Include="Items\CompProperties_TargetableExtended.cs" />
+    <Compile Include="Items\EquipNotifyPatches.cs" />
+    <Compile Include="Items\Soulstone.cs" />
+    <Compile Include="Items\Trade and Loot\StockGenerator.cs" />
+    <Compile Include="Items\TargetApplyHediff.cs" />
+    <Compile Include="Items\XenogermCreators.cs" />
+    <Compile Include="Jobs\JobDriver_UseOnTarget.cs" />
+    <Compile Include="ModExtensions\PawnExtensionParts\PawnExtension_Misc.cs" />
+    <Compile Include="ModExtensions\PawnExtensionParts\PawnExtension_Tooltip.cs" />
+    <Compile Include="ModExtensions\PawnKindExtension.cs" />
+    <Compile Include="ModExtensions\PawnKind\Pilotable.cs" />
+    <Compile Include="ModExtensions\SmartExtension.cs" />
+    <Compile Include="ModExtensions\ModExtHelper.cs" />
+    <Compile Include="ModPatches\MiscCompatibility\HumanoidAlienRaces.cs" />
+    <Compile Include="ModPatches\NalsAnim\FacialAnim_PatchDynamicRaces.cs" />
+    <Compile Include="Path Operations\SettingsBasedPatches.cs" />
+    <Compile Include="Pawn\PawnGeneration\GenerateNewPawnInternal.cs" />
+    <Compile Include="Pawn\PawnPatches.cs" />
+    <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\AdvancedColor.cs" />
+    <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\ConditionalTexture.cs" />
+    <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\ConditionalGraphic.cs" />
+    <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\ConditionalGraphicProperties.cs" />
+    <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\ConditionalGraphicsSet.cs" />
+    <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\Flagger.cs" />
+    <Compile Include="Rendering &amp; Graphics\ConditionalGraphics\GraphicsOverride.cs" />
+    <Compile Include="Rendering &amp; Graphics\CustomMaterial.cs" />
+    <Compile Include="Rendering &amp; Graphics\AdaptivePawnPath.cs" />
+    <Compile Include="Rendering &amp; Graphics\Patches\HumanlikeMeshPoolUtility.cs" />
+    <Compile Include="Rendering &amp; Graphics\Patches\PawnRenderNode_Body_Patches.cs" />
+    <Compile Include="Rendering &amp; Graphics\Patches\PawnRenderNode_Head_Patches.cs" />
+    <Compile Include="Rendering &amp; Graphics\GraphicsHelper.cs" />
+    <Compile Include="Rendering &amp; Graphics\BSDrawData.cs" />
+    <Compile Include="Rendering &amp; Graphics\Patches\ShouldAddNodeToTree.cs" />
+    <Compile Include="Rendering &amp; Graphics\Render Tree\NalsToggles.cs" />
+    <Compile Include="Rendering &amp; Graphics\RenderNodes\HumanlikeAnimal\PawnRenderNode_HAnimalPack.cs" />
+    <Compile Include="Rendering &amp; Graphics\RenderNodes\HumanlikeAnimal\PawnRenderNode_HAnimalPart.cs" />
+    <Compile Include="Rendering &amp; Graphics\RenderWorkers\FAShouldRender.cs" />
+    <Compile Include="Rendering &amp; Graphics\RenderWorkers\PawnRenderNodeWorker_Various.cs" />
+    <Compile Include="Rendering &amp; Graphics\RenderNodes\PawnRenderNode_HSVHair.cs" />
+    <Compile Include="Rendering &amp; Graphics\RenderNodes\PawnRenderNode_SimpleSwitches.cs" />
+    <Compile Include="Rendering &amp; Graphics\RenderNodes\UltimateRenderNode.cs" />
+    <Compile Include="Rendering &amp; Graphics\RenderNodes\ComplexRenderNode.cs" />
+    <Compile Include="Rendering &amp; Graphics\RenderWorkers\PawnRenderNode_Apparel.cs" />
+    <Compile Include="Rendering &amp; Graphics\RenderWorkers\UltimateRenderNodeWorker.cs" />
+    <Compile Include="SimpleCustomRaces\CustomButcherProduct.cs" />
+    <Compile Include="SimpleCustomRaces\LifeStageWorker_FullyFormedHumanlike.cs" />
+    <Compile Include="SimpleCustomRaces\MechanicalRace\FuelNeed.cs" />
+    <Compile Include="SimpleCustomRaces\MechanicalRace\MechRacePatches.cs" />
+    <Compile Include="SimpleCustomRaces\RacialFeaturePanel\RacialTabButton.cs" />
+    <Compile Include="SimpleCustomRaces\RacialFeaturePanel\RacialViewWindow.cs" />
+    <Compile Include="SimpleCustomRaces\RacialFeaturePanel\RaceViewUIManager.cs" />
+    <Compile Include="SimpleCustomRaces\RacialFeaturePanel\RacialFeatureDef.cs" />
+    <Compile Include="SimpleCustomRaces\RomanceTags.cs" />
+    <Compile Include="SimpleCustomRaces\SimpleRaceCache.cs" />
+    <Compile Include="SimpleCustomRaces\RaceTracker.cs" />
+    <Compile Include="SimpleCustomRaces\SimpleRace.cs" />
+    <Compile Include="SimpleCustomRaces\SimpleRaceExtension.cs" />
+    <Compile Include="ModExtensions\XenotypeExtension.cs" />
+    <Compile Include="BetterPrerequisites\PawnRenderingCache.cs" />
+    <Compile Include="BetterPrerequisites\TransformHediff.cs" />
+    <Compile Include="AI\AICombat.cs" />
+    <Compile Include="SimpleCustomRaces\RaceMorpher.cs" />
+    <Compile Include="DefPatches\ThoughtDefPatcher.cs" />
+    <Compile Include="SizeChange\SizeMethods.cs" />
+    <Compile Include="SizeChange\StatWorker_Size.cs" />
+    <Compile Include="Social\AlienApperance.cs" />
+    <Compile Include="Social\Death.cs" />
+    <Compile Include="Social\Lovin.cs" />
+    <Compile Include="Social\Romance.cs" />
+    <Compile Include="Balancing\AttackCooldown.cs" />
+    <Compile Include="ModPatches\BiotechExpansion_Patches\PawnProduction.cs" />
+    <Compile Include="Balancing\DamageScaling.cs" />
+    <Compile Include="Balancing\Factions.cs" />
+    <Compile Include="Balancing\FoodNeedPatch.cs" />
+    <Compile Include="Cache\Cache_Abstract.cs" />
+    <Compile Include="ModPatches\MiscCompatibility\Zombieland.cs" />
+    <Compile Include="Misc\CompRemover.cs" />
+    <Compile Include="ConditionalStatAffecters\ConditionalStatAffectors.cs" />
+    <Compile Include="Cache\FastAcccess.cs" />
+    <Compile Include="DefPatches\GeneDefPatcher.cs" />
+    <Compile Include="Genes\GeneHelpers.cs" />
+    <Compile Include="Cache\HumanoidPawnScaler.cs" />
+    <Compile Include="Misc\Gibblets.cs" />
+    <Compile Include="Misc\OnKill.cs" />
+    <Compile Include="Pawn\PawnGeneration\PawnGroupMaker.cs" />
+    <Compile Include="DefPatches\PlayerFactionPatcher.cs" />
+    <Compile Include="Quests\QuestPawnGenerator.cs" />
+    <Compile Include="Quests\Raid.cs" />
+    <Compile Include="Rendering &amp; Graphics\Patches\GraphicsFor_OldTemp.cs" />
+    <Compile Include="ModPatches\VanillaExpanded\TextureCaching.cs" />
+    <Compile Include="Damage Workers\DevourerAttack.cs" />
+    <Compile Include="Damage Workers\ReducedDamageAttack.cs" />
+    <Compile Include="DefOfs.cs" />
+    <Compile Include="Genes\Misc\AnimalFriendGene.cs" />
+    <Compile Include="Abillities\SprayLiquid.cs" />
+    <Compile Include="Items\CanEquip.cs" />
+    <Compile Include="Genes\Diet\DietGenes.cs" />
+    <Compile Include="Genes\Misc\ForcedUnarmed.cs" />
+    <Compile Include="Gender and Reproduction\Birth.cs" />
+    <Compile Include="Genes\GeneStealing\GeneEater.cs" />
+    <Compile Include="Genes\GeneStealing\IncorporateAbillity.cs" />
+    <Compile Include="Gender and Reproduction\LoveAndLife.cs" />
+    <Compile Include="Genes\GeneStealing\MimicAbility.cs" />
+    <Compile Include="Genes\GeneTemplate.cs" />
+    <Compile Include="Genes\GeneUIMethods.cs" />
+    <Compile Include="Genes\Metamorphosis\Metamorphosis.cs" />
+    <Compile Include="Genes\Production\ProductionGene.cs" />
+    <Compile Include="Genes\Slime\SlimeEngufAttack.cs" />
+    <Compile Include="Genes\Slime\SlimeEngulfComp.cs" />
+    <Compile Include="Genes\Slime\SlimeProliferation.cs" />
+    <Compile Include="Genes\Slime\SlimeResourceGene.cs" />
+    <Compile Include="Genes\Soul\ConsumeSoul.cs" />
+    <Compile Include="Genes\Misc\HealingGenes.cs" />
+    <Compile Include="Genes\Misc\Nekomata.cs" />
+    <Compile Include="Genes\Misc\TrulyAgeless.cs" />
+    <Compile Include="Genes\Misc\SuccubusCutBond.cs" />
+    <Compile Include="Genes\Unliving\Deathless.cs" />
+    <Compile Include="Genes\Werewolves\WerewolfInfect.cs" />
+    <Compile Include="Genes\Misc\GeneWealth.cs" />
+    <Compile Include="Hediffs\AcidBuildUp.cs" />
+    <Compile Include="Hediffs\HediffAbillityGiver.cs" />
+    <Compile Include="Hediffs\PilotedHediff.cs" />
+    <Compile Include="Hediffs\ReturningHediff.cs" />
+    <Compile Include="Hediffs\SuccubusBondVictim.cs" />
+    <Compile Include="Hediffs\TemperatureGenerator.cs" />
+    <Compile Include="ModPatches\NalsAnim\DisableNalFacialFeatures.cs" />
+    <Compile Include="ModPatches\VanillaExpanded\VEModExtension.cs" />
+    <Compile Include="Rendering &amp; Graphics\RenderNodes\Fur.cs" />
+    <Compile Include="Rendering &amp; Graphics\RenderWorkers\Offsets.cs" />
+    <Compile Include="Traits\Gentle.cs" />
+    <Compile Include="Traits\GiantTrait.cs" />
+    <Compile Include="Balancing\MechanicalChanges.cs" />
+    <Compile Include="SizeChange\Pawn_BodySize.cs" />
+    <Compile Include="Skills\skill_learning.cs" />
+    <Compile Include="ModPatches\VEF_Patches\PawnProduction.cs" />
+    <Compile Include="Cache\BigAndSmallMain.cs" />
+    <Compile Include="ModPatches\MiscCompatibility\RooMinotaur.cs" />
+    <Compile Include="ModPatches\MiscCompatibility\SoS_Patches.cs" />
+    <Compile Include="ModPatches\MiscCompatibility\Universum_Patches.cs" />
+    <Compile Include="Hediffs\DraculVampirism.cs" />
+    <Compile Include="Hediffs\TransitioningHediff.cs" />
+    <Compile Include="Hediffs\SizeRays.cs" />
+    <Compile Include="Items\GeneTools.cs" />
+    <Compile Include="Items\Discombobulator.cs" />
+    <Compile Include="Items\Reanimator.cs" />
+    <Compile Include="Items\StatusBullet.cs" />
+    <Compile Include="Misc\MiscPatches.cs" />
+    <Compile Include="Rendering &amp; Graphics\Patches\GenderBody.cs" />
+    <Compile Include="Gender and Reproduction\Genderbender.cs" />
+    <Compile Include="Gender and Reproduction\MaleFemale.cs" />
+    <Compile Include="Genes\Misc\SelfRegenerate.cs" />
+    <Compile Include="Genes\Misc\SuccubusGenes.cs" />
+    <Compile Include="Genes\Unliving\UnlivingDamagePatch.cs" />
+    <Compile Include="Genes\Vampires\DraculVampirism.cs" />
+    <Compile Include="Genes\Vampires\VampireBite.cs" />
+    <Compile Include="ModSettings.cs" />
+    <Compile Include="UI\SettingsWidgets.cs" />
+    <Compile Include="Utilities\ChanceByStat.cs" />
+    <Compile Include="Utilities\EnumBool.cs" />
+    <Compile Include="Utilities\EnumRange.cs" />
+    <Compile Include="Utilities\FilterLists.cs" />
+    <Compile Include="Utilities\GenericHelpers.cs" />
+    <Compile Include="Utilities\ScalingMethods.cs" />
+    <Compile Include="Utilities\Scorables\ScorableInferfaces.cs" />
+    <Compile Include="Utilities\Scorables\ScoreCalculator.cs" />
+    <Compile Include="Utilities\Scorables\Scorable.cs" />
+    <Compile Include="Utilities\Scorables\ScorableDef.cs" />
+    <Compile Include="Utilities\Scorables\ScoreData.cs" />
+    <Compile Include="Utilities\Scorables\ScoreKey.cs" />
+    <Compile Include="Utilities\Stability.cs" />
+    <Compile Include="Utilities\utilities.cs" />
+    <Compile Include="BetterPrerequisites\CondtionalAffectors.cs" />
+    <Compile Include="BetterPrerequisites\PrerequisiteGene.cs" />
+    <Compile Include="ModExtensions\PawnExtension.cs" />
+    <Compile Include="BetterPrerequisites\GeneSupresser.cs" />
+    <Compile Include="Genes\GenePatches.cs" />
+    <Compile Include="Main.cs" />
+    <Compile Include="BetterPrerequisites\PrerequisiteValidator.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Publicize Include="Assembly-CSharp:RimWorld.Pawn_GeneTracker.xenotype" />
+    <Publicize Include="Assembly-CSharp:RimWorld.Pawn_GeneTracker.Notify_GenesChanged" />
+    <Publicize Include="Assembly-CSharp:RimWorld.Pawn_GeneTracker.CheckForOverrides" />
+    <Publicize Include="Assembly-CSharp:RimWorld.GeneSet.cachedNonOverriddenGenes" />
+    <Publicize Include="Assembly-CSharp:RimWorld.GeneUIUtility.DrawSection" />
+    <Publicize Include="Assembly-CSharp:RimWorld.GeneUIUtility.DoDebugButton" />
+    <Publicize Include="Assembly-CSharp:Verse.Window.resizer" />
+    <Publicize Include="Assembly-CSharp:Verse.WindowResizer.isResizing" />
+    <Publicize Include="Assembly-CSharp:Verse.Hediff.severityInt" />
+    <Publicize Include="Assembly-CSharp:Verse.PawnRenderer.pawn" />
+    <Publicize Include="Assembly-CSharp:Verse.PawnRenderer.results" />
+    <Publicize Include="Assembly-CSharp:Verse.PawnRenderer+PreRenderResults" />
+    <Publicize Include="Assembly-CSharp:Verse.DebugToolsSpawning.PostPawnSpawn" />
+    <Publicize Include="Assembly-CSharp:Verse.RecipeDef.ingredients" />
+    <Publicize Include="Assembly-CSharp:Verse.RecipeDef.isSurgeryCached" />
+    <Publicize Include="Assembly-CSharp:Verse.ThingFilter.allowedDefs" />
+    <Publicize Include="Assembly-CSharp:Verse.ThingFilter.thingDefs" />
+    <Publicize Include="Assembly-CSharp:Verse.ThingDef.verbs" />
+    <Publicize Include="Assembly-CSharp:Verse.Thing.rotationInt" />
+    <Publicize Include="Assembly-CSharp:RimWorld.CompTargetable.selectedTarget" />
+    <Publicize Include="Assembly-CSharp:RimWorld.ThingDefGenerator_Corpses.CalculateMarketValue" />
+    <Publicize Include="Assembly-CSharp:RimWorld.ThingDefGenerator_Corpses.GenerateCorpseDef" />
+    <Publicize Include="Assembly-CSharp:Verse.BodyDef.cachedAllParts" />
+    <Publicize Include="Assembly-CSharp:Verse.BodyDef.CacheDataRecursive" />
+    <Publicize Include="Assembly-CSharp:Verse.RaceProperties.nameGenerator" />
+    <Publicize Include="Assembly-CSharp:Verse.RaceProperties.nameGeneratorFemale" />
+    <Publicize Include="Assembly-CSharp:Verse.PawnRenderNode.props" />
+    <Publicize Include="Assembly-CSharp:Verse.PawnRenderNode.props" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.props'))" />
+    <Error Condition="!Exists('packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets'))" />
+  </Target>
+  <Import Project="packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets" Condition="Exists('packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets')" />
+</Project>

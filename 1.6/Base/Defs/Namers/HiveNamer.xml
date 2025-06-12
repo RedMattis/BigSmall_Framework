@@ -1,0 +1,229 @@
+<Defs>
+  <RulePackDef>
+    <defName>BS_HiveCreepy_Namer</defName>
+    <rulePack>
+      <include>
+        <li>BS_HiveCreepyFirstName</li>
+        <li>BS_HiveCreepyLastName</li>
+      </include>
+      <rulesStrings>
+        <li>r_name->[firstName] [lastName]</li>
+      </rulesStrings>
+    </rulePack>
+  </RulePackDef>
+
+  <RulePackDef>
+    <defName>BS_HiveCreepyFirstName</defName>
+    <rulePack>
+      <rulesStrings>
+        <li>firstName->[firstNamePrefix][firstNameSuffix]</li>
+        <li>firstName->[firstNamePrefix][firstNameSuffix]</li>
+        <li>firstName->[firstNamePrefix]'[firstNameSuffix]</li>
+        <li>firstName->[firstNamePrefix][firstNameSuffix]</li>
+        <li>firstName->[firstNamePrefix][firstNameSuffix]</li>
+        <li>firstName->[firstNamePrefix]'[firstNameSuffix]</li>
+        <li>firstName->[firstNameFull]</li>
+
+        <!-- Prefixes-->
+        <li>firstNamePrefix->cre</li>
+        <li>firstNamePrefix->thor</li>
+        <li>firstNamePrefix->hex</li>
+        <li>firstNamePrefix->ven</li>
+        <li>firstNamePrefix->scut</li>
+        <li>firstNamePrefix->mand</li>
+        <li>firstNamePrefix->chit</li>
+        <li>firstNamePrefix->prob</li>
+        <li>firstNamePrefix->stig</li>
+        <li>firstNamePrefix->ant</li>
+        <li>firstNamePrefix->carap</li>
+        <li>firstNamePrefix->spir</li>
+        <li>firstNamePrefix->teneb</li>
+        <li>firstNamePrefix->molt</li>
+        <li>firstNamePrefix->alvi</li>
+        <li>firstNamePrefix->fur</li>
+        <li>firstNamePrefix->moth</li>
+        <li>firstNamePrefix->kha</li>
+        <li>firstNamePrefix->kar</li>
+        <li>firstNamePrefix->kaar</li>
+        
+        <li>firstNamePrefix->kri</li>
+        <li>firstNamePrefix->zha</li>
+        <li>firstNamePrefix->rak</li>
+        <li>firstNamePrefix->zix</li>
+        <li>firstNamePrefix->nar</li>
+        <li>firstNamePrefix->ver</li>
+        <li>firstNamePrefix->rex</li>
+        <li>firstNamePrefix->tar</li>
+        <li>firstNamePrefix->zun</li>
+        <li>firstNamePrefix->rax</li>
+        <li>firstNamePrefix->kal</li>
+        <li>firstNamePrefix->zur</li>
+        <li>firstNamePrefix->krul</li>
+        <li>firstNamePrefix->sor</li>
+        <li>firstNamePrefix->zul</li>
+
+        <li>firstNamePrefix->ka</li>
+        <li>firstNamePrefix->za</li>
+        <li>firstNamePrefix->brak</li>
+        <li>firstNamePrefix->dak</li>
+        <li>firstNamePrefix->xar</li>
+        <li>firstNamePrefix->rak</li>
+        <li>firstNamePrefix->vor</li>
+        <li>firstNamePrefix->thar</li>
+        <li>firstNamePrefix->zul</li>
+        <li>firstNamePrefix->vik</li>
+        <li>firstNamePrefix->glar</li>
+        <li>firstNamePrefix->ur</li>
+        <li>firstNamePrefix->vek</li>
+        <li>firstNamePrefix->nid</li>
+        <li>firstNamePrefix->krel</li>
+        <li>firstNamePrefix->or</li>
+
+        <li>firstNamePrefix->rix</li>
+        <li>firstNamePrefix->thra</li>
+        <li>firstNamePrefix->zyl</li>
+        <li>firstNamePrefix->xal</li>
+        <li>firstNamePrefix->mek</li>
+        <li>firstNamePrefix->nyx</li>
+        <li>firstNamePrefix->brox</li>
+        <li>firstNamePrefix->pha</li>
+        <li>firstNamePrefix->kri</li>
+        <li>firstNamePrefix->yra</li>
+        <li>firstNamePrefix->vex</li>
+        <li>firstNamePrefix->tra</li>
+        <li>firstNamePrefix->skra</li>
+        <li>firstNamePrefix->pryx</li>
+        <li>firstNamePrefix->ska</li>
+        <li>firstNamePrefix->scy</li>
+        <li>firstNamePrefix->buzz</li>
+
+        <!-- Suffixes-->
+        <li>firstNameSuffix->ix</li>
+        <li>firstNameSuffix->ner</li>
+        <li>firstNameSuffix->ra</li>
+        <li>firstNameSuffix->ula</li>
+        <li>firstNameSuffix->tis</li>
+        <li>firstNameSuffix->ca</li>
+        <li>firstNameSuffix->tron</li>
+        <li>firstNameSuffix->pid</li>
+        <li>firstNameSuffix->nis</li>
+        <li>firstNameSuffix->tra</li>
+        <li>firstNameSuffix->thor</li>
+        <li>firstNameSuffix->rix</li>
+        <li>firstNameSuffix->ora</li>
+        <li>firstNameSuffix->trix</li>
+        <li>firstNameSuffix->ta</li>
+        <li>firstNameSuffix->lox</li>
+        <li>firstNameSuffix->rix</li>
+        <li>firstNameSuffix->tha</li>
+        <li>firstNameSuffix->zel</li>
+        <li>firstNameSuffix->zig</li>
+        <li>firstNameSuffix->lash</li>
+        <li>firstNameSuffix->lech</li>
+
+        <li>firstNameSuffix->thar</li>
+        <li>firstNameSuffix->zar</li>
+        <li>firstNameSuffix->kur</li>
+        <li>firstNameSuffix->rax</li>
+        <li>firstNameSuffix->kan</li>
+        <li>firstNameSuffix->ax</li>
+        <li>firstNameSuffix->zul</li>
+        <li>firstNameSuffix->rak</li>
+        <li>firstNameSuffix->dor</li>
+        <li>firstNameSuffix->rak</li>
+        <li>firstNameSuffix->gar</li>
+        <li>firstNameSuffix->mar</li>
+        <li>firstNameSuffix->tar</li>
+        <li>firstNameSuffix->ith</li>
+        <li>firstNameSuffix->nak</li>
+        <li>firstNameSuffix->kesh</li>
+
+        <li>firstNameSuffix->tra</li>
+        <li>firstNameSuffix->ith</li>
+        <li>firstNameSuffix->ak</li>
+        <li>firstNameSuffix->ra</li>
+        <li>firstNameSuffix->ix</li>
+        <li>firstNameSuffix->kor</li>
+        <li>firstNameSuffix->an</li>
+        <li>firstNameSuffix->ax</li>
+        <li>firstNameSuffix->or</li>
+        <li>firstNameSuffix->il</li>
+        <li>firstNameSuffix->ox</li>
+        <li>firstNameSuffix->thrax</li>
+        <li>firstNameSuffix->el</li>
+        <li>firstNameSuffix->zix</li>
+        <li>firstNameSuffix->ix</li>
+        <li>firstNameSuffix->ther</li>
+        <li>firstNameSuffix->thul</li>
+        <li>firstNameSuffix->buzz</li>
+        
+        <li>firstNameFull->zazz</li>
+        <li>firstNameFull->grubbs</li>
+        <li>firstNameFull->mothra</li>
+        <li>firstNameFull->buzz</li>
+        <li>firstNameFull->kha'zix</li>
+        <li>firstNameFull->scyther</li>
+        <li>firstNameFull->skarner</li>
+        <li>firstNameFull->skarn'vex</li>
+        <li>firstNameFull->nax'thul</li>
+        <li>firstNameFull->zun'rax</li>
+        <li>firstNameFull->rak'thul</li>
+        <li>firstNameFull->nar'zul</li>
+      </rulesStrings>
+    </rulePack>
+  </RulePackDef>
+
+  <RulePackDef>
+    <defName>BS_HiveCreepyLastName</defName>
+    <rulePack>
+      <rulesStrings>
+        <li>lastName->[lastNamePrefix][lastNameSuffix]</li>
+        <li>lastName->[lastNamePrefix][lastNameSuffix]</li>
+        <li>lastName->[lastNamePrefix]'[lastNameSuffix]</li>
+        <li>lastName->[lastNameFull]</li>
+
+        <!-- Prefixes-->
+        <li>lastNamePrefix->xar</li>
+        <li>lastNamePrefix->vor</li>
+        <li>lastNamePrefix->rak</li>
+        <li>lastNamePrefix->thar</li>
+        <li>lastNamePrefix->zul</li>
+        <li>lastNamePrefix->krul</li>
+        <li>lastNamePrefix->brak</li>
+        <li>lastNamePrefix->zar</li>
+        <li>lastNamePrefix->gur</li>
+        <li>lastNamePrefix->tar</li>
+        <li>lastNamePrefix->vak</li>
+        <li>lastNamePrefix->kur</li>
+        <li>lastNamePrefix->rak</li>
+        <li>lastNamePrefix->krel</li>
+        <li>lastNamePrefix->thul</li>
+
+        <!-- Suffixes-->
+        <li>lastNameSuffix->thar</li>
+        <li>lastNameSuffix->gar</li>
+        <li>lastNameSuffix->kor</li>
+        <li>lastNameSuffix->rak</li>
+        <li>lastNameSuffix->mir</li>
+        <li>lastNameSuffix->dal</li>
+        <li>lastNameSuffix->vor</li>
+        <li>lastNameSuffix->nak</li>
+        <li>lastNameSuffix->gar</li>
+        <li>lastNameSuffix->rak</li>
+        <li>lastNameSuffix->kesh</li>
+        <li>lastNameSuffix->dar</li>
+        <li>lastNameSuffix->mur</li>
+        <li>lastNameSuffix->nix</li>
+        <li>lastNameSuffix->zel</li>
+        <li>lastNameSuffix->dar</li>
+
+        <!-- Full lastnames-->
+        <li>lastNameFull->thrax</li>
+        <li>lastNameFull->razor</li>
+        <li>lastNameFull->skarn</li>
+      </rulesStrings>
+    </rulePack>
+  </RulePackDef>
+
+  
+</Defs>

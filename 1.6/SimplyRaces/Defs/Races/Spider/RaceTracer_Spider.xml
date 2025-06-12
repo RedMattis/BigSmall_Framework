@@ -1,0 +1,112 @@
+<Defs>
+
+  <HediffDef ParentName="BS_DefaultRaceTracker">
+    <defName>BS_SpiderPersonRace</defName>
+    <description>A humanlike being with a lot of agile legs</description>
+    <label>spider-person</label>
+
+    <stages Inherit="False">
+      <li>
+        <statFactors>
+          <MaxNutrition>2.0</MaxNutrition>
+          <CarryingCapacity>1.5</CarryingCapacity>
+          <VEF_MassCarryCapacity MayRequire="OskarPotocki.VanillaFactionsExpanded.Core">1.5</VEF_MassCarryCapacity>
+        </statFactors>
+        <capMods>
+          <li>
+            <capacity>Manipulation</capacity>
+            <offset>0.05</offset>
+          </li>
+        </capMods>
+      </li>
+    </stages>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <traitIcon>BS_Traits/spooder</traitIcon>
+        <romanceTags>
+          <Spider>1.0</Spider>
+          <Humanlike>0.35</Humanlike>
+        </romanceTags>
+        <canWalkOnCreep>true</canWalkOnCreep>
+        <renderCacheOff>true</renderCacheOff>
+        <applyBodyHediff MayRequire="OskarPotocki.VanillaFactionsExpanded.Core">
+          <li>
+            <hediff MayRequire="OskarPotocki.VanillaFactionsExpanded.Core">BS_Stride</hediff>
+          </li>
+        </applyBodyHediff>
+        <bodyPosOffset>0.6</bodyPosOffset>
+      </li> 
+    </modExtensions>
+    <comps>
+      <li Class="BigAndSmall.CompProperties_Race">
+        <canSwapAwayFrom>true</canSwapAwayFrom>
+      </li>
+    </comps>
+    <renderNodeProperties>
+      <li Class="BigAndSmall.PawnRenderingProps_Ultimate">
+        <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
+        <workerClass>BigAndSmall.PawnRenderNodeWorker_LazyCentaur</workerClass>
+        <parentTagDef>Body</parentTagDef>
+        <rotDrawMode>Fresh, Rotting</rotDrawMode>
+        <conditionalGraphics>
+          <replacementDef>BS_SpooderGraphicSetUpper</replacementDef>
+          <alts>
+            <li>
+              <triggerGeneTag> <acceptlist> <li>taur</li> </acceptlist> </triggerGeneTag>
+              <triggerFlags><blacklist><ShowBaseAbdomen/></blacklist></triggerFlags>
+              <texturePaths><default>BS_Blank</default></texturePaths>
+            </li>
+          </alts>
+        </conditionalGraphics>
+        <drawSize>(1.1,1.1)</drawSize>
+        <drawData>
+          <bodyTypeScales>
+            <Fat>1.5</Fat> <Female>1.05</Female> <Hulk>1.1</Hulk> <Thin>0.9</Thin>
+            <Child MayRequire="Ludeon.Rimworld.Biotech">0.9</Child>
+            <Baby MayRequire="Ludeon.Rimworld.Biotech">0.75</Baby>
+          </bodyTypeScales>
+          <dataNorth> <offset>(0, 0.000, -0.3)</offset> <layer>89.5</layer> </dataNorth>
+          <dataSouth> <offset>(0, -0.000, -0.1)</offset> <layer>89.5</layer> </dataSouth>
+          <dataEast> <offset>(-0.27, 0.0, -0.2)</offset> <layer>89.5</layer> </dataEast>
+          <dataWest> <offset>(0.27, 0.0, -0.12)</offset> <layer>89.5</layer> </dataWest>
+        </drawData>
+      </li>
+
+      <li Class="BigAndSmall.PawnRenderingProps_Ultimate">
+        <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
+        <workerClass>BigAndSmall.PawnRenderNodeWorker_LazyCentaur</workerClass>
+        <parentTagDef>Body</parentTagDef>
+        <rotDrawMode>Fresh, Rotting</rotDrawMode>
+        <conditionalGraphics>
+          <replacementDef>BS_SpooderGraphicSetUnder</replacementDef>
+          <alts>
+            <li>
+              <triggerGeneTag> <acceptlist> <li>taur</li> </acceptlist> </triggerGeneTag>
+              <triggerFlags><blacklist><ShowBaseAbdomen/></blacklist></triggerFlags>
+              <texturePaths><default>BS_Blank</default></texturePaths>
+            </li>
+          </alts>
+        </conditionalGraphics>
+        <drawSize>(1.08,1.08)</drawSize>
+        <visibleFacing> <li>South</li> <li>North</li> </visibleFacing>
+        <drawData>
+          <bodyTypeScales>
+            <Fat>1.5</Fat> <Female>1.05</Female> <Hulk>1.1</Hulk> <Thin>0.95</Thin>
+            <Child MayRequire="Ludeon.Rimworld.Biotech">0.9</Child>
+            <Baby MayRequire="Ludeon.Rimworld.Biotech">0.75</Baby>
+          </bodyTypeScales>
+          <dataNorth>
+            <offset>(0, 0.0001, -0.3)</offset>
+            <layer>-1</layer>
+          </dataNorth>
+          <dataSouth>
+            <offset>(0, 0.000, -0.1)</offset>
+            <layer>-4</layer>
+          </dataSouth>
+        </drawData>
+      </li>
+    </renderNodeProperties>
+  </HediffDef>
+
+  
+</Defs>

@@ -1,0 +1,51 @@
+<Defs>
+  <GeneCategoryDef>
+    <defName>ForcedSex</defName>
+    <label>Biological Sex</label>
+    <displayPriorityInXenotype>401</displayPriorityInXenotype>
+  </GeneCategoryDef>
+
+  <GeneDef Name="BS_MechanicalTagged" Abstract="True">
+    <descriptionHyperlinks> <BigAndSmall.DefTag>BS_MechanicalDef</BigAndSmall.DefTag> </descriptionHyperlinks>
+  </GeneDef>
+
+  <GeneDef Name="BM_MaleAndFemaleBase" Abstract="True">
+    <displayCategory>ForcedSex</displayCategory>
+    <exclusionTags>
+      <li>ForcedSex</li>
+    </exclusionTags>
+    <selectionWeight>0.0</selectionWeight>
+  </GeneDef>
+
+  <GeneDef ParentName="BM_MaleAndFemaleBase">
+    <defName>Body_FemaleOnly</defName>
+    <label>Female</label>
+    <description>Carriers of this gene are physically female.</description>
+    <iconPath>GeneIcons/BS_Female</iconPath>
+    <biostatCpx>0</biostatCpx>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <forceGender>Female</forceGender>
+      </li>
+    </modExtensions>
+  </GeneDef>
+
+  <GeneDef ParentName="BM_MaleAndFemaleBase">
+    <defName>Body_MaleOnly</defName>
+    <label>Male</label>
+    <description>Carriers of this gene are physically male.</description>
+    <iconPath>GeneIcons/BS_Male</iconPath>
+    <biostatCpx>0</biostatCpx>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <forceGender>Male</forceGender>
+      </li>
+    </modExtensions>
+  </GeneDef>
+
+  
+
+
+  
+  
+</Defs>

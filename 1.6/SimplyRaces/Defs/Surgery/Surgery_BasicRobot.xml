@@ -1,0 +1,129 @@
+<Defs>
+ 
+  <RecipeDef>
+    <defName>BS_VacuumProof</defName>
+    <label>vacuum proof components</label>
+    <description>vacuum proof mechanical components.</description>
+    <uiIconPath>BS_RaceIcons/Robot</uiIconPath>
+    <jobString>proofing components...</jobString>
+
+    <effectWorking>Surgery</effectWorking>
+    <soundWorking>Recipe_Surgery</soundWorking>
+    <workSpeedStat>MedicalOperationSpeed</workSpeedStat>
+    <workSkill>Medicine</workSkill>
+    <workSkillLearnFactor>16</workSkillLearnFactor>
+    <surgeryOutcomeEffect>SurgeryOutcomeBase</surgeryOutcomeEffect>
+
+    <workerClass>Recipe_AddHediff</workerClass>
+    <humanlikeOnly>false</humanlikeOnly>
+    <hideBodyPartNames>true</hideBodyPartNames>
+    <targetsBodyPart>false</targetsBodyPart>
+    <isViolation>false</isViolation>
+    <surgerySuccessChanceFactor>2</surgerySuccessChanceFactor>
+    <deathOnFailedSurgeryChance>0</deathOnFailedSurgeryChance>
+    <workAmount>16000</workAmount>
+
+    <incompatibleWithHediffTags>
+      <li>VacuumProofing</li>
+    </incompatibleWithHediffTags>
+
+    <skillRequirements>
+      <Crafting>10</Crafting>
+    </skillRequirements>
+    <!-- <recipeUsers>
+      <li>Mech_Scyther</li>
+    </recipeUsers> -->
+    <researchPrerequisite>
+      <li>Prosthetics</li>
+    </researchPrerequisite>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>ComponentIndustrial</li>
+          </thingDefs>
+        </filter>
+        <count>4</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Hyperweave</li>
+          </thingDefs>
+        </filter>
+        <count>20</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Plasteel</li>
+          </thingDefs>
+        </filter>
+        <count>10</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>ComponentIndustrial</li>
+        <li>Hyperweave</li>
+        <li>Plasteel</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <modExtensions>
+      <li Class="BigAndSmall.RecipeExtension">
+        <conditionalRecipe>
+          <validfleshTypes>
+            <li>Mechanoid</li>
+            <li MayRequire="Ludeon.Rimworld.Anomaly">EntityMechanical</li>
+          </validfleshTypes>
+        </conditionalRecipe>
+      </li>
+    </modExtensions>
+    <addsHediff>BS_Vacuum_sealed</addsHediff>
+  </RecipeDef>
+
+  <HediffDef>
+    <defName>BS_Vacuum_sealed</defName>
+    <label>Vacuum Sealed Components</label>
+    <description>Modifications to secure components to vacuum exposure, this also decently insulates, but unfortunately decreases mobility somewhat.</description>
+    
+    <hediffClass>HediffWithComps</hediffClass>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<isBad>false</isBad>
+		<everCurableByItem>false</everCurableByItem>
+		<initialSeverity>1</initialSeverity>
+    <allowMothballIfLowPriorityWorldPawn>true</allowMothballIfLowPriorityWorldPawn>
+    <stages>
+      <li>
+        <statOffsets>
+          <VacuumResistance MayRequire="Ludeon.Rimworld.Odyssey">2</VacuumResistance>
+          <SM_EVA_Level>2</SM_EVA_Level>
+          <DecompressionResistance MayRequire="kentington.saveourship2">1</DecompressionResistance>
+          <HypoxiaResistance MayRequire="kentington.saveourship2">1</HypoxiaResistance>
+          <VacuumSpeedMultiplier MayRequire="kentington.saveourship2">1.2</VacuumSpeedMultiplier>
+          
+          <ComfyTemperatureMin>-60</ComfyTemperatureMin>
+          <ComfyTemperatureMax>20</ComfyTemperatureMax>
+        </statOffsets>
+        <statFactors>
+          <MoveSpeed>0.93</MoveSpeed>
+          <IncomingDamageFactor>0.95</IncomingDamageFactor>
+        </statFactors>
+        <capMods>
+          <li>
+            <capacity>Manipulation</capacity>
+            <offset>-0.05</offset>
+          </li>
+        </capMods>
+      </li>
+    </stages>
+    <modExtensions>
+      <li Class="Universum.Utilities.Gene.Properties" MayRequire="sindre0830.Universum">
+        <allowed_utilities>
+          <li>universum.vacuum_decompression_protection</li>
+          <li>universum.vacuum_suffocation_protection</li>
+        </allowed_utilities>
+      </li>
+		</modExtensions>
+  </HediffDef>
+</Defs>

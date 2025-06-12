@@ -1,0 +1,73 @@
+<Patch>
+  <Operation Class="BigAndSmall.PatchOp_AddBionics"><match Class="PatchOperationAdd"><xpath>Defs</xpath><value>
+
+    <HediffDef ParentName="AddedBodyPartBase">
+      <defName>BS_BionicLocomotiveSpine</defName>
+      <label>bionic locomotive spine</label>
+      <labelNoun>a bionic locomotive spine</labelNoun>
+      <description>An installed bionic locomotive spine. It is designed to replace the lower parts of the spine of a snake-like being. Unlike a regular bionic spine this one will significantly aid locomotion for such beings.</description>
+      <descriptionHyperlinks><ThingDef>BS_BionicLocomotiveSpine</ThingDef></descriptionHyperlinks>
+      <spawnThingOnRemoved>BS_BionicLocomotiveSpine</spawnThingOnRemoved>
+      <addedPartProps>
+        <solid>true</solid>
+        <betterThanNatural>true</betterThanNatural>
+      </addedPartProps>
+      <stages>
+        <li>
+          <capMods>
+            <li>
+              <capacity>Moving</capacity>
+              <offset>0.25</offset>
+            </li>
+        </capMods>
+        </li>
+      </stages>
+    </HediffDef>
+  
+    <ThingDef ParentName="BodyPartBionicBase">
+      <defName>BS_BionicLocomotiveSpine</defName>
+      <label>bionic locomotive spine</label>
+      <description>An advanced artificial locomotive spine. It is designed to replace the lower parts of the spine of a snake-like being. Unlike a regular bionic spine this one will significantly aid locomotion for such beings.</description>
+      <descriptionHyperlinks><RecipeDef>InstallBS_BionicLocomotiveSpine</RecipeDef></descriptionHyperlinks>
+      <costList>
+        <Plasteel>80</Plasteel>
+        <ComponentSpacer>8</ComponentSpacer>
+      </costList>
+      <statBases>
+        <Mass>2</Mass>
+      </statBases>
+    </ThingDef>
+  
+    <RecipeDef ParentName="SurgeryInstallBodyPartArtificialBase">
+      <defName>InstallBS_BionicLocomotiveSpine</defName>
+      <label>install bionic locomotive spine</label>
+      <description>Install a bionic locomotive spine.</description>
+      <descriptionHyperlinks>
+        <ThingDef>BS_BionicLocomotiveSpine</ThingDef>
+        <HediffDef>BS_BionicLocomotiveSpine</HediffDef>
+      </descriptionHyperlinks>
+      <jobString>Installing bionic spine.</jobString>
+      <ingredients>
+        <li>
+          <filter>
+            <thingDefs>
+              <li>BS_BionicLocomotiveSpine</li>
+            </thingDefs>
+          </filter>
+          <count>1</count>
+        </li>
+      </ingredients>
+      <fixedIngredientFilter>
+        <thingDefs>
+          <li>BS_BionicLocomotiveSpine</li>
+        </thingDefs>
+      </fixedIngredientFilter>
+      <appliedOnFixedBodyParts>
+        <li>BS_SnakeSpine</li>
+      </appliedOnFixedBodyParts>
+      <addsHediff>BS_BionicLocomotiveSpine</addsHediff>
+    </RecipeDef>
+
+  </value></match></Operation>
+
+</Patch>

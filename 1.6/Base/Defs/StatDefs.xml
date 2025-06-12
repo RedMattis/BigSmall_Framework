@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+    <StatCategoryDef>
+        <defName>SM_Stats</defName>
+        <label>Big and Small</label>
+        <displayOrder>9999</displayOrder>
+        <displayAllByDefault>true</displayAllByDefault>
+    </StatCategoryDef>
+
+    <!-- <StatDef>
+        <defName>BS_FinalSizeMultiplier</defName>
+        <workerClass>BigAndSmall.StatWorker_Size</workerClass>
+        <label>actual size change</label>
+        <description>Hidden value for pawn size change.</description>
+        <category>BasicsPawn</category>
+        <alwaysHide>true</alwaysHide>
+        <minValue>0.001</minValue>
+        <toStringStyle>FloatOne</toStringStyle>
+        <defaultBaseValue>1.0</defaultBaseValue>
+        <cacheable>true</cacheable>
+    </StatDef> -->
+
+    <StatDef>
+        <defName>BS_MaxNutritionFromSize</defName>
+        <workerClass>BigAndSmall.StatWorker_MaxNutritionFromSize</workerClass>
+        <label>actual size change</label>
+        <description>Hidden value used to calculate nutrition.</description>
+        <category>BasicsPawn</category>
+        <alwaysHide>true</alwaysHide>
+        <minValue>0.01</minValue>
+        <toStringStyle>FloatOne</toStringStyle>
+        <defaultBaseValue>1.0</defaultBaseValue>
+        <cacheable>true</cacheable>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_BodySizeOffset</defName>
+        <label>body size offset</label>
+        <description>Offsets the pawn's size by this amount. This affects a variety of mechanics.</description>
+        <category>BasicsPawn</category>
+        <alwaysHide>false</alwaysHide>
+        <minValue>-99</minValue>
+        <toStringStyle>FloatTwo</toStringStyle>
+        <defaultBaseValue>0.0</defaultBaseValue>
+        <hideAtValue>0</hideAtValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_Cosmetic_BodySizeOffset</defName>
+        <label>body size cosmetic offset</label>
+        <category>SM_Stats</category>
+        <alwaysHide>true</alwaysHide>
+        <minValue>-99</minValue>
+        <toStringStyle>FloatTwo</toStringStyle>
+        <defaultBaseValue>0.0</defaultBaseValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_BodySizeMultiplier</defName>
+        <label>body size multipler</label>
+        <description>Multiplies the pawn's size by this amount. This affects a variety of mechanics.</description>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.05</minValue>
+        <toStringStyle>PercentZero</toStringStyle>
+        <defaultBaseValue>1.0</defaultBaseValue>
+        <hideAtValue>1</hideAtValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_Cosmetic_BodySizeMultiplier</defName>
+        <label>cosmetic body size multiplier</label>
+        <description>Increases the size of the pawn by a multiple of their current size</description>
+        <alwaysHide>true</alwaysHide>
+        <category>BasicsPawn</category>
+        <toStringStyle>PercentZero</toStringStyle>
+        <defaultBaseValue>1.0</defaultBaseValue>
+        <minValue>-99</minValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_RaidWealthMultiplier</defName>
+        <label>raid wealth multiplier</label>
+        <description>Multiplier how valuable the pawn is considered for the purpose of raids.</description>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.05</minValue>
+        <toStringStyle>PercentZero</toStringStyle>
+        <defaultBaseValue>1.0</defaultBaseValue>
+        <hideAtValue>1</hideAtValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_RaidWealthOffset</defName>
+        <label>raid wealth</label>
+        <description>Changes to how valuable the pawn is considered for the purpose of raids. Applied AFTER the raid wealth multiplier.</description>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>-99999</minValue>
+        <toStringStyle>Money</toStringStyle>
+        <defaultBaseValue>0</defaultBaseValue>
+        <hideAtValue>0</hideAtValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_HeadSize_Cosmetic</defName>
+        <label>head size multiplier</label>
+        <alwaysHide>true</alwaysHide>
+        <category>SM_Stats</category>
+        <minValue>0.05</minValue>
+        <toStringStyle>PercentZero</toStringStyle>
+        <defaultBaseValue>1.0</defaultBaseValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_EVA_Level</defName>
+        <label>EVA Level Override</label>
+        <alwaysHide>true</alwaysHide>
+        <category>SM_Stats</category>
+        <minValue>0</minValue>
+        <toStringStyle>Integer</toStringStyle>
+        <defaultBaseValue>0</defaultBaseValue>
+    </StatDef>
+
+    <!--  -->
+    <StatDef>
+        <defName>BS_SoulPower</defName>
+        <label>soul power</label>
+        <description>Soul power usually gifted or stolen from dark archotechs.</description>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.0</minValue>
+        <toStringStyle>PercentZero</toStringStyle>
+        <defaultBaseValue>0</defaultBaseValue>
+        <hideAtValue>0.05</hideAtValue>
+    </StatDef>
+
+    <!-- Will not lower skill learning speed below the default. -->
+    <StatDef>
+        <defName>SM_Minimum_Learning_Speed</defName>
+        <label>skill learning (no passion)</label>
+        <description>This is how fast the pawn learns when they don't have a passion in the skill.</description>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.35</minValue>
+        <toStringStyle>FloatTwo</toStringStyle>
+        <defaultBaseValue>0.35</defaultBaseValue>
+        <hideAtValue>0.35</hideAtValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_GrowthPointAccumulation</defName>
+        <label>growth point gain</label>
+        <description>This modifies how fast children accumulate growth points.</description>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <toStringStyle>FloatTwo</toStringStyle>
+        <defaultBaseValue>1</defaultBaseValue>
+        <hideAtValue>1</hideAtValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_Food_Need_Capacity</defName> <!--LEGACY! Use MaxNutrition instead-->
+        <description>How much food the pawn can save up. Let's them eat more rarely.</description>
+        <label>Food Capacity Multiplier</label>
+        <alwaysHide>true</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.01</minValue>
+        <toStringStyle>FloatOne</toStringStyle>
+        <defaultBaseValue>1.0</defaultBaseValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_AttackSpeed</defName>
+        <label>Attack Speed</label>
+        <description>Reduces time between all melee attacks.</description>
+        <alwaysHide>true</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.01</minValue>
+        <toStringStyle>FloatTwo</toStringStyle>
+        <!-- <defaultBaseValue>1.0</defaultBaseValue> -->
+        <defaultBaseValue>1.0</defaultBaseValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_UnarmedAttackSpeed</defName>
+        <label>Unarmed Attack Speed</label>
+        <description>Reduces time between unarmed/implant melee attacks.</description>
+        <alwaysHide>true</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.01</minValue>
+        <toStringStyle>FloatTwo</toStringStyle>
+        <!-- <defaultBaseValue>1.0</defaultBaseValue> -->
+        <defaultBaseValue>1.0</defaultBaseValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_BulletDmgMult</defName>
+        <label>Piercing resistance multiplier</label>
+        <description>A multiplier to damage taken from bullets, also reduces damage from piercing attacks.</description>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.01</minValue>
+        <toStringStyle>FloatTwo</toStringStyle>
+        <!-- <defaultBaseValue>1.0</defaultBaseValue> -->
+        <defaultBaseValue>1.0</defaultBaseValue>
+        <hideAtValue>1</hideAtValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_ConcussiveDmgMult</defName>
+        <label>Concussive damage multiplier</label>
+        <description>A multiplier to damage taken from explosions, also reduces blunt attack damage by roughly half the amount.</description>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.01</minValue>
+        <toStringStyle>FloatTwo</toStringStyle>
+        <!-- <defaultBaseValue>1.0</defaultBaseValue> -->
+        <defaultBaseValue>1.0</defaultBaseValue>
+        <hideAtValue>1</hideAtValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_AcidDmgMult</defName>
+        <label>Acid damage multiplier</label>
+        <description>A multiplier to damage taken from any type of acid, also reduces damage taken from venom or poison for about half the amount. Negative values count as immunity.</description>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.0</minValue>
+        <toStringStyle>FloatTwo</toStringStyle>
+        <!-- <defaultBaseValue>1.0</defaultBaseValue> -->
+        <defaultBaseValue>1.0</defaultBaseValue>
+        <hideAtValue>1</hideAtValue>
+    </StatDef>
+
+    <StatDef>
+        <defName>SM_FlirtChance</defName>
+        <label>flirt chance</label>
+        <description>affects the chance that the character will flirt.</description>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.0</minValue>
+        <toStringStyle>FloatOne</toStringStyle>
+        <!-- <defaultBaseValue>1.0</defaultBaseValue> -->
+        <defaultBaseValue>1.0</defaultBaseValue>
+        <hideAtValue>1</hideAtValue>
+    </StatDef>
+
+    <!-- <StatDef>
+        <defName>SM_RomanceChance</defName>
+        <label>romance chance</label>
+        <description>affects the chance that the character will respond to romantic advances. A value of zero .</description>
+        <alwaysHide>false</alwaysHide>
+        <category>BasicsPawn</category>
+        <minValue>0.0</minValue>
+        <toStringStyle>FloatOne</toStringStyle>
+        <defaultBaseValue>1.0</defaultBaseValue>
+        <hideAtValue>1</hideAtValue>
+    </StatDef> -->
+
+</Defs>

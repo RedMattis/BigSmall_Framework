@@ -1,0 +1,134 @@
+<Defs>
+  <GeneDef Name="BS_Metamorph" Abstract="True">
+    <biostatMet>0</biostatMet>
+    <displayCategory>BS_Metamorph</displayCategory>
+    <customEffectDescriptions>
+      <li>If there are other "Morph &lt;condition&gt;" they must also filled.</li>
+    </customEffectDescriptions>
+    <canGenerateInGeneSet>false</canGenerateInGeneSet>
+    <selectionWeight>0</selectionWeight>
+  </GeneDef>
+
+  <GeneDef ParentName="BS_Metamorph" Name="BS_MetamorphUp" Abstract="True">
+    <customEffectDescriptions>
+      <li>This will target any metamorph.</li>
+    </customEffectDescriptions>
+  </GeneDef>
+
+  <GeneDef ParentName="BS_Metamorph" Name="BS_MetamorphDown" Abstract="True">
+    <customEffectDescriptions>
+      <li>This will target any retromorph (downstream).</li>
+    </customEffectDescriptions>
+  </GeneDef>
+
+  <GeneDef ParentName="BS_MetamorphUp">
+    <defName>BS_Metamorph_TimeTeenage</defName>
+    <label>morph teen</label>
+    <description>The carrier of this gene will morph into one of their metamorph targets a short time after they reach their teens.</description>
+    <iconPath>GeneIcons/BS_MorphAgeOld</iconPath>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <metamorphAtAge>13</metamorphAtAge>
+			</li>
+		</modExtensions>
+  </GeneDef>
+
+  <GeneDef ParentName="BS_MetamorphDown">
+    <defName>BS_Retromorph_TimeUnderTeenage</defName>
+    <label>retromorph preteen</label>
+    <description>The carrier of this gene will retromorph into one of their retromorph targets a short time if they are younger than their teens.</description>
+    <iconPath>GeneIcons/BS_MorphAgeYoung</iconPath>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <retromorphUnderAge>13</retromorphUnderAge>
+			</li>
+		</modExtensions>
+  </GeneDef>
+
+  <GeneDef ParentName="BS_MetamorphUp">
+    <defName>BS_Metamorph_TimeAdult</defName>
+    <label>morph adult</label>
+    <description>The carrier of this gene will morph into one of their metamorph targets a short time after they reach their adulthood.</description>
+    <iconPath>GeneIcons/BS_MorphAgeOldAdult</iconPath>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <metamorphAtAge>18</metamorphAtAge>
+			</li>
+		</modExtensions>
+  </GeneDef>
+
+  <GeneDef ParentName="BS_MetamorphDown">
+    <defName>BS_Retromorph_TimeUnderAdult</defName>
+    <label>retromorph pre-adult</label>
+    <description>The carrier of this gene will retromorph into one of their retromorph targets a short time if they are younger than adult.</description>
+    <iconPath>GeneIcons/BS_MorphAgeYoungAdult</iconPath>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <retromorphUnderAge>18</retromorphUnderAge>
+			</li>
+		</modExtensions>
+  </GeneDef>
+
+  <GeneDef ParentName="BS_MetamorphUp">
+    <defName>BS_Metamorph_TimeElder</defName>
+    <label>morph elder</label>
+    <description>The carrier of this gene will morph into one of their metamorph targets a short time after nearing an elderly age by human terms.</description>
+    <iconPath>GeneIcons/BS_MorphAgeOldAdult</iconPath>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <metamorphAtAge>75</metamorphAtAge>
+			</li>
+		</modExtensions>
+  </GeneDef>
+
+  <GeneDef ParentName="BS_MetamorphDown">
+    <defName>BS_Retromorph_TimeUnderElder</defName>
+    <label>retromorph pre-elder</label>
+    <description>The carrier of this gene will retromorph into one of their retromorph targets a short time if they are younger than elderly by human terms.</description>
+    <iconPath>GeneIcons/BS_MorphAgeYoungAdult</iconPath>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <retromorphUnderAge>75</retromorphUnderAge>
+			</li>
+		</modExtensions>
+  </GeneDef>
+
+  <GeneDef ParentName="BS_MetamorphUp">
+    <defName>BS_Metamorph_Pregnant</defName>
+    <label>morph pregnant</label>
+    <description>The carrier of this gene will morph if they become pregnant.</description>
+    <iconPath>GeneIcons/BS_MorphPregnant</iconPath>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <metamorphIfPregnant>true</metamorphIfPregnant>
+			</li>
+		</modExtensions>
+  </GeneDef>
+
+  <GeneDef ParentName="BS_MetamorphUp">
+    <defName>BS_Metamorph_Day</defName>
+    <label>morph day</label>
+    <description>The carrier of this gene will morph if it is day.</description>
+    <iconPath>GeneIcons/BS_MorphSun</iconPath>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <metamorphIfDay>true</metamorphIfDay>
+        <frequentUpdate>true</frequentUpdate>
+			</li>
+		</modExtensions>
+  </GeneDef>
+
+  <GeneDef ParentName="BS_MetamorphUp">
+    <defName>BS_Metamorph_Night</defName>
+    <label>morph night</label>
+    <description>The carrier of this gene will morph when it is night.</description>
+    <iconPath>GeneIcons/BS_MorphMoon</iconPath>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <metamorphIfNight>true</metamorphIfNight>
+        <frequentUpdate>true</frequentUpdate>
+			</li>
+		</modExtensions>
+  </GeneDef>
+  
+</Defs>

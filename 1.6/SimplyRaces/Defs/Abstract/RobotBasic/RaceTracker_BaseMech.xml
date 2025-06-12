@@ -1,0 +1,121 @@
+<Defs>
+
+  <!-- Basic Robot. Used by Simply Robots. -->
+  <!-- Suitable as a base if you either want to customize a lot, or want a humanlike robot such as a synth.  -->
+  <HediffDef ParentName="BS_DefaultRaceTracker" Name="BS_BaseRobotHumanoid" Abstract="True">
+    <hediffClass>BigAndSmall.RaceTracker</hediffClass>
+    <defaultLabelColor>(0.5, 1.0, 1.0)</defaultLabelColor>
+    <label>android base</label>
+    <description>A synthetic being of kind.</description>
+    <descriptionHyperlinks>
+      <BigAndSmall.DefTag>BS_MechanicalDef</BigAndSmall.DefTag>
+      <BigAndSmall.DefTag>BS_MechanicalDescription</BigAndSmall.DefTag>
+    </descriptionHyperlinks>
+    <!-- You'll have to overwrite this if you want to change them due to how the lists are combined. -->
+    <stages Inherit="False">
+      <li>
+        <painFactor>0.8</painFactor>
+        <totalBleedFactor>0.25</totalBleedFactor>
+        <statFactors>
+        </statFactors>
+        <statOffsets>
+          <VacuumResistance MayRequire="Ludeon.Rimworld.Odyssey">2</VacuumResistance>
+        </statOffsets>
+        <damageFactors>
+          <Frostbite>0</Frostbite>
+        </damageFactors>
+        <makeImmuneTo>
+          <li>Flu</li>
+          <li>Malaria</li>
+          <li>SleepingSickness</li>
+          <li>Plague</li>
+          <li>WoundInfection</li>
+          <li>LungRot</li>
+          <li>GutWorms</li>
+          <li>MuscleParasites</li>
+          <li>OrganDecay</li>
+          <li>LungRot</li>
+          <li>FoodPoisoning</li>
+        </makeImmuneTo>
+        <disablesNeeds>
+          <li MayRequire="Dubwise.DubsBadHygiene">DBHThirst</li>
+          <li MayRequire="Dubwise.DubsBadHygiene">Bladder</li>
+          <li MayRequire="Dubwise.DubsBadHygiene">Hygiene</li>
+          <!-- <li>FoodVariety</li> -->
+        </disablesNeeds>
+        <!-- <blocksSleeping>true</blocksSleeping> -->
+      </li>
+		</stages>
+    
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <isMechanical>true</isMechanical>
+        <banAddictionsByDefault>true</banAddictionsByDefault>
+        <romanceTags/> <!-- No tags at all by default. -->
+        <noFamilyRelations>true</noFamilyRelations>
+        <traitFilters>
+          <blacklist>
+            <!-- <li>BodyPurist</li> -->
+          </blacklist>
+        </traitFilters>
+        <hediffFilters>
+          <banlist>
+            <li>Flu</li>
+            <li>Malaria</li>
+            <li>SleepingSickness</li>
+            <li>Plague</li>
+            <li>WoundInfection</li>
+            <li>LungRot</li>
+            <li>GutWorms</li>
+            <li>MuscleParasites</li>
+            <li>OrganDecay</li>
+            <li>FoodPoisoning</li>
+
+            <li>Carcinoma</li>
+            <li>HeartAttack</li>
+            <li>BadBack</li>
+            <li>Frail</li>
+            <li>Cataract</li>
+            <li>Dementia</li>
+            <li>Alzheimers</li>
+            <li>Asthma</li>
+            <li>HeartArteryBlockage</li>
+            <li>Anesthetic</li>
+
+            <li MayRequire="vanillaracesexpanded.fungoid">VRE_GeneInfection</li>
+          </banlist>
+        </hediffFilters>
+        <geneTagFilters>
+          <blacklist>
+            <li MayRequire="Ludeon.Rimworld.Biotech">Reproduction</li>
+          </blacklist>
+        </geneTagFilters>
+        <nullsThoughts>
+          <li>Pain</li>
+          <li>RotStink</li>
+          <li>RotStinkLingering</li>
+          <li>SharedBed</li>
+          <li>MasochistPain</li>
+          <li>ProsthophobeUnhappy</li>
+        </nullsThoughts>
+        <surgeryRecipes>
+          <blacklist>
+            <li>InstallNaturalLiver</li>
+            <li>InstallNaturalLung</li>
+            <li>InstallNaturalKidney</li>
+            <li>InstallNaturalHeart</li>
+            <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_AndroidConversion</li>
+          </blacklist>
+          <allowlist>
+            <li>BS_RepairAndroidBrain</li>
+            <li>BS_RepairAndroidReactor</li>
+            <li>BS_RepairAndroidOrgan</li>
+            <li>BS_RepairAndroidMinorOrganPart</li>
+            <li>BS_RepairAndroidPart</li>
+            <li>BS_RepairAndroidPartSmall</li>
+          </allowlist>
+        </surgeryRecipes>
+      </li>
+    </modExtensions>
+  </HediffDef>
+</Defs>

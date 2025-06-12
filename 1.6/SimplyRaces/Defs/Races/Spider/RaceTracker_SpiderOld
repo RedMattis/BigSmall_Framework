@@ -1,0 +1,173 @@
+<Defs>
+
+  <HediffDef ParentName="BS_DefaultRaceTracker">
+    <defName>BS_SpiderPersonRace</defName>
+    <description>A humanlike being with a spider-like abdomen</description>
+    <label>spider-person</label>
+
+    <stages Inherit="False">
+      <li>
+        <statFactors>
+          <MaxNutrition>2.0</MaxNutrition>
+        </statFactors>
+      </li>
+    </stages>
+    <comps>
+      <li Class="BigAndSmall.CompProperties_Race">
+        <canSwapAwayFrom>true</canSwapAwayFrom>
+      </li>
+    </comps>
+    <renderNodeProperties>
+      <!-- Righthand side -->
+      <li Class="BigAndSmall.PawnRenderingProps_Ultimate">
+        <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
+        <workerClass>BigAndSmall.PawnRenderNodeWorker_BodyTypeOffsets</workerClass>
+        <parentTagDef>Body</parentTagDef>
+        <rotDrawMode>Fresh, Rotting</rotDrawMode>
+        <shader>Cutout</shader>
+        <conditionalGraphics>
+          <texturePaths>
+            <Body_Hulk>RaceDefaults/Spooder/bp_hulk</Body_Hulk>
+    
+            <Body_Male>RaceDefaults/Spooder/bp_male</Body_Male>
+            <Body_Female>RaceDefaults/Spooder/bp_female</Body_Female>
+            
+            <Body_Fat>RaceDefaults/Spooder/bp_fat</Body_Fat>
+            <Body_Thin>RaceDefaults/Spooder/bp_default</Body_Thin>
+            <!-- <Body_Child>RaceDefaults/Spooder/bp_child</Body_Child>
+            <Body_Baby>RaceDefaults/Spooder/bp_child</Body_Baby> -->
+          </texturePaths>
+          <colorA>
+            <!-- <skinColor>true</skinColor> -->
+            <hairColor>true</hairColor>
+            <brightness>0.95</brightness>
+            <alts>
+              <li>
+                <triggers><li>Dead</li></triggers>
+                <hairColor>true</hairColor>
+                <skinColor>true</skinColor> 
+                <saturation>0.6</saturation>
+              </li>
+            </alts>
+          </colorA>
+          <alts>
+            <li>
+              <triggerGeneTag>
+                <acceptlist>
+                  <li>taur</li>
+                </acceptlist>
+              </triggerGeneTag>
+              <texturePaths><default>BS_Blank</default></texturePaths>
+            </li>
+            <li>
+              <!-- Poor spooder lost its entire abdomen! -->
+              <triggerBodyPart>
+                <li>
+                  <bodyPartDef>BS_SpiderAbdomen</bodyPartDef>
+                  <partMissing>true</partMissing>
+                </li>
+              </triggerBodyPart>
+              <texturePaths><default>BS_Blank</default></texturePaths>
+            </li>
+          </alts>
+        </conditionalGraphics>
+        <drawSize>(1.625,1.625)</drawSize>
+        <drawData>
+          <dataNorth>
+            <offset>(0, -0.0001, -0.3067)</offset>
+            <layer>79.8</layer>
+          </dataNorth>
+          <dataSouth>
+            <offset>(0, -0.0001, -0.3067)</offset>
+            <layer>20</layer>
+          </dataSouth>
+          <dataEast>
+            <offset>(-0.3067, -0.0001, -0.3067)</offset>
+            <layer>20</layer>
+          </dataEast>
+          <dataWest>
+            <offset>(0.3067, -0.0001, -0.3067)</offset>
+            <layer>20</layer>
+          </dataWest>
+        </drawData>
+      </li>
+
+      <li Class="BigAndSmall.PawnRenderingProps_Ultimate">
+        <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
+        <parentTagDef>Body</parentTagDef>
+        <rotDrawMode>Fresh, Rotting</rotDrawMode>
+        <conditionalGraphics>
+          <texturePaths>
+            <Body_Hulk>RaceDefaults/Spooder/Back/bp_hulk</Body_Hulk>
+    
+            <Body_Male>RaceDefaults/Spooder/Back/bp_male</Body_Male>
+            <Body_Female>RaceDefaults/Spooder/Back/bp_female</Body_Female>
+            
+            <Body_Fat>RaceDefaults/Spooder/Back/bp_fat</Body_Fat>
+            <Body_Thin>RaceDefaults/Spooder/Back/bp_default</Body_Thin>
+            <!-- <Body_Child>RaceDefaults/spooder/bp_child</Body_Child>
+            <Body_Baby>RaceDefaults/spooder/bp_child</Body_Baby> -->
+          </texturePaths>
+          <colorA>
+            <!-- <skinColor>true</skinColor> -->
+            <hairColor>true</hairColor>
+            <brightness>0.95</brightness>
+            <alts>
+              <li>
+                <triggers><li>Dead</li></triggers>
+                <hairColor>true</hairColor>
+                <skinColor>true</skinColor> 
+                <saturation>0.6</saturation>
+              </li>
+            </alts>
+          </colorA>
+          <alts>
+            <li>
+              <triggerGeneTag>
+                <acceptlist>
+                  <li>taur</li>
+                </acceptlist>
+              </triggerGeneTag>
+              <texturePaths><default>BS_Blank</default></texturePaths>
+            </li>
+            <li>
+              <!-- Poor spooder lost its entire abdomen! -->
+              <triggerBodyPart>
+                <li>
+                  <bodyPartDef>BS_SpiderAbdomen</bodyPartDef>
+                  <partMissing>true</partMissing>
+                </li>
+              </triggerBodyPart>
+              <texturePaths><default>BS_Blank</default></texturePaths>
+            </li>
+          </alts>
+        </conditionalGraphics>
+        <drawSize>(1.625,1.625)</drawSize>
+        <drawData>
+          <dataNorth>
+            <offset>(0, 0.0001, -0.3067)</offset>
+            <layer>79</layer>
+          </dataNorth>
+          <dataSouth>
+            <offset>(0, -0.05, -0.3067)</offset>
+          </dataSouth>
+          <dataEast>
+            <offset>(-0.3567, 0.0150617733, -0.3067)</offset>
+          </dataEast>
+        </drawData>
+      </li>
+    </renderNodeProperties>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <canWalkOnCreep>true</canWalkOnCreep>
+        <renderCacheOff>true</renderCacheOff>
+        <applyBodyHediff MayRequire="OskarPotocki.VanillaFactionsExpanded.Core">
+          <li>
+            <hediff MayRequire="OskarPotocki.VanillaFactionsExpanded.Core">BS_Stride</hediff>
+          </li>
+        </applyBodyHediff>
+        <bodyPosOffset>0.5</bodyPosOffset>
+      </li> 
+    </modExtensions>
+  </HediffDef>
+</Defs>

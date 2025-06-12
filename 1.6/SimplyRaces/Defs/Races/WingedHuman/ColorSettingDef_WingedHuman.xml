@@ -1,0 +1,88 @@
+<Defs>
+  <BigAndSmall.ColorSettingDef>
+    <defName>BS_WingClr_A</defName>
+    <color>
+      <replaceFlagsAndInactive><WingColorA/></replaceFlagsAndInactive>
+      <hairColor>true</hairColor>
+      <altDefs> <li>BS_WingRotted</li> </altDefs>
+    </color>
+  </BigAndSmall.ColorSettingDef>
+
+  <BigAndSmall.ColorSettingDef>
+    <defName>BS_WingClrDark_A</defName>
+    <color>
+      <replaceFlagsAndInactive> <WingColorA /></replaceFlagsAndInactive>
+      <hairColor>true</hairColor>
+      <brightness>0.8</brightness>
+      <saturation>1.06</saturation>
+      <altDefs> <li>BS_WingRottedDark</li> </altDefs>
+    </color>
+  </BigAndSmall.ColorSettingDef>
+
+  <BigAndSmall.ColorSettingDef>
+    <defName>BS_WingClrSaturated_A</defName>
+    <color>
+      <replaceFlagsAndInactive> <WingColorA /></replaceFlagsAndInactive>
+      <hairColor>true</hairColor>
+      <brightness>0.95</brightness>
+      <saturation>1.06</saturation>
+      <altDefs> <li>BS_WingRottedDark</li> </altDefs>
+    </color>
+  </BigAndSmall.ColorSettingDef>
+
+  <BigAndSmall.ColorSettingDef>
+    <defName>BS_WingClr_B</defName>
+    <color>
+      <replaceFlagsAndInactive> <WingColorB /> </replaceFlagsAndInactive>
+      <hairColor>true</hairColor>
+      <altDefs> <li>BS_WingRotted</li> </altDefs>
+    </color>
+  </BigAndSmall.ColorSettingDef>
+
+  <BigAndSmall.ColorSettingDef>
+    <defName>BS_WingClrDark_B</defName>
+    <color>
+      <replaceFlagsAndInactive> <WingColorB /> </replaceFlagsAndInactive>
+      <hairColor>true</hairColor>
+      <brightness>0.8</brightness>
+      <saturation>1.06</saturation>
+      <maxSaturation>0.95</maxSaturation>
+      <altDefs> <li>BS_WingRottedDark</li> </altDefs>
+    </color>
+  </BigAndSmall.ColorSettingDef>
+
+    <BigAndSmall.ColorSettingDef>
+    <defName>BS_WingClrSaturated_B</defName>
+    <color>
+      <replaceFlagsAndInactive> <WingColorB /> </replaceFlagsAndInactive>
+      <hairColor>true</hairColor>
+      <brightness>0.85</brightness>
+      <saturation>1.1</saturation>
+      <altDefs> <li>BS_WingRottedDark</li> </altDefs>
+    </color>
+  </BigAndSmall.ColorSettingDef>
+
+  <BigAndSmall.ColorSettingDef>
+    <defName>BS_WingRotted</defName>
+    <color>
+      <triggers>
+        <li>Rotted</li>
+      </triggers>
+      <hairColor>true</hairColor>
+      <color>(0.4, 0.3, 0.20)</color>
+      <saturation>0.5</saturation>
+    </color>
+  </BigAndSmall.ColorSettingDef>
+
+  <BigAndSmall.ColorSettingDef>
+    <defName>BS_WingRottedDark</defName>
+    <color>
+      <triggers>
+        <li>Rotted</li>
+      </triggers>
+      <hairColor>true</hairColor>
+      <color>(0.37, 0.28, 0.18)</color>
+      <saturation>0.55</saturation>
+    </color>
+  </BigAndSmall.ColorSettingDef>
+</Defs>

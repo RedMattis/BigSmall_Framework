@@ -1,0 +1,31 @@
+<Defs>
+
+  <HediffDef Abstract="True" Name="BS_DefaultRaceTracker">
+    <label>an amazing unnamed race</label>
+    <description>the author forgot to give these unfortunate souls a description. Shame them! Shaaaaaaaame!</description>
+
+    <hediffClass>BigAndSmall.RaceTracker</hediffClass>
+    <defaultLabelColor>(0.5, 0.5, 1.0)</defaultLabelColor>
+    <isBad>false</isBad>
+    <everCurableByItem>false</everCurableByItem>
+    <initialSeverity>1</initialSeverity>
+
+    <!-- You're probably going to want to populate these with stuff. :) -->
+    <!-- <stages Inherit="False"></stages>
+    <comps>
+      <li Class="BigAndSmall.CompProperties_Race">
+        <canSwapAwayFrom>true</canSwapAwayFrom>
+      </li>
+    </comps>
+    <renderNodeProperties>
+      Your graphics here... 
+    </renderNodeProperties>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        Your content here... For example:
+        <li Class="BigAndSmall.RaceExtension"> <raceHediff>BS_Naga_Race</raceHediff> </li>
+      </li> 
+    </modExtensions> -->
+  </HediffDef>
+
+</Defs>

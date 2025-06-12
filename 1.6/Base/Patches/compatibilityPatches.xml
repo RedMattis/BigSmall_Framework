@@ -1,0 +1,91 @@
+<Patch>
+  <Operation Class="PatchOperationAdd">
+    <success>Always</success>
+    <xpath>Defs/ThingDef/modExtensions/li[@Class="HeavyWeapons.HeavyWeapon"][not(supportedTraits)]</xpath>
+    <value>
+      <supportedTraits/>
+    </value>
+  </Operation>
+  
+  <Operation Class="PatchOperationAdd">
+    <success>Always</success>
+    <xpath>Defs/ThingDef/modExtensions/li[@Class="HeavyWeapons.HeavyWeapon"]/supportedTraits</xpath>
+    <value>
+      <li>BS_Giant</li>
+    </value>
+  </Operation>
+
+
+  <!-- Roo's Minotaurs-->
+
+  <!-- <Operation Class="PatchOperationRemove">
+    <xpath>Defs/GeneDef[defName="RBM_Herculean"]/modExtensions/li[@Class="VanillaGenesExpanded.GeneExtension"]</xpath>
+  </Operation> -->
+  <Operation Class="PatchOperationFindMod">
+    <mods>
+      <li>Rooboid.Minotaur</li>
+    </mods>
+    <match Class="PatchOperationAdd">
+      <xpath>Defs/GeneDef[defName="RBM_Herculean"]/statOffsets</xpath>
+      <value>
+        <SM_Cosmetic_BodySizeOffset>0.35</SM_Cosmetic_BodySizeOffset>
+        <SM_HeadSize_Cosmetic>-0.10</SM_HeadSize_Cosmetic>
+      </value>
+    </match>
+  </Operation>
+
+  <Operation Class="PatchOperationFindMod">
+    <mods>
+      <li>Vanilla Nutrient Paste Expanded</li>
+    </mods>
+    <match Class="PatchOperationReplace">
+      <xpath>Defs/ThingDef[defName="VNPE_NutrientPasteFeeder"]/comps/li[@Class="PipeSystem.CompProperties_ConvertResourceToThing"]/maxOutputStackSize</xpath>
+      <value>
+        <maxOutputStackSize>50</maxOutputStackSize>
+      </value>
+    </match>
+  </Operation>
+
+  <Operation Class="PatchOperationFindMod">
+    <mods>
+        <li>Vanilla Factions Expanded - Pirates</li>
+    </mods>
+    <match Class="PatchOperationSequence">
+      <!-- <success>Always</success> -->
+      <operations>
+          <!-- Add Trait to accepted tags -->
+          <li Class="PatchOperationAdd">
+              <xpath>/Defs/ThingDef[@Name="VFEP_BaseMeleeWeapon_Warcasket"]/modExtensions/li[@Class="HeavyWeapons.HeavyWeapon"]/supportedTraits</xpath>
+              <value>
+                  <li>BS_Giant</li>
+              </value>
+          </li>
+          
+          <li Class="PatchOperationAdd">
+              <xpath>/Defs/ThingDef[@Name="VFEP_BaseWarcasketGun"]/modExtensions/li[@Class="HeavyWeapons.HeavyWeapon"]/supportedTraits</xpath>
+              <value>
+                  <li>BS_Giant</li>
+              </value>
+          </li>
+      </operations>
+    </match>
+</Operation>
+
+<Operation Class="PatchOperationFindMod">
+    <mods>
+        <li>Vanilla Weapons Expanded - Heavy Weapons</li>
+    </mods>
+    <match Class="PatchOperationSequence">
+      <!-- <success>Always</success> -->
+      <operations>
+          <!-- Add Trait to accepted tags -->
+          <li Class="PatchOperationAdd">
+              <xpath>/Defs/ThingDef[defName="VWE_Gun_Autocannon" or defName="VWE_Gun_HandheldMortar" or defName="VWE_Gun_HeavyFlamer" or defName="VWE_Bullet_HeavyFlamer" or defName="VWE_Gun_SwarmMissileLauncher" or defName="VWE_Bullet_SwarmRocket" or defName="VWE_Gun_Autocannon" or defName="VWE_Gun_UraniumSlugRifle"]/modExtensions/li[@Class="HeavyWeapons.HeavyWeapon"]/supportedTraits</xpath>
+              <value>
+                  <li>BS_Giant</li>
+              </value>
+          </li>
+      </operations>
+    </match>
+</Operation>
+</Patch>

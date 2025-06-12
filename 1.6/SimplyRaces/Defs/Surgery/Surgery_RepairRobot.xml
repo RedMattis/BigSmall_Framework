@@ -1,0 +1,263 @@
+<Defs>
+  <RecipeDef ParentName="SurgeryInstallBodyPartNaturalBase">
+    <defName>BS_RepairAndroidBrain</defName>
+    <label>repair android brain</label>
+    <description>restore a damaged android brain to its original state. Very risky.</description>
+    <descriptionHyperlinks><ThingDef>ComponentSpacer</ThingDef></descriptionHyperlinks>
+    <jobString>Restoring brain.</jobString>
+    <deathOnFailedSurgeryChance>0.1</deathOnFailedSurgeryChance>
+    <skillRequirements>
+      <Medicine>8</Medicine>
+      <Crafting>12</Crafting>
+    </skillRequirements>
+    <researchPrerequisite>
+      <li>Bionics</li>
+    </researchPrerequisite>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>ComponentSpacer</li>
+          </thingDefs>
+        </filter>
+        <count>3</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Hyperweave</li>
+          </thingDefs>
+        </filter>
+        <count>4</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>ComponentSpacer</li>
+        <li>Hyperweave</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <appliedOnFixedBodyParts>
+      <li>BS_ArtificialBrain</li>
+    </appliedOnFixedBodyParts>
+  </RecipeDef>
+
+  <RecipeDef ParentName="SurgeryInstallBodyPartNaturalBase">
+    <defName>BS_RepairAndroidReactor</defName>
+    <label>repair android reactor</label>
+    <description>restore a damaged, replaced, or missing android part to its original state. Very risky.</description>
+    <descriptionHyperlinks><ThingDef>ComponentSpacer</ThingDef></descriptionHyperlinks>
+    <jobString>Restoring reactor.</jobString>
+    <deathOnFailedSurgeryChance>0.1</deathOnFailedSurgeryChance>
+    <researchPrerequisite>
+      <li>Bionics</li>
+    </researchPrerequisite>
+    <skillRequirements>
+      <Medicine>8</Medicine>
+      <Crafting>12</Crafting>
+    </skillRequirements>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>ComponentSpacer</li>
+          </thingDefs>
+        </filter>
+        <count>2</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Plasteel</li>
+          </thingDefs>
+        </filter>
+        <count>4</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>ComponentSpacer</li>
+        <li>Plasteel</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <appliedOnFixedBodyParts>
+      <li>BS_Reactor</li>
+    </appliedOnFixedBodyParts>
+  </RecipeDef>
+
+  <RecipeDef ParentName="SurgeryInstallBodyPartNaturalBase">
+    <defName>BS_RepairAndroidOrgan</defName>
+    <label>repair android component</label>
+    <description>restore a damaged, replaced, or missing android part to its original state.</description>
+    <descriptionHyperlinks><ThingDef>ComponentIndustrial</ThingDef></descriptionHyperlinks>
+    <jobString>Restoring part.</jobString>
+    <deathOnFailedSurgeryChance>0</deathOnFailedSurgeryChance>
+    <researchPrerequisite>
+      <li>Prosthetics</li>
+    </researchPrerequisite>
+    <skillRequirements>
+      <Medicine>8</Medicine>
+      <Crafting>6</Crafting>
+    </skillRequirements>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>ComponentIndustrial</li>
+          </thingDefs>
+        </filter>
+        <count>5</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Hyperweave</li>
+          </thingDefs>
+        </filter>
+        <count>4</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>ComponentIndustrial</li>
+        <li>Hyperweave</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <appliedOnFixedBodyParts>
+      <li>BS_FluidReprocessor</li>
+      <li>BS_FuelProcessor</li>
+      <li>BS_AirCoolingUnit</li>
+    </appliedOnFixedBodyParts>
+  </RecipeDef>
+
+  <RecipeDef ParentName="SurgeryInstallBodyPartNaturalBase">
+    <defName>BS_RepairAndroidMinorOrganPart</defName>
+    <label>restore android part</label>
+    <description>restore a damaged, replaced, or missing android part to its original state.</description>
+    <descriptionHyperlinks><ThingDef>ComponentIndustrial</ThingDef></descriptionHyperlinks>
+    <jobString>Restoring part.</jobString>
+    <deathOnFailedSurgeryChance>0</deathOnFailedSurgeryChance>
+    <researchPrerequisite>
+      <li>Bionics</li>
+    </researchPrerequisite>
+    <skillRequirements>
+      <Medicine>6</Medicine>
+      <Crafting>5</Crafting>
+    </skillRequirements>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>ComponentIndustrial</li>
+          </thingDefs>
+        </filter>
+        <count>2</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Plasteel</li>
+          </thingDefs>
+        </filter>
+        <count>2</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>ComponentIndustrial</li>
+        <li>Plasteel</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <appliedOnFixedBodyParts>
+      <li>BS_SightSensor</li>
+      <li>BS_HearingSensor</li>
+      <li>BS_SmellSensor</li>
+      <li>BS_MechanicalTongue</li>
+      <li>BS_MechanicalSpine</li>
+    </appliedOnFixedBodyParts>
+  </RecipeDef>
+
+  <RecipeDef ParentName="SurgeryInstallBodyPartNaturalBase">
+    <defName>BS_RepairAndroidPart</defName>
+    <label>restore android part</label>
+    <description>restore a damaged, replaced, or missing android part to its original state.</description>
+    <descriptionHyperlinks><ThingDef>Plasteel</ThingDef></descriptionHyperlinks>
+    <jobString>Restoring part.</jobString>
+    <deathOnFailedSurgeryChance>0</deathOnFailedSurgeryChance>
+    <researchPrerequisite>
+      <li>Machining</li>
+    </researchPrerequisite>
+    <skillRequirements>
+      <Medicine>6</Medicine>
+      <Crafting>5</Crafting>
+    </skillRequirements>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Plasteel</li>
+          </thingDefs>
+        </filter>
+        <count>15</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>ComponentIndustrial</li>
+          </thingDefs>
+        </filter>
+        <count>3</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>Plasteel</li>
+        <li>ComponentIndustrial</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <appliedOnFixedBodyParts>
+      <li>BS_MechanicalShoulder</li>
+      <li>BS_MechanicalArm</li>
+      <li>BS_MechanicalHand</li>
+      <li>BS_MechanicalLeg</li>
+      <li>BS_MechanicalFoot</li>
+      <li>BS_MechanicalRibs</li>
+      <li>BS_MechanicalSternum</li>
+    </appliedOnFixedBodyParts>
+  </RecipeDef>
+
+  <RecipeDef ParentName="SurgeryInstallBodyPartNaturalBase">
+    <defName>BS_RepairAndroidPartSmall</defName>
+    <label>restore android part</label>
+    <description>restore a damaged, replaced, or missing android part to its original state.</description>
+    <descriptionHyperlinks><ThingDef>Plasteel</ThingDef></descriptionHyperlinks>
+    <jobString>Restoring part.</jobString>
+    <deathOnFailedSurgeryChance>0</deathOnFailedSurgeryChance>
+    <researchPrerequisite>
+      <li>Electricity</li>
+    </researchPrerequisite>
+    <skillRequirements>
+      <Medicine>5</Medicine>
+      <Crafting>5</Crafting>
+    </skillRequirements>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Plasteel</li>
+          </thingDefs>
+        </filter>
+        <count>5</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>Plasteel</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <appliedOnFixedBodyParts>
+      <li>BS_MechanicalFinger</li>
+      <li>BS_MechanicalToe</li>
+    </appliedOnFixedBodyParts>
+  </RecipeDef>
+</Defs>

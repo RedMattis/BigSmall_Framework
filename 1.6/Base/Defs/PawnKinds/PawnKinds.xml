@@ -1,0 +1,11 @@
+<Defs>
+  <PawnKindDef ParentName="BS_MedievalCivilianBase" Name="BS_VillageMedieval">
+    <defName>BS_VillagerMedieval</defName>
+    <label>villager</label>
+    <combatPower>35</combatPower>
+    <initialResistanceRange>8~15</initialResistanceRange>
+    <initialWillRange>1~4</initialWillRange>
+    <isFighter>true</isFighter>
+    <apparelTags> <li>DankPyon_Peasant</li> </apparelTags>
+  </PawnKindDef>
+</Defs>

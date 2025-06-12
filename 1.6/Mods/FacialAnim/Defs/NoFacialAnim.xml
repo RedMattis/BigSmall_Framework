@@ -1,0 +1,96 @@
+<Defs>
+
+  <GeneCategoryDef>
+    <defName>BS_NalDisable</defName>
+    <label>Facial Animation Toggles</label>
+    <displayPriorityInXenotype>-9999</displayPriorityInXenotype>
+  </GeneCategoryDef>
+
+  <GeneDef Name="BS_NalDisableBase" Abstract="True">
+    <displayCategory>BS_NalDisable</displayCategory>
+    <biostatCpx>0</biostatCpx>
+    <biostatMet>0</biostatMet>
+    <selectionWeight>0</selectionWeight>
+     <!--Don't miss this one if you're making your own version.-->
+    <exclusionTags><li>BS_NalsDisableTag</li></exclusionTags>
+  </GeneDef>
+
+  <GeneDef ParentName="BS_NalDisableBase">
+    <defName>BS_FacialAnimDisabled</defName>
+    <label>No Facial Animations</label>
+    <description>Completely disable facial animations from Nal's Facial Animation Mod and use the standard head instead. This is probably the version of the facial anim disablers you're want to use.</description>
+    <iconPath>GeneIcons/BS_ToggleFacialAnim</iconPath>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <disableFacialAnimations>true</disableFacialAnimations>
+      </li>
+    </modExtensions>
+  </GeneDef>
+
+  <GeneDef ParentName="BS_NalDisableBase">
+    <defName>BS_FA_Keep_Brows</defName>
+    <label>FA (Brow)</label>
+    <description>Retains only animations related to the brows.</description>
+    <iconPath>GeneIcons/BS_NoFacialAnim</iconPath>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <facialDisabler>
+          <headName>retain</headName>
+          <browName>retain</browName>
+        </facialDisabler>
+      </li>
+    </modExtensions>
+  </GeneDef>
+
+  <GeneDef ParentName="BS_NalDisableBase">
+    <defName>BS_FA_Keep_Lid</defName>
+    <label>FA (Brow, Lid)</label>
+    <description>Retains only animations related to the lids.</description>
+    <iconPath>GeneIcons/BS_NoFacialAnim</iconPath>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <facialDisabler>
+          <headName>retain</headName>
+          <lidName>retain</lidName>
+        </facialDisabler>
+      </li>
+    </modExtensions>
+  </GeneDef>
+
+  <GeneDef ParentName="BS_NalDisableBase">
+    <defName>BS_FA_Keep_Eyes</defName>
+    <label>FA (Eyes+)</label>
+    <description>Retains only animations related to the eyes/lids.</description>
+    <iconPath>GeneIcons/BS_NoFacialAnim</iconPath>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <facialDisabler>
+          <headName>retain</headName>
+          <lidName>retain</lidName>
+          <lidOptionsName>retain</lidOptionsName>
+          <eyeballName>retain</eyeballName>
+        </facialDisabler>
+      </li>
+    </modExtensions>
+  </GeneDef>
+
+
+  <GeneDef ParentName="BS_NalDisableBase">
+    <defName>BS_FA_Keep_LidBrow</defName>
+    <label>FA (Lid and Brow)</label>
+    <description>Retains the lids and brows.</description>
+    <iconPath>GeneIcons/BS_NoFacialAnim</iconPath>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <facialDisabler>
+          <headName>retain</headName>
+          <lidName>retain</lidName>
+          <browName>retain</browName>
+        </facialDisabler>
+      </li>
+    </modExtensions>
+  </GeneDef>
+
+  
+
+</Defs>
