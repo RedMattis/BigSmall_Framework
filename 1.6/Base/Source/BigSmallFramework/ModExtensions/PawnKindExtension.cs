@@ -17,6 +17,12 @@ namespace BigAndSmall
         public bool appendAsXenogenes = false;
         public bool removeOverlappingGenes = true;
 
+        /// <summary>
+        /// Generate a "humanlike animal" dummy based on this PawnKindDef.
+        /// Used to treat the pawn as if it had been generated from an animal.
+        /// </summary>
+        public bool generateHumanlikeAnimalFromThis = false;
+
         public void Execute(Pawn pawn)
         {
             AppendGenes(pawn);

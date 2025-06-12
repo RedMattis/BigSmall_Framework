@@ -341,7 +341,7 @@ namespace BigAndSmall
                     // Check color
                     if (apparel.def.colorGenerator != null)
                     {
-                        apparel.SetColor(__instance.def.pawnKind.favoriteColor.Value, false);
+                        apparel.SetColor(__instance.def.pawnKind.favoriteColor.color, false);
                     }
                     pawn.apparel.Wear(apparel);
                 }

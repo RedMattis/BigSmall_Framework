@@ -1,0 +1,65 @@
+<Defs>
+  <BigAndSmall.PawnExtensionDef>
+    <defName>BS_DefaultAnimal_NoHands</defName>
+    <pawnExtension>
+      <hideHumanlikeRenderNodes>true</hideHumanlikeRenderNodes>
+      <canWieldThings>false</canWieldThings>
+      <aptitudes>
+        <Melee>4</Melee>
+        <Shooting>-20</Shooting>
+        <Construction>-4</Construction>
+        <Mining>-4</Mining>
+        <Cooking>-4</Cooking>
+        <Plants>-4</Plants>
+        <Animals>-20</Animals>
+        <Crafting>-8</Crafting>
+        <Artistic>-2</Artistic>
+        <Medicine>-8</Medicine>
+        <!-- <Social>0</Social>
+        <Intellectual>0</Intellectual> -->
+      </aptitudes>
+      <apparelRestrictions>
+        <noArmor>true</noArmor>
+        <thingDefs>
+          <allowlist><li>Apparel_ShieldBelt</li></allowlist>
+        </thingDefs>
+        <apparelLayers>
+          <blacklist>
+            <li>Shell</li>
+            <li>Overhead</li>
+          </blacklist>
+        </apparelLayers>
+        <bodyPartGroups>
+          <blacklist>
+            <li>FullHead</li>
+          </blacklist>
+        </bodyPartGroups>
+      </apparelRestrictions>
+    </pawnExtension>
+  </BigAndSmall.PawnExtensionDef>
+
+  <BigAndSmall.PawnExtensionDef>
+    <defName>BS_DefaultAnimal</defName>
+    <pawnExtension>
+      <hideHumanlikeRenderNodes>true</hideHumanlikeRenderNodes>
+      <canWieldThings>true</canWieldThings>
+      <apparelRestrictions>
+        <noArmor>true</noArmor>
+        <thingDefs>
+          <allowlist><li>Apparel_ShieldBelt</li></allowlist>
+        </thingDefs>
+        <apparelLayers>
+          <blacklist>
+            <li>Shell</li>
+            <li>Overhead</li>
+          </blacklist>
+        </apparelLayers>
+        <bodyPartGroups>
+          <blacklist>
+            <li>FullHead</li>
+          </blacklist>
+        </bodyPartGroups>
+      </apparelRestrictions>
+    </pawnExtension>
+  </BigAndSmall.PawnExtensionDef>
+</Defs>

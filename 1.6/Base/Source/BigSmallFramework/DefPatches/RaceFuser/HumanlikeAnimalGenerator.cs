@@ -15,6 +15,7 @@ namespace BigAndSmall
     public class HumanlikeAnimal
     {
         public PawnKindDef animalKind;
+        public ThingDef humanlikeThing;
         public ThingDef humanlike;
         public ThingDef animal;
 
@@ -29,12 +30,10 @@ namespace BigAndSmall
                     return i;
                 }
             }
-
             return 0;
         }
     }
 
-    
     public static class HumanlikeAnimals
     {
         public static HumanlikeAnimal GetHumanlikeAnimalFor(ThingDef thingDef)
@@ -46,8 +45,9 @@ namespace BigAndSmall
             return null;
         }
 
-        public static ThingDef HumanLikeAnimalFor(ThingDef td) => GetHumanlikeAnimalFor(td)?.humanlike;
-        public static ThingDef AnimalFor(ThingDef td) => GetHumanlikeAnimalFor(td)?.animal;
+        public static ThingDef HumanLikeAnimalFor(ThingDef td) => GetHumanlikeAnimalFor(td)?.humanlikeThing;
+        public static ThingDef HumanLikeSourceFor(ThingDef td) => GetHumanlikeAnimalFor(td)?.humanlike;
+        public static ThingDef AnimalSourceFor(ThingDef td) => GetHumanlikeAnimalFor(td)?.animal;
     }
 
     public static class HumanlikeAnimalGenerator
@@ -61,8 +61,10 @@ namespace BigAndSmall
             {
                 HashSet<ThingDef> thingDefsGenerated = [];
 
-                var aniPawnKinds = DefDatabase<PawnKindDef>.AllDefs.Where(x => x.race is ThingDef aniThing && aniThing?.race is RaceProperties race &&
-                    race.Animal && race.intelligence == Intelligence.Animal).ToList();
+                var aniPawnKinds = DefDatabase<PawnKindDef>.AllDefs
+                    .Where(x => x.race is ThingDef aniThing && aniThing?.race is RaceProperties race &&
+                        race.Animal && race.intelligence == Intelligence.Animal)
+                    .ToList();
                 foreach (var aniPawnKind in aniPawnKinds)
                 {
                     if (thingDefsGenerated.Contains(aniPawnKind.race)) continue;
@@ -70,11 +72,33 @@ namespace BigAndSmall
                     thingDefsGenerated.Add(aniPawnKind.race);
                 }
 
-                foreach((ThingDef th, HumanlikeAnimal hAnim) in humanlikeAnimals)
+                var treatAsAnimal = DefDatabase<PawnKindDef>.AllDefs.Where(x=>x.ExtensionsOnDef<PawnKindExtension, PawnKindDef>()
+                                                            .Any(y => y.generateHumanlikeAnimalFromThis)).ToList();
+                foreach(var animalLikePK in treatAsAnimal)
+                {
+                    if (thingDefsGenerated.Contains(animalLikePK.race)) continue;
+                    MakeDummySetupsForAlreadySapientAnimals(animalLikePK);
+                    thingDefsGenerated.Add(animalLikePK.race);
+                }
+
+                foreach ((ThingDef th, HumanlikeAnimal hAnim) in humanlikeAnimals)
                 {
                     reverseLookupHumanlikeAnimals[hAnim.animal] = hAnim;
                 }
             }
+        }
+
+        private static void MakeDummySetupsForAlreadySapientAnimals(PawnKindDef animalLikePK)
+        {
+            var pawnExt = animalLikePK.ExtensionsOnDef<PawnKindExtension, PawnKindDef>().First(x => x.generateHumanlikeAnimalFromThis);
+            HumanlikeAnimal hla = new()
+            {
+                animalKind = animalLikePK,
+                humanlikeThing = animalLikePK.race,
+                humanlike = animalLikePK.race,
+                animal = animalLikePK.race
+            };
+            humanlikeAnimals[animalLikePK.race] = hla;
         }
 
         /// <summary>
@@ -207,85 +231,68 @@ namespace BigAndSmall
                     $"No warning will be sent for any further animals skipped for humanlike-animal generation to avoid spamming the log.", 6661337);
             }
 
-            List<string> manipulatorBlackList = ["Mouth", "Jaw", "Beak", "Leg"];
-            var allParts = newRace.body.corePart.GetAllBodyPartsRecursive();
-            bool hasHands =
-                HasPartWithTag(allParts, BodyPartTagDefOf.ManipulationLimbCore, manipulatorBlackList) ||
-                HasPartWithTag(allParts, BodyPartTagDefOf.ManipulationLimbDigit, manipulatorBlackList) ||
-                HasPartWithTag(allParts, BodyPartTagDefOf.ManipulationLimbSegment, manipulatorBlackList);
+            
 
-            string raceHediffName = $"HL_{aniThing.defName}_RaceHediff";
+            string raceHediffName = $"HL_{aniThing.defName}_RaceHediff";    // This can be used to override the hediff of the race.
             var raceHediff = raceHediffName.TryGetExistingDef<HediffDef>();
+            bool hasHands = false;
+            if (raceHediff?.GetAllPawnExtensionsOnHediff().FirstOrDefault()?.forceHasHands == true) hasHands = true;
 
-            raceHediff ??= new HediffDef();
-
-            raceHediff.defName = raceHediffName;
-            raceHediff.hediffClass = typeof(RaceTracker);
-            raceHediff.isBad = false;
-            raceHediff.everCurableByItem = false;
-            raceHediff.initialSeverity = 1;
-            raceHediff.label = aniThing.label;
-            raceHediff.description = aniThing.description;
-            raceHediff.defaultLabelColor = new Color(0.5f, 1, 1);
-            raceHediff.generated = true;
-
-            raceHediff.comps ??= [];
-            raceHediff.comps.Add(new CompProperties_Race
+            if (raceHediff == null)
             {
-                canSwapAwayFrom = false,
-            });
+                List<string> manipulatorBlackList = ["Mouth", "Jaw", "Beak", "Leg"];
+                var allParts = newRace.body.corePart.GetAllBodyPartsRecursive();
+                hasHands =
+                    HasPartWithTag(allParts, BodyPartTagDefOf.ManipulationLimbCore, manipulatorBlackList) ||
+                    HasPartWithTag(allParts, BodyPartTagDefOf.ManipulationLimbDigit, manipulatorBlackList) ||
+                    HasPartWithTag(allParts, BodyPartTagDefOf.ManipulationLimbSegment, manipulatorBlackList);
 
-            if (!hasHands)
-            {
-
-                raceHediff.stages ??= [];
-                raceHediff.stages.Add(new HediffStage
+                raceHediff = new HediffDef
                 {
-                    disabledWorkTags = WorkTags.Crafting | WorkTags.Shooting | WorkTags.Animals
+                    defName = raceHediffName,
+                    hediffClass = typeof(RaceTracker),
+                    isBad = false,
+                    everCurableByItem = false,
+                    initialSeverity = 1,
+                    label = aniThing.label,
+                    description = aniThing.description,
+                    defaultLabelColor = new Color(0.5f, 1, 1),
+                    generated = true
+                };
+
+                raceHediff.comps ??= [];
+                raceHediff.comps.Add(new CompProperties_Race
+                {
+                    canSwapAwayFrom = false,
                 });
-            }
 
-
-            var apparelRestrictions = new ApparelRestrictions
-            {
-                // Maybe block everything except for nudist friendly and some specific allow-listead instead?
-                noArmor = true,
-                apparelLayers = new FilteredLists.FilterListSet<ApparelLayerDef>
+                if (!hasHands)
                 {
-                    blacklist = [ApparelLayerDefOf.Shell, ApparelLayerDefOf.Overhead],
-                },
-                thingDefs = new FilteredLists.FilterListSet<ThingDef>
-                {
-                    allowlist = [ThingDefOf.Apparel_ShieldBelt]
+                    raceHediff.stages ??= [];
+                    raceHediff.stages.Add(new HediffStage
+                    {
+                        disabledWorkTags = WorkTags.Crafting | WorkTags.Shooting | WorkTags.Animals
+                    });
                 }
-            };
-
-            var pawnExt = new PawnExtension
-            {
-                // Get the portable icon from the animal.
-                traitIcon = aniPawnKind.lifeStages.Last().bodyGraphicData.texPath + "_east",
-                canWieldThings = hasHands ? null : false,
-                apparelRestrictions = apparelRestrictions,
-                hideHumanlikeRenderNodes = true
-            };
-            if (!hasHands)
-            {
-                pawnExt.aptitudes =
-                [
-                    new(SkillDefOf.Construction, -4),
-                    new(SkillDefOf.Cooking, -4),
-                    new(SkillDefOf.Crafting, -8),
-                    new(SkillDefOf.Mining, -4),
-                    new(SkillDefOf.Plants, -4),
-                    new(SkillDefOf.Animals, -20),
-                    new(SkillDefOf.Medicine, -8),
-                    new(SkillDefOf.Artistic, -6),
-                    new(SkillDefOf.Shooting, -20),
-                    new(SkillDefOf.Melee, 4), // Yay. Minor buff.
-                ];
+                var pawnExt = new PawnExtension();
+                PawnExtensionDef targetAnimalBase = hasHands ? DefDatabase<PawnExtensionDef>.GetNamed("BS_DefaultAnimal", true) : DefDatabase<PawnExtensionDef>.GetNamed("BS_DefaultAnimal_NoHands", true);
+                PawnExtensionDef defaultHandlessSettings = DefDatabase<PawnExtensionDef>.GetNamed("BS_DefaultAnimal_NoHands", true);
+                // Transfer via reflection.
+                foreach (var field in typeof(PawnExtension)
+                    .GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                    .Where(f => !f.IsStatic && !f.IsInitOnly))
+                {
+                    var value = field.GetValue(defaultHandlessSettings.pawnExtension);
+                    if (value == null) continue;  // Skip null values.
+                    field.SetValue(pawnExt, value);
+                }
+                if (pawnExt.traitIcon == null && aniPawnKind.lifeStages?.Any() == true)
+                {
+                    pawnExt.traitIcon = aniPawnKind.lifeStages.Last().bodyGraphicData.texPath + "_east";
+                }
+                pawnExt.forceHasHands = hasHands;
+                raceHediff.modExtensions = [pawnExt];
             }
-
-            raceHediff.modExtensions = [pawnExt];
 
             var raceExt = new RaceExtension();
             raceExt.SetHediff(raceHediff);
@@ -309,6 +316,7 @@ namespace BigAndSmall
 
             humanlikeAnimals[newThing] = new HumanlikeAnimal
             {
+                humanlikeThing = newThing,
                 animalKind = aniPawnKind,
                 humanlike = humThing,
                 animal = aniThing

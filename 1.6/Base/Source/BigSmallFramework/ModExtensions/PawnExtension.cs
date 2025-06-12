@@ -15,6 +15,13 @@ namespace BetterPrerequisites
 
 namespace BigAndSmall
 {
+    /// <summary>
+    /// Simple class to hold shared PawnExtensions.
+    /// </summary>
+    public class PawnExtensionDef : Def
+    {
+        public PawnExtension pawnExtension;
+    }
 
     public class PawnExtension : SmartExtension
     {
@@ -201,6 +208,12 @@ namespace BigAndSmall
 
         public BodyTypesPerGender bodyTypes = [];
         #endregion
+
+        /// <summary>
+        /// If found on an animal's raceTracker it will be considered to have fine-manipulation ability.
+        /// E.g. able to use guns.
+        /// </summary>
+        public bool forceHasHands = false;
 
         /// <summary>
         /// Set what the pawn can eat. By default assumes human diet.

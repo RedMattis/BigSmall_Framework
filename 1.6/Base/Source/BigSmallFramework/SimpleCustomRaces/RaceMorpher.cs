@@ -52,6 +52,46 @@ namespace BigAndSmall
         public const int inactiveGenePriority = -200;
         public static Dictionary<Pawn, List<Hediff>> hediffsToReapply = [];
         public static bool runningRaceSwap = false;
+
+        public static void SwapAnimalToSapientVersion(this Pawn pawn)
+        {
+            var targetDef = HumanlikeAnimals.HumanLikeAnimalFor(pawn.def);
+            Log.Message($"[Big and Small] Swapping {pawn.Name} ({pawn.def.defName}) to sapient version {targetDef?.defName}.");
+
+            // Empty inventory
+            if (pawn.inventory != null && pawn.inventory.innerContainer != null)
+            {
+                pawn.inventory.DropAllNearPawn(pawn.Position);
+            }
+            
+
+            var request = new PawnGenerationRequest(PawnKindDefOf.Colonist)
+            {
+                CanGeneratePawnRelations = false,
+                AllowAddictions = false,
+                AllowDead = false,
+                ForceNoBackstory = true,
+                ForbidAnyTitle = true,
+                FixedGender = pawn.gender == Gender.None ? null : pawn.gender,
+                FixedChronologicalAge = pawn.ageTracker?.AgeChronologicalYears ?? 0,
+                FixedBiologicalAge = pawn.ageTracker?.AgeBiologicalYears ?? 0,
+                AllowedXenotypes = [XenotypeDefOf.Baseliner]
+            };
+
+            var newPawn = PawnGenerator.GeneratePawn(request);
+            newPawn.inventory.DestroyAll(DestroyMode.Vanish);
+            newPawn.Name = pawn.Name;
+            newPawn.relations.ClearAllRelations(); // Should add a friend relationship to any bonded pawn here later...
+            newPawn.ideo?.SetIdeo(pawn.Faction.ideos?.PrimaryIdeo);
+            
+            // Spawn into the same position as the old pawn.
+            GenSpawn.Spawn(newPawn, pawn.Position, pawn.Map, WipeMode.VanishOrMoveAside);
+            newPawn.SetFaction(pawn.Faction);
+            pawn.Destroy(DestroyMode.Vanish);
+
+            SwapThingDef(newPawn, targetDef, true, forcePriority, force: true, source: pawn, permitFusion:false);
+        }
+
         public static void SwapThingDef(this Pawn pawn, ThingDef swapTarget, bool state, int targetPriority, bool force=false, object source=null, bool permitFusion=true)
         {
             static bool IsDiscardable(ThingDef def) => def == ThingDefOf.Human || def == ThingDefOf.CreepJoiner;

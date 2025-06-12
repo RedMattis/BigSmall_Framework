@@ -150,6 +150,7 @@
     <Compile Include="Items\CompProperties_TargetableExtended.cs" />
     <Compile Include="Items\EquipNotifyPatches.cs" />
     <Compile Include="Items\Soulstone.cs" />
+    <Compile Include="Items\SwapThingDef.cs" />
     <Compile Include="Items\Trade and Loot\StockGenerator.cs" />
     <Compile Include="Items\TargetApplyHediff.cs" />
     <Compile Include="Items\XenogermCreators.cs" />

@@ -184,7 +184,7 @@ namespace BigAndSmall
             {
                 if (pawn.story?.favoriteColor != null)
                 {
-                    colorsAdded.Add(pawn.story.favoriteColor.Value);
+                    colorsAdded.Add(pawn.story.favoriteColor.color);
                     didSet = true;
                 }
                 else GetHostilityStatus(pawn, ref didSet, ref colorsAdded);
@@ -245,7 +245,7 @@ namespace BigAndSmall
                 }
                 if (!foundClredApparel && pawn.story?.favoriteColor != null)
                 {
-                    colorsAdded.Add(pawn.story.favoriteColor.Value);
+                    colorsAdded.Add(pawn.story.favoriteColor.color);
                     didSet = true;
                 }
                 else GetHostilityStatus(pawn, ref didSet, ref colorsAdded);

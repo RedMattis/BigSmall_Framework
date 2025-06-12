@@ -25,16 +25,14 @@ namespace BigAndSmall
                     ];
             }
         }
-        public static List<PawnExtension> GetAllPawnExtensionsOnHediff(this HediffDef hediffDef, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true)
-        {
-            return ExtensionsOnDef<PawnExtension, HediffDef>(hediffDef, parentWhitelist, parentBlacklist, doSort);
-        }
-
-        public static List<PawnExtension> GetAllPawnExtensionsOnGene(this GeneDef geneDef, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true)
-        {
-            return ExtensionsOnDef<PawnExtension, GeneDef>(geneDef, parentWhitelist, parentBlacklist, doSort);
-        }
-
+        public static List<PawnExtension> GetAllPawnExtensionsOnHediff(this HediffDef hediffDef, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) =>
+            ExtensionsOnDef<PawnExtension, HediffDef>(hediffDef, parentWhitelist, parentBlacklist, doSort);
+        
+        public static List<PawnExtension> GetAllPawnExtensionsOnGene(this GeneDef geneDef, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) =>
+            ExtensionsOnDef<PawnExtension, GeneDef>(geneDef, parentWhitelist, parentBlacklist, doSort);
+        
+        public static List<PawnExtension> GetAllPawnExtensions(this Def def, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) =>
+            ExtensionsOnDef<PawnExtension, Def>(def, parentWhitelist, parentBlacklist, doSort);
 
         public static List<T> GetAllExtensions<T>(this Pawn pawn, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) where T : DefModExtension
         {
