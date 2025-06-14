@@ -56,14 +56,12 @@ namespace BigAndSmall
         public static void SwapAnimalToSapientVersion(this Pawn pawn)
         {
             var targetDef = HumanlikeAnimals.HumanLikeAnimalFor(pawn.def);
-            Log.Message($"[Big and Small] Swapping {pawn.Name} ({pawn.def.defName}) to sapient version {targetDef?.defName}.");
 
             // Empty inventory
             if (pawn.inventory != null && pawn.inventory.innerContainer != null)
             {
                 pawn.inventory.DropAllNearPawn(pawn.Position);
             }
-            
 
             var request = new PawnGenerationRequest(PawnKindDefOf.Colonist)
             {
@@ -72,21 +70,40 @@ namespace BigAndSmall
                 AllowDead = false,
                 ForceNoBackstory = true,
                 ForbidAnyTitle = true,
-                FixedGender = pawn.gender == Gender.None ? null : pawn.gender,
-                FixedChronologicalAge = pawn.ageTracker?.AgeChronologicalYears ?? 0,
-                FixedBiologicalAge = pawn.ageTracker?.AgeBiologicalYears ?? 0,
-                AllowedXenotypes = [XenotypeDefOf.Baseliner]
+                ForcedXenotype = XenotypeDefOf.Baseliner,
             };
 
             var newPawn = PawnGenerator.GeneratePawn(request);
             newPawn.inventory.DestroyAll(DestroyMode.Vanish);
             newPawn.Name = pawn.Name;
             newPawn.relations.ClearAllRelations(); // Should add a friend relationship to any bonded pawn here later...
-            newPawn.ideo?.SetIdeo(pawn.Faction.ideos?.PrimaryIdeo);
-            
+            if (pawn.Faction != null)
+            {
+                newPawn.ideo?.SetIdeo(pawn.Faction.ideos?.PrimaryIdeo);
+                newPawn.SetFaction(pawn.Faction);
+            }
+            newPawn.gender = pawn.gender == Gender.None ? newPawn.gender : pawn.gender;
+            if (pawn.ageTracker.AgeBiologicalYears < 18)
+            {
+                newPawn.ageTracker.AgeBiologicalTicks = 18 * GenDate.TicksPerYear;
+            }
+            else
+            {
+                newPawn.ageTracker.AgeBiologicalTicks = pawn.ageTracker.AgeBiologicalTicks;
+            }
+            newPawn.ageTracker.AgeChronologicalTicks = pawn.ageTracker.AgeChronologicalTicks;
+            if (ModsConfig.BiotechActive) newPawn.genes.SetXenotype(XenotypeDefOf.Baseliner);
+            // Copy the old pawn's skills, traits, and apparel.
+            newPawn.health.hediffSet.hediffs.Clear();
+            foreach (var hediff in pawn.health.hediffSet.hediffs)
+            {
+                var h = newPawn.health.AddHediff(hediff.def, hediff.Part, null);
+                h.Severity = hediff.Severity;
+            }
+
             // Spawn into the same position as the old pawn.
             GenSpawn.Spawn(newPawn, pawn.Position, pawn.Map, WipeMode.VanishOrMoveAside);
-            newPawn.SetFaction(pawn.Faction);
+            
             pawn.Destroy(DestroyMode.Vanish);
 
             SwapThingDef(newPawn, targetDef, true, forcePriority, force: true, source: pawn, permitFusion:false);
