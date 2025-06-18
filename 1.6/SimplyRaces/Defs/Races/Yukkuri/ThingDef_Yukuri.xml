@@ -1,0 +1,53 @@
+<Defs>
+  <ThingDef ParentName="Human" BS_Alt="ThingDef_AlienRace">
+    <defName>BS_JustAHead</defName>
+    <label>disembodied head</label>
+    <description>I was told by the customer to engineer them with as big a head as possible. I did exactly what I was told. (Project: "Make anime real", attempt 412)</description>
+    <statBases>
+      <!-- Being a big ball is good for insulation. -->
+      <ComfyTemperatureMin>10</ComfyTemperatureMin>
+      <ComfyTemperatureMax>30</ComfyTemperatureMax>
+
+      <!-- Big-brained! -->
+      <GlobalLearningFactor>1.2</GlobalLearningFactor>
+      <MaxNutrition>2</MaxNutrition>
+    </statBases>
+    <tools Inherit="False">
+      <li>
+        <label>teeth</label>
+        <capacities>
+          <li>Bite</li>
+        </capacities>
+        <power>8.2</power>
+        <cooldownTime>2</cooldownTime>
+        <linkedBodyPartsGroup>Teeth</linkedBodyPartsGroup>
+        <chanceFactor>0.07</chanceFactor>
+        <soundMeleeHit>Pawn_Melee_HumanBite_Hit</soundMeleeHit>
+        <soundMeleeMiss>Pawn_Melee_HumanBite_Miss</soundMeleeMiss>
+      </li>
+      <li>
+        <label>head</label>
+        <capacities>
+          <li>Blunt</li>
+        </capacities>
+        <power>5</power>
+        <cooldownTime>2</cooldownTime>
+        <linkedBodyPartsGroup>HeadAttackTool</linkedBodyPartsGroup>
+        <ensureLinkedBodyPartsGroupAlwaysUsable>true</ensureLinkedBodyPartsGroupAlwaysUsable>
+        <chanceFactor>0.2</chanceFactor>
+      </li>
+    </tools>
+    <race>
+      <body>BS_JustAHead</body>
+      <useMeatFrom>Human</useMeatFrom>
+      <makesFootprints>false</makesFootprints>
+      <baseHealthScale>2</baseHealthScale>
+      <baseBodySize>1.2</baseBodySize>
+    </race>
+    <modExtensions>
+      <li Class="BigAndSmall.RaceExtension">
+        <raceHediff>BS_JustAHeadTracker</raceHediff>
+      </li>
+    </modExtensions>
+  </ThingDef>
+</Defs>

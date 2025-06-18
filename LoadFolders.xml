@@ -15,11 +15,19 @@
     <li>1.5/Main</li>
     <li IfModActive="erdelf.HumanoidAlienRaces">1.5/HAR</li>
     <li IfModActive="erdelf.HumanoidAlienRaces.dev">1.5/HAR</li>
-    <!-- <li IfModNotActive="erdelf.HumanoidAlienRaces">1.5/No_HAR</li> -->
-    <!-- <li>1.5/No_HAR</li> -->
     <li IfModActive="nals.facialanimation">1.5/FacialAnim</li>
     <li>1.5/SimplyRaces</li>
-    <!-- <li>1.5/Experimental</li> -->
     <li IfModNotActive="RedMattis.RedHealth">1.5/RedHealth</li>
   </v1.5>
+
+  <v1.6>
+    <li>/</li>
+    <li>1.6/Base</li>
+    <li>1.6/SimplyRaces</li>
+    <li IfModActive="Ludeon.Rimworld.Biotech">1.6/DLC/Biotech</li>
+    <li IfModActive="erdelf.HumanoidAlienRaces">1.6/Mods/HAR</li>
+    <li IfModActive="nals.facialanimation">1.6/Mods/FacialAnim</li>
+    <li IfModActive="erdelf.HumanoidAlienRaces.dev">1.6/HAR</li>
+    <li IfModNotActive="RedMattis.RedHealth">1.6/RedHealth</li>
+  </v1.6>
 </loadFolders>

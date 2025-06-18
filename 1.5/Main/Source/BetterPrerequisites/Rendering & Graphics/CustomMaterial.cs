@@ -27,7 +27,7 @@ namespace BigAndSmall
             colorOne = data.colorA.GetColor(pawnRenderNode, colorOne, ColorSetting.clrOneKey);
             colorTwo = data.colorB.GetColor(pawnRenderNode, colorTwo, ColorSetting.clrTwoKey);
 
-            Graphic graphic = GetCachableGraphics(path, drawSize, data.shader.Shader, colorOne, colorTwo);
+            Graphic graphic = GetCachableGraphics(path, drawSize, data.shader?.Shader, colorOne, colorTwo);
             return graphic;
         }
     }

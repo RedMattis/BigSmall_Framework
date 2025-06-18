@@ -1,0 +1,112 @@
+<Defs>
+  <HediffDef>
+    <defName>RED_SecretHealthTracker</defName>
+    <label>health tracking</label>
+    <description>quietly watching you.</description>
+    <hediffClass>RedHealth.HealthManager</hediffClass>
+    <isBad>false</isBad>
+    <everCurableByItem>false</everCurableByItem>
+    <stages>
+      <li>
+        <label>health tracking</label>
+        <becomeVisible>true</becomeVisible>
+      </li>
+    </stages>
+  </HediffDef>
+  <HediffDef ParentName="InjuryBase">
+    <defName>RED_FailingOrganDamage</defName>
+    <label>organ damage</label>
+    <labelNoun>failing organ</labelNoun>
+    <labelNounPretty>failing {1}</labelNounPretty>
+    <description>This body part is failing.</description>
+    <defaultLabelColor>(0.5, 0.5, 0.5)</defaultLabelColor>
+    <displayWound>false</displayWound>
+    <tendable>false</tendable>
+    <injuryProps>
+      <averagePainPerSeverityPermanent>0.001</averagePainPerSeverityPermanent>
+      <destroyedLabel>Decayed</destroyedLabel>
+    </injuryProps>
+    <comps>
+      <li Class="HediffCompProperties_GetsPermanent">
+        <permanentLabel>failing organ</permanentLabel>
+      </li>
+    </comps>
+  </HediffDef>
+
+  <!--Might be better to just inflict scars to organs, heart, lungs, etc. and then notify the player?-->
+  
+  <HediffDef Name="RED_OrganFailureBase" ParentName="ChronicDiseaseBase" Abstract="True">
+    <alwaysShowSeverity>true</alwaysShowSeverity>
+    <initialSeverity>0.001</initialSeverity>
+    <minSeverity>0.001</minSeverity>
+    <maxSeverity>1</maxSeverity>
+    <canAffectBionicOrImplant>false</canAffectBionicOrImplant>
+    <lethalSeverity>1</lethalSeverity>
+    <onlyLifeThreateningTo>
+      <li>Heart</li>
+      <li>Brain</li>
+    </onlyLifeThreateningTo>
+    <comps>
+      <li Class="HediffCompProperties_DestroyOrgan">
+        <messageText>{PAWN_labelShort}'s {1} has failed.</messageText>
+        <damageType>Decayed</damageType>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <label>minor</label>
+        <minSeverity>0</minSeverity>
+        <partEfficiencyOffset>-0.1</partEfficiencyOffset>
+      </li>
+      <li>
+        <label>moderate</label>
+        <minSeverity>0.2</minSeverity>
+        <painOffset>0.05</painOffset>
+        <partEfficiencyOffset>-0.25</partEfficiencyOffset>
+      </li>
+      <li>
+        <label>severe</label>
+        <minSeverity>0.4</minSeverity>
+        <painOffset>0.10</painOffset>
+        <partEfficiencyOffset>-0.5</partEfficiencyOffset>
+      </li>
+      <li>
+        <label>extreme</label>
+        <minSeverity>0.6</minSeverity>
+        <painOffset>0.2</painOffset>
+        <partEfficiencyOffset>-0.75</partEfficiencyOffset>
+        <lifeThreatening>true</lifeThreatening>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef ParentName="RED_OrganFailureBase">
+    <defName>RED_BrainFailure</defName>
+    <label>encephalopathy</label>
+    <description>a serious disease or malfunction that affects the function or structure of the brain. At this stage it is incurable by normal methods.</description>
+    <comps>
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDayRange>0.0083~0.0334</severityPerDayRange>
+      </li>
+    </comps>
+  </HediffDef>
+
+  <HediffDef ParentName="RED_OrganFailureBase">
+    <defName>RED_OrganFailure</defName>
+    <label>organ failure</label>
+    <description>a serious disease, auto-immune reaction, or malfunction that affects the function or structure of the organ. At this stage it is incurable by normal methods.</description>
+    <comps>
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDayRange>0.0083~0.0634</severityPerDayRange>
+      </li>
+    </comps>
+  </HediffDef>
+
+</Defs>
+
+
+<!-- <partsToAffect>
+  <li>Heart</li>
+  <li>Lung</li>
+  <li>Kidney</li>
+</partsToAffect> -->

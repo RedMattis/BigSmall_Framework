@@ -1,0 +1,152 @@
+<Defs>
+  <RulePackDef Name="BP_InsectNamerBase" Abstract="True">
+    <rulePack>
+      <include>
+        <li>BS_Bug_LastName</li>
+      </include>
+      <rulesStrings>
+				<li>r_name->[firstName] [lastName]</li>
+			</rulesStrings>
+			
+      <rulesFiles>
+				<li>BugFPrefix->Names/bug_female_p</li>
+        <li>BugFSuffix->Names/bug_female_s</li>
+        <li>BugMPrefix->Names/bug_male_p</li>
+        <li>BugMSuffix->Names/bug_male_s</li>
+			</rulesFiles>
+		</rulePack>
+  </RulePackDef>
+
+  <RulePackDef ParentName="BP_InsectNamerBase" Name="BS_Bug_NamerFem">
+    <defName>BS_Bug_NamerFem</defName>
+    <rulePack>
+      <rulesRaw>
+				<li Class="Rule_NamePerson">
+					<keyword>firstName</keyword>
+					<gender>Female</gender>
+				</li>
+			</rulesRaw>
+			<rulesStrings>
+				<li>firstName->[BugFPrefix][BugFSuffix]</li>
+			</rulesStrings>
+    </rulePack>
+  </RulePackDef>
+
+  <RulePackDef ParentName="BP_InsectNamerBase" Name="BS_Bug_NamerMale">
+    <defName>BS_Bug_NamerMale</defName>
+    <rulePack>
+      <rulesRaw>
+				<li Class="Rule_NamePerson">
+					<keyword>firstName</keyword>
+					<gender>Male</gender>
+				</li>
+			</rulesRaw>
+			<rulesStrings>
+				<li>firstName->[BugMPrefix][BugMSuffix]</li>
+			</rulesStrings>
+    </rulePack>
+  </RulePackDef>
+
+  <RulePackDef ParentName="BS_Bug_NamerFem">
+    <defName>BS_Bug_NamerFem_PlusCreepy</defName>
+    <rulePack>
+      <include>
+        <li>BS_HiveCreepyFirstName</li>
+        <li>BS_HiveCreepyLastName</li>
+      </include>
+    </rulePack>
+  </RulePackDef>
+  
+  <RulePackDef ParentName="BS_Bug_NamerMale">
+    <defName>BS_Bug_NamerMale_PlusCreepy</defName>
+    <rulePack>
+      <include>
+        <li>BS_HiveCreepyFirstName</li>
+        <li>BS_HiveCreepyLastName</li>
+      </include>
+    </rulePack>
+  </RulePackDef>
+
+  <RulePackDef>
+    <defName>BS_Bug_LastName</defName>
+    <rulePack>
+      <rulesStrings>
+        <li>lastName->[lastNamePrefix][lastNameSuffix]</li>
+        <li>lastName->[lastNameFull]</li>
+
+        <!-- Prefixes -->
+        <li>lastNamePrefix->swarm</li>
+        <li>lastNamePrefix->nest</li>
+        <li>lastNamePrefix->hive</li>
+        <li>lastNamePrefix->brood</li>
+        <li>lastNamePrefix->buzz</li>
+        <li>lastNamePrefix->venom</li>
+        <li>lastNamePrefix->sting</li>
+        <li>lastNamePrefix->molt</li>
+        <li>lastNamePrefix->thorax</li>
+        <li>lastNamePrefix->pincer</li>
+        <li>lastNamePrefix->wing</li>
+        <li>lastNamePrefix->queen</li>
+        <li>lastNamePrefix->petal</li>
+        <li>lastNamePrefix->sunny</li>
+        <li>lastNamePrefix->twinkle</li>
+        <li>lastNamePrefix->buzzy</li>
+        <li>lastNamePrefix->claw</li>
+        <li>lastNamePrefix->horn</li>
+
+        <!-- Suffixes-->
+        <li>lastNameSuffix->hollow</li>
+        <li>lastNameSuffix->burrow</li>
+        <li>lastNameSuffix->chamber</li>
+        <li>lastNameSuffix->mound</li>
+        <li>lastNameSuffix->tunnel</li>
+        <li>lastNameSuffix->spiral</li>
+        <li>lastNameSuffix->crest</li>
+        <li>lastNameSuffix->bore</li>
+        <li>lastNameSuffix->scar</li>
+        <li>lastNameSuffix->nest</li>
+        <li>lastNameSuffix->drone</li>
+        <li>lastNameSuffix->spawn</li>
+        <li>lastNameSuffix->claw</li>
+        <li>lastNameSuffix->cavern</li>
+        <li>lastNameSuffix->lair</li>
+        <li>lastNameSuffix->coil</li>
+        <li>lastNameSuffix->chitin</li>
+        <li>lastNameSuffix->trap</li>
+        <li>lastNameSuffix->flutter</li>
+
+        <li>lastNameSuffix->wing</li>
+        <li>lastNameSuffix->bane</li>
+        <li>lastNameSuffix->shard</li>
+        <li>lastNameSuffix->sting</li>
+        
+        <li>lastNameSuffix->web</li>
+        <li>lastNameSuffix->spike</li>
+        <li>lastNameSuffix->bite</li>
+        <li>lastNameSuffix->coil</li>
+        <li>lastNameSuffix->fang</li>
+        <li>lastNameSuffix->shell</li>
+        <li>lastNameSuffix->shade</li>
+        <li>lastNameSuffix->thorn</li>
+        
+        <li>lastNameSuffix->strider</li>
+        <li>lastNameSuffix->eater</li>
+        <li>lastNameSuffix->crawl</li>
+
+        <!-- Full last-->
+        <li>lastNameFull->creeper</li>
+        <li>lastNameFull->crawlers</li>
+        <li>lastNameFull->nibbler</li>
+        <li>lastNameFull->tatter</li>
+        <li>lastNameFull->scuttle</li>
+        <li>lastNameFull->zipper</li>
+        <li>lastNameFull->rover</li>
+        <li>lastNameFull->spike</li>
+        <li>lastNameFull->buzzy</li>
+        <li>lastNameFull->glimmer</li>
+      </rulesStrings>
+    </rulePack>
+  </RulePackDef>
+
+  
+</Defs>

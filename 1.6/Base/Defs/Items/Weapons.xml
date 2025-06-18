@@ -1,0 +1,70 @@
+<Defs>
+
+  <!-- Just so the woman in blue has something to spawn with. -->
+  <ThingDef ParentName="BaseMeleeWeapon_Sharp_Quality">
+    <defName>BS_JotunSword</defName>
+    <label>giant sword</label>
+    <description>A very large sword with grip for one-handed use. It is far too unwieldly for normal person to use.</description>
+    <graphicData>
+      <texPath>Item/BS_GiantNordicSword</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>2</drawSize>
+    </graphicData>
+    <uiIconScale>1.1</uiIconScale>
+    <techLevel>Medieval</techLevel>
+    <weaponTags Inherit="False">
+      <li>MedievalMeleeAdvancedGiant</li>
+    </weaponTags>
+    <weaponClasses Inherit="False">
+      <li>BS_GiantWeapon</li>
+    </weaponClasses>
+    <costStuffCount>200</costStuffCount>
+    <thingSetMakerTags><li>RewardStandardQualitySuper</li></thingSetMakerTags>
+    <statBases>
+      <WorkToMake>21000</WorkToMake>
+      <Mass>8</Mass>
+    </statBases>
+    <equippedAngleOffset>-65</equippedAngleOffset>
+    <stuffCategories>
+      <li>Metallic</li>
+      <li>Woody</li>
+    </stuffCategories>
+    <recipeMaker>
+      <researchPrerequisite>LongBlades</researchPrerequisite>
+      <skillRequirements>
+        <Crafting>5</Crafting>
+      </skillRequirements>
+      <displayPriority>440</displayPriority>
+    </recipeMaker>
+    <tools>
+      <li>
+        <label>handle</label>
+        <capacities>
+          <li>Blunt</li>
+        </capacities>
+        <power>8</power>
+        <cooldownTime>2</cooldownTime>
+      </li>
+      <li>
+        <label>point</label>
+        <capacities>
+          <li>Stab</li>
+        </capacities>
+        <power>25</power>
+        <cooldownTime>2.6</cooldownTime>
+      </li>
+      <li>
+        <label>edge</label>
+        <capacities>
+          <li>Cut</li>
+        </capacities>
+        <power>25</power>
+        <cooldownTime>2.6</cooldownTime>
+      </li>
+    </tools>
+		<possessionCount>1</possessionCount>
+		<rotateInShelves>false</rotateInShelves>
+		<relicChance>2</relicChance>
+		<tradeability>Sellable</tradeability>
+	</ThingDef>
+</Defs>

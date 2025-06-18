@@ -1,0 +1,686 @@
+<Defs>
+
+  <!-- <BodyPartDef>
+    <defName>BS_BackupSustainer</defName>
+    <label>core sustainer</label>
+    <hitPoints>20</hitPoints>
+    <skinCovered>false</skinCovered>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <solid>true</solid>
+    <bleedRate>0</bleedRate>
+    <alive>false</alive>
+    <tags>
+      <li>MetabolismSource</li>
+    </tags>
+  </BodyPartDef> -->
+
+  <!-- Mechanical Organs -->
+  <BodyPartDef>
+    <defName>BS_FuelProcessor</defName>
+    <label>fuel processor</label>
+    <hitPoints>30</hitPoints>
+    <skinCovered>false</skinCovered>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <solid>true</solid>
+    <bleedRate>0</bleedRate>
+    <alive>false</alive>
+    <tags>
+      <li>MetabolismSource</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Stomach</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Stomach</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_ArtificialBrain</defName>
+    <label>artificial brain</label>
+    <hitPoints>10</hitPoints>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <tags>
+      <li>ConsciousnessSource</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom>
+          <li>Brain</li>
+          <li>ArtificialBrain</li>
+        </importAllRecipesFrom>
+        <mechanicalVersionOf>
+          <li>Brain</li>
+          <li>ArtificialBrain</li>
+        </mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_Reactor</defName>
+    <label>reactor</label>
+    <hitPoints>20</hitPoints>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <tags>
+      <li>BloodPumpingSource</li>
+      <li>BreathingSource</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom>
+          <li>Heart</li>
+          <li>Reactor</li>
+        </importAllRecipesFrom>
+        <mechanicalVersionOf>
+          <li>Heart</li>
+          <li>Reactor</li>
+        </mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_FluidReprocessor</defName>
+    <label>reprocessor</label>
+    <hitPoints>15</hitPoints>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <tags>
+      <li>BloodFiltrationSource</li>
+      <li>BloodFiltrationLiver</li>
+      <li>Mirrored</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom>
+          <li>Kidney</li>
+          <li>Liver</li>
+          <li>FluidReprocessor</li>
+        </importAllRecipesFrom>
+        <mechanicalVersionOf>
+          <li>Kidney</li>
+          <li>FluidReprocessor</li>
+        </mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_Sustainer</defName>
+    <label>sustainer</label>
+    <hitPoints>15</hitPoints>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <tags>
+      <li>BloodFiltrationSource</li>
+      <li>BloodFiltrationLiver</li>
+      <li>BreathingSource</li>
+      <li>Mirrored</li>
+    </tags>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_AirCoolingUnit</defName>
+    <label>air cooling unit</label>
+    <frostbiteVulnerability>2</frostbiteVulnerability>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <tags>
+      <li>BreathingSource</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Lung</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Lung</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_SightSensor</defName>
+    <label>optic sensor</label>
+    <hitPoints>10</hitPoints>
+    <frostbiteVulnerability>2</frostbiteVulnerability>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <alive>false</alive>
+    <socketed>true</socketed>
+    <bleedRate>0</bleedRate>
+    <beautyRelated>true</beautyRelated>
+    <tags>
+      <li>SightSource</li>
+      <li>Mirrored</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Eye</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Eye</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_HearingSensor</defName>
+    <label>acoustic sensor</label>
+    <hitPoints>10</hitPoints>
+    <frostbiteVulnerability>2</frostbiteVulnerability>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <beautyRelated>true</beautyRelated>
+    <tags>
+      <li>HearingSource</li>
+      <li>Mirrored</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Ear</li><li>HearingSensor</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Ear</li><li>HearingSensor</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_SmellSensor</defName>
+    <label>chemical analyzer</label>
+    <hitPoints>10</hitPoints>
+    <frostbiteVulnerability>2</frostbiteVulnerability>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <beautyRelated>true</beautyRelated>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Nose</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Nose</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <!-- Mostly so they can theoretically get recipes for robots, I figure. -->
+
+  <BodyPartDef>
+    <defName>BS_MechanicalNeck</defName>
+    <label>articulated neck joint</label>
+    <hitPoints>30</hitPoints>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <bleedRate>0</bleedRate>
+    <alive>false</alive>
+    <tags>
+      <li>BreathingPathway</li>
+      <li>EatingPathway</li>
+      <li>TalkingPathway</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Neck</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Neck</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <!-- Disabled to avoid issues with hardcoded lookups. -->
+  <!-- <BodyPartDef>
+    <defName>BS_MechanicalHead</defName>
+    <label>head</label>
+    <hitPoints>30</hitPoints>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <bleedRate>0</bleedRate>
+    <alive>false</alive>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Head</li></importAllRecipesFrom>
+      </li>
+    </modExtensions>
+  </BodyPartDef> -->
+
+  <BodyPartDef>
+    <defName>BS_MechanicalShoulder</defName>
+    <label>spherical bearing</label>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <hitPoints>25</hitPoints>
+    <tags>
+      <li>ManipulationLimbSegment</li>
+      <li>Mirrored</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Shoulder</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Shoulder</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_MechanicalArm</defName>
+    <label>articulated arm</label>
+    <hitPoints>35</hitPoints>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <tags>
+      <li>ManipulationLimbCore</li>
+      <li>Mirrored</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Arm</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Arm</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_MechanicalHand</defName>
+    <label>robotic hand</label>
+    <hitPoints>20</hitPoints>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <tags>
+      <li>ManipulationLimbSegment</li>
+      <li>Mirrored</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Hand</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Hand</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_MechanicalFinger</defName>
+    <label>hand actuator</label>
+    <hitPoints>7</hitPoints>
+    <frostbiteVulnerability>10</frostbiteVulnerability>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <pawnGeneratorCanAmputate>true</pawnGeneratorCanAmputate>
+    <tags>
+      <li>ManipulationLimbDigit</li>
+      <li>Mirrored</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Finger</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Finger</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_MechanicalLeg</defName>
+    <label>robotic legs</label>
+    <!-- More hitpoints since I'm not using Radius and stuff for it.-->
+    <hitPoints>40</hitPoints>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <tags>
+      <li>MovingLimbCore</li>
+      <li>Mirrored</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Leg</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Leg</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_MechanicalFoot</defName>
+    <label>foot actuator</label>
+    <hitPoints>25</hitPoints>
+    <frostbiteVulnerability>2</frostbiteVulnerability>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <tags>
+      <li>MovingLimbSegment</li>
+      <li>Mirrored</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Foot</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Foot</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_MechanicalRibs</defName>
+    <label>proctective casing</label>
+    <hitPoints>40</hitPoints>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Ribcage</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Ribcage</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_MechanicalTorso</defName>
+    <label>central frame</label>
+    <hitPoints>40</hitPoints>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <canSuggestAmputation>false</canSuggestAmputation>
+    <executionPartPriority>400</executionPartPriority>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Torso</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Torso</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <!-- Mechanical versions of general/humanlike parts -->
+
+  <BodyPartDef>
+    <defName>BS_MechanicalSkull</defName>
+    <label>core housing</label>
+    <hitPoints>25</hitPoints>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <canSuggestAmputation>false</canSuggestAmputation>
+    <destroyableByDamage>false</destroyableByDamage>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Skull</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Skull</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_MechanicalJaw</defName>
+    <label>jaw-clamp</label>
+    <hitPoints>20</hitPoints>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <frostbiteVulnerability>2</frostbiteVulnerability>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <beautyRelated>true</beautyRelated>
+    <destroyableByDamage>false</destroyableByDamage>
+    <tags>
+      <li>EatingSource</li>
+      <li>TalkingSource</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Jaw</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Jaw</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_MechanicalTongue</defName>
+    <label>artificial tongue</label>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <skinCovered>false</skinCovered>
+    <beautyRelated>true</beautyRelated>
+    <forceAlwaysRemovable>true</forceAlwaysRemovable>
+    <removeRecipeLabelOverride>remove</removeRecipeLabelOverride>
+    <tags>
+      <li>Tongue</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Tongue</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Tongue</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_MechanicalPelvis</defName>
+    <label>pelvic brace</label>
+    <hitPoints>25</hitPoints>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <destroyableByDamage>false</destroyableByDamage>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <tags>
+      <li>Pelvis</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Pelvis</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Pelvis</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_MechanicalClavicle</defName>
+    <label>tie rod</label>
+    <hitPoints>25</hitPoints>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <destroyableByDamage>false</destroyableByDamage>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <tags>
+      <li>ManipulationLimbSegment</li>
+      <li>Mirrored</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Clavicle</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Clavicle</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_MechanicalTibia</defName>
+    <label>spherical joint</label>
+    <hitPoints>25</hitPoints>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <bleedRate>0</bleedRate>
+    <alive>false</alive>
+    <destroyableByDamage>false</destroyableByDamage>
+    <tags>
+      <li>MovingLimbSegment</li>
+      <li>Mirrored</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Tibia</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Tibia</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_MechanicalRadius</defName>
+    <label>pivot joint</label>
+    <hitPoints>20</hitPoints>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <bleedRate>0</bleedRate>
+    <destroyableByDamage>false</destroyableByDamage>
+    <tags>
+      <li>ManipulationLimbSegment</li>
+      <li>Mirrored</li>
+    </tags>
+    <alive>false</alive>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Radius</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Radius</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_MechanicalToe</defName>
+    <label>toe actuator</label>
+    <hitPoints>8</hitPoints>
+    <frostbiteVulnerability>10</frostbiteVulnerability>
+    <pawnGeneratorCanAmputate>true</pawnGeneratorCanAmputate>
+    <skinCovered>false</skinCovered>
+    <tags>
+      <li>MovingLimbDigit</li>
+      <li>Mirrored</li>
+    </tags>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Toe</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Toe</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_MechanicalWheel</defName>
+    <label>wheel</label>
+    <hitPoints>50</hitPoints>
+    <frostbiteVulnerability>2</frostbiteVulnerability>
+    <pawnGeneratorCanAmputate>false</pawnGeneratorCanAmputate>
+    <skinCovered>false</skinCovered>
+    <tags>
+      <li>MovingLimbDigit</li>
+      <li>MovingLimbCore</li>
+      <li>Mirrored</li>
+    </tags>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <modExtensions>
+      <!-- <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Leg</li></importAllRecipesFrom>
+      </li> -->
+    </modExtensions>
+  </BodyPartDef>
+  
+  <BodyPartDef>
+    <defName>BS_MechanicalSternum</defName>
+    <label>chassis</label>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <destroyableByDamage>false</destroyableByDamage>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Sternum</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Sternum</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_MechanicalHumerus</defName>
+    <label>arm actuator</label>
+    <hitPoints>25</hitPoints>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <bleedRate>0</bleedRate>
+    <alive>false</alive>
+    <destroyableByDamage>false</destroyableByDamage>
+    <tags>
+      <li>ManipulationLimbSegment</li>
+      <li>Mirrored</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Humerus</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Humerus</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>BS_MechanicalSpine</defName>
+    <label>spinal column</label>
+    <hitPoints>25</hitPoints>
+    <skinCovered>false</skinCovered>
+    <solid>true</solid>
+    <canSuggestAmputation>false</canSuggestAmputation>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <alive>false</alive>
+    <bleedRate>0</bleedRate>
+    <tags>
+      <li>Spine</li>
+    </tags>
+    <modExtensions>
+      <li Class="BigAndSmall.BodyPartExtension">
+        <importAllRecipesFrom><li>Spine</li></importAllRecipesFrom>
+        <mechanicalVersionOf><li>Spine</li></mechanicalVersionOf>
+      </li>
+    </modExtensions>
+  </BodyPartDef>
+  
+  
+</Defs>

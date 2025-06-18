@@ -1,0 +1,11 @@
+<Defs>
+  <!-- <RedHealth.HealthAspect>
+    <defName>RED_Frailty</defName>
+    <label>muscle and bone health</label>
+    <description>A meassure of how well the body is holding up.</description>
+    <associatedPartsTags>
+      <li>BloodFiltrationSource</li>
+    </associatedPartsTags>
+    <nullifyIfPartsReplacedBetterThanNatural>true</nullifyIfPartsReplacedBetterThanNatural>
+  </RedHealth.HealthAspect> -->
+</Defs>

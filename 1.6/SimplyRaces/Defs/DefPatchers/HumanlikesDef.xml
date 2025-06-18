@@ -1,0 +1,17 @@
+<Defs>
+  <BigAndSmall.HumanLikes>
+    <!-- Note that races with a BigAndSmall.RaceExtension are automatically included. using their own special rules -->
+    <defName>BS_SomeHumanlikesList</defName>
+    <thingList>
+      <li MayRequire="RedMattis.BSSlimes">BS_Slime</li>
+      <li MayRequire="RedMattis.BSSlimes">BS_Sludge</li>
+      <li MayRequire="RedMattis.BigSmall.Core">BS_SpiderPersonRace</li>
+      <li MayRequire="RedMattis.BigSmall.Core">BS_Marlith</li>
+      <li MayRequire="RedMattis.BigSmall.Core">BS_Naga</li>
+      <li MayRequire="RedMattis.BigSmall.Core">BS_GluttonRace</li>
+      <li MayRequire="RedMattis.BigSmall.Core">BS_InsectoidHumanoid_FourArmed</li>
+      <li MayRequire="RedMattis.BigSmall.Core">BS_HumanFouramed</li>
+      <!-- <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_CommandoBot</li> -->
+    </thingList>
+  </BigAndSmall.HumanLikes>
+</Defs>

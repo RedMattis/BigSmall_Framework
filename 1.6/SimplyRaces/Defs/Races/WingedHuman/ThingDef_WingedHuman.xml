@@ -1,0 +1,21 @@
+<Defs>
+  <ThingDef ParentName="Human" BS_Alt="ThingDef_AlienRace">
+    <defName>BS_HumanoidWithWings</defName>
+    <label>winged humanoid</label>
+    <description>Scientists think that humans should not be able to fly.</description>
+    <statBases>
+      <!-- <MaxFlightTime>10</MaxFlightTime>
+      <FlightCooldown>10</FlightCooldown> -->
+    </statBases>
+    <race>
+      <body>BS_HumanoidWithWings_Body</body>
+      <useMeatFrom>Human</useMeatFrom>
+    </race>
+    <modExtensions>
+      <li Class="BigAndSmall.RaceExtension">
+        <!-- <raceHediffList> <li>BS_HumanoidWithWings_Race</li> </raceHediffList> -->
+        <raceHediff>BS_HumanoidWithWings_Race</raceHediff>
+      </li>
+    </modExtensions>
+  </ThingDef>
+</Defs>

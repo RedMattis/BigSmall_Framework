@@ -1,0 +1,83 @@
+<Defs>
+  <!--
+  Filterlist Mini-documentation:
+  acceptlist - Listed things will be approved.
+  whiteList - As above, but everything not listed will be denied.
+  blacklist - Listed things will be denied.
+  allowlist - As above, but will take priority over most things except...
+  banlist   - As above, but bans instead. Takes priority over everything.
+  -->
+
+  <!-- These are basically "new" food types. -->
+  <BigAndSmall.NewFoodCategory>
+    <defName>BS_ChemfuelLike</defName>
+    <foodDefs>
+      <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_AndroidFuel</li>
+    </foodDefs>
+    <allowByDefault>false</allowByDefault>
+    <filterListFor>
+      <fleshTypes>
+        <acceptlist><li>Mechanoid</li></acceptlist>
+      </fleshTypes>
+      <!-- The prefered way is to use a DietFilter targeting this, but this can instead be patched into for easy compatibility for other modders. -->
+      <pawnThingsDefs>
+        <acceptlist/>
+      </pawnThingsDefs>
+      <geneDefs>
+        <acceptlist/>
+      </geneDefs>
+    </filterListFor>
+  </BigAndSmall.NewFoodCategory>
+
+  <BigAndSmall.PawnDiet>
+    <defName>BS_ChemRobotDiet</defName>
+    <!-- Don't accept drugs unless white-listed.-->
+    <alwaysAcceptProcessed>false</alwaysAcceptProcessed>
+    <alwaysAcceptNonIngestible>true</alwaysAcceptNonIngestible>
+    <alwaysAcceptNutrientPaste>false</alwaysAcceptNutrientPaste>
+
+    <foodFilters>
+      <whitelist>
+        <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_AndroidFuel</li>
+      </whitelist>
+    </foodFilters>
+    <newFoodCategoryFilters>
+      <!-- Also ONLY the listed... -->
+      <whitelist>
+        <li>BS_ChemfuelLike</li>
+      </whitelist>
+    </newFoodCategoryFilters>
+  </BigAndSmall.PawnDiet>
+
+  <BigAndSmall.PawnDiet>
+    <defName>BS_EverythingAndFuel</defName>
+    <alwaysAcceptProcessed>true</alwaysAcceptProcessed>
+    <alwaysAcceptNonIngestible>true</alwaysAcceptNonIngestible>
+    <alwaysAcceptNutrientPaste>true</alwaysAcceptNutrientPaste>
+    <newFoodCategoryFilters>
+      <!-- Also everything normal, but also allows the normally restricted... -->
+      <allowlist>
+        <li>BS_ChemfuelLike</li>
+      </allowlist>
+    </newFoodCategoryFilters>
+  </BigAndSmall.PawnDiet>
+
+  <BigAndSmall.PawnDiet>
+    <defName>BS_Carnivore</defName>
+    <alwaysAcceptProcessed>true</alwaysAcceptProcessed>
+    <alwaysAcceptNonIngestible>true</alwaysAcceptNonIngestible>
+    <alwaysAcceptNutrientPaste>true</alwaysAcceptNutrientPaste>
+    <foodCategory>Carnivore</foodCategory>
+  </BigAndSmall.PawnDiet>
+
+
+  <BigAndSmall.PawnDiet>
+    <defName>BS_Herbivore</defName>
+    <alwaysAcceptProcessed>true</alwaysAcceptProcessed>
+    <alwaysAcceptNonIngestible>true</alwaysAcceptNonIngestible>
+    <alwaysAcceptNutrientPaste>true</alwaysAcceptNutrientPaste>
+    <foodCategory>Herbivore</foodCategory>
+  </BigAndSmall.PawnDiet>
+
+
+</Defs>

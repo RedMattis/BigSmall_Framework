@@ -1,0 +1,116 @@
+<Defs>
+
+  <HediffDef>
+    <defName>BS_Soulless</defName>
+    <label>Soulless Husk</label>
+    <description>This creature has been robbed of its spiritual essence causing irreversible damage.</description>
+    <isBad>true</isBad>
+    <everCurableByItem>false</everCurableByItem>
+    <keepOnBodyPartRestoration>true</keepOnBodyPartRestoration>
+    <aptitudes>
+      <Social>-20</Social>
+      <Intellectual>-12</Intellectual>
+      <Animals>-12</Animals>
+      <Artistic>-12</Artistic>
+      <Crafting>-4</Crafting>
+      <Construction>-4</Construction>
+      <Plants>-4</Plants>
+      <Medicine>-4</Medicine>
+      <Cooking>-4</Cooking>
+    </aptitudes>
+    <stages>
+      <li>
+        <painFactor>0.30</painFactor>
+        <socialFightChanceFactor>0</socialFightChanceFactor>
+        <statFactors>
+          <PsychicSensitivity>0</PsychicSensitivity>
+          <GlobalLearningFactor>0</GlobalLearningFactor>
+          <SlaveSuppressionFallRate MayRequire="Ludeon.RimWorld.Ideology">0</SlaveSuppressionFallRate>
+        </statFactors>
+        <statOffsets>
+          <PawnBeauty>-1</PawnBeauty>
+          <SlaveSuppressionOffset MayRequire="Ludeon.RimWorld.Ideology">2.0</SlaveSuppressionOffset>
+        </statOffsets>
+        <hungerRateFactor>0.7</hungerRateFactor>
+        <capMods>
+          <li>
+            <capacity>Consciousness</capacity>
+            <!-- <setMax>0.8</setMax> -->
+            <offset>-0.20</offset>
+          </li>
+        </capMods>
+        <disablesNeeds>
+          <!-- <li>Rest</li> -->
+          <li>Comfort</li>
+          <li>Mood</li>
+          <li>Beauty</li>
+          <li>Outdoors</li>
+          <li>Indoors</li>
+          <li>Joy</li>
+        </disablesNeeds>
+      </li>
+    </stages>
+    <allowMothballIfLowPriorityWorldPawn>true</allowMothballIfLowPriorityWorldPawn>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>BS_SoulCollector</defName>
+    <label>Soul Power Stockpile</label>
+    <description>Siritual power of strange origins.</description>
+    <isBad>false</isBad>
+    <everCurableByItem>false</everCurableByItem>
+    <initialSeverity>0</initialSeverity>
+    <keepOnBodyPartRestoration>true</keepOnBodyPartRestoration>
+    <maxSeverity>6</maxSeverity>
+    <stages>
+      <li>
+        <statOffsetsBySeverity>
+          <li>
+            <stat>BS_SoulPower</stat>
+            <valueBySeverity>
+              <points>
+                <li>(0, 0)</li>
+                <li>(1000, 1000)</li>
+              </points>
+            </valueBySeverity>
+          </li>
+        </statOffsetsBySeverity>
+      </li>
+    </stages>
+    <hediffClass>BigAndSmall.SoulCollector</hediffClass>
+    <allowMothballIfLowPriorityWorldPawn>true</allowMothballIfLowPriorityWorldPawn>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>BS_SoulPowerHediff</defName>
+    <label>Soul Power</label>
+    <description>A limited manifestation of spiritual power.</description>
+    <hediffClass>BigAndSmall.SoulResourceHediff</hediffClass>
+    <isBad>false</isBad>
+    <everCurableByItem>false</everCurableByItem>
+    <initialSeverity>1</initialSeverity>
+    <makesAlert>false</makesAlert>
+    <minSeverity>1</minSeverity>
+    <forceRemoveOnResurrection>true</forceRemoveOnResurrection>
+    <stages>
+      <li>
+        <capMods>
+          <li>
+            <capacity>Consciousness</capacity>
+            <!-- <setMax>0.8</setMax> -->
+            <postFactor>1.05</postFactor>
+          </li>
+        </capMods>
+        <statFactors>
+          <IncomingDamageFactor>0.95</IncomingDamageFactor>
+          <MeleeDamageFactor>1.05</MeleeDamageFactor>
+          <MoveSpeed>1.025</MoveSpeed>
+        </statFactors>
+        <capacityFactorEffectMultiplier>BS_SoulPower</capacityFactorEffectMultiplier>
+        <statFactorEffectMultiplier>BS_SoulPower</statFactorEffectMultiplier>
+      </li>
+    </stages>
+    <allowMothballIfLowPriorityWorldPawn>true</allowMothballIfLowPriorityWorldPawn>
+  </HediffDef>
+
+</Defs>

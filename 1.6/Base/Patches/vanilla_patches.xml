@@ -1,0 +1,214 @@
+<Patch>
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/StatDef[defName="MaxNutrition"]/parts</xpath>
+		<value>
+			<li Class="BigAndSmall.StatPart_MaxNutritionFromSize"/>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationReplace">
+		<xpath>Defs/ThingDef[@Name="MealBaseIngredientless"]/ingestible/maxNumToIngestAtOnce</xpath>
+		<value>
+			<maxNumToIngestAtOnce>20</maxNumToIngestAtOnce>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationReplace">
+		<xpath>Defs/ThingDef[defName="Chocolate"]/ingestible/maxNumToIngestAtOnce</xpath>
+		<value>
+			<maxNumToIngestAtOnce>20</maxNumToIngestAtOnce>
+		</value>
+	</Operation>
+
+	<!--Ensure we're not adding a new one if it already exists.-->
+	<Operation Class="PatchOperationAdd">
+		<success>Always</success>
+		<xpath>Defs/ThingDef[@Name="PlantFoodRawBase"]/ingestible[not(maxNumToIngestAtOnce)]</xpath>
+		<value>
+			<maxNumToIngestAtOnce />
+		</value>
+	</Operation>
+
+	<!--But still write our values if something else is in there...-->
+	<Operation Class="PatchOperationReplace">
+		<xpath>Defs/ThingDef[@Name="PlantFoodRawBase"]/ingestible/maxNumToIngestAtOnce</xpath>
+		<value>
+			<maxNumToIngestAtOnce>400</maxNumToIngestAtOnce>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAdd">
+		<success>Always</success>
+		<xpath>Defs/ThingDef[defName="Pemmican"]/ingestible[not(maxNumToIngestAtOnce)]</xpath>
+		<value>
+			<maxNumToIngestAtOnce />
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationReplace">
+		<xpath>Defs/ThingDef[defName="Pemmican"]/ingestible/maxNumToIngestAtOnce</xpath>
+		<value>
+			<maxNumToIngestAtOnce>400</maxNumToIngestAtOnce>
+		</value>
+	</Operation>
+
+	<!--This could probably be its own mod, but I honestly doubt anyone cares enough.-->
+	<Operation Class="PatchOperationReplace">
+		<xpath>Defs/ThoughtDef[defName="Ugly"]/stages</xpath>
+		<value>
+			<stages>
+				<li>
+					<label>physically unsightly</label>
+					<baseOpinionOffset>-20</baseOpinionOffset>
+				</li>
+				<li>
+					<label>physically hideous</label>
+					<baseOpinionOffset>-40</baseOpinionOffset>
+				</li>
+				<li>
+					<label>physically digusting</label>
+					<baseOpinionOffset>-50</baseOpinionOffset>
+				</li>
+				<li>
+					<label>physically revolting</label>
+					<baseOpinionOffset>-60</baseOpinionOffset>
+				</li>
+			</stages>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationReplace">
+		<xpath>Defs/ThoughtDef[defName="Pretty"]/stages</xpath>
+		<value>
+			<stages>
+				<li>
+					<label>physically appealing</label>
+					<baseOpinionOffset>20</baseOpinionOffset>
+				</li>
+				<li>
+					<label>physically stunning</label>
+					<baseOpinionOffset>40</baseOpinionOffset>
+				</li>
+				<li>
+					<label>physically breathtaking</label>
+					<baseOpinionOffset>45</baseOpinionOffset>
+				</li>
+				<li>
+					<label>physically awestriking</label>
+					<baseOpinionOffset>50</baseOpinionOffset>
+				</li>
+			</stages>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Royalty</li>
+		</mods>
+
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAdd">
+					<success>Always</success>
+					<xpath>Defs/FactionDef[defName="Empire"]/permanentEnemyToEveryoneExcept</xpath>
+					<value>
+						<li MayRequire="Ludeon.Rimworld.Biotech">BS_PlayerTribeXenoPlus</li>
+						<li MayRequire="Ludeon.Rimworld.Biotech">BS_PlayerColonyXenoPlus</li>
+						<li MayRequire="RedMattis.BigSmall.Bugs">BS_XenoInsectoidHiveStart</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<success>Always</success>
+					<xpath>Defs/HediffDef[defName="NuclearStomach" or defName="ReprocessorStomach" or defName="DetoxifierStomach"][not(modExtensions)]</xpath>
+					<value>
+						<modExtensions/>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/HediffDef[defName="NuclearStomach"]/modExtensions</xpath>
+					<value>
+						<li Class="BigAndSmall.PawnExtension">
+							<pawnDiet>BS_EverythingAndFuel</pawnDiet>
+							<pawnDietRacialOverride>true</pawnDietRacialOverride>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/HediffDef[defName="ReprocessorStomach" or defName="DetoxifierStomach"]/modExtensions</xpath>
+					<value>
+						<li Class="BigAndSmall.PawnExtension">
+							<pawnDietRacialOverride>true</pawnDietRacialOverride>
+						</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+
+
+
+
+  
+  <Operation Class="PatchOperationAdd">
+    <success>Always</success>
+    <xpath>Defs/PawnCapacityDef[defName="Metabolism"][not(labelMechanoids)]</xpath>
+    <value>
+      <labelMechanoids>Fuel efficiency</labelMechanoids>
+    </value>
+  </Operation>
+
+	<Operation Class="PatchOperationAdd">
+    <success>Always</success>
+    <xpath>Defs/PawnCapacityDef[defName="Breathing"][not(labelMechanoids)]</xpath>
+    <value>
+      <labelMechanoids>Cooling capacity</labelMechanoids>
+    </value>
+  </Operation>
+
+	<Operation Class="PatchOperationAdd">
+    <success>Always</success>
+    <xpath>Defs/PawnCapacityDef[defName="Eating"][not(labelMechanoids)]</xpath>
+    <value>
+      <labelMechanoids>Refueling Speed</labelMechanoids>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/ThingDef[defName="TableMachining"]/recipes</xpath>
+    <value>
+      <li>BS_ShredRobot</li>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/ThingDef[defName="CraftingSpot"]/recipes</xpath>
+    <value>
+      <li>BS_SmashRobot</li>
+    </value>
+  </Operation>
+
+	<!-- <Operation Class="PatchOperationAdd">
+    <success>Always</success>
+    <xpath>Defs/StatDef[defName="PainShockThreshold"][not(labelMechanoids)]</xpath>
+    <value>
+      <labelMechanoids>Intake</labelMechanoids>
+    </value>
+  </Operation> -->
+
+	<!-- <Operation Class="PatchOperationAdd">
+    <success>Always</success>
+    <xpath>Defs/PawnCapacityDef[defName="Moving"][not(labelMechanoids)]</xpath>
+    <value>
+      <labelMechanoids>Locomotion</labelMechanoids>
+    </value>
+  </Operation> -->
+	
+</Patch>
+<!-- 
+
+<Operation Class="PatchOperationAdd">
+	<success>Always</success>
+	<xpath>Defs/ThoughtDef[defName="AteCorpse"][not(nullifyingGenes)]</xpath>
+	<value>
+		<nullifyingGenes/>
+	</value>
+</Operation> -->

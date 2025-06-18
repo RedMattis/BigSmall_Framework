@@ -43,7 +43,6 @@
   <BS_ActivateExperimental>Experimental Features (Requires Restart)</BS_ActivateExperimental>
   <BS_BodyDefFusions>Dynamically generated races</BS_BodyDefFusions>
   <BS_PathRacesFromOtherMods>Apply races to other mod genes</BS_PathRacesFromOtherMods>
-  <BS_PathRacesFromOtherMods>Apply races to other mod genes</BS_PathRacesFromOtherMods>
 
   <BS_ToggleFeatures>Toggle Content Features (Requires Restart)</BS_ToggleFeatures>
   <BS_Surgery>Bionics and Surgery</BS_Surgery>

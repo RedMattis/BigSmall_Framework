@@ -1,0 +1,47 @@
+<Defs>
+  <GeneCategoryDef>
+    <defName>BS_Metamorph</defName>
+    <label>Metamorph Genes</label>
+    <displayPriorityInXenotype>-99988</displayPriorityInXenotype>
+  </GeneCategoryDef>
+  <GeneCategoryDef>
+    <defName>BS_MetamorphTarget</defName>
+    <label>Metamorph Targets</label>
+    <displayPriorityInXenotype>-99989</displayPriorityInXenotype>
+  </GeneCategoryDef>
+
+  <BigAndSmall.GeneTemplate>
+    <defName>BS_MetamorphTemplate</defName>
+    <label>metamorph</label>
+    <keyTag>Metamorphosis</keyTag>
+    <description>Carriers of this gene can undergo metamorphosis to a {0} if the right conditions are met.</description>
+    <customEffectDescriptions>
+      <li>Genes such as "Morph [when] Adult", "Morph Pregnant", or "Morph Day" are valid conditions.</li>
+    </customEffectDescriptions>
+    <displayCategory>BS_MetamorphTarget</displayCategory>
+    <canGenerateInGeneSet>false</canGenerateInGeneSet>
+    <selectionWeight>0</selectionWeight>
+    <backgroundPathEndogenes>GeneIcons/BS_BackEndogene_Up</backgroundPathEndogenes>
+    <backgroundPathXenogenes>GeneIcons/BS_BackXenogene_Up</backgroundPathXenogenes>
+    <!-- <backgroundPathArchite>GeneIcons/BS_BackArchite_1</backgroundPathArchite> -->
+    <iconColor>(0.74, 0.74, 0.85)</iconColor>
+  </BigAndSmall.GeneTemplate>
+
+  <BigAndSmall.GeneTemplate>
+    <defName>BS_RetromorphDownTemplate</defName>
+    <label>retromorph</label>
+    <keyTag>Retromorphosis</keyTag>
+    <description>Carriers of this gene can undergo retromorphosis to a {0} if the right conditions are met.</description>
+    <customEffectDescriptions>
+      <li>Genes such as "Retromorphmorph [when] Pre-Adult" are valid conditions.</li>
+    </customEffectDescriptions>
+    <displayCategory>BS_MetamorphTarget</displayCategory>
+    <canGenerateInGeneSet>false</canGenerateInGeneSet>
+    <selectionWeight>0</selectionWeight>
+    <backgroundPathEndogenes>GeneIcons/BS_BackEndogene_Down</backgroundPathEndogenes>
+    <backgroundPathXenogenes>GeneIcons/BS_BackXenogene_Down</backgroundPathXenogenes>
+    <!-- <backgroundPathArchite>GeneIcons/BS_BackArchite_1</backgroundPathArchite> -->
+    <iconColor>(0.85, 0.68, 0.68)</iconColor>
+  </BigAndSmall.GeneTemplate>
+  
+</Defs>

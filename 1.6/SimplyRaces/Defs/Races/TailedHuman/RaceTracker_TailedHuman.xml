@@ -1,0 +1,80 @@
+<Defs>
+
+  <HediffDef ParentName="BS_DefaultRaceTracker">
+    <defName>BS_HumanoidWithTailRace</defName>
+    <description>A humanoid... with a tail!</description>
+    <label>tailed humanoid</label>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <traitIcon>BS_Traits/tail</traitIcon>
+      </li>
+    </modExtensions>
+    <comps>
+      <li Class="BigAndSmall.CompProperties_Race">
+        <canSwapAwayFrom>true</canSwapAwayFrom>
+      </li>
+    </comps>
+    <renderNodeProperties>
+      <!-- Righthand side -->
+      <li Class="BigAndSmall.PawnRenderingProps_Ultimate">
+        <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
+        <!-- <workerClass>PawnRenderNodeWorker_AttachmentBody</workerClass> -->
+        <parentTagDef>Body</parentTagDef>
+        <rotDrawMode>Fresh, Rotting</rotDrawMode>
+        <colorType>Skin</colorType>
+        <shader>Cutout</shader>
+        <conditionalGraphics>
+          <texturePaths><li>RaceDefaults/Tails/BS_Tail</li></texturePaths>
+          <colorA>
+            <replaceFlagsAndInactive><TailedColorA/></replaceFlagsAndInactive>
+            <hairColor>true</hairColor>
+          </colorA>
+          <colorB>
+            <replaceFlagsAndInactive><TailedColorB/></replaceFlagsAndInactive>
+            <hairColor>true</hairColor>
+            <brightness>1.2</brightness>
+            <saturation>0.8</saturation>
+          </colorB>
+          <alts>
+            <li>
+              <!-- Hide the tail if we have a tail-gene. -->
+              <triggerGeneTag>
+                <acceptlist>
+                  <li>taur</li><li>tail</li><li>tails</li>
+                </acceptlist>
+              </triggerGeneTag>
+              <texturePaths><default>BS_Blank</default></texturePaths>
+            </li>
+            <li>
+              <!-- Poor cat lost its tail. -->
+              <triggerBodyPart>
+                <li>
+                  <bodyPartDef>Tail</bodyPartDef>
+                  <partMissing>true</partMissing>
+                </li>
+              </triggerBodyPart>
+              <texturePaths><default>BS_Blank</default></texturePaths>
+            </li>
+          </alts>
+        </conditionalGraphics>
+        <drawSize>(0.8,0.8)</drawSize>
+        <drawData>
+          <scaleOffsetByBodySize>true</scaleOffsetByBodySize>
+          <defaultData>
+            <layer>-2</layer>
+          </defaultData>
+          <dataNorth>
+            <offset>(0.0, 0, -0.4)</offset>
+            <layer>90</layer>
+          </dataNorth>
+          <dataSouth>
+            <offset>(-0.0, 0, 0.0)</offset>
+          </dataSouth>
+          <dataEast>
+            <offset>(-0.45, 0, -0.20)</offset>
+          </dataEast>
+        </drawData>
+      </li>
+    </renderNodeProperties>
+  </HediffDef>
+</Defs>

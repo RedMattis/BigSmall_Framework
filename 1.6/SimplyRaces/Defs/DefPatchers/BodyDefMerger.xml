@@ -1,0 +1,206 @@
+<Defs>
+
+  <BigAndSmall.BodyDefFusion>
+    <defName>BS_DefaultFusions</defName>
+
+    <!-- If the pawn gets more organs than the base pawn,
+     walk from the bottom and remove until at a reasonable level.
+     This is intended to avoid issues with characters with organs in strange places
+     getting a bunch of extra of hearts, brains, etc.-->
+    <bodyPartToSkip>
+      <li>Brain</li>
+      <li>Heart</li>
+      <li>Lung</li>
+      <li>Liver</li>
+      <li>Kidney</li>
+      <li>Stomach</li>
+    </bodyPartToSkip>
+    
+    <substitutions>
+      <!-- Note that these target only BodyDefs, not ThingDefs. -->
+      <li>
+        <!-- Freely replace with whatever. -->
+        <target isNull="True"/>
+        <bodyDefs>
+          <li MayRequire="RedMattis.BigSmall.Core">BS_Glutton</li>
+        </bodyDefs>
+      </li>
+      <li>
+        <target>BS_FourArmedHuman</target>
+        <bodyDefs>
+          <li MayRequire="RedMattis.BigSmall.Bugs">BS_InsectoidHumanoid_FourArmedBody</li>
+        </bodyDefs>
+      </li>
+      <li>
+        <target>BS_StandardAndroid</target>
+        <bodyDefs>
+          <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_TVAndroid</li>
+        </bodyDefs>
+      </li>
+    </substitutions>
+
+    <!-- Special version of the above. Body is replaced, but the Tracker can be kept. -->
+    <retainableTrackers>
+      <li>
+        <target>BS_StandardAndroid</target>
+        <raceTrackers>
+          <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_TVAndroid</li>
+          <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_TVAndroid_Sapient</li>
+        </raceTrackers>
+      </li>
+    </retainableTrackers>
+
+    <mergableBody>
+      <!-- <li>
+        <bodyDef>Human</bodyDef>
+        <thingDef>Human</thingDef>
+        <overrideDefNamer>BS_Human</overrideDefNamer>
+        <priority>-100000</priority>
+        <canBeFusionOne>false</canBeFusionOne>
+        <fuse>false</fuse>
+      </li> -->
+      <li>
+        <bodyDef>BS_FourArmedHuman</bodyDef>
+        <thingDef>BS_HumanFouramed</thingDef>
+        <overrideDefNamer>FourArm</overrideDefNamer>
+        <priority>-100</priority>
+        <prefixLabel>four-armed humanlike</prefixLabel>
+        <suffixLabel>four arms</suffixLabel>
+        <exclusionTags>
+          <li>ExtraArms</li>
+        </exclusionTags>
+      </li>
+      <li>
+        <bodyDef>BS_SixArmedHuman</bodyDef>
+        <thingDef>BS_SixArmedHuman</thingDef>
+        <overrideDefNamer>SixArm</overrideDefNamer>
+        <priority>-100</priority>
+        <prefixLabel>six-armed humanlike</prefixLabel>
+        <suffixLabel>six arms</suffixLabel>
+        <exclusionTags>
+          <li>ExtraArms</li>
+        </exclusionTags>
+      </li>
+      <li>
+        <bodyDef>BS_HumanoidWithTail_Body</bodyDef>
+        <thingDef>BS_HumanoidWithTail</thingDef>
+        <overrideDefNamer>Tailed</overrideDefNamer>
+        <priority>-100</priority>
+        <prefixLabel>tailed humanlike</prefixLabel>
+        <suffixLabel>a tail</suffixLabel>
+        <fuseAll>true</fuseAll>
+        <exclusionTags><li>Tail</li></exclusionTags>
+      </li>
+      <li>
+        <bodyDef>BS_HumanoidWithWings_Body</bodyDef>
+        <thingDef>BS_HumanoidWithWings</thingDef>
+        <overrideDefNamer>Winged</overrideDefNamer>
+        <priority>-100</priority>
+        <prefixLabel>winged humanlike</prefixLabel>
+        <suffixLabel>wings</suffixLabel>
+        <fuseAll>true</fuseAll>
+        <exclusionTags>
+          <li>Wings</li>
+        </exclusionTags>
+      </li>
+      <li>
+        <bodyDef>BS_SnakeHuman</bodyDef>
+        <thingDef>BS_Naga</thingDef>
+        <overrideDefNamer>Snek</overrideDefNamer>
+        <priority>100</priority>
+        <prefixLabel>serpent-like</prefixLabel>
+        <suffixLabel>serpent-like tail</suffixLabel>
+        <exclusionTags>
+          <li>Tail</li>
+          <li>Abdomen</li>
+        </exclusionTags>
+        <removesParts>
+          <li>Pelvis</li>
+          <li>Leg</li>
+        </removesParts>
+      </li>
+      <li>
+        <bodyDef>BS_SpiderHybrid</bodyDef>
+        <thingDef>BS_SpiderPersonRace</thingDef>
+        <overrideDefNamer>Spooder</overrideDefNamer>
+        <priority>100</priority>
+        <prefixLabel>spider-like</prefixLabel>
+        <suffixLabel>spider-like abdomen</suffixLabel>
+        <exclusionTags>
+          <li>Tail</li>
+          <li>Abdomen</li>
+        </exclusionTags>
+        <removesParts>
+          <li>Pelvis</li>
+        </removesParts>
+      </li>
+      <li>
+        <bodyDef>BS_Centaur_Body</bodyDef>
+        <thingDef>BS_Centaur</thingDef>
+        <overrideDefNamer>Centaur</overrideDefNamer>
+        <priority>100</priority>
+        <prefixLabel>centauroid</prefixLabel>
+        <suffixLabel>four legs</suffixLabel>
+        <exclusionTags>
+          <li>Tail</li>
+          <li>Abdomen</li>
+        </exclusionTags>
+        <removesParts>
+          <li>Toe</li>
+        </removesParts>
+      </li>
+
+      <li>
+        <bodyDef>BS_StandardAndroid</bodyDef>
+        <thingDef>BS_UrbMech</thingDef>
+        <overrideDefNamer>Mecha</overrideDefNamer>
+        <priority>-10000</priority>
+        <prefixLabel>mech</prefixLabel>
+        <suffixLabel>mech</suffixLabel>
+        <isMechanical>true</isMechanical>
+
+        <!-- If a pawn doesn't find a valid fusion and would otherwise become a "Human" they will instead
+         pick the first available option with this enabled. -->
+        <defaultMechanical>true</defaultMechanical>
+
+        <!-- Will be fused with everything above and generations of it, but not other fuseSets.
+         Use this if you want to make a race able to get multiple limbs.-->
+        <fuseSet>true</fuseSet>
+
+      </li>
+    </mergableBody>
+  </BigAndSmall.BodyDefFusion>
+
+  <BigAndSmall.SimilarParts>
+    <defName>Arm</defName>
+    <parts>
+      <!-- Loads as string. No MayRequire needed. -->
+      <li>Arm</li>
+      <li>BS_MechanicalArm</li>
+    </parts>
+  </BigAndSmall.SimilarParts>
+  <BigAndSmall.SimilarParts>
+    <defName>Leg</defName>
+    <parts>
+      <li>Leg</li>
+      <li>BS_MechanicalLeg</li>
+    </parts>
+  </BigAndSmall.SimilarParts>
+  <BigAndSmall.SimilarParts>
+    <defName>Shoulder</defName>
+    <parts>
+      <!-- Loads as string. No MayRequire needed. -->
+      <li>Shoulder</li>
+      <li>BS_MechanicalShoulder</li>
+    </parts>
+  </BigAndSmall.SimilarParts>
+  <BigAndSmall.SimilarParts>
+    <defName>Pelvis</defName>
+    <parts> <li>Pelvis</li> </parts>
+  </BigAndSmall.SimilarParts>
+  <BigAndSmall.SimilarParts>
+    <defName>Toe</defName>
+    <parts> <li>Toe</li> </parts>
+  </BigAndSmall.SimilarParts>
+  
+</Defs>

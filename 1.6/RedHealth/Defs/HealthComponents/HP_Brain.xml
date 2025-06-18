@@ -1,0 +1,194 @@
+<Defs>
+  <RedHealth.HealthAspect>
+    <defName>RED_BrainHealth</defName>
+    <label>neural rating</label>
+    <labelSimple>brain health</labelSimple>
+    <description>Neural health is a measure of how well the brain is functioning.</description>
+    <associatedPartsTags><li>ConsciousnessSource</li></associatedPartsTags>
+    <!--This is mostly because fixing a broken brain is quite difficult, unlike other health issues.-->
+    <lucky>true</lucky> 
+    <nullifyIfPartsReplacedBetterThanNatural>true</nullifyIfPartsReplacedBetterThanNatural>
+    <thresholds>
+      <li>
+        <label>good</label>
+        <description>No notable issues</description>
+        <labelColor>(128,255,128)</labelColor>
+      </li>
+      <li>
+        <threshold>0.4</threshold>
+        <label>decent</label>
+        <description>Minor cognitive issues.</description>
+        <labelColor>(255,255,128)</labelColor>
+        <odds>0.00080</odds> <!--0.02% chance per day, or 1.2% per year-->
+        <effects>
+          <li>
+            <hediff>Carcinoma</hediff>
+            <weight>1</weight>
+            <partsToAffect>
+              <li>Brain</li>
+            </partsToAffect>
+          </li>
+          <li>
+            <hediff>Dementia</hediff>
+            <weight>1</weight>
+            <partsToAffect>
+              <li>Brain</li>
+            </partsToAffect>
+          </li>
+        </effects>
+      </li>
+      <li>
+        <threshold>0.6</threshold>
+        <label>bad</label>
+        <description>Moderate cognitive issues.</description>
+        <labelColor>(255,200,0)</labelColor>
+        <odds>0.002</odds> <!--0.05% chance per day, or 3% per year-->
+        <effects>
+          <li>
+            <hediff>Dementia</hediff>
+            <weight>1</weight>
+            <partsToAffect>
+              <li>Brain</li>
+            </partsToAffect>
+          </li>
+          <li>
+            <hediff>Alzheimers</hediff>
+            <weight>1</weight>
+            <partsToAffect>
+              <li>Brain</li>
+            </partsToAffect>
+          </li>
+          <li>
+            <hediff>Carcinoma</hediff>
+            <weight>0.25</weight>
+            <partsToAffect>
+              <li>Brain</li>
+            </partsToAffect>
+          </li>
+        </effects>
+      </li>
+      <li>
+        <threshold>0.8</threshold>
+        <label>severe</label>
+        <description>Severe cognitive issues.</description>
+        <labelColor>(255,165,0)</labelColor>
+        <odds>0.08</odds> <!--Average of 1.2 per year -->
+        <effects>
+          <li>
+            <hediff>Dementia</hediff>
+            <weight>1</weight>
+            <partsToAffect>
+              <li>Brain</li>
+            </partsToAffect>
+          </li>
+          <li>
+            <hediff>Alzheimers</hediff>
+            <weight>1</weight>
+            <partsToAffect>
+              <li>Brain</li>
+            </partsToAffect>
+          </li>
+          <li>
+            <hediff>Carcinoma</hediff>
+            <weight>0.2</weight>
+            <partsToAffect>
+              <li>Brain</li>
+            </partsToAffect>
+          </li>
+          <li>
+            <hediff>RED_BrainFailure</hediff>
+            <severityRange>0~0.1</severityRange>
+            <weight>0.1</weight>
+            <partsToAffect>
+              <li>Brain</li>
+            </partsToAffect>
+          </li>
+        </effects>
+      </li>
+      <li>
+        <threshold>0.90</threshold> <!--RIP-->
+        <label>critical</label>
+        <description>Extreme cognitive issues.</description>
+        <labelColor>(255,0,0)</labelColor>
+        <odds>0.32</odds> <!--Average 4.8 events per year.-->
+        <effects>
+          <li>
+            <hediff>Dementia</hediff>
+            <weight>1</weight>
+            <partsToAffect>
+              <li>Brain</li>
+            </partsToAffect>
+          </li>
+          <li>
+            <hediff>Alzheimers</hediff>
+            <weight>2</weight>
+            <severityRange>0~0.4</severityRange>
+            <partsToAffect>
+              <li>Brain</li>
+            </partsToAffect>
+          </li>
+          <li>
+            <hediff>Carcinoma</hediff>
+            <weight>0.25</weight>
+            <partsToAffect>
+              <li>Brain</li>
+            </partsToAffect>
+          </li>
+          <li>
+            <hediff>RED_BrainFailure</hediff>
+            <severityRange>0~0.25</severityRange>
+            <weight>1</weight>
+            <partsToAffect>
+              <li>Brain</li>
+            </partsToAffect>
+          </li>
+        </effects>
+      </li>
+      <li>
+        <threshold>1</threshold> <!--The "Just Die Already Tier"-->
+        <label>terminal</label>
+        <description>deadly cognitive issues.</description>
+        <labelColor>(255,0,0)</labelColor>
+        <odds>0.5</odds> <!--Average 1 event per 5 days.-->
+        <maxMeanTime>300000</maxMeanTime> <!--Every 2.5 days on average-->
+        <effects>
+          <li>
+            <hediff>Dementia</hediff>
+            <weight>1</weight>
+            <partsToAffect>
+              <li>Brain</li>
+            </partsToAffect>
+            <killWorldPawn>true</killWorldPawn>
+          </li>
+          <li>
+            <hediff>Alzheimers</hediff>
+            <weight>2</weight>
+            <severityRange>0~0.4</severityRange>
+            <partsToAffect>
+              <li>Brain</li>
+            </partsToAffect>
+            <killWorldPawn>true</killWorldPawn>
+          </li>
+          <li>
+            <hediff>Carcinoma</hediff>
+            <weight>0.25</weight>
+            <partsToAffect>
+              <li>Brain</li>
+            </partsToAffect>
+            <killWorldPawn>true</killWorldPawn>
+          </li>
+          <li>
+            <hediff>RED_BrainFailure</hediff>
+            <severityRange>0~0.2</severityRange>
+            <weight>1</weight>
+            <severityPerDayRange>0.06~0.12</severityPerDayRange>
+            <partsToAffect>
+              <li>Brain</li>
+            </partsToAffect>
+            <killWorldPawn>true</killWorldPawn>
+          </li>
+        </effects>
+      </li>
+    </thresholds>
+  </RedHealth.HealthAspect>
+</Defs>

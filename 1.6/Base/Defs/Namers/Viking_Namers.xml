@@ -1,0 +1,37 @@
+<Defs>
+  <RulePackDef Name="BS_NamerViking" Abstract="True">
+    <rulePack>
+      <rulesStrings>
+        <li>r_name->[firstName] [lastName]</li>
+        <li>lastName->[VikingLastname]</li>
+      </rulesStrings>
+      <rulesFiles>
+				<li>VikingFemaleName->Names/fname_viking_female</li>
+        <li>VikingMaleName->Names/fname_viking_male</li>
+        <li>VikingLastname->Names/lname_viking</li>
+			</rulesFiles>
+    </rulePack>
+  </RulePackDef>
+
+  <RulePackDef ParentName="BS_NamerViking">
+    <defName>BS_NamerVikingMale</defName>
+    <rulePack>
+			<rulesStrings>
+				<li>firstName->[VikingMaleName]</li>
+        <li>lastName->[VikingMaleName]son</li>
+			</rulesStrings>
+    </rulePack>
+  </RulePackDef>
+
+  <RulePackDef ParentName="BS_NamerViking">
+    <defName>BS_NamerVikingFemale</defName>
+    <rulePack>
+			<rulesStrings>
+				<li>firstName->[VikingFemaleName]</li>
+        <li>lastName->[VikingMaleName]sdóttir</li>
+        <li>lastName->[VikingFemaleName]dóttir</li>
+			</rulesStrings>
+    </rulePack>
+  </RulePackDef>
+
+</Defs>

@@ -45,7 +45,10 @@ namespace BigAndSmall
                     var consumeSoulOnHit = genExt.First(x => x.consumeSoulOnHit != null).consumeSoulOnHit;
                     var scHediff = CompAbilityEffect_ConsumeSoul.MakeGetSoulCollectorHediff(instigator);
                     scHediff.AddPawnSoul(__instance, true, consumeSoulOnHit.gainMultiplier, consumeSoulOnHit.exponentialFalloff, consumeSoulOnHit.gainSkillMultiplier);
-                    CompAbilityEffect_ConsumeSoul.ApplySoulless(victim);
+                    if (victim?.RaceProps?.Humanlike == true)
+                    {
+                        CompAbilityEffect_ConsumeSoul.ApplySoulless(victim);
+                    }
                 }
             }
         }

@@ -1,0 +1,59 @@
+<Patch>
+
+  <!-- These are only being added to this so that Chonophagy (etc.) can remove them automatically. -->
+  <Operation Class="PatchOperationAdd">
+    <success>Always</success>
+    <xpath>Defs/HediffGiverSetDef[defName="OrganicStandard"]/hediffGivers</xpath>
+    <value>
+      <li Class="HediffGiver_Birthday">
+        <hediff>RED_BrainFailure</hediff>
+        <partsToAffect>
+          <li>Brain</li>
+        </partsToAffect>
+        <ageFractionChanceCurve>
+          <points>
+            <li>(0, 0)</li>
+            <li>(1, 0)</li>
+          </points>
+        </ageFractionChanceCurve>
+      </li>
+      <li Class="HediffGiver_Birthday">
+        <hediff>RED_OrganFailure</hediff>
+        <partsToAffect>
+          <li>Heart</li><li>Lung</li><li>Kidney</li><li>Liver</li>
+        </partsToAffect>
+        <ageFractionChanceCurve>
+          <points>
+            <li>(0, 0)</li>
+            <li>(1, 0)</li>
+          </points>
+        </ageFractionChanceCurve>
+      </li>
+      
+      <!-- <li Class="HediffGiver_Birthday">
+        <hediff>RED_LungFailure</hediff>
+        <partsToAffect>
+          <li>Lung</li>
+        </partsToAffect>
+        <ageFractionChanceCurve>
+          <points>
+            <li>(0, 0)</li>
+            <li>(1, 0)</li>
+          </points>
+        </ageFractionChanceCurve>
+      </li>
+      <li Class="HediffGiver_Birthday">
+        <hediff>RED_KidneyFailure</hediff>
+        <partsToAffect>
+          <li>Kidney</li>
+        </partsToAffect>
+        <ageFractionChanceCurve>
+          <points>
+            <li>(0, 0)</li>
+            <li>(1, 0)</li>
+          </points>
+        </ageFractionChanceCurve>
+      </li> -->
+    </value>
+  </Operation>
+</Patch>

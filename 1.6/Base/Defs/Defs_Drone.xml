@@ -1,0 +1,55 @@
+<Defs>
+  <HediffDef>
+    <defName>BS_DroneHediff</defName>
+    <label>drone</label>
+    <!-- This is used to disable the kill thoughts. Not doing it this way makes the tooltip an absolute mess. -->
+    <description>This pawn is a drone, lacking some higher reasoning and creativity.</description>
+    <stages>
+      <li>
+        <becomeVisible>false</becomeVisible>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <ThoughtDef ParentName="DeathMemory">
+    <defName>BS_DroneDied</defName>
+    <durationDays>5</durationDays>
+    <stackLimit>3</stackLimit>
+    <nullifyingTraits>
+      <li>Psychopath</li>
+      <li>Bloodlust</li>
+    </nullifyingTraits>
+    <stages>
+      <li>
+        <label>drone died</label>
+        <description>We lost a drone.</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>BS_DroneLost</defName>
+    <durationDays>6</durationDays>
+    <stackLimit>2</stackLimit>
+    <showBubble>true</showBubble>
+    <nullifyingTraits>
+      <li>Psychopath</li>
+    </nullifyingTraits>
+    <stages>
+      <li>
+        <label>drone lost</label>
+        <description>We lost a drone.</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <PawnRelationDef>
+    <defName>BS_Creator</defName>
+    <label>creator</label>
+    <importance>200</importance>
+    <opinionOffset>20</opinionOffset>
+    <implied>false</implied>
+  </PawnRelationDef>
+</Defs>

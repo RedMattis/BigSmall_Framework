@@ -1,0 +1,93 @@
+<Patch>
+  <!-- These patches are probably not going to be terribly fast...-->
+  <Operation Class="BigAndSmall.PatchOp_SciFiEnabled">
+    <match Class="BigAndSmall.PatchOp_ReplaceText">
+      <xpath>Defs/*/*[self::label or self::description]</xpath>
+      <success>Always</success>
+      <oldTexts>
+        <li>soul power</li>
+      </oldTexts>
+      <newTexts>
+        <li>anomalous power</li>
+      </newTexts>
+    </match>
+  </Operation>
+  <Operation Class="BigAndSmall.PatchOp_SciFiEnabled">
+    <match Class="BigAndSmall.PatchOp_ReplaceText">
+      <xpath>Defs/GeneDef/customEffectDescriptions/li</xpath>
+      <success>Always</success>
+      <oldTexts>
+        <li>soul power</li>
+      </oldTexts>
+      <newTexts>
+        <li>anomalous power</li>
+      </newTexts>
+    </match>
+  </Operation>
+
+  <Operation Class="BigAndSmall.PatchOp_FantasyEnabled">
+    <match Class="BigAndSmall.PatchOp_ReplaceText">
+      <xpath>//*[self::label or self::description]</xpath>
+      <success>Always</success>
+      <oldTexts>
+        <li>psychically</li>
+        <li>psychic</li>
+        <li>bioferrite</li>
+        <li>archites</li>
+        <li>archite </li>
+
+        <li>hemogenic humans</li>
+        <li>hemogenic human</li>
+        <li>hemogenic</li>
+        <li>hemogenic user</li>
+        <li>hemogen</li>
+
+        <li>archotechnological engine</li>
+        <li>archotechnological</li>
+        <li>archotechnologies</li>
+        <li>archotechnology</li>
+        <li>archotech</li>
+
+        <li>hyperintelligent</li>
+        <li>superintelligence</li>
+
+        <li>devices</li>
+        <li>nanoscale</li>
+        <li>microscopic</li>
+      </oldTexts>
+      <newTexts>
+        <li>arcane</li>
+        <li>arcane</li>
+        <li>blightsteel</li>
+        <li>mana</li>
+        <li>magic </li>
+
+        <li>vampires</li>
+        <li>vampire</li>
+        <li>vampiric</li>
+        <li>vampire</li>
+        <li>blood</li>
+
+        <li>diety</li>
+        <li>deific</li>
+        <li>eldritch means</li>
+        <li>empyrean</li>
+        <li>empyrean</li>
+
+        <li>eldritch</li>
+        <li>intellect</li>
+
+        <li>artifacts</li>
+        <li>tiny</li>
+        <li>small</li>
+      </newTexts>
+    </match>
+  </Operation>
+  
+  
+
+
+  
+
+
+</Patch>

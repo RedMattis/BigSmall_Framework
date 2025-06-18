@@ -637,7 +637,7 @@ namespace BigAndSmall
                 if (forcedRotDrawMode != null)
                 {
                     // Check so the pawn HAS a rot draw mode.
-                    if (pawn.Corpse?.GetComp<CompRottable>() == null)
+                    if (pawn?.RaceProps.corpseDef?.GetCompProperties<CompProperties_Rottable>() == null)
                     {
                         forcedRotDrawMode = null;
                     }
@@ -717,40 +717,8 @@ namespace BigAndSmall
 
             int pawnRNGSeed = pawn.GetPawnRNGSeed();
 
-            var extensionsWithHeadPaths = otherExts.Where(x => x.headPaths.ValidFor(this));
+            SetPawnHeadAndBodyTextures(allPawnExt, pawnRNGSeed);
 
-            // Only use  race props if there are no other extensions with head paths.
-            extensionsWithHeadPaths = extensionsWithHeadPaths.EnumerableNullOrEmpty() ? raceExts.Where(x => x.headPaths.ValidFor(this)) : extensionsWithHeadPaths;
-            PawnExtension headGfxExt = null;
-            if (extensionsWithHeadPaths.EnumerableNullOrEmpty() == false)
-            {
-                using (new RandBlock(pawnRNGSeed))
-                {
-                    headGfxExt = extensionsWithHeadPaths.RandomElement();
-                    headGraphicPath = headGfxExt.headPaths.GetPaths(this, forceGender: apparentGender).RandomElement();
-                }
-                if (headGfxExt.headMaterial != null) headMaterial = headGfxExt.headMaterial;
-                headDessicatedGraphicPath = headGfxExt.GetDessicatedFromHeadPath(headGraphicPath);
-            }
-
-            var extensionsWithBodyPaths = otherExts.Where(x => x.bodyPaths.ValidFor(this));
-            extensionsWithBodyPaths = extensionsWithBodyPaths.EnumerableNullOrEmpty() ? raceExts.Where(x => x.bodyPaths.ValidFor(this)) : extensionsWithBodyPaths;
-
-            PawnExtension bodyGfxExt = null;
-            if (extensionsWithBodyPaths.EnumerableNullOrEmpty() == false)
-            {
-                using (new RandBlock(pawnRNGSeed))
-                {
-                    bodyGfxExt = extensionsWithBodyPaths.RandomElement();
-                }
-                if (headGfxExt != null && headGfxExt.bodyPaths.ValidFor(this)) bodyGfxExt = headGfxExt; // Override with the active headGfxExt if it has valid body paths.
-                using (new RandBlock(pawnRNGSeed))
-                {
-                    bodyGraphicPath = bodyGfxExt.bodyPaths.GetPaths(this, forceGender: apparentGender).RandomElement();
-                }
-                if (bodyGfxExt.bodyMaterial != null) bodyMaterial = bodyGfxExt.bodyMaterial;
-                bodyDessicatedGraphicPath = bodyGfxExt.GetDessicatedFromBodyPath(bodyGraphicPath);
-            }
             var btpg = new BodyTypesPerGender();
             btpg.AddRange(otherExts.SelectMany(x => x.bodyTypes));
             if (btpg.Count == 0) btpg.AddRange(raceExts.SelectMany(x => x.bodyTypes));
@@ -774,7 +742,106 @@ namespace BigAndSmall
             // Stay on if it was on before.
         }
 
-        
+        private void SetPawnHeadAndBodyTextures(HashSet<PawnExtension> allPawnExt, int pawnRNGSeed)
+        {
+            List<(AdaptivePathPathList, PawnExtension)> GetValidPaths(HashSet<PawnExtension> allPawnExt, Func<PawnExtension, AdaptivePathPathList> pathSelector, BSCache cache)
+            {
+                var validPaths = allPawnExt.Select(p => (pathSelector(p), p)).Where(x => x.Item1 != null && x.Item1.ValidFor(cache, apparentGender)).ToList();
+                if (validPaths.Count == 0) return [];
+                int bestScore = validPaths.Max(x => x.p.priority);
+                return [.. validPaths.Where(x => x.p.priority == bestScore)];
+            }
+            var bestHeadPaths = GetValidPaths(allPawnExt, x => x.headPaths, this);
+            var bestHeadDeadPaths = GetValidPaths(allPawnExt, x => x.headDessicatedPaths, this);
+            var bestBodyPaths = GetValidPaths(allPawnExt, x => x.bodyPaths, this);
+            var bestBodyDeadPaths = GetValidPaths(allPawnExt, x => x.bodyDessicatedPaths, this);
+
+            headGraphicPath = null;
+            bodyGraphicPath = null;
+            headDessicatedGraphicPath = null;
+            bodyDessicatedGraphicPath = null;
+
+            headMaterial = allPawnExt.FirstOrFallback(x => x.headMaterial != null, null)?.headMaterial;
+            bodyMaterial = allPawnExt.FirstOrFallback(x => x.bodyMaterial != null, null)?.bodyMaterial;
+
+            // Prefer grabbing Head & Body from the same source
+            PawnExtension bestHeadSrc = null;
+            if (bestHeadPaths.Count != 0)
+            {
+                using (new RandBlock(pawnRNGSeed))
+                {
+                    var headPath = bestHeadPaths.RandomElement();
+                    (headGraphicPath, bestHeadSrc) = (headPath.Item1.GetPaths(this, forceGender: apparentGender).RandomElement(), headPath.Item2);
+                    if (headPath.Item2.headMaterial != null)
+                    {
+                        headMaterial = headPath.Item2.headMaterial;
+                    }
+                }
+            }
+            if (bestHeadDeadPaths.Count != 0)
+            {
+                if (bestHeadSrc != null && bestHeadSrc.headDessicatedPaths.ValidFor(this, apparentGender))
+                {
+                    using (new RandBlock(pawnRNGSeed))
+                    {
+                        headDessicatedGraphicPath = bestHeadSrc.headDessicatedPaths.GetPaths(this, forceGender: apparentGender).RandomElement();
+                    }
+                }
+                else
+                {
+                    var headPath = bestHeadDeadPaths.RandomElement();
+                    using (new RandBlock(pawnRNGSeed))
+                    {
+                        headDessicatedGraphicPath = headPath.Item1.GetPaths(this, forceGender: apparentGender).RandomElement();
+                    }
+                }
+            }
+            PawnExtension bestBodySrc = bestHeadSrc;
+            if (bestBodyPaths.Count != 0)
+            {
+                if (bestHeadSrc != null && bestHeadSrc.bodyPaths.ValidFor(this, apparentGender))
+                {
+                    using (new RandBlock(pawnRNGSeed))
+                    {
+                        bodyGraphicPath = bestHeadSrc.bodyPaths.GetPaths(this, forceGender: apparentGender).RandomElement();
+                        if (bestHeadSrc.bodyMaterial != null)
+                        {
+                            bodyMaterial = bestHeadSrc.bodyMaterial;
+                        }
+                    }
+                }
+                else
+                {
+                    var bodyPath = bestBodyPaths.RandomElement();
+                    using (new RandBlock(pawnRNGSeed))
+                    {
+                        (bodyGraphicPath, bestBodySrc) = (bodyPath.Item1.GetPaths(this, forceGender: apparentGender).RandomElement(), bodyPath.Item2);
+                        if (bodyPath.Item2.bodyMaterial != null)
+                        {
+                            bodyMaterial = bodyPath.Item2.bodyMaterial;
+                        }
+                    }
+                }
+            }
+            if (bestBodyDeadPaths.Count != 0)
+            {
+                if (bestBodySrc != null && bestBodySrc.bodyDessicatedPaths.ValidFor(this, apparentGender))
+                {
+                    using (new RandBlock(pawnRNGSeed))
+                    {
+                        bodyDessicatedGraphicPath = bestBodySrc.bodyDessicatedPaths.GetPaths(this, forceGender: apparentGender).RandomElement();
+                    }
+                }
+                else
+                {
+                    var bodyPath = bestBodyDeadPaths.RandomElement();
+                    using (new RandBlock(pawnRNGSeed))
+                    {
+                        bodyDessicatedGraphicPath = bodyPath.Item1.GetPaths(this, forceGender: apparentGender).RandomElement();
+                    }
+                }
+            }
+        }
 
         public void ScheduleUpdate(int delayTicks)
         {

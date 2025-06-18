@@ -1,0 +1,46 @@
+<Defs>
+  <FacialAnimation.SkinTypeDef>
+	  <defName>NOT_Skin</defName>
+	  <texPath>NalFacialAnimDisabler/SpecialSkinNone/SpecialSkinNone</texPath>
+	  <shader>Map/CutoutSkin</shader>
+    <probability>0.0</probability>
+  </FacialAnimation.SkinTypeDef>
+
+  <FacialAnimation.EyeballTypeDef>
+    <defName>NOT_Eyes</defName>
+    <texPath>NalFacialAnimDisabler/Eyes/NoEyes</texPath>
+    <shader>Map/CutoutComplex</shader>
+    <minColor>RGB(0.25,0.25,0.25)</minColor>
+    <maxColor>RGB(0.85,0.85,0.85)</maxColor>
+    <probability>0.0</probability>
+  </FacialAnimation.EyeballTypeDef>
+
+  <FacialAnimation.HeadTypeDef>
+		<defName>NOT_Head</defName>
+		<texPath>NalFacialAnimDisabler/Heads/NoHead</texPath>
+    <shader>Map/CutoutComplex</shader>
+		<probability>0.0</probability>
+	</FacialAnimation.HeadTypeDef>
+
+  <FacialAnimation.MouthTypeDef>
+		<defName>NOT_Mouth</defName>
+		<texPath>NalFacialAnimDisabler/Mouth/NoMouth</texPath>
+    <shader>Map/CutoutComplex</shader>
+		<probability>0.0</probability>
+	</FacialAnimation.MouthTypeDef>
+
+  <FacialAnimation.LidTypeDef>
+		<defName>NOT_Lid</defName>
+		<texPath>NalFacialAnimDisabler/Lids/NoLids</texPath>
+		<shader>Map/CutoutComplex</shader>
+    <probability>0.0</probability>
+	</FacialAnimation.LidTypeDef>
+
+  <FacialAnimation.BrowTypeDef>
+		<defName>NOT_Brow</defName>
+		<texPath>NalFacialAnimDisabler/Brows/NoBrow</texPath>
+		<shader>Map/CutoutComplex</shader>
+    <probability>0.0</probability>
+	</FacialAnimation.BrowTypeDef>
+
+</Defs>

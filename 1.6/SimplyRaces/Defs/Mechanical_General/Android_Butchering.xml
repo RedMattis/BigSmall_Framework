@@ -1,0 +1,94 @@
+<Defs>
+  <ThingCategoryDef>
+      <defName>BS_RobotCorpses</defName>
+      <label>robot corpses</label>
+      <parent>Corpses</parent>
+    </ThingCategoryDef>
+
+      <SpecialThingFilterDef>
+    <defName>BS_AllowCorpsesColonistRobot</defName>
+    <label>allow colonist corpses</label>
+    <description>Allow the dead bodies of colonists.</description>
+    <parentCategory>BS_RobotCorpses</parentCategory>
+    <allowedByDefault>false</allowedByDefault>
+    <saveKey>allowCorpsesColonist</saveKey>
+    <workerClass>SpecialThingFilterWorker_CorpsesColonist</workerClass>
+  </SpecialThingFilterDef>
+
+  <SpecialThingFilterDef>
+    <defName>BS_AllowCorpsesSlaveRobot</defName>
+    <label>allow slave corpses</label>
+    <description>Allow the dead bodies of slaves.</description>
+    <parentCategory>BS_RobotCorpses</parentCategory>
+    <allowedByDefault>false</allowedByDefault>
+    <saveKey>allowCorpsesSlave</saveKey>
+    <workerClass>SpecialThingFilterWorker_CorpsesSlave</workerClass>
+  </SpecialThingFilterDef>
+
+  <SpecialThingFilterDef>
+    <defName>BS_AllowCorpsesStrangerRobot</defName>
+    <label>allow stranger corpses</label>
+    <description>Allow the dead bodies of strangers and enemies.</description>
+    <parentCategory>BS_RobotCorpses</parentCategory>
+    <allowedByDefault>false</allowedByDefault>
+    <saveKey>allowCorpsesStranger</saveKey>
+    <workerClass>SpecialThingFilterWorker_CorpsesStranger</workerClass>
+  </SpecialThingFilterDef>
+
+  <RecipeDef Name="BS_ButcherRobotBase" Abstract="True">
+    <workSpeedStat>ButcheryMechanoidSpeed</workSpeedStat>
+    <workSkill>Crafting</workSkill>
+    <efficiencyStat>ButcheryMechanoidEfficiency</efficiencyStat>
+    <effectWorking>ButcherMechanoid</effectWorking>
+    <uiIconThing>Steel</uiIconThing>
+    <ingredients>
+      <li>
+        <filter>
+          <categories>
+            <li>BS_RobotCorpses</li>
+          </categories>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+    <specialProducts>
+      <li>Butchery</li>
+    </specialProducts>
+    <fixedIngredientFilter>
+      <categories>
+        <li>BS_RobotCorpses</li>
+      </categories>
+    </fixedIngredientFilter>
+    <defaultIngredientFilter>
+      <categories>
+        <li>BS_RobotCorpses</li>
+      </categories>
+      <specialFiltersToDisallow>
+        <li>BS_AllowCorpsesColonistRobot</li>
+      </specialFiltersToDisallow>
+      <specialFiltersToAllow>
+        <li MayRequire="Ludeon.RimWorld.Ideology">BS_AllowCorpsesSlaveRobot</li>
+        <li>BS_AllowCorpsesStrangerRobot</li>
+      </specialFiltersToAllow>
+    </defaultIngredientFilter>
+    <displayPriority>0</displayPriority>
+  </RecipeDef>
+
+  <RecipeDef ParentName="BS_ButcherRobotBase">
+    <defName>BS_ShredRobot</defName>
+    <label>shred robot</label>
+    <description>Shred a dead robot to try to salvage usable material.</description>
+    <workAmount>300</workAmount>
+    <jobString>Shredding robot.</jobString>
+    <soundWorking>Recipe_ButcherCorpseMechanoid</soundWorking>
+  </RecipeDef>
+
+  <RecipeDef ParentName="BS_ButcherRobotBase">
+    <defName>BS_SmashRobot</defName>
+    <label>smash robot</label>
+    <description>smash a dead robot to try to salvage usable material.</description>
+    <jobString>Smashing mechanoid.</jobString>
+    <workAmount>500</workAmount>
+    <soundWorking>Recipe_SmashCorpseMechanoid</soundWorking>
+  </RecipeDef>
+</Defs>

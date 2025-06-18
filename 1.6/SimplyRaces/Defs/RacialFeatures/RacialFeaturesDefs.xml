@@ -1,0 +1,33 @@
+<Defs>
+  <BigAndSmall.RacialFeatureDef>
+    <defName>BS_Mechanical</defName>
+    <label>mechanical</label>
+    <description>Individuals with this feature are mechanical.</description>
+    <iconPath>BS_Traits/BS_Mechanical</iconPath>
+  </BigAndSmall.RacialFeatureDef>
+
+  <!-- <BigAndSmall.RacialFeatureDef>
+    <defName>BS_CentaurRace</defName>
+    <label>centauroid</label>
+    <description>Individuals with this feature have four legs.</description>
+    <iconPath>BS_Traits/Centaur</iconPath>
+    <hediffDescriptionSource>BS_CentaurRace</hediffDescriptionSource>
+  </BigAndSmall.RacialFeatureDef>
+
+  <BigAndSmall.RacialFeatureDef>
+    <defName>BS_CentaurRace</defName>
+    <label>centauroid</label>
+    <description>Individuals with this feature have four legs.</description>
+    <iconPath>BS_Traits/Centaur</iconPath>
+    <hediffDescriptionSource>BS_CentaurRace</hediffDescriptionSource>
+  </BigAndSmall.RacialFeatureDef>
+
+  <BigAndSmall.RacialFeatureDef>
+    <defName>BS_UrbMech_Race</defName>
+    <label>centauroid</label>
+    <description>Individuals with this feature have four legs.</description>
+    <iconPath>BS_Traits/Centaur</iconPath>
+    <hediffDescriptionSource>BS_CentaurRace</hediffDescriptionSource>
+  </BigAndSmall.RacialFeatureDef> -->
+
+</Defs>

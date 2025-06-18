@@ -1,0 +1,166 @@
+<Defs>
+  <RedHealth.HealthAspect>
+    <defName>RED_OrganHealth</defName>
+    <label>visceral rating</label>
+    <labelSimple>organ health</labelSimple>
+    <description>A meassure of how well the organs are functioning.</description>
+    <associatedPartsTags>
+      <li>BreathingSource</li>
+      <li>MetabolismSource</li>
+      <li>BloodFiltrationSource</li>
+    </associatedPartsTags>
+    <nullifyIfPartsReplacedBetterThanNatural>true</nullifyIfPartsReplacedBetterThanNatural>
+    <thresholds>
+      <li>
+        <label>good</label>
+        <description>No notable issues</description>
+        <labelColor>(128,255,128)</labelColor>
+      </li>
+      <li>
+        <threshold>0.4</threshold>
+        <label>decent</label>
+        <description>Minor organ health issues</description>
+        <labelColor>(255,255,128)</labelColor>
+        <odds>0.00080</odds> <!--0.02% chance per day, or 1.2% per year-->
+        <effects>
+          <li>
+            <hediff>RED_FailingOrganDamage</hediff> <!-- Deal 5 to 30% of the health in scar-damage. -->
+            <severityRange>0.05~0.4</severityRange>
+            <filterIfExisting>true</filterIfExisting>
+            <partsToAffect>
+              <li>Kidney</li>
+              <li>Lung</li>
+            </partsToAffect>
+            <weight>1</weight>
+          </li>
+        </effects>
+      </li>
+      <li>
+        <threshold>0.6</threshold>
+        <label>bad</label>
+        <description>Moderate organ health issues.</description>
+        <labelColor>(255,200,0)</labelColor>
+        <odds>0.002</odds> <!--0.05% chance per day, or 3% per year-->
+        <effects>
+          <li>
+            <hediff>RED_FailingOrganDamage</hediff> <!-- Deal 5 to 30% of the health in scar-damage. -->
+            <severityRange>0.05~0.4</severityRange>
+            <partsToAffect>
+              <li>Kidney</li>
+              <li>Lung</li>
+              <li>Liver</li>
+            </partsToAffect>
+            <weight>1</weight>
+          </li>
+          <li>
+            <hediff>RED_OrganFailure</hediff>
+            <partsToAffect>
+              <li>Kidney</li>
+              <li>Lung</li>
+            </partsToAffect>
+            <killWorldPawn>true</killWorldPawn>
+            <weight>0.5</weight>
+          </li>
+          <li>
+            <hediff>RED_OrganFailure</hediff>
+            <partsToAffect>
+              <li>Liver</li>
+            </partsToAffect>
+            <killWorldPawn>true</killWorldPawn>
+            <weight>0.05</weight>
+          </li>
+        </effects>
+      </li>
+      <li>
+        <threshold>0.8</threshold>
+        <label>severe</label>
+        <description>Severe organ health issues.</description>
+        <labelColor>(255,165,0)</labelColor>
+        <odds>0.08</odds> <!--Average of 1.2 per year -->
+        <effects>
+          <li>
+            <hediff>RED_FailingOrganDamage</hediff>
+            <severityRange>0.05~0.4</severityRange>
+            <partsToAffect>
+              <li>Kidney</li>
+              <li>Lung</li>
+            </partsToAffect>
+            <weight>1</weight>
+          </li>
+          <li>
+            <hediff>RED_OrganFailure</hediff>
+            <severityRange>0~0.7</severityRange>
+            <weight>0.5</weight>
+            <partsToAffect>
+              <li>Kidney</li>
+              <li>Lung</li>
+              <li>Liver</li>
+            </partsToAffect>
+          </li>
+        </effects>
+      </li>
+      <li>
+        <threshold>0.90</threshold> <!--RIP-->
+        <label>critical</label>
+        <description>Extreme organ health issues.</description>
+        <labelColor>(255,0,0)</labelColor>
+        <odds>0.32</odds> <!--Average 4.8 events per year.-->
+        <effects>
+          <li>
+            <hediff>RED_FailingOrganDamage</hediff>
+            <severityRange>0.05~0.9</severityRange>
+            <partsToAffect>
+              <li>Kidney</li>
+              <li>Lung</li>
+            </partsToAffect>
+            <weight>1</weight>
+          </li>
+          <li>
+            <hediff>RED_OrganFailure</hediff>
+            <severityRange>0~0.5</severityRange>
+            <weight>1</weight>
+            <partsToAffect>
+              <li>Kidney</li>
+              <li>Lung</li>
+              <li>Liver</li>
+            </partsToAffect>
+            <killWorldPawn>true</killWorldPawn>
+          </li>
+        </effects>
+      </li>
+      <li>
+        <threshold>1</threshold> <!--The "Just Die Already Tier"-->
+        <label>terminal</label>
+        <description>critical organ health issues.</description>
+        <labelColor>(255,0,0)</labelColor>
+        <odds>0.5</odds> <!--Average 1 event per 5 days.-->
+        <maxMeanTime>300000</maxMeanTime> <!--Every 2.5 days on average-->
+        <effects>
+          <li>
+            <hediff>RED_FailingOrganDamage</hediff>
+            <severityRange>0.05~1.2</severityRange>
+            <partsToAffect>
+              <li>Kidney</li>
+              <li>Lung</li>
+              <!-- <li>Liver</li> -->
+            </partsToAffect>
+            <weight>1</weight>
+            <killWorldPawn>true</killWorldPawn>
+          </li>
+          <li>
+            <hediff>RED_OrganFailure</hediff>
+            <severityRange>0~0.2</severityRange>
+            <severityPerDayRange>0.1~0.5</severityPerDayRange>
+            <weight>1</weight>
+            <partsToAffect>
+              <li>Kidney</li>
+              <li>Lung</li>
+              <li>Liver</li>
+            </partsToAffect>
+            <killWorldPawn>true</killWorldPawn>
+          </li>
+        </effects>
+      </li>
+    </thresholds>
+  </RedHealth.HealthAspect>
+</Defs>

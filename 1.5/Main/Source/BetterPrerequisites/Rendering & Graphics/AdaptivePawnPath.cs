@@ -73,7 +73,7 @@ namespace BigAndSmall
 
     public class AdaptivePathPathList : List<AdaptivePawnPath>// <T> : List<T> where T : AdaptiveGraphicsData
     {
-        public bool ValidFor(BSCache cache) => GetPaths(cache) != null;
+        public bool ValidFor(BSCache cache, Gender? apparentGender) => GetPaths(cache, apparentGender) != null;
 
         public bool TryGetPath(BSCache cache, ref string path)
         {

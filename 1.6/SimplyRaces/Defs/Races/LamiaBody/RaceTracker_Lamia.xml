@@ -1,0 +1,73 @@
+<Defs>
+
+  <HediffDef ParentName="BS_DefaultRaceTracker">
+    <defName>BS_Naga_Race</defName>
+    <description>Snakelike creature with a humanoid upper body</description>
+    <label>snake-person</label>
+
+    <stages Inherit="False">
+      <li>
+        <statFactors>
+          <MaxNutrition>4.0</MaxNutrition>
+          <EatingSpeed>1.5</EatingSpeed>
+        </statFactors>
+        <statOffsets>
+          <MoveSpeed>-0.5</MoveSpeed>
+        </statOffsets>
+      </li>
+    </stages>
+    <comps>
+      <li Class="BigAndSmall.CompProperties_Race">
+        <canSwapAwayFrom>true</canSwapAwayFrom>
+      </li>
+      <li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="AnimalBehaviours.HediffCompProperties_Floating"/>
+    </comps>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <traitIcon>BS_Traits/snek</traitIcon>
+        <romanceTags>
+          <Snake>1.0</Snake>
+          <Humanlike>0.65</Humanlike>
+        </romanceTags>
+        <internalDamageDivisor>0.4</internalDamageDivisor>
+        <bodyPosOffset>0.6</bodyPosOffset>
+        <renderCacheOff>true</renderCacheOff>
+      </li> 
+      <li MayRequire="pathfinding.framework" Class="PathfindingFramework.MovementExtension">
+        <movementDef>PF_Movement_Flying</movementDef>
+      </li>
+    </modExtensions>
+    <renderNodeProperties>
+      <li Class="BigAndSmall.PawnRenderingProps_Ultimate">
+        <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
+        <workerClass>BigAndSmall.PawnRenderNodeWorker_BodyTypeOffsets</workerClass>
+        <parentTagDef>Body</parentTagDef>
+        <rotDrawMode>Fresh, Rotting</rotDrawMode>
+        <colorType>Skin</colorType>
+        <shader>CutoutComplex</shader>
+        <conditionalGraphics>
+          <!-- Instead of returning this, send in the properties from the linked def. -->
+          <replacementDef>BS_SnekGraphicSet</replacementDef>
+          <alts>
+            <li>
+              <!-- Hide the tail if we have a snake-gene. No ColorA/B specified since, well, nothing to show.-->
+              <triggerGeneTag> <acceptlist> <li>taur</li> </acceptlist> </triggerGeneTag>
+
+              <!-- Essentially makes this genes still use the graphics here by skipping this.. -->
+              <triggerFlags><blacklist><ShowBaseAbdomen/></blacklist></triggerFlags>
+              <texturePaths><default>BS_Blank</default></texturePaths>
+            </li>
+          </alts>
+        </conditionalGraphics>
+        <drawSize>(1.625,1.625)</drawSize>
+        <drawData>
+          <scaleOffsetByBodySize>false</scaleOffsetByBodySize>
+          <dataNorth> <offset>(0, 0, -0.3067)</offset> <layer>79</layer> </dataNorth>
+          <dataSouth> <offset>(0, -0.0001, -0.3067)</offset> <layer>20</layer> </dataSouth>
+          <dataEast> <offset>(-0.3067, -0.0001, -0.3067)</offset> <layer>20</layer> </dataEast>
+          <dataWest> <offset>(0.3067, -0.0001, -0.3067)</offset> <layer>20</layer> </dataWest>
+        </drawData>
+      </li>
+    </renderNodeProperties>
+  </HediffDef>
+</Defs>
