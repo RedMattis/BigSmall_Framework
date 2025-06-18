@@ -7,7 +7,7 @@
     <jobString>Refining android fuel.</jobString>
     <effectWorking>Cremate</effectWorking>
     <soundWorking>Recipe_Cremate</soundWorking>
-    <workAmount>3000</workAmount>
+    <workAmount>1200</workAmount>
     <workSpeedStat>DrugCookingSpeed</workSpeedStat>
     <workSkill>Cooking</workSkill>
     <requiredGiverWorkType>Cooking</requiredGiverWorkType>
@@ -43,7 +43,7 @@
     <jobString>Refining android fuel.</jobString>
     <effectWorking>Cremate</effectWorking>
     <soundWorking>Recipe_Cremate</soundWorking>
-    <workAmount>8000</workAmount>
+    <workAmount>2000</workAmount>
     <workSpeedStat>DrugCookingSpeed</workSpeedStat>
     <workSkill>Cooking</workSkill>
     <requiredGiverWorkType>Cooking</requiredGiverWorkType>
@@ -80,7 +80,7 @@
     <jobString>Refining android fuel.</jobString>
     <effectWorking>Cremate</effectWorking>
     <soundWorking>Recipe_Cremate</soundWorking>
-    <workAmount>500</workAmount>
+    <workAmount>250</workAmount>
     <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
     <recipeUsers>
       <li>BiofuelRefinery</li>
@@ -112,7 +112,7 @@
     <jobString>Refining android fuel.</jobString>
     <effectWorking>Cremate</effectWorking>
     <soundWorking>Recipe_Cremate</soundWorking>
-    <workAmount>4000</workAmount>
+    <workAmount>1000</workAmount>
     <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
     <recipeUsers>
       <li>BiofuelRefinery</li>

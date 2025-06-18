@@ -371,16 +371,25 @@ namespace BigAndSmall
 
             static ShortHashWrapper()
             {
-                giveHashDelegate = MethodDelegate<Action<Def, Type, HashSet<ushort>>>(Method(typeof(ShortHashGiver), "GiveShortHash",
-                [typeof(Def), typeof(Type), typeof(HashSet<ushort>)], null), null, true);
-                takenHashesFieldRef = StaticFieldRefAccess<Dictionary<Type, HashSet<ushort>>>(Field(typeof(ShortHashGiver), "takenHashesPerDeftype"));
+                // Updated to use the new overload of MethodDelegate with Type[] parameter
+                giveHashDelegate = MethodDelegate<Action<Def, Type, HashSet<ushort>>>(
+                    Method(typeof(ShortHashGiver), "GiveShortHash", [typeof(Def), typeof(Type), typeof(HashSet<ushort>)], null),
+                    null,
+                    true,
+                    [typeof(Def), typeof(Type), typeof(HashSet<ushort>)]
+                );
+
+                takenHashesFieldRef = StaticFieldRefAccess<Dictionary<Type, HashSet<ushort>>>(
+                    Field(typeof(ShortHashGiver), "takenHashesPerDeftype")
+                );
             }
+
             internal static void GiveShortHash<T>(T def) where T : Def
             {
                 Dictionary<Type, HashSet<ushort>> dictionary = takenHashesFieldRef.Invoke();
                 if (!dictionary.ContainsKey(typeof(T)))
                 {
-                    dictionary[typeof(T)] = [];
+                    dictionary[typeof(T)] = new HashSet<ushort>();
                 }
                 HashSet<ushort> arg = dictionary[typeof(T)];
                 giveHashDelegate(def, null, arg);
