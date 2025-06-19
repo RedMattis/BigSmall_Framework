@@ -34,6 +34,8 @@ namespace BigAndSmall
 
                 if (__instance?.pawn?.Drawer?.renderer != null && __instance.pawn.Spawned)
                     __instance.pawn.Drawer.renderer.SetAllGraphicsDirty();
+
+                HumanoidPawnScaler.GetInvalidateLater(__instance.pawn, 1);
             }
         }
 
