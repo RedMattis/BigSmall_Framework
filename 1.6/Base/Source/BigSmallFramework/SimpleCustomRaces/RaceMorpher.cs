@@ -53,63 +53,108 @@ namespace BigAndSmall
         public static Dictionary<Pawn, List<Hediff>> hediffsToReapply = [];
         public static bool runningRaceSwap = false;
 
-        public static void SwapAnimalToSapientVersion(this Pawn pawn)
+        public static void SwapAnimalToSapientVersion(this Pawn aniPawn)
         {
-            var targetDef = HumanlikeAnimals.HumanLikeAnimalFor(pawn.def);
+            var targetDef = HumanlikeAnimals.HumanLikeAnimalFor(aniPawn.def);
 
             // Empty inventory
-            if (pawn.inventory != null && pawn.inventory.innerContainer != null)
+            if (aniPawn.inventory != null && aniPawn.inventory?.innerContainer != null)
             {
-                pawn.inventory.DropAllNearPawn(pawn.Position);
+                aniPawn.inventory.DropAllNearPawn(aniPawn.Position);
             }
-
-            var request = new PawnGenerationRequest(PawnKindDefOf.Colonist)
-            {
-                CanGeneratePawnRelations = false,
-                AllowAddictions = false,
-                AllowDead = false,
-                ForceNoBackstory = true,
-                ForbidAnyTitle = true,
-                ForcedXenotype = XenotypeDefOf.Baseliner,
-            };
+            bool shouldBeWildman = false;
+            var request = new PawnGenerationRequest(PawnKindDefOf.Colonist,
+                canGeneratePawnRelations:false,
+                allowDead: false, allowDowned: false, allowAddictions: false,
+                forcedXenotype:XenotypeDefOf.Baseliner,
+                forbidAnyTitle: true, forceGenerateNewPawn:true,
+                allowedXenotypes: [XenotypeDefOf.Baseliner],
+                forceNoBackstory:true);
+            // Somehow it doesn't always end up baseliner anyway...
+            request.ForcedXenotype = XenotypeDefOf.Baseliner;
+            request.AllowedXenotypes = [XenotypeDefOf.Baseliner];
 
             var newPawn = PawnGenerator.GeneratePawn(request);
             newPawn.inventory.DestroyAll(DestroyMode.Vanish);
-            newPawn.Name = pawn.Name;
-            newPawn.relations.ClearAllRelations(); // Should add a friend relationship to any bonded pawn here later...
-            if (pawn.Faction != null)
+            newPawn.equipment.DestroyAllEquipment(DestroyMode.Vanish);
+
+            string oldName = aniPawn.Name?.ToStringShort;
+            if (oldName == null)
             {
-                newPawn.ideo?.SetIdeo(pawn.Faction.ideos?.PrimaryIdeo);
-                newPawn.SetFaction(pawn.Faction);
+                newPawn.Name = PawnBioAndNameGenerator.GeneratePawnName(newPawn, forceNoNick: true);
             }
-            newPawn.gender = pawn.gender == Gender.None ? newPawn.gender : pawn.gender;
-            if (pawn.ageTracker.AgeBiologicalYears < 18)
+            else
+            {
+                aniPawn.Name = new NameSingle(aniPawn.Name.ToStringShort + "_Discard");
+                newPawn.Name = new NameSingle(oldName);
+            }
+            newPawn.relations.ClearAllRelations(); // Should add a friend relationship to any bonded pawn here later...
+            newPawn.story.Adulthood = DefDatabase<BackstoryDef>.GetNamed("Colonist97");
+            newPawn.story.Childhood = DefDatabase<BackstoryDef>.GetNamed("TribeChild19");
+            if (aniPawn.Faction == null)
+            {
+                shouldBeWildman = true;
+                newPawn.ideo?.SetIdeo(Faction.OfPlayerSilentFail?.ideos?.PrimaryIdeo);
+            }
+            else
+            {
+                newPawn.ideo?.SetIdeo(aniPawn.Faction.ideos?.PrimaryIdeo);
+                newPawn.SetFaction(aniPawn.Faction);
+            }
+            newPawn.gender = aniPawn.gender == Gender.None ? newPawn.gender : aniPawn.gender;
+            newPawn.ageTracker.AgeChronologicalTicks = aniPawn.ageTracker.AgeChronologicalTicks;
+            if (aniPawn.ageTracker.AgeBiologicalYears < 18)
             {
                 newPawn.ageTracker.AgeBiologicalTicks = 18 * GenDate.TicksPerYear;
             }
             else
             {
-                newPawn.ageTracker.AgeBiologicalTicks = pawn.ageTracker.AgeBiologicalTicks;
+                newPawn.ageTracker.AgeBiologicalTicks = aniPawn.ageTracker.AgeBiologicalTicks;
             }
-            newPawn.ageTracker.AgeChronologicalTicks = pawn.ageTracker.AgeChronologicalTicks;
-            if (ModsConfig.BiotechActive) newPawn.genes.SetXenotype(XenotypeDefOf.Baseliner);
-            // Copy the old pawn's skills, traits, and apparel.
-            newPawn.health.hediffSet.hediffs.Clear();
-            foreach (var hediff in pawn.health.hediffSet.hediffs)
+
+            if (ModsConfig.BiotechActive)
             {
-                var h = newPawn.health.AddHediff(hediff.def, hediff.Part, null);
-                h.Severity = hediff.Severity;
+                if (newPawn.genes.Xenotype != XenotypeDefOf.Baseliner)
+                {
+                    Log.Message($"[Big and Small] {newPawn} had a xenotype {newPawn.genes.Xenotype.defName} but was supossed to generate as a baseliner." +
+                        $"Removing xenotype and genes.");
+                    // Somehow they can still end up having a xenotype.
+                    for (int idx = newPawn.genes.GenesListForReading.Count - 1; idx >= 0; idx--)
+                    {
+                        var gene = newPawn.genes.GenesListForReading[idx];
+                        newPawn.genes.RemoveGene(gene);
+                    }
+                    newPawn.genes.SetXenotype(XenotypeDefOf.Baseliner);
+                    GeneHelpers.ClearCachedGenes(newPawn);
+                }
             }
+            CacheAndRemoveHediffs(aniPawn);
+            newPawn.health.hediffSet.hediffs.Clear();
+            //foreach (var hediff in pawn.health.hediffSet.hediffs)
+            //{
+            //    var h = newPawn.health.AddHediff(hediff.def, hediff.Part, null);
+            //    h.Severity = hediff.Severity;
+            //}
+            
 
             // Spawn into the same position as the old pawn.
-            GenSpawn.Spawn(newPawn, pawn.Position, pawn.Map, WipeMode.VanishOrMoveAside);
+            GenSpawn.Spawn(newPawn, aniPawn.Position, aniPawn.Map, WipeMode.VanishOrMoveAside);
             
-            pawn.Destroy(DestroyMode.Vanish);
+            
 
-            SwapThingDef(newPawn, targetDef, true, forcePriority, force: true, source: pawn, permitFusion:false);
+            SwapThingDef(newPawn, targetDef, true, forcePriority, force: true, permitFusion:false, clearHediffsToReapply:false);
+            RestoreMatchingHediffs(newPawn, targetDef, aniPawn);
+            if (shouldBeWildman)
+            {
+                newPawn.SetFaction(null);
+                newPawn.ChangeKind(PawnKindDefOf.WildMan);
+                newPawn.jobs.StopAll();
+            }
+            aniPawn.Destroy(DestroyMode.Vanish);
+            aniPawn.Discard(silentlyRemoveReferences: true);
         }
 
-        public static void SwapThingDef(this Pawn pawn, ThingDef swapTarget, bool state, int targetPriority, bool force=false, object source=null, bool permitFusion=true)
+        public static void SwapThingDef(this Pawn pawn, ThingDef swapTarget, bool state, int targetPriority, bool force=false, object source=null, bool permitFusion=true, bool clearHediffsToReapply=true)
         {
             static bool IsDiscardable(ThingDef def) => def == ThingDefOf.Human || def == ThingDefOf.CreepJoiner;
             if (swapTarget == null)
@@ -124,7 +169,10 @@ namespace BigAndSmall
             }
             if (runningRaceSwap || pawn?.genes == null || (pawn.def == swapTarget && state)) return;
 
-            hediffsToReapply.Clear();
+            if (clearHediffsToReapply)
+            {
+                hediffsToReapply.Clear();
+            }
             try
             {
                 runningRaceSwap = true;
@@ -311,12 +359,13 @@ namespace BigAndSmall
                 if (didSwap)
                 {
                     pawn.RecacheStatsForThing();
+                    pawn.VerbTracker.InitVerbsFromZero();
                     if (pawn.health.Dead && !wasDead)
                     {
+                        Log.WarningOnce($"[DEBUG] {pawn} was dead after def swap to {finalTarget}. Attempting to resurrect.", key: 921378231);
                         ResurrectionUtility.TryResurrect(pawn);
+                        pawn.VerbTracker.InitVerbsFromZero();
                     }
-
-                    pawn.VerbTracker.InitVerbsFromZero();
                 }
             }
             catch (Exception e)
@@ -389,8 +438,8 @@ namespace BigAndSmall
                     ThingComp comp = pawn.AllComps[idx];
                     if (comp.GetType().Name.Contains("AlienComp"))
                     {
-                        Log.Message($"[Big and Small] Removed AlienComp from {pawn.def.defName} due to (no longer?) being a HAR race.");
-                        Log.Message($"[Big and Small] Actually for testing purposes {pawn.def.defName} gets to keep it.");
+                        //Log.Message($"[Big and Small] Removed AlienComp from {pawn.def.defName} due to (no longer?) being a HAR race.");
+                        Log.WarningOnce($"[Big and Small] {pawn.def.defName} Swapped to an AlienRace with an AlienComp. This is somewhat untested.", key: 929972331);
                         //pawn.AllComps.Remove(comp);
                         //comp.parent = null;
                     }
@@ -463,6 +512,7 @@ namespace BigAndSmall
         public static void CacheAndRemoveHediffs(Pawn pawn)
         {
             var allHediffs = pawn.health.hediffSet.hediffs.ToList();
+            
             hediffsToReapply[pawn] = [.. allHediffs];
 
             // Remove all hediffs
@@ -473,16 +523,16 @@ namespace BigAndSmall
             }
         }
 
-        public static void RestoreMatchingHediffs(Pawn pawn, ThingDef targetThingDef)
+        public static void RestoreMatchingHediffs(Pawn pawn, ThingDef targetThingDef, Pawn source = null)
         {
             List<BodyPartRecord> currentParts = targetThingDef.race.body.AllParts.Select(x => x).ToList();
-
+            source ??= pawn;
             // Go over the savedHediffs and check if any of them can attach to the current bodyparts.
-            if (hediffsToReapply[pawn].Count > 0)
+            if (hediffsToReapply[source].Count > 0)
             {
-                for (int idx = hediffsToReapply[pawn].Count - 1; idx >= 0; idx--)
+                for (int idx = hediffsToReapply[source].Count - 1; idx >= 0; idx--)
                 {
-                    Hediff hediff = hediffsToReapply[pawn][idx];
+                    Hediff hediff = hediffsToReapply[source][idx];
                     float severity = hediff.Severity;
 
                     bool canAttach = hediff.Part == null || currentParts.Any(x => x.def.defName == hediff.Part.def.defName || x.customLabel == hediff.Part.customLabel);
@@ -536,7 +586,7 @@ namespace BigAndSmall
                         finally
                         {
                             // remove hediff from savedHediffs
-                            hediffsToReapply[pawn].RemoveAt(idx);
+                            hediffsToReapply[source].RemoveAt(idx);
                         }
                     }
                 }

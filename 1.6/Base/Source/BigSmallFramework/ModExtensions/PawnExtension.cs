@@ -213,7 +213,7 @@ namespace BigAndSmall
         /// If found on an animal's raceTracker it will be considered to have fine-manipulation ability.
         /// E.g. able to use guns.
         /// </summary>
-        public bool forceHasHands = false;
+        public float? animalFineManipulation = null;
 
         /// <summary>
         /// Set what the pawn can eat. By default assumes human diet.

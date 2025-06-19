@@ -137,7 +137,7 @@ namespace BigAndSmall
 
         public static void ApplySoulless(Pawn victim)
         {
-            if (BSDefs.BS_Soulless == null && victim?.RaceProps?.Humanlike == true)
+            if (victim?.RaceProps?.Humanlike == true)
             {
                 victim?.health.AddHediff(BSDefs.BS_Soulless);
             }

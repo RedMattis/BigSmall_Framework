@@ -39,6 +39,45 @@
   </BigAndSmall.PawnExtensionDef>
 
   <BigAndSmall.PawnExtensionDef>
+    <defName>BS_DefaultAnimal_PoorHands</defName>
+    <pawnExtension>
+      <hideHumanlikeRenderNodes>true</hideHumanlikeRenderNodes>
+      <canWieldThings>false</canWieldThings>
+      <aptitudes>
+        <Melee>2</Melee>
+        <Shooting>-8</Shooting>
+        <Construction>-2</Construction>
+        <Mining>-3</Mining>
+        <Cooking>-2</Cooking>
+        <Plants>-2</Plants>
+        <Animals>-8</Animals>
+        <Crafting>-6</Crafting>
+        <Artistic>-1</Artistic>
+        <Medicine>-4</Medicine>
+        <!-- <Social>0</Social>
+        <Intellectual>0</Intellectual> -->
+      </aptitudes>
+      <apparelRestrictions>
+        <noArmor>true</noArmor>
+        <thingDefs>
+          <allowlist><li>Apparel_ShieldBelt</li></allowlist>
+        </thingDefs>
+        <apparelLayers>
+          <blacklist>
+            <li>Shell</li>
+            <li>Overhead</li>
+          </blacklist>
+        </apparelLayers>
+        <bodyPartGroups>
+          <blacklist>
+            <li>FullHead</li>
+          </blacklist>
+        </bodyPartGroups>
+      </apparelRestrictions>
+    </pawnExtension>
+  </BigAndSmall.PawnExtensionDef>
+
+  <BigAndSmall.PawnExtensionDef>
     <defName>BS_DefaultAnimal</defName>
     <pawnExtension>
       <hideHumanlikeRenderNodes>true</hideHumanlikeRenderNodes>

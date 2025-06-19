@@ -240,6 +240,16 @@ namespace BigAndSmall
 
                 isHumanlike = pawn.RaceProps?.Humanlike == true;
                 originalThing ??= pawn.def;
+
+                if (changeIndex < uint.MaxValue)
+                {
+                    changeIndex++;
+                }
+                else
+                {
+                    changeIndex = 1; // It is only ever 0 if it is the default cache.
+                }
+
                 var raceTrackers = pawn.GetRaceTrackers();
 
                 raceTrackerHistory.AddRange(raceTrackers.Select(x => x.def));

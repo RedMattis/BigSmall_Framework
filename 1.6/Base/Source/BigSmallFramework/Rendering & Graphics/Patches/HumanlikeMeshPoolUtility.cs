@@ -57,6 +57,7 @@ namespace BigAndSmall
             public bool spawned;
             public Rot4 rotation;
             public int tick;
+            public uint changeIndex; // Used to check if the cache has changed since the last time this was run.
         }
         [ThreadStatic]
         static PGPRRCache threadStaticCache;
@@ -66,11 +67,11 @@ namespace BigAndSmall
         public static void Prefix(PawnRenderer __instance, ref Vector3 drawLoc, Rot4? rotOverride, bool neverAimWeapon, ref bool disableCache, Pawn ___pawn)
         {
             if (___pawn == null) return;
-
-            bool newCache = threadStaticCache.pawn != ___pawn || threadStaticCache.cache.isDefaultCache;
-            if (newCache)
+            var cache = ___pawn.GetCacheFast();
+            bool requestNewCache = cache.changeIndex != threadStaticCache.changeIndex || threadStaticCache.pawn != ___pawn || threadStaticCache.cache.isDefaultCache;
+            if (requestNewCache)
             {
-                threadStaticCache.cache = ___pawn.GetCacheFast();
+                threadStaticCache.cache = cache;
                 threadStaticCache.pawn = ___pawn;
                 threadStaticCache.approxNoChange = threadStaticCache.cache.approximatelyNoChange;
                 if (!threadStaticCache.approxNoChange)
@@ -83,7 +84,7 @@ namespace BigAndSmall
                 return;
             }
             var rotInt = ___pawn.rotationInt;
-            if (newCache || BS.Tick10 != threadStaticCache.tick || threadStaticCache.rotation != rotInt)
+            if (requestNewCache || BS.Tick10 != threadStaticCache.tick || threadStaticCache.rotation != rotInt)
             {
                 threadStaticCache.approxNoChange = threadStaticCache.cache.approximatelyNoChange;
                 threadStaticCache.tick = BS.Tick10;
@@ -198,13 +199,14 @@ namespace BigAndSmall
     public static class RenderingPatches
     {
         static readonly float lifestageFactor = 1.5f;
-        public struct PerThreadMiniCache
-        {
-            public Pawn pawn;
-            public BSCache cache;
-        }
-        [ThreadStatic]
-        static PerThreadMiniCache threadStaticCache;
+        //public struct PerThreadMiniCache
+        //{
+        //    public Pawn pawn;
+        //    public BSCache cache;
+        //    public uint changeIndex;
+        //}
+        //[ThreadStatic]
+        //static PerThreadMiniCache threadStaticCache;
 
         [HarmonyPatch(typeof(PawnRenderNodeWorker), nameof(PawnRenderNodeWorker.ScaleFor))]
         [HarmonyPostfix]
@@ -215,12 +217,13 @@ namespace BigAndSmall
             {
                 return;
             }
-            if (threadStaticCache.pawn != pawn)
-            {
-                threadStaticCache.cache = pawn.GetCacheFast();
-                threadStaticCache.pawn = pawn;
-            }
-            var cache = threadStaticCache.cache;
+            var cache = pawn.GetCacheFast();
+            //if (cache.changeIndex != threadStaticCache.changeIndex || threadStaticCache.pawn != pawn)
+            //{
+            //    threadStaticCache.cache = cache;
+            //    threadStaticCache.pawn = pawn;
+            //}
+            //var cache = threadStaticCache.cache;
             if (cache.approximatelyNoChange) return;
 
             // Tiny performance win because Unity Casts all float multiplications to double.

@@ -34,6 +34,16 @@ namespace BigAndSmall
         }
     }
 
+    public class HumanlikeAnimalSettings : Def
+    {
+        private static List<HumanlikeAnimalSettings> allSettings = null;
+        public static List<HumanlikeAnimalSettings> AllHASettings =>
+            allSettings ??= DefDatabase<HumanlikeAnimalSettings>.AllDefsListForReading;
+
+        public List<string> hasHandsWildcards = [];
+        public List<string> hasPoorHandsWildcards = [];
+    }
+
     public static class HumanlikeAnimals
     {
         public static HumanlikeAnimal GetHumanlikeAnimalFor(ThingDef thingDef)
@@ -236,16 +246,32 @@ namespace BigAndSmall
             string raceHediffName = $"HL_{aniThing.defName}_RaceHediff";    // This can be used to override the hediff of the race.
             var raceHediff = raceHediffName.TryGetExistingDef<HediffDef>();
             bool hasHands = false;
-            if (raceHediff?.GetAllPawnExtensionsOnHediff().FirstOrDefault()?.forceHasHands == true) hasHands = true;
+            float? fineManipulation = raceHediff?.GetAllPawnExtensionsOnHediff().FirstOrDefault()?.animalFineManipulation;
+            fineManipulation = hasHands ? 1.0f : 0f;
 
             if (raceHediff == null)
             {
                 List<string> manipulatorBlackList = ["Mouth", "Jaw", "Beak", "Leg"];
                 var allParts = newRace.body.corePart.GetAllBodyPartsRecursive();
-                hasHands =
-                    HasPartWithTag(allParts, BodyPartTagDefOf.ManipulationLimbCore, manipulatorBlackList) ||
-                    HasPartWithTag(allParts, BodyPartTagDefOf.ManipulationLimbDigit, manipulatorBlackList) ||
-                    HasPartWithTag(allParts, BodyPartTagDefOf.ManipulationLimbSegment, manipulatorBlackList);
+                
+                if (HumanlikeAnimalSettings.AllHASettings.Any(x => x.hasHandsWildcards.Any(wc => aniThing.defName.ToLower().Contains(wc))))
+                {
+                    hasHands = true;
+                    fineManipulation = 1.0f;
+                }
+                else if (HumanlikeAnimalSettings.AllHASettings.Any(x => x.hasPoorHandsWildcards.Any(wc => aniThing.defName.ToLower().Contains(wc))))
+                {
+                    hasHands = true;
+                    fineManipulation = 0.5f;
+                }
+                else
+                {
+                    hasHands =
+                        HasPartWithTag(allParts, BodyPartTagDefOf.ManipulationLimbCore, manipulatorBlackList) ||
+                        HasPartWithTag(allParts, BodyPartTagDefOf.ManipulationLimbDigit, manipulatorBlackList) ||
+                        HasPartWithTag(allParts, BodyPartTagDefOf.ManipulationLimbSegment, manipulatorBlackList);
+                    fineManipulation = hasHands ? 1.0f : 0f;
+                }
 
                 raceHediff = new HediffDef
                 {
@@ -275,14 +301,12 @@ namespace BigAndSmall
                     });
                 }
                 var pawnExt = new PawnExtension();
-                PawnExtensionDef targetAnimalBase = hasHands ? DefDatabase<PawnExtensionDef>.GetNamed("BS_DefaultAnimal", true) : DefDatabase<PawnExtensionDef>.GetNamed("BS_DefaultAnimal_NoHands", true);
-                PawnExtensionDef defaultHandlessSettings = DefDatabase<PawnExtensionDef>.GetNamed("BS_DefaultAnimal_NoHands", true);
-                // Transfer via reflection.
+                PawnExtensionDef targetAnimalBase = fineManipulation > 0.75f ? BSDefs.BS_DefaultAnimal : fineManipulation > 0.35f ? BSDefs.BS_DefaultAnimal_PoorHands : BSDefs.BS_DefaultAnimal_NoHands;
                 foreach (var field in typeof(PawnExtension)
                     .GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                     .Where(f => !f.IsStatic && !f.IsInitOnly))
                 {
-                    var value = field.GetValue(defaultHandlessSettings.pawnExtension);
+                    var value = field.GetValue(targetAnimalBase.pawnExtension);
                     if (value == null) continue;  // Skip null values.
                     field.SetValue(pawnExt, value);
                 }
@@ -290,7 +314,7 @@ namespace BigAndSmall
                 {
                     pawnExt.traitIcon = aniPawnKind.lifeStages.Last().bodyGraphicData.texPath + "_east";
                 }
-                pawnExt.forceHasHands = hasHands;
+                pawnExt.animalFineManipulation = fineManipulation ?? 1.0f;
                 raceHediff.modExtensions = [pawnExt];
             }
 
@@ -305,7 +329,7 @@ namespace BigAndSmall
 
             newThing.modExtensions = [raceExt];
 
-            SetAnimalStatDefValues(humThing, aniThing, newThing, hasHands);
+            SetAnimalStatDefValues(humThing, aniThing, newThing, fineManipulation.Value);
 
             DefGenerator.AddImpliedDef(newThing, hotReload: true);
             DefGenerator.AddImpliedDef(newRace.body, hotReload: true);
@@ -323,7 +347,7 @@ namespace BigAndSmall
             };
         }
 
-        public static void SetAnimalStatDefValues(ThingDef humanThing, ThingDef animalThing, ThingDef newThing, bool hasHands)
+        public static void SetAnimalStatDefValues(ThingDef humanThing, ThingDef animalThing, ThingDef newThing, float fineManipulation)
         {
             newThing.statBases = [];
             foreach (var statBase in humanThing.statBases)
@@ -358,10 +382,12 @@ namespace BigAndSmall
             newThing.SetStatBaseValue(StatDefOf.PlantHarvestYield, (animalThing.GetStatValueAbstract(StatDefOf.PlantHarvestYield) + humanThing.GetStatValueAbstract(StatDefOf.PlantHarvestYield)) / 2);
             newThing.SetStatBaseValue(StatDefOf.MeleeDodgeChance, (animalThing.GetStatValueAbstract(StatDefOf.MeleeDodgeChance) + humanThing.GetStatValueAbstract(StatDefOf.MeleeDodgeChance)) / 2);
 
-            if (!hasHands)
+            if (fineManipulation < 0.99)
             {
-                newThing.SetStatBaseValue(StatDefOf.WorkSpeedGlobal, newThing.GetStatValueAbstract(StatDefOf.WorkSpeedGlobal) * 0.75f);
-                newThing.SetStatBaseValue(StatDefOf.SurgerySuccessChanceFactor, newThing.GetStatValueAbstract(StatDefOf.SurgerySuccessChanceFactor) * 0.5f);
+                float workspeedMult = Mathf.Lerp(1.0f, 0.65f, fineManipulation);
+                newThing.SetStatBaseValue(StatDefOf.WorkSpeedGlobal, newThing.GetStatValueAbstract(StatDefOf.WorkSpeedGlobal) * workspeedMult);
+                float surgeryMult = Mathf.Lerp(1.0f, 0.5f, fineManipulation);
+                newThing.SetStatBaseValue(StatDefOf.SurgerySuccessChanceFactor, newThing.GetStatValueAbstract(StatDefOf.SurgerySuccessChanceFactor) * surgeryMult);
             }
 
             // No "Bee Movie" please.

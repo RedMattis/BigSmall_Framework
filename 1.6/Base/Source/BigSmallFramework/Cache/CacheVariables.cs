@@ -14,6 +14,7 @@ namespace BigAndSmall
         public bool isDefaultCache = false;
 
         public Pawn pawn = null;
+        public uint changeIndex = 0; // Used to track changes in the cache, so we can update the pawn when needed.
         public bool refreshQueued = false;
         public int? lastUpdateTick = null;
         public int? creationTick = null;

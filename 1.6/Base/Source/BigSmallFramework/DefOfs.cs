@@ -159,6 +159,11 @@ namespace BigAndSmall
         [MayRequireAnyOf("RedMattis.Undead,RedMattis.Yokai,RedMattis.Undead.ZombieApoc")]
         public static XenotypeDef VU_ReturnedSkeletal;
 
+        public static PawnExtensionDef BS_DefaultAnimal_NoHands;
+        public static PawnExtensionDef BS_DefaultAnimal_PoorHands;
+        public static PawnExtensionDef BS_DefaultAnimal;
+
+
         static BSDefs()
         {
             DefOfHelper.EnsureInitializedInCtor(typeof(BSDefs));
