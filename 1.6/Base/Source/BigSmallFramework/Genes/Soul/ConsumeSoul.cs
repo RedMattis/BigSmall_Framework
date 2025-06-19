@@ -66,8 +66,7 @@ namespace BigAndSmall
                 }
                 return false;
             }
-            var hediffDef = DefDatabase<HediffDef>.GetNamedSilentFail("BS_Soulless");
-            if (enemy.health.hediffSet.TryGetHediff(hediffDef, out Hediff hediff) && hediff != null)
+            if (enemy.health.hediffSet.HasHediff(BSDefs.BS_Soulless))
             {
                 if (throwMessages)
                 {
@@ -146,17 +145,17 @@ namespace BigAndSmall
 
         public static SoulCollector MakeGetSoulCollectorHediff(Pawn attacker)
         {
-            if (BSDefs.BS_Soulless == null)
+            if (BSDefs.BS_SoulCollector == null)
             {
                 Log.Warning("Soul Collector Hediff is null. This is likely due to a missing mod or a missing def.");
                 return null;
             }
-            SoulCollector soulCollector = (SoulCollector)attacker.health.hediffSet.GetFirstHediffOfDef(BSDefs.BS_Soulless);
+            SoulCollector soulCollector = (SoulCollector)attacker.health.hediffSet.GetFirstHediffOfDef(BSDefs.BS_SoulCollector);
             if (soulCollector == null)
             {
                 // Add the soul to the attacker.
-                attacker.health.AddHediff(BSDefs.BS_Soulless);
-                soulCollector = (SoulCollector)attacker.health.hediffSet.GetFirstHediffOfDef(BSDefs.BS_Soulless);
+                attacker.health.AddHediff(BSDefs.BS_SoulCollector);
+                soulCollector = (SoulCollector)attacker.health.hediffSet.GetFirstHediffOfDef(BSDefs.BS_SoulCollector);
             }
             return soulCollector;
         }

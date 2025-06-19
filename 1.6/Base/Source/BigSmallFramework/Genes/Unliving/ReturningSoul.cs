@@ -44,8 +44,7 @@ namespace BigAndSmall
                 return;
             }
 
-            var soullessHediff = DefDatabase<HediffDef>.GetNamedSilentFail("BS_Soulless");
-            if (pawn?.health?.hediffSet?.TryGetHediff(soullessHediff, out Hediff hediff) == true && soullessHediff != null)
+            if (pawn?.health?.hediffSet?.TryGetHediff(BSDefs.BS_Soulless, out Hediff hediff) == true)
             {
                 if (pawn.Faction == Faction.OfPlayerSilentFail)
                 {

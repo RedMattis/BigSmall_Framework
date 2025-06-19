@@ -113,8 +113,7 @@ namespace BigAndSmall
                 }
 
 
-                var soullessHediff = DefDatabase<HediffDef>.GetNamedSilentFail("BS_Soulless");
-                if (pawn.health.hediffSet.TryGetHediff(soullessHediff, out Hediff hediff) && soullessHediff != null)
+                if (pawn.health.hediffSet.TryGetHediff(BSDefs.BS_Soulless, out Hediff hediff))
                 {
                     pawn.health.RemoveHediff(this);
                     return false; // Don't reanimate soulless pawns
