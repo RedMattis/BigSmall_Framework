@@ -46,8 +46,8 @@
 
   <BS_ToggleFeatures>Toggle Content Features (Requires Restart)</BS_ToggleFeatures>
   <BS_SapientAnimals_Forced>Sapient Animals (Forced ON by mods)</BS_SapientAnimals_Forced>
-  <BS_SapientAnimals>Enable Sapient Animals</BS_SapientAnimals>
-  <BS_SapientMechanoids>Enable Sapient Mechanoids</BS_SapientMechanoids>
+  <BS_SapientAnimals>Enable Sapient Animals (Restart Required)</BS_SapientAnimals>
+  <BS_SapientMechanoids>Enable Sapient Mechanoids (Restart Required)</BS_SapientMechanoids>
   <BS_Surgery>Bionics and Surgery</BS_Surgery>
 
   <!-- DEV-Settings -->

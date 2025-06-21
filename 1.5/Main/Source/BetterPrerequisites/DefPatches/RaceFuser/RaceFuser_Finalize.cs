@@ -373,10 +373,9 @@ namespace BigAndSmall
             {
                 // Updated to use the new overload of MethodDelegate with Type[] parameter
                 giveHashDelegate = MethodDelegate<Action<Def, Type, HashSet<ushort>>>(
-                    Method(typeof(ShortHashGiver), "GiveShortHash", [typeof(Def), typeof(Type), typeof(HashSet<ushort>)], null),
+                    Method(typeof(ShortHashGiver), "GiveShortHash", new[] { typeof(Def), typeof(Type), typeof(HashSet<ushort>) }, null),
                     null,
-                    true,
-                    [typeof(Def), typeof(Type), typeof(HashSet<ushort>)]
+                    true
                 );
 
                 takenHashesFieldRef = StaticFieldRefAccess<Dictionary<Type, HashSet<ushort>>>(
