@@ -27,7 +27,6 @@
     <li IfModActive="Ludeon.Rimworld.Biotech">1.6/DLC/Biotech</li>
     <li IfModActive="erdelf.HumanoidAlienRaces">1.6/Mods/HAR</li>
     <li IfModActive="nals.facialanimation">1.6/Mods/FacialAnim</li>
-    <li IfModActive="erdelf.HumanoidAlienRaces.dev">1.6/HAR</li>
     <li IfModNotActive="RedMattis.RedHealth">1.6/RedHealth</li>
   </v1.6>
 </loadFolders>
