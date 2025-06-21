@@ -172,23 +172,23 @@ namespace BigAndSmall
             }
 
 
-            if (VFEGeneExtensionWrapper.IsVFEActive == true)
-            {
-                var vfeg = new VFEGeneExtensionWrapper(null);
-                if (vfeg != null)
-                {
+            //if (VFEGeneExtensionWrapper.IsVFEActive == true)
+            //{
+            //    var vfeg = new VFEGeneExtensionWrapper(null);
+            //    if (vfeg != null)
+            //    {
 
 
-                    string pathEndo = template.backgroundPathEndogenes ?? "GeneIcons/BS_BackEndogene";
-                    string pathXeno = template.backgroundPathXenogenes ?? "GeneIcons/BS_BackXenogene";
-                    string pathArchite = template.backgroundPathArchite ?? "GeneIcons/BS_BackArchite_1";
+            //        string pathEndo = template.backgroundPathEndogenes ?? "GeneIcons/BS_BackEndogene";
+            //        string pathXeno = template.backgroundPathXenogenes ?? "GeneIcons/BS_BackXenogene";
+            //        string pathArchite = template.backgroundPathArchite ?? "GeneIcons/BS_BackArchite_1";
 
-                    vfeg.BackgroundPathEndogenes = pathEndo;
-                    vfeg.BackgroundPathXenogenes = pathXeno;
-                    vfeg.BackgroundPathArchite = pathArchite;
-                    geneDef.modExtensions.Add(vfeg.ext);
-                }
-            }
+            //        vfeg.BackgroundPathEndogenes = pathEndo;
+            //        vfeg.BackgroundPathXenogenes = pathXeno;
+            //        vfeg.BackgroundPathArchite = pathArchite;
+            //        geneDef.modExtensions.Add(vfeg.ext);
+            //    }
+            //}
             return geneDef;
         }
     }
