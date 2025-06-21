@@ -42,7 +42,7 @@
     <defName>BS_DefaultAnimal_PoorHands</defName>
     <pawnExtension>
       <hideHumanlikeRenderNodes>true</hideHumanlikeRenderNodes>
-      <canWieldThings>false</canWieldThings>
+      <canWieldThings>true</canWieldThings>
       <aptitudes>
         <Melee>2</Melee>
         <Shooting>-8</Shooting>

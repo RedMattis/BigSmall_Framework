@@ -67,7 +67,7 @@ namespace BigAndSmall
 
         public static void GenerateHumanlikeAnimals(bool hotReload)
         {
-            if (BigSmall.BSSapientAnimalsActive)  // Just replace this with the actual mod's name later.
+            if (BigSmall.BSSapientAnimalsActive || BigSmall.BSSapientMechanoidsActive)  // Just replace this with the actual mod's name later.
             {
                 HashSet<ThingDef> thingDefsGenerated = [];
 
@@ -75,6 +75,16 @@ namespace BigAndSmall
                     .Where(x => x.race is ThingDef aniThing && aniThing?.race is RaceProperties race &&
                         race.Animal && race.intelligence == Intelligence.Animal)
                     .ToList();
+                if (BigSmall.BSSapientMechanoidsActive)
+                {
+                    var mechPawnKinds = DefDatabase<PawnKindDef>.AllDefs
+                        .Where(x => x.race is ThingDef mechThing && mechThing?.race is RaceProperties mechRace &&
+                            mechRace.IsMechanoid &&
+                            mechRace.intelligence >= Intelligence.Animal && mechRace.intelligence != Intelligence.Humanlike);
+                    Log.Message($"Found {mechPawnKinds.Count()} mechanoid pawn kinds to generate humanlike animals from.");
+                    aniPawnKinds.AddRange(mechPawnKinds);
+                    SapienatorCanTargetMechsHack();
+                }
                 foreach (var aniPawnKind in aniPawnKinds)
                 {
                     if (thingDefsGenerated.Contains(aniPawnKind.race)) continue;
@@ -96,6 +106,17 @@ namespace BigAndSmall
                     reverseLookupHumanlikeAnimals[hAnim.animal] = hAnim;
                 }
             }
+        }
+
+        private static void SapienatorCanTargetMechsHack()
+        {
+            // Hack to change the Sapienator.
+            var sapienator = DefDatabase<ThingDef>.GetNamedSilentFail("BS_Sapienator");
+            sapienator?.comps.Where(x => x is CompProperties_TargetableExtended).ToList().ForEach(x =>
+            {
+                var comp = (CompProperties_TargetableExtended)x;
+                comp.targetInfo.canTargetMechs = true;
+            });
         }
 
         private static void MakeDummySetupsForAlreadySapientAnimals(PawnKindDef animalLikePK)
@@ -122,7 +143,7 @@ namespace BigAndSmall
         {
             var aniThing = aniPawnKind.race;
 
-            if (aniThing.race?.IsFlesh != true) return;
+            //if (aniThing.race?.IsFlesh != true) return;
 
             string thingDefName = $"HL_{aniThing.defName}";
             RaceProperties aniRace = aniThing.race;
@@ -197,7 +218,7 @@ namespace BigAndSmall
             else
             {
                 // Patch aging rate instead. Messing with the life-stages is bug-prone.
-                // Also the storyteller generating 3 year old adult sapient rats married to 300 year old dragons is kinda creepy.
+                // Also the storyteller generating 3 year old adult sapient rats married to 300 year old dragons would be kinda creepy.
             }
             newRace.thinkTreeConstant = humRace.thinkTreeConstant;
             newRace.thinkTreeMain = humRace.thinkTreeMain;
@@ -210,6 +231,7 @@ namespace BigAndSmall
             //newRace.wildness = humRace.wildness;
             newRace.predator = humRace.predator;
             newRace.animalType = humRace.animalType;
+            newRace.fleshType = newRace.fleshType == FleshTypeDefOf.Mechanoid ? humRace.FleshType : newRace.FleshType;
             newRace.meatDef = humRace.meatDef;  // Can cause issues if they are mechanoid meatDef, etc.
             newRace.hideTrainingTab = humRace.hideTrainingTab;
             newRace.canReleaseToWild = humRace.canReleaseToWild;
@@ -224,13 +246,22 @@ namespace BigAndSmall
             newRace.nameGenerator = humRace.nameGenerator;
             newRace.nameGeneratorFemale = humRace.nameGeneratorFemale;
             newRace.nameOnTameChance = humRace.nameOnTameChance;
+            if (newRace.gestationPeriodDays == -1)
+            {
+                newRace.gestationPeriodDays = humRace.gestationPeriodDays;
+                if (ModsConfig.BiotechActive)  // If you want egg-laying sapient animals you'll have to figure it out yourselves.
+                {
+                    newThing.SetStatBaseValue(StatDefOf.Fertility, 0);
+                }
+            }
+            
 
             // Lets not generate a bunch of unnatural corpses. Set via reflection because of reports that the 
             // field is sometimes not present. Somehow.
             var hasUnnaturalCorpseField = newRace.GetType().GetField("hasUnnaturalCorpse");
             hasUnnaturalCorpseField?.SetValue(newRace, false);
 
-            if (newRace.renderTree.defName == "Animal")
+            if (newRace.renderTree.defName == "Animal" || newRace.renderTree.defName == "Misc")
             {
                 newRace.renderTree = DefDatabase<PawnRenderTreeDef>.GetNamed("BS_HumanlikeAnimal");
             }
@@ -241,12 +272,11 @@ namespace BigAndSmall
                     $"No warning will be sent for any further animals skipped for humanlike-animal generation to avoid spamming the log.", 6661337);
             }
 
-            
-
             string raceHediffName = $"HL_{aniThing.defName}_RaceHediff";    // This can be used to override the hediff of the race.
             var raceHediff = raceHediffName.TryGetExistingDef<HediffDef>();
             bool hasHands = false;
-            float? fineManipulation = raceHediff?.GetAllPawnExtensionsOnHediff().FirstOrDefault()?.animalFineManipulation;
+            var racePawnExtension = raceHediff?.GetAllPawnExtensionsOnHediff().FirstOrDefault();
+            float? fineManipulation = racePawnExtension?.animalFineManipulation;
             fineManipulation = hasHands ? 1.0f : 0f;
 
             if (raceHediff == null)
@@ -258,6 +288,12 @@ namespace BigAndSmall
                 {
                     hasHands = true;
                     fineManipulation = 1.0f;
+                }
+                else if (aniThing.race.IsMechanoid)
+                {
+                    // Mechanoids are assume to always be somewhat decent at finemanipulation.
+                    hasHands = true;
+                    fineManipulation = 0.65f;
                 }
                 else if (HumanlikeAnimalSettings.AllHASettings.Any(x => x.hasPoorHandsWildcards.Any(wc => aniThing.defName.ToLower().Contains(wc))))
                 {
@@ -302,6 +338,10 @@ namespace BigAndSmall
                 }
                 var pawnExt = new PawnExtension();
                 PawnExtensionDef targetAnimalBase = fineManipulation > 0.75f ? BSDefs.BS_DefaultAnimal : fineManipulation > 0.35f ? BSDefs.BS_DefaultAnimal_PoorHands : BSDefs.BS_DefaultAnimal_NoHands;
+                if (aniPawnKind.RaceProps.IsMechanoid)
+                {
+                    targetAnimalBase = BSDefs.BS_DefaultMechanoid;
+                }
                 foreach (var field in typeof(PawnExtension)
                     .GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                     .Where(f => !f.IsStatic && !f.IsInitOnly))
@@ -312,10 +352,28 @@ namespace BigAndSmall
                 }
                 if (pawnExt.traitIcon == null && aniPawnKind.lifeStages?.Any() == true)
                 {
-                    pawnExt.traitIcon = aniPawnKind.lifeStages.Last().bodyGraphicData.texPath + "_east";
+                    pawnExt.traitIcon = GetTraitIcon(aniPawnKind);
                 }
                 pawnExt.animalFineManipulation = fineManipulation ?? 1.0f;
                 raceHediff.modExtensions = [pawnExt];
+            }
+            racePawnExtension = raceHediff?.GetAllPawnExtensionsOnHediff().FirstOrDefault();
+            if (racePawnExtension != null)
+            {
+                if ((racePawnExtension.traitIcon == null || racePawnExtension.traitIcon == "BS_Traits/robot") &&
+                    aniPawnKind.lifeStages?.Any() == true)
+                {
+                    racePawnExtension.traitIcon = GetTraitIcon(aniPawnKind);
+                }
+                if (racePawnExtension.animalFineManipulation < 0.45)
+                {
+                    racePawnExtension.canWieldThings = false;
+                }
+            }
+            if (aniPawnKind.abilities != null)
+            {
+                raceHediff.abilities ??= [];
+                raceHediff.abilities.AddRange(aniPawnKind.abilities);
             }
 
             var raceExt = new RaceExtension();
@@ -329,7 +387,7 @@ namespace BigAndSmall
 
             newThing.modExtensions = [raceExt];
 
-            SetAnimalStatDefValues(humThing, aniThing, newThing, fineManipulation.Value);
+            SetAnimalStatDefValues(humThing, aniThing, newThing, fineManipulation.Value, racePawnExtension);
 
             DefGenerator.AddImpliedDef(newThing, hotReload: true);
             DefGenerator.AddImpliedDef(newRace.body, hotReload: true);
@@ -345,9 +403,14 @@ namespace BigAndSmall
                 humanlike = humThing,
                 animal = aniThing
             };
+
+            static string GetTraitIcon(PawnKindDef aniPawnKind)
+            {
+                return aniPawnKind.lifeStages.Last().bodyGraphicData.texPath + "_east";
+            }
         }
 
-        public static void SetAnimalStatDefValues(ThingDef humanThing, ThingDef animalThing, ThingDef newThing, float fineManipulation)
+        public static void SetAnimalStatDefValues(ThingDef humanThing, ThingDef animalThing, ThingDef newThing, float fineManipulation, PawnExtension pExt)
         {
             newThing.statBases = [];
             foreach (var statBase in humanThing.statBases)
@@ -370,6 +433,8 @@ namespace BigAndSmall
             newThing.SetStatBaseValue(StatDefOf.ToxicResistance, animalThing.GetStatValueAbstract(StatDefOf.ToxicResistance));
             newThing.SetStatBaseValue(StatDefOf.ToxicEnvironmentResistance, animalThing.GetStatValueAbstract(StatDefOf.ToxicEnvironmentResistance));
             newThing.SetStatBaseValue(StatDefOf.CarryingCapacity, animalThing.GetStatValueAbstract(StatDefOf.CarryingCapacity));
+            newThing.SetStatBaseValue(StatDefOf.ComfyTemperatureMax, animalThing.GetStatValueAbstract(StatDefOf.ComfyTemperatureMax));
+            newThing.SetStatBaseValue(StatDefOf.ComfyTemperatureMin, animalThing.GetStatValueAbstract(StatDefOf.ComfyTemperatureMin));
 
             // Averaged
             newThing.SetStatBaseValue(StatDefOf.DeepDrillingSpeed, (animalThing.GetStatValueAbstract(StatDefOf.DeepDrillingSpeed) + humanThing.GetStatValueAbstract(StatDefOf.DeepDrillingSpeed)) / 2);
@@ -382,6 +447,8 @@ namespace BigAndSmall
             newThing.SetStatBaseValue(StatDefOf.PlantHarvestYield, (animalThing.GetStatValueAbstract(StatDefOf.PlantHarvestYield) + humanThing.GetStatValueAbstract(StatDefOf.PlantHarvestYield)) / 2);
             newThing.SetStatBaseValue(StatDefOf.MeleeDodgeChance, (animalThing.GetStatValueAbstract(StatDefOf.MeleeDodgeChance) + humanThing.GetStatValueAbstract(StatDefOf.MeleeDodgeChance)) / 2);
 
+            // Max
+
             if (fineManipulation < 0.99)
             {
                 float workspeedMult = Mathf.Lerp(1.0f, 0.65f, fineManipulation);
@@ -389,9 +456,31 @@ namespace BigAndSmall
                 float surgeryMult = Mathf.Lerp(1.0f, 0.5f, fineManipulation);
                 newThing.SetStatBaseValue(StatDefOf.SurgerySuccessChanceFactor, newThing.GetStatValueAbstract(StatDefOf.SurgerySuccessChanceFactor) * surgeryMult);
             }
+            if (pExt.isMechanical)
+            {
+                if (ModsConfig.BiotechActive)
+                {
+                    newThing.SetStatBaseValue(StatDefOf.Fertility, 0);
+                }
+            }
 
+            
+            if (pExt == null)
+            {
+                newThing.SetStatBaseValue(RomancePatches.FlirtChanceDef, 0);  // This prevents Lovin' from happening as well.
+            }
             // No "Bee Movie" please.
-            newThing.SetStatBaseValue(RomancePatches.FlirtChanceDef, 0);  // This prevents Lovin' from happening as well.
+            else if (animalThing.race.Animal && pExt?.romanceTags == null)
+            {
+                pExt.romanceTags = new RomanceTags()
+                {
+                    compatibilities = new()
+                    {
+                        [animalThing.label] = new RomanceTags.Compatibility { chance = 1.0f, factor = 1.0f }
+                    }
+                };
+            }
+            
         }
 
         private static bool HasPartWithTag(List<BodyPartRecord> parts, BodyPartTagDef tag, List<string> blackListKeyword)

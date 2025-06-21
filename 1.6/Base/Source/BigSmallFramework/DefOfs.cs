@@ -162,6 +162,7 @@ namespace BigAndSmall
         public static PawnExtensionDef BS_DefaultAnimal_NoHands;
         public static PawnExtensionDef BS_DefaultAnimal_PoorHands;
         public static PawnExtensionDef BS_DefaultAnimal;
+        public static PawnExtensionDef BS_DefaultMechanoid;
 
 
         static BSDefs()

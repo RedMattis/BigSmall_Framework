@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Linq;
+using System.Runtime;
 using UnityEngine;
 using Verse;
 using static BigAndSmall.SettingsWidgets;
@@ -94,6 +95,16 @@ namespace BigAndSmall
 
             listStd.Label("BS_ToggleFeatures".Translate().AsTipTitle());
             CreateSettingCheckbox(listStd, "BS_Surgery".Translate(), ref settings.surgeryAndBionics);
+            if (BigSmall.BSSapientAnimalsActive_ForcedByMods)
+            {
+                CreateSettingCheckbox(listStd, "BS_SapientAnimals_Forced".Translate(), ref settings.forcedOn, disabled:true);
+            }
+            else
+            {
+                CreateSettingCheckbox(listStd, "BS_SapientAnimals".Translate(), ref settings.sapientAnimals);
+            }
+
+            CreateSettingCheckbox(listStd, "BS_SapientMechanoids".Translate(), ref settings.sapientMechanoids);
 
             listStd.Label("BS_GameMechanics".Translate().AsTipTitle());
             CreateSettingCheckbox(listStd, "BS_ScaleAnimals".Translate(), ref settings.scaleAnimals);
@@ -159,6 +170,9 @@ namespace BigAndSmall
 
     public class BSSettings : ModSettings
     {
+        public bool forcedOn = true;
+        public bool forcedOff = false;
+
         private static readonly bool defaultGenerateDefs = true;
         public bool generateDefs = defaultGenerateDefs;
 
@@ -167,6 +181,12 @@ namespace BigAndSmall
 
         private static readonly bool defaultExperimental = true;
         public bool experimental = defaultExperimental;
+
+        private static readonly bool defaultSapientAnimals = false;
+        public bool sapientAnimals = defaultSapientAnimals;
+
+        private static readonly bool defaultSapientMechanoids = false;
+        public bool sapientMechanoids = defaultSapientMechanoids;
 
         private static readonly bool defaultSurgeryAndBionics = true;
         public bool surgeryAndBionics = defaultSurgeryAndBionics;
@@ -243,6 +263,8 @@ namespace BigAndSmall
             Scribe_Values.Look(ref experimental, "experimental", defaultExperimental);
             Scribe_Values.Look(ref pathRacesFromOtherMods, "pathRacesFromOtherMods", defaultPathRacesFromOtherMods);
             Scribe_Values.Look(ref generateDefs, "generateDefs", defaultGenerateDefs);
+            Scribe_Values.Look(ref sapientAnimals, "sapientAnimals", defaultSapientAnimals);
+            Scribe_Values.Look(ref sapientMechanoids, "sapientMechanoids", defaultSapientMechanoids);
             Scribe_Values.Look(ref surgeryAndBionics, "surgeryAndBionics", defaultSurgeryAndBionics);
             Scribe_Values.Look(ref visualLargerMult, "visualLargerMult", defaultVisualLargerMult);
             Scribe_Values.Look(ref visualSmallerMult, "visualSmallerMult", defaultVisualSmallerMult);

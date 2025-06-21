@@ -2,6 +2,13 @@
   
   <BigAndSmall.GlobalSettings>
     <defName>BS_GlobalSettings</defName>
+    <enabledFeatures>
+      <!-- 
+      Case insensitive strings to toggle specific features.
+      -->
+      <!-- <li>SapientAnimals</li> -->
+      <!-- <li>SapientMechanoids</li> -->
+    </enabledFeatures>
   </BigAndSmall.GlobalSettings>
   
 </Defs>

@@ -33,7 +33,7 @@ namespace BigAndSmall
             }
         }
 
-        public static void CreateSettingCheckbox(Listing_Standard listingStandard, string labelName, ref bool value)
+        public static void CreateSettingCheckbox(Listing_Standard listingStandard, string labelName, ref bool value, bool disabled=false)
         {
             Rect fullRow = listingStandard.GetRect(Text.LineHeight);
             // Divide the row into two segments for the label and the checkbox
@@ -43,7 +43,7 @@ namespace BigAndSmall
             Rect checkboxRect = new(labelRect.xMax, fullRow.y, checkboxWidth, fullRow.height);
 
             Widgets.Label(labelRect, labelName);
-            Widgets.Checkbox(checkboxRect.position, ref value);
+            Widgets.Checkbox(checkboxRect.position, ref value, disabled: disabled);
         }
     }
 }

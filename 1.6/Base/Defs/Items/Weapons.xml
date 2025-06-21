@@ -6,7 +6,7 @@
     <label>giant sword</label>
     <description>A very large sword with grip for one-handed use. It is far too unwieldly for normal person to use.</description>
     <graphicData>
-      <texPath>Item/BS_GiantNordicSword</texPath>
+      <texPath>Items/BS_GiantNordicSword</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <drawSize>2</drawSize>
     </graphicData>

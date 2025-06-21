@@ -1,0 +1,89 @@
+<Defs>
+
+  <BigAndSmall.HumanlikeAnimalSettings>
+    <defName>DefaultHumanlikeAnimalSettings</defName>
+    <!-- Anything that can plausibly manipulate things if given specialized tools qualify.
+     E.g. Elephants have trunks. Spiders have limbs and possibly web to assist, etc. -->
+    <hasHandsWildcards>
+      <li>rat</li>
+      <li>squirrel</li>
+      <li>monkey</li>
+      <li>chimpanzee</li>
+      <li>gorilla</li>
+      <li>lemur</li>
+      <li>raccoon</li>
+      <li>opossum</li>
+      <li>ferret</li>
+      <li>macaque</li>
+      <li>otter</li>
+      <li>mongoose</li>
+      <li>weasel</li>
+      <li>capuchin</li>
+      <li>baboon</li>
+      <li>gibbon</li>
+      <li>orangutan</li>
+      <li>ape</li>
+      <li>ayeaye</li>
+      <li>tarsier</li>
+      <li>coati</li>
+      <li>kinkajou</li>
+      <li>possum</li>
+      <li>marmoset</li>
+      <li>spider</li>
+      <li>elephant</li>
+      <li>mammoth</li>
+      <li>raptor</li>
+      <li>griffin</li>
+      <li>bird</li>
+      <li>parrot</li>
+      <li>crow</li>
+      <li>raven</li>
+      <li>magpie</li>
+      <li>pigeon</li>
+      <li>seagull</li>
+      <li>hawk</li>
+      <li>eagle</li>
+      <li>owl</li>
+      <li>falcon</li>
+      <li>vulture</li>
+      <li>condor</li>
+      <li>actyl</li>
+      <li>lizard</li>
+    </hasHandsWildcards>
+
+    <!-- Generally the category for creatures that can just barely hold something without using their mouth -->
+    <hasPoorHandsWildcards>
+      <li>cat</li>
+      <li>dragon</li>
+      <li>wyvern</li>
+      <li>bear</li>
+      <li>badger</li>
+      <li>wolverine</li>
+      <li>panda</li>
+      <li>sloth</li>
+      <li>anteater</li>
+      <li>aardvark</li>
+      <li>civet</li>
+      <li>skunk</li>
+      <li>tiger</li>
+      <li>lion</li>
+      <li>leopard</li>
+      <li>lynx</li>
+      <li>jaguar</li>
+      <li>puma</li>
+      <li>cougar</li>
+      <li>scarab</li>
+      <li>insect</li>
+      <li>trex</li>
+      <li>snake</li>
+      <li>python</li>
+      <li>cobra</li>
+      <li>viper</li>
+      <li>boa</li>
+      <li>constrictor</li>
+      <li>alligator</li>
+      <li>crocodile</li>
+    </hasPoorHandsWildcards>
+    <!-- Wolves horses, etc. do not have fine manipulators and are thus not listed. -->
+  </BigAndSmall.HumanlikeAnimalSettings>
+</Defs>

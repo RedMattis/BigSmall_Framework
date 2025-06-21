@@ -124,6 +124,9 @@ namespace BigAndSmall
     public class GlobalSettings : Def
     {
         public static Dictionary<string, GlobalSettings> globalSettings = DefDatabase<GlobalSettings>.AllDefs.ToDictionary(x => x.defName);
+
+        public List<string> enabledFeatures = [];
+        
         public List<List<string>> alienGeneGroups = [];
         public List<XenotypeChance> returnedXenotypes = [];
         public List<XenotypeChance> returnedXenotypesColonist = [];
@@ -139,6 +142,9 @@ namespace BigAndSmall
         public static XenotypeDef GetRandomReturnedColonistXenotype => globalSettings
             .SelectMany(x => x.Value.returnedXenotypesColonist)
             .TryRandomElementByWeight(x => x.chance, out var result) ? result.xenotype : null;
+
+        public static bool IsFeatureEnabled(string featureName) => globalSettings.Values
+            .Any(x => x.enabledFeatures.Contains(featureName, StringComparer.OrdinalIgnoreCase));
 
 
         public static void Initialize()

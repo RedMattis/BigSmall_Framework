@@ -64,6 +64,7 @@
           <Mech>1.0</Mech>
           <Android>0.75</Android>
           <Humanlike>0.5</Humanlike>
+          <Mechanoid>0.5</Mechanoid>
         </romanceTags>
         <aptitudes>
           <Construction>2</Construction>

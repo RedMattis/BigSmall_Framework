@@ -66,17 +66,14 @@ namespace BigAndSmall
             var request = new PawnGenerationRequest(PawnKindDefOf.Colonist,
                 canGeneratePawnRelations:false,
                 allowDead: false, allowDowned: false, allowAddictions: false,
-                forcedXenotype:XenotypeDefOf.Baseliner,
                 forbidAnyTitle: true, forceGenerateNewPawn:true,
-                allowedXenotypes: [XenotypeDefOf.Baseliner],
+                forceBaselinerChance: 1,
                 forceNoBackstory:true);
-            // Somehow it doesn't always end up baseliner anyway...
-            request.ForcedXenotype = XenotypeDefOf.Baseliner;
-            request.AllowedXenotypes = [XenotypeDefOf.Baseliner];
 
             var newPawn = PawnGenerator.GeneratePawn(request);
             newPawn.inventory.DestroyAll(DestroyMode.Vanish);
             newPawn.equipment.DestroyAllEquipment(DestroyMode.Vanish);
+            newPawn.apparel.DestroyAll(DestroyMode.Vanish);
 
             string oldName = aniPawn.Name?.ToStringShort;
             if (oldName == null)
@@ -150,8 +147,25 @@ namespace BigAndSmall
                 newPawn.ChangeKind(PawnKindDefOf.WildMan);
                 newPawn.jobs.StopAll();
             }
+            if (aniPawn.RaceProps.IsMechanoid && aniPawn.kindDef?.weaponTags?.Any() == true)
+            {
+                try
+                {
+                    var weaponTag = aniPawn.kindDef.weaponTags.FirstOrDefault();
+                    var weaponFromTag = DefDatabase<ThingDef>.AllDefsListForReading
+                        .Where(x => x.IsWeapon && x.weaponTags?.Contains(weaponTag) == true)
+                        .OrderByDescending(x => x.BaseMarketValue).FirstOrDefault();
+                    var weapon = (ThingWithComps)ThingMaker.MakeThing(weaponFromTag);
+                    newPawn.equipment.AddEquipment(weapon);
+                }
+                catch (Exception e)
+                {
+                    Log.Error($"[Big and Small] Error trying to equip {newPawn} with a weapon from {aniPawn.kindDef}: {e.Message}");
+                }
+            }
+
             aniPawn.Destroy(DestroyMode.Vanish);
-            aniPawn.Discard(silentlyRemoveReferences: true);
+            //aniPawn.Discard(silentlyRemoveReferences: true);
         }
 
         public static void SwapThingDef(this Pawn pawn, ThingDef swapTarget, bool state, int targetPriority, bool force=false, object source=null, bool permitFusion=true, bool clearHediffsToReapply=true)

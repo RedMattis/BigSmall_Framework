@@ -356,7 +356,7 @@
     <Publicize Include="Assembly-CSharp:Verse.RaceProperties.nameGenerator" />
     <Publicize Include="Assembly-CSharp:Verse.RaceProperties.nameGeneratorFemale" />
     <Publicize Include="Assembly-CSharp:Verse.PawnRenderNode.props" />
-    <Publicize Include="Assembly-CSharp:Verse.PawnRenderNode.props" />
+    <Publicize Include="Assembly-CSharp:Verse.RaceProperties.fleshType" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

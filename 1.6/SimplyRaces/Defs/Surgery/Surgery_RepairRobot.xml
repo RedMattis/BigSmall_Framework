@@ -39,6 +39,7 @@
     </fixedIngredientFilter>
     <appliedOnFixedBodyParts>
       <li>BS_ArtificialBrain</li>
+      <li>ArtificialBrain</li>
     </appliedOnFixedBodyParts>
   </RecipeDef>
 
@@ -127,6 +128,7 @@
       <li>BS_FluidReprocessor</li>
       <li>BS_FuelProcessor</li>
       <li>BS_AirCoolingUnit</li>
+      <li>FluidReprocessor</li>
     </appliedOnFixedBodyParts>
   </RecipeDef>
 
@@ -174,6 +176,9 @@
       <li>BS_SmellSensor</li>
       <li>BS_MechanicalTongue</li>
       <li>BS_MechanicalSpine</li>
+      <li>SightSensor</li>
+      <li>HearingSensor</li>
+      <li>SmellSensor</li>
     </appliedOnFixedBodyParts>
   </RecipeDef>
 
@@ -223,6 +228,11 @@
       <li>BS_MechanicalFoot</li>
       <li>BS_MechanicalRibs</li>
       <li>BS_MechanicalSternum</li>
+      <li>MechanicalShoulder</li>
+      <li>MechanicalArm</li>
+      <li>MechanicalHand</li>
+      <li>MechanicalLeg</li>
+      <li>MechanicalFoot</li>
     </appliedOnFixedBodyParts>
   </RecipeDef>
 
@@ -258,6 +268,7 @@
     <appliedOnFixedBodyParts>
       <li>BS_MechanicalFinger</li>
       <li>BS_MechanicalToe</li>
+      <li>MechanicalFinger</li>
     </appliedOnFixedBodyParts>
   </RecipeDef>
 </Defs>
