@@ -246,14 +246,7 @@ namespace BigAndSmall
             newRace.nameGenerator = humRace.nameGenerator;
             newRace.nameGeneratorFemale = humRace.nameGeneratorFemale;
             newRace.nameOnTameChance = humRace.nameOnTameChance;
-            if (newRace.gestationPeriodDays == -1)
-            {
-                newRace.gestationPeriodDays = humRace.gestationPeriodDays;
-                if (ModsConfig.BiotechActive)  // If you want egg-laying sapient animals you'll have to figure it out yourselves.
-                {
-                    newThing.SetStatBaseValue(StatDefOf.Fertility, 0);
-                }
-            }
+            
             
 
             // Lets not generate a bunch of unnatural corpses. Set via reflection because of reports that the 
@@ -388,6 +381,14 @@ namespace BigAndSmall
             newThing.modExtensions = [raceExt];
 
             SetAnimalStatDefValues(humThing, aniThing, newThing, fineManipulation.Value, racePawnExtension);
+            if (newRace.gestationPeriodDays == -1)
+            {
+                newRace.gestationPeriodDays = humRace.gestationPeriodDays;
+                if (ModsConfig.BiotechActive)  // If you want egg-laying sapient animals you'll have to figure it out yourselves.
+                {
+                    newThing.SetStatBaseValue(StatDefOf.Fertility, 0);
+                }
+            }
 
             DefGenerator.AddImpliedDef(newThing, hotReload: true);
             DefGenerator.AddImpliedDef(newRace.body, hotReload: true);

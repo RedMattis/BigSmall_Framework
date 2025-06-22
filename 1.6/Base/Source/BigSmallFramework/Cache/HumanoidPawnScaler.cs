@@ -467,7 +467,10 @@ namespace BigAndSmall
                 // Check if the body size, head size, body offset, or head position has changed. If not set approximatelyNoChange to false.
                 approximatelyNoChange = bodyRenderSize.Approx(1) && headRenderSize.Approx(1) && bodyPosOffset.Approx(0) &&
                     headPosMultiplier.Approx(1) && headPositionMultiplier.Approx(1) && worldspaceOffset.Approx(0) &&
-                    complexHeadOffsets == null && complexBodyOffsets == null;
+                    complexHeadOffsets == null && complexBodyOffsets == null && pawn.RaceProps.baseBodySize < 2;
+                
+                // Always disable for large pawns so Thrumbo etc. don't get cut off.
+                if (pawn.RaceProps.baseBodySize > 1.49) renderCacheOff = true;
 
                 hasComplexHeadOffsets = complexHeadOffsets != null;
 
