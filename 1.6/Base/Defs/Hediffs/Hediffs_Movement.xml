@@ -9,7 +9,7 @@
 		<everCurableByItem>false</everCurableByItem>
 		<initialSeverity>1</initialSeverity>
 		<comps>
-			<li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="AnimalBehaviours.HediffCompProperties_Waterstriding"/>
+			<li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="VEF.AnimalBehaviours.HediffCompProperties_Waterstriding"/>
 		</comps>
 		<allowMothballIfLowPriorityWorldPawn>true</allowMothballIfLowPriorityWorldPawn>
 	</HediffDef>
@@ -24,7 +24,7 @@
 		<everCurableByItem>false</everCurableByItem>
 		<initialSeverity>1</initialSeverity>
 		<comps>
-			<li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="AnimalBehaviours.HediffCompProperties_Floating"/>
+			<li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="VEF.AnimalBehaviours.HediffCompProperties_Floating"/>
 		</comps>
 		<allowMothballIfLowPriorityWorldPawn>true</allowMothballIfLowPriorityWorldPawn>
 	</HediffDef>
@@ -39,7 +39,7 @@
 		<everCurableByItem>false</everCurableByItem>
 		<initialSeverity>1</initialSeverity>
 		<comps>
-			<li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="AnimalBehaviours.HediffCompProperties_Floating"/>
+			<li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="VEF.AnimalBehaviours.HediffCompProperties_Floating"/>
 		</comps>
 		<allowMothballIfLowPriorityWorldPawn>true</allowMothballIfLowPriorityWorldPawn>
 	</HediffDef>
@@ -54,7 +54,7 @@
 		<everCurableByItem>false</everCurableByItem>
 		<initialSeverity>1</initialSeverity>
 		<comps>
-			<li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="AnimalBehaviours.HediffCompProperties_Floating"/>
+			<li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="VEF.AnimalBehaviours.HediffCompProperties_Floating"/>
 		</comps>
 		<allowMothballIfLowPriorityWorldPawn>true</allowMothballIfLowPriorityWorldPawn>
 	</HediffDef>

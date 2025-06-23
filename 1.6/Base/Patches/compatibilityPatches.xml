@@ -19,7 +19,7 @@
   <!-- Roo's Minotaurs-->
 
   <!-- <Operation Class="PatchOperationRemove">
-    <xpath>Defs/GeneDef[defName="RBM_Herculean"]/modExtensions/li[@Class="VanillaGenesExpanded.GeneExtension"]</xpath>
+    <xpath>Defs/GeneDef[defName="RBM_Herculean"]/modExtensions/li[@Class="VEF.Genes.GeneExtension"]</xpath>
   </Operation> -->
   <Operation Class="PatchOperationFindMod">
     <mods>

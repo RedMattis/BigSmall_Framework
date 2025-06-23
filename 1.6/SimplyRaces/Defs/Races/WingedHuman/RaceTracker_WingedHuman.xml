@@ -8,7 +8,7 @@
       <li Class="BigAndSmall.CompProperties_Race">
         <canSwapAwayFrom>true</canSwapAwayFrom>
       </li>
-      <li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="AnimalBehaviours.HediffCompProperties_Floating"/>
+      <li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="VEF.AnimalBehaviours.HediffCompProperties_Floating"/>
     </comps>
     
     <modExtensions>
