@@ -22,6 +22,7 @@ namespace BigAndSmall
         public static StatDef SM_GrowthPointAccumulation;
         [MayRequire("RedMattis.BigSmall.Core")]
         public static StatDef BS_SoulPower;
+        public static StatDef SM_FlirtChance;
 
         // Rendering Nodes
         public static PawnRenderNodeTagDef Root;

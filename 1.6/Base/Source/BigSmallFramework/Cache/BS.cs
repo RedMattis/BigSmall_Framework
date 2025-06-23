@@ -25,6 +25,11 @@ namespace BigAndSmall
         public static bool PrePatcherActive => prePatcherActive ??= ModsConfig.IsActive("zetrith.prepatcher");
         public static void IncrementTick()
         {
+            if (internalTick == int.MaxValue)
+            {
+                internalTick = 0;
+            }
+
             internalTick += 1;
             internalTick10 = internalTick /10;
             internalTick100 = internalTick / 100;

@@ -245,7 +245,7 @@ namespace BigAndSmall
         {
             if (p.IsBloodfeeder() && food == ThingDefOf.HemogenPack) { return true; }
             if (p.IsMutant) { return true; }
-            if (p.GetCacheFast() is BSCache cache)
+            if (p.GetCachePrepatched() is BSCache cache)
             {
                 if (cache.willEatDef.TryGetValue(food, out bool cachedResult))
                 {
@@ -297,7 +297,7 @@ namespace BigAndSmall
             if (p?.DevelopmentalStage == DevelopmentalStage.Baby) { return true; }
 
             // Ignore unspawned pawns, it just gets messy because of Ludeon hardcoding.
-            if (p?.Spawned == true && p.GetCacheFast() is BSCache cache && cache.isHumanlike)
+            if (p?.Spawned == true && p.GetCachePrepatched() is BSCache cache && cache.isHumanlike)
             {
                 FilterResult result = food.FilterForFoodThing(cache);
                 if (result.Denied())
@@ -363,7 +363,7 @@ namespace BigAndSmall
             WillDietPermitEatingThing(ref canEatThing, ingester, __instance, null, false, false);
             // We're skipping the postfix if the character isn't spawned. Why you might ask? Because caravans don't check the food item's
             // Thing, only the ThingDef. This means we can't easily check if the item contains meat/vegtables. So we just skip it for everyone's sanity's sake.
-            if (ingester?.Spawned == true && ingester.GetCacheFast() is BSCache cache && cache.isHumanlike)
+            if (ingester?.Spawned == true && ingester.GetCachePrepatched() is BSCache cache && cache.isHumanlike)
             {
                 if (!canEatThing && ingester.Faction == Faction.OfPlayerSilentFail)
                 {

@@ -16,7 +16,7 @@ namespace BigAndSmall
         private static BSCache _placeholderCache;
         [PrepatcherField]
         [ValueInitializer(nameof(BSCache.GetDefaultCache))]
-        public static ref BSCache GetCacheFast(this Pawn pawn)
+        public static ref BSCache GetCachePrepatched(this Pawn pawn)
         {
             _placeholderCache = GetCacheUltraSpeed(pawn, canRegenerate:false);
             return ref _placeholderCache;

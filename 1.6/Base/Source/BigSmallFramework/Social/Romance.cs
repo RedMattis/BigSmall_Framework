@@ -15,9 +15,6 @@ namespace BigAndSmall
     [HarmonyPatch]
     public static class RomancePatches
     {
-        private static StatDef _flirtChanceDef;
-        public static StatDef FlirtChanceDef = _flirtChanceDef ??= DefDatabase<StatDef>.GetNamed("SM_FlirtChance");
-
         [HarmonyPatch(typeof(InteractionWorker_RomanceAttempt), nameof(InteractionWorker_RomanceAttempt.RandomSelectionWeight), MethodType.Normal)]
         [HarmonyPostfix]
         public static void RomanceAttemptPostfix(ref float __result, Pawn initiator, Pawn recipient)
@@ -39,12 +36,12 @@ namespace BigAndSmall
             
 
             // If recipient has no flirt chance, set result to 0. They are probably something that cannot be romanced.
-            if (recipient.GetStatValue(FlirtChanceDef, cacheStaleAfterTicks:1000) == 0)
+            if (recipient.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks:1000) == 0)
             {
                 __result = 0;
             }
 
-            __result *= initiator.GetStatValue(FlirtChanceDef, cacheStaleAfterTicks: 1000);
+            __result *= initiator.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks: 1000);
         }
 
         [HarmonyPatch(typeof(InteractionWorker_MarriageProposal), nameof(InteractionWorker_MarriageProposal.RandomSelectionWeight), MethodType.Normal)]
@@ -153,7 +150,7 @@ namespace BigAndSmall
 
                 float? compatibility = RomanceTagsExtensions.GetHighestSharedTag(cache, cacheTwo);
 
-                if (pawn.GetStatValue(FlirtChanceDef, cacheStaleAfterTicks: 1000) == 0 || otherPawn.GetStatValue(FlirtChanceDef, cacheStaleAfterTicks: 1000) == 0)
+                if (pawn.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks: 1000) == 0 || otherPawn.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks: 1000) == 0)
                     return 0;
                 if (compatibility == null && pawn.def != otherPawn.def)
                 {
@@ -191,7 +188,7 @@ namespace BigAndSmall
 
                 float? compatibility = RomanceTagsExtensions.GetHighestSharedTag(cache, cacheTwo);
 
-                if (pawn.GetStatValue(FlirtChanceDef, cacheStaleAfterTicks: 1000) == 0 || otherPawn.GetStatValue(FlirtChanceDef, cacheStaleAfterTicks: 1000) == 0)
+                if (pawn.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks: 1000) == 0 || otherPawn.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks: 1000) == 0)
                     return 0;
                 if (compatibility == null && pawn.def != otherPawn.def)
                 {

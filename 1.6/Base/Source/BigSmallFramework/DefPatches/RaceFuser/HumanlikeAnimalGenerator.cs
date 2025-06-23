@@ -468,7 +468,7 @@ namespace BigAndSmall
             
             if (pExt == null)
             {
-                newThing.SetStatBaseValue(RomancePatches.FlirtChanceDef, 0);  // This prevents Lovin' from happening as well.
+                newThing.SetStatBaseValue(BSDefs.SM_FlirtChance, 0);  // This prevents Lovin' from happening as well.
             }
             // No "Bee Movie" please.
             else if (animalThing.race.Animal && pExt?.romanceTags == null)

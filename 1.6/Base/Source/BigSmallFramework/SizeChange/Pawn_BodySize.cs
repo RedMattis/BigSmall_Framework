@@ -8,7 +8,7 @@ namespace BigAndSmall
     {
         public static void Postfix(ref float __result, Pawn __instance)
         {
-            if (__instance.GetCacheFast() is BSCache sizeCache)
+            if (__instance.GetCachePrepatched() is BSCache sizeCache)
             {
                 __result += sizeCache.totalSizeOffset;
                 if (__result < 0.05f)

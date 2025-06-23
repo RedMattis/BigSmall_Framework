@@ -15,7 +15,7 @@ namespace BigAndSmall
         {
             Pawn pawn = __instance.pawn;
 
-            if (pawn.GetCacheFast() is BSCache sizeCache)
+            if (pawn.GetCachePrepatched() is BSCache sizeCache)
             {
                 __result = new Vector3(__result.x * sizeCache.headPositionMultiplier, __result.y, __result.z * sizeCache.headPositionMultiplier);
 
@@ -67,11 +67,10 @@ namespace BigAndSmall
         public static void Prefix(PawnRenderer __instance, ref Vector3 drawLoc, Rot4? rotOverride, bool neverAimWeapon, ref bool disableCache, Pawn ___pawn)
         {
             if (___pawn == null) return;
-            var cache = ___pawn.GetCacheFast();
-            bool requestNewCache = cache.changeIndex != threadStaticCache.changeIndex || threadStaticCache.pawn != ___pawn || threadStaticCache.cache.isDefaultCache;
+            bool requestNewCache = threadStaticCache.pawn != ___pawn || threadStaticCache.cache.isDefaultCache;
             if (requestNewCache)
             {
-                threadStaticCache.cache = cache;
+                threadStaticCache.cache = ___pawn.GetCachePrepatched();
                 threadStaticCache.pawn = ___pawn;
                 threadStaticCache.approxNoChange = threadStaticCache.cache.approximatelyNoChange;
                 if (!threadStaticCache.approxNoChange)
@@ -152,7 +151,7 @@ namespace BigAndSmall
 
             if (threadStaticCache.pawn != ___pawn || threadStaticCache.tick10 != BS.Tick10)
             {
-                threadStaticCache.cache = ___pawn.GetCacheFast();
+                threadStaticCache.cache = ___pawn.GetCachePrepatched();
                 threadStaticCache.pawn = ___pawn;
                 threadStaticCache.hasForcedRotDrawMode = threadStaticCache.cache.forcedRotDrawMode.HasValue;
                 threadStaticCache.rotDrawMode = threadStaticCache.cache.forcedRotDrawMode ?? RotDrawMode.Fresh;
@@ -217,7 +216,7 @@ namespace BigAndSmall
             {
                 return;
             }
-            var cache = pawn.GetCacheFast();
+            var cache = pawn.GetCachePrepatched();
             //if (cache.changeIndex != threadStaticCache.changeIndex || threadStaticCache.pawn != pawn)
             //{
             //    threadStaticCache.cache = cache;
