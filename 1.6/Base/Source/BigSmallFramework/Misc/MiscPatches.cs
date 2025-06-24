@@ -286,7 +286,8 @@ namespace BigAndSmall
                         pawn.Name = name;
                         if (name.First == "Skadi")
                         {
-                            pawn.story.traits.GainTrait(new Trait(BSDefs.SpeedOffset, 2));
+                            if (!pawn.story.traits.HasTrait(BSDefs.SpeedOffset))
+                                pawn.story.traits.GainTrait(new Trait(BSDefs.SpeedOffset, 2));
                             pawn.skills.GetSkill(SkillDefOf.Melee).Level = Rand.Range(9, 18);
                             pawn.skills.GetSkill(SkillDefOf.Shooting).Level = Rand.Range(10, 16);
                             pawn.skills.GetSkill(SkillDefOf.Shooting).passion = Passion.Major;
@@ -297,7 +298,8 @@ namespace BigAndSmall
                             pawn.Name = name;
                             pawn.skills.GetSkill(SkillDefOf.Melee).Level = Rand.Range(10, 16);
                             pawn.skills.GetSkill(SkillDefOf.Melee).passion = Passion.Major;
-                            pawn.story.traits.GainTrait(new Trait(BSDefs.Tough));
+                            if (!pawn.story.traits.HasTrait(BSDefs.Tough))
+                                pawn.story.traits.GainTrait(new Trait(BSDefs.Tough));
                             var gTrait = pawn.story.traits.GetTrait(DefDatabase<TraitDef>.GetNamed("BS_Gentle"));
                             pawn.story.traits.RemoveTrait(gTrait);
                             pawn.genes.AddGene(DefDatabase<GeneDef>.GetNamed("Fertile"), false);
@@ -341,7 +343,7 @@ namespace BigAndSmall
                     // Check color
                     if (apparel.def.colorGenerator != null)
                     {
-                        apparel.SetColor(__instance.def.pawnKind.favoriteColor.color, false);
+                        apparel.SetColor(new UnityEngine.Color(0.549f, 0.666f, 1f), false);
                     }
                     pawn.apparel.Wear(apparel);
                 }
