@@ -115,6 +115,14 @@ namespace BigAndSmall
 
             //Log.Message($"[DEBUG] Running GeneratePawnPostfix for baby {__result.Name}");
             Pawn baby = __result;
+            if (parents.Count > 0)
+            {
+                var fParent = parents.First();
+                if (HumanlikeAnimals.IsHumanlikeAnimal(fParent.def))
+                {
+                    RaceMorpher.SwapThingDef(baby, fParent.def, true, 9999, force:true);
+                }
+            }
             if (newBabyGenes != null)
             {
                 //Log.Message($"[DEBUG] Setting baby genes to {newBabyGenes.Count} new genes.");

@@ -42,6 +42,7 @@ namespace BigAndSmall
 
         public List<string> hasHandsWildcards = [];
         public List<string> hasPoorHandsWildcards = [];
+        public List<string> compWhitelist = [];
     }
 
     public static class HumanlikeAnimals
@@ -58,6 +59,7 @@ namespace BigAndSmall
         public static ThingDef HumanLikeAnimalFor(ThingDef td) => GetHumanlikeAnimalFor(td)?.humanlikeThing;
         public static ThingDef HumanLikeSourceFor(ThingDef td) => GetHumanlikeAnimalFor(td)?.humanlike;
         public static ThingDef AnimalSourceFor(ThingDef td) => GetHumanlikeAnimalFor(td)?.animal;
+        public static bool IsHumanlikeAnimal(ThingDef td) => humanlikeAnimals.ContainsKey(td);
     }
 
     public static class HumanlikeAnimalGenerator
@@ -157,12 +159,19 @@ namespace BigAndSmall
             newThing.defName = thingDefName;
 
             // Whitelist for comps.
-            var compWhitelist = new HashSet<string>
+            var forcedCompWhitelist = new HashSet<string>
             {
                 "CompProperties_HoldingPlatformTarget",
                 "CompProperties_Studiable",
                 // Add more here when verified to work.
             };
+            HashSet<string> compWhitelist = [];
+            foreach (var setting in HumanlikeAnimalSettings.AllHASettings)
+            {
+                compWhitelist.AddRange(setting.compWhitelist);
+            }
+            compWhitelist.AddRange(forcedCompWhitelist);
+
 
             List<CompProperties> bothComps = [];
             if (aniThing.comps != null) { bothComps.AddRange(aniThing.comps); }
@@ -428,7 +437,7 @@ namespace BigAndSmall
             newThing.SetStatBaseValue(StatDefOf.PawnBeauty, animalThing.GetStatValueAbstract(StatDefOf.PawnBeauty));
             newThing.SetStatBaseValue(StatDefOf.MoveSpeed, animalThing.GetStatValueAbstract(StatDefOf.MoveSpeed));
             newThing.SetStatBaseValue(StatDefOf.IncomingDamageFactor, animalThing.GetStatValueAbstract(StatDefOf.IncomingDamageFactor));
-            newThing.SetStatBaseValue(StatDefOf.MarketValue, animalThing.GetStatValueAbstract(StatDefOf.MarketValue));
+            newThing.SetStatBaseValue(StatDefOf.MarketValue, animalThing.GetStatValueAbstract(StatDefOf.MarketValue) * 1.5f);
             newThing.SetStatBaseValue(StatDefOf.Nutrition, animalThing.GetStatValueAbstract(StatDefOf.Nutrition));
             newThing.SetStatBaseValue(StatDefOf.Mass, animalThing.GetStatValueAbstract(StatDefOf.Mass));
             newThing.SetStatBaseValue(StatDefOf.ToxicResistance, animalThing.GetStatValueAbstract(StatDefOf.ToxicResistance));
@@ -447,6 +456,7 @@ namespace BigAndSmall
             newThing.SetStatBaseValue(StatDefOf.PlantWorkSpeed, (animalThing.GetStatValueAbstract(StatDefOf.PlantWorkSpeed) + humanThing.GetStatValueAbstract(StatDefOf.PlantWorkSpeed)) / 2);
             newThing.SetStatBaseValue(StatDefOf.PlantHarvestYield, (animalThing.GetStatValueAbstract(StatDefOf.PlantHarvestYield) + humanThing.GetStatValueAbstract(StatDefOf.PlantHarvestYield)) / 2);
             newThing.SetStatBaseValue(StatDefOf.MeleeDodgeChance, (animalThing.GetStatValueAbstract(StatDefOf.MeleeDodgeChance) + humanThing.GetStatValueAbstract(StatDefOf.MeleeDodgeChance)) / 2);
+            newThing.SetStatBaseValue(StatDefOf.FilthRate, animalThing.GetStatValueAbstract(StatDefOf.FilthRate) / 3 + (humanThing.GetStatValueAbstract(StatDefOf.FilthRate) / 3 * 2));
 
             // Max
 

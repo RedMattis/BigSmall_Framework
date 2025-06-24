@@ -56,7 +56,7 @@ namespace BigAndSmall
         public static void SwapAnimalToSapientVersion(this Pawn aniPawn)
         {
             var targetDef = HumanlikeAnimals.HumanLikeAnimalFor(aniPawn.def);
-
+            if (targetDef == null) return;
             // Empty inventory
             if (aniPawn.inventory != null && aniPawn.inventory?.innerContainer != null)
             {

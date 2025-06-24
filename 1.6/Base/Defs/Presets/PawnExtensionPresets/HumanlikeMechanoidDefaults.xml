@@ -11,6 +11,11 @@
       <canWieldThings>true</canWieldThings>
       <apparelRestrictions>
         <noArmor>true</noArmor>
+        <tags>
+          <allowlist>
+            <li>Warcasket</li>
+          </allowlist>
+        </tags>
         <thingDefs>
           <allowlist>
             <li>Apparel_ShieldBelt</li>

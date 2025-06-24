@@ -167,6 +167,15 @@ namespace BigAndSmall.Debugging
             }
         }
 
+        [DebugAction("Big & Small", "Make animal Sapient", actionType = DebugActionType.ToolMap, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        public static void MakeSapientVersionOf()
+        {
+            foreach (Pawn pawn in Find.CurrentMap.thingGrid.ThingsAt(UI.MouseCell()).OfType<Pawn>())
+            {
+                RaceMorpher.SwapAnimalToSapientVersion(pawn);
+            }
+        }
+
         [DebugAction("Big & Small", "Clear Cache for pawn then refresh", actionType = DebugActionType.ToolMap, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         public static void ClearCacheForPawn()
         {

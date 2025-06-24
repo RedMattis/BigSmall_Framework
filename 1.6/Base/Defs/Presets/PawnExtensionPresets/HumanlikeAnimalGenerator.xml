@@ -2,6 +2,13 @@
 
   <BigAndSmall.HumanlikeAnimalSettings>
     <defName>DefaultHumanlikeAnimalSettings</defName>
+
+    <!-- Only comps listed in a list like this wil be transferred. -->
+    <compWhitelist>
+      <li>CompProperties_HoldingPlatformTarget</li>
+      <li>CompProperties_Studiable</li>
+    </compWhitelist>
+
     <!-- Anything that can plausibly manipulate things if given specialized tools qualify.
      E.g. Elephants have trunks. Spiders have limbs and possibly web to assist, etc. -->
     <hasHandsWildcards>
