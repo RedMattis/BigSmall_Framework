@@ -53,10 +53,10 @@ namespace BigAndSmall
         public static Dictionary<Pawn, List<Hediff>> hediffsToReapply = [];
         public static bool runningRaceSwap = false;
 
-        public static void SwapAnimalToSapientVersion(this Pawn aniPawn)
+        public static Pawn SwapAnimalToSapientVersion(this Pawn aniPawn)
         {
             var targetDef = HumanlikeAnimals.HumanLikeAnimalFor(aniPawn.def);
-            if (targetDef == null) return;
+            if (targetDef == null) return null;
             // Empty inventory
             if (aniPawn.inventory != null && aniPawn.inventory?.innerContainer != null)
             {
@@ -165,7 +165,7 @@ namespace BigAndSmall
             }
 
             aniPawn.Destroy(DestroyMode.Vanish);
-            //aniPawn.Discard(silentlyRemoveReferences: true);
+            return newPawn;
         }
 
         public static void SwapThingDef(this Pawn pawn, ThingDef swapTarget, bool state, int targetPriority, bool force=false, object source=null, bool permitFusion=true, bool clearHediffsToReapply=true)
