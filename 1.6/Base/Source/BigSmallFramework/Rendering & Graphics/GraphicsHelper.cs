@@ -14,9 +14,9 @@ namespace BigAndSmall
 
         public static Apparel GetApparelFromNode(this PawnRenderNode node)
         {
-            if (node is PawnRenderNode_Ultimate prnUltimate)
+            if (node is IUltimateRendering prnUltimate)
             {
-                return prnUltimate.apparel;
+                return prnUltimate.Base.apparel;
             }
             //else if (node is PawnRenderNode_SimpleSwitches pawnRenderNode_SimpleSwitches)
             //{

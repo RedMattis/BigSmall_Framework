@@ -14,10 +14,10 @@ namespace BigAndSmall
         public override Vector3 ScaleFor(PawnRenderNode node, PawnDrawParms parms)
         {
             Vector3 scaleFor = base.ScaleFor(node, parms);
-            if (node is PawnRenderNode_Ultimate ult && ult.scaleSet)
+            if (node is PawnRenderNode_Ultimate ult && ult.ScaleSet)
             {
-                scaleFor.x *= ult.cachedScale.x;
-                scaleFor.z *= ult.cachedScale.y;
+                scaleFor.x *= ult.CachedScale.x;
+                scaleFor.z *= ult.CachedScale.y;
             }
             return scaleFor;
         }

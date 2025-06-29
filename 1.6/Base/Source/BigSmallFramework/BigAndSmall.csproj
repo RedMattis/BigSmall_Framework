@@ -184,6 +184,7 @@
     <Compile Include="Rendering &amp; Graphics\Render Tree\NalsToggles.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\HumanlikeAnimal\PawnRenderNode_HAnimalPack.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\HumanlikeAnimal\PawnRenderNode_HAnimalPart.cs" />
+    <Compile Include="Rendering &amp; Graphics\RenderNodes\UltimateRender_Static.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderWorkers\FAShouldRender.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderWorkers\PawnRenderNodeWorker_Various.cs" />
     <Compile Include="Rendering &amp; Graphics\RenderNodes\PawnRenderNode_HSVHair.cs" />

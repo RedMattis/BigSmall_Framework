@@ -36,7 +36,6 @@ namespace BigAndSmall
         /// <summary>
         /// Returns the error if not, otherwise returns null.
         /// </summary>
-        /// <returns></returns>
         public string CanWear(ApparelProperties apparel, out FilterResult result)
         {
             result = FilterResult.Neutral;
@@ -102,7 +101,6 @@ namespace BigAndSmall
         /// <summary>
         /// Returns the error if not, otherwise returns null.
         /// </summary>
-        /// <returns></returns>
         public string CanWear(ThingDef thingDef)
         {
             

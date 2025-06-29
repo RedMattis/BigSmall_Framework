@@ -96,9 +96,9 @@ namespace BigAndSmall
         public Color GetColor(PawnRenderNode renderNode, Color oldClr, string hashOffset, bool useOldColor = false)
         {
             var pawn = renderNode.tree.pawn;
-            if (pawn.Drawer.renderer.StatueColor is Color statueDlr)
+            if (pawn.Drawer.renderer.StatueColor is Color statueClr)
             {
-                return statueDlr;
+                return statueClr;
             }
             foreach (var alt in alts.Where(x => x.GetState(pawn, node: renderNode)))
             {

@@ -26,10 +26,10 @@ namespace BigAndSmall
         public override Vector3 OffsetFor(PawnRenderNode n, PawnDrawParms parms, out Vector3 pivot)
         {
             Vector3 result = base.OffsetFor(n, parms, out pivot);
-            PawnRenderNode_Ultimate pawnRenderNode_Apparel = (PawnRenderNode_Ultimate)n;
-            if (pawnRenderNode_Apparel.apparel.def.apparel.wornGraphicData != null && pawnRenderNode_Apparel.apparel.RenderAsPack())
+            IUltimateRendering pawnRenderNode_Apparel = (IUltimateRendering)n;
+            if (pawnRenderNode_Apparel.Base.apparel.def.apparel.wornGraphicData != null && pawnRenderNode_Apparel.Base.apparel.RenderAsPack())
             {
-                Vector2 vector = pawnRenderNode_Apparel.apparel.def.apparel.wornGraphicData.BeltOffsetAt(parms.facing, parms.pawn.story.bodyType);
+                Vector2 vector = pawnRenderNode_Apparel.Base.apparel.def.apparel.wornGraphicData.BeltOffsetAt(parms.facing, parms.pawn.story.bodyType);
                 result.x += vector.x;
                 result.z += vector.y;
             }
@@ -39,10 +39,10 @@ namespace BigAndSmall
         public override Vector3 ScaleFor(PawnRenderNode n, PawnDrawParms parms)
         {
             Vector3 result = base.ScaleFor(n, parms);
-            PawnRenderNode_Ultimate pawnRenderNode_Apparel = (PawnRenderNode_Ultimate)n;
-            if (pawnRenderNode_Apparel.apparel.def.apparel.wornGraphicData != null && pawnRenderNode_Apparel.apparel.RenderAsPack())
+            IUltimateRendering pawnRenderNode_Apparel = (IUltimateRendering)n;
+            if (pawnRenderNode_Apparel.Base.apparel.def.apparel.wornGraphicData != null && pawnRenderNode_Apparel.Base.apparel.RenderAsPack())
             {
-                Vector2 vector = pawnRenderNode_Apparel.apparel.def.apparel.wornGraphicData.BeltScaleAt(parms.facing, parms.pawn.story.bodyType);
+                Vector2 vector = pawnRenderNode_Apparel.Base.apparel.def.apparel.wornGraphicData.BeltScaleAt(parms.facing, parms.pawn.story.bodyType);
                 result.x *= vector.x;
                 result.z *= vector.y;
             }

@@ -480,12 +480,12 @@ namespace BigAndSmall
             var allGenesBefore = pawn.genes.GenesListForReading.ToList();
             var activeGenesBefore = GetAllActiveGenes(pawn);
             var activeGeneDefsBefore = activeGenesBefore.Select(x => x.def).ToHashSet();
-            bool sourceIsEndo = pawn.genes.Xenotype.inheritable;
+            //bool sourceIsEndo = pawn.genes.Xenotype.inheritable;
             bool targetIsEndo = targetXenottype.inheritable;
             var xenoTypeGenes = pawn.genes.Xenotype.AllGenes.ToList();
 
             var currentXenoGenes = pawn.genes.Xenogenes.Select(x => x).ToList();
-            if (sourceIsEndo || targetIsEndo)
+            if (targetIsEndo)// (sourceIsEndo || targetIsEndo)
             {
                 pawn.genes.Endogenes.Clear();
             }
@@ -503,7 +503,7 @@ namespace BigAndSmall
                 }
             }
 
-            if (sourceIsEndo && targetIsEndo) // Re-add the xenogenes.
+            if (targetIsEndo) //(sourceIsEndo && targetIsEndo) // Re-add the xenogenes.
             {
                 pawn.genes.Xenogenes.AddRange(currentXenoGenes);
             }

@@ -329,7 +329,17 @@ namespace BigAndSmall
                 {
                     canSwapAwayFrom = false,
                 });
-
+                var pawnExt = new PawnExtension();
+                PawnExtensionDef targetAnimalBase = fineManipulation > 0.75f ? BSDefs.BS_DefaultAnimal : fineManipulation > 0.35f ? BSDefs.BS_DefaultAnimal_PoorHands : BSDefs.BS_DefaultAnimal_NoHands;
+                if (targetAnimalBase.pawnExtension.animalFineManipulation != null)
+                {
+                    // Normally this will be null, but if a modder has set values then we use those instead for any values calculated based of it.
+                    fineManipulation = targetAnimalBase.pawnExtension.animalFineManipulation;
+                    if (fineManipulation > 0.45f)
+                    {
+                        hasHands = true;
+                    }
+                }
                 if (!hasHands)
                 {
                     raceHediff.stages ??= [];
@@ -338,12 +348,12 @@ namespace BigAndSmall
                         disabledWorkTags = WorkTags.Crafting | WorkTags.Shooting | WorkTags.Animals
                     });
                 }
-                var pawnExt = new PawnExtension();
-                PawnExtensionDef targetAnimalBase = fineManipulation > 0.75f ? BSDefs.BS_DefaultAnimal : fineManipulation > 0.35f ? BSDefs.BS_DefaultAnimal_PoorHands : BSDefs.BS_DefaultAnimal_NoHands;
+                
                 if (aniPawnKind.RaceProps.IsMechanoid)
                 {
                     targetAnimalBase = BSDefs.BS_DefaultMechanoid;
                 }
+                
                 foreach (var field in typeof(PawnExtension)
                     .GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                     .Where(f => !f.IsStatic && !f.IsInitOnly))

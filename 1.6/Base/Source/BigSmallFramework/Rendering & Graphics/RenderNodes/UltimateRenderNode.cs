@@ -1,9 +1,11 @@
 ﻿using RimWorld;
 using System;
+using System.Collections.Generic;
 using System.Runtime.Remoting.Messaging;
 using UnityEngine;
 using Verse;
 using static BigAndSmall.RenderingLib;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace BigAndSmall
 {
@@ -20,15 +22,15 @@ namespace BigAndSmall
 
         public ConditionalGraphicsSet GraphicSet => graphicSetDef != null ? graphicSetDef.conditionalGraphics : conditionalGraphics;
     }
-
-    public class PawnRenderNode_Ultimate : PawnRenderNode
+    
+    public class PawnRenderNode_Ultimate : PawnRenderNode, IUltimateRendering
     {
-        public Apparel apparel;
-        public bool scaleSet = false;
-        public Vector2 cachedScale = Vector2.one;
+        public PawnRenderNode Base => this;
+        public bool ScaleSet { get; set; } = false;
+        public Vector2 CachedScale { get; set; } = Vector2.one;
         private readonly bool useHeadMesh;
 
-        readonly string noImage = "BS_Blank";
+        
         PawnRenderingProps_Ultimate UProps => (PawnRenderingProps_Ultimate)props;
         public PawnRenderNode_Ultimate(Pawn pawn, PawnRenderingProps_Ultimate props, PawnRenderTree tree)
             : base(pawn, props, tree)
@@ -36,91 +38,22 @@ namespace BigAndSmall
         }
         public PawnRenderNode_Ultimate(Pawn pawn, PawnRenderNodeProperties props, PawnRenderTree tree, Apparel apparel) : base(pawn, props, tree)
         {
-            this.apparel = apparel;
+            base.apparel = apparel;
             useHeadMesh = props.parentTagDef == PawnRenderNodeTagDefOf.ApparelHead;
             meshSet = MeshSetFor(pawn);
         }
         public PawnRenderNode_Ultimate(Pawn pawn, PawnRenderNodeProperties props, PawnRenderTree tree, Apparel apparel, bool useHeadMesh) : base(pawn, props, tree)
         {
-            this.apparel = apparel;
+            base.apparel = apparel;
             this.useHeadMesh = useHeadMesh;
             meshSet = MeshSetFor(pawn);
         }
 
-        protected override string TexPathFor(Pawn pawn)
-        {
+        protected override string TexPathFor(Pawn pawn) =>
             throw new NotImplementedException($"TexPath is not meant to be used with this RenderNode." +
                 $"Use {nameof(UProps.GraphicSet)} ({typeof(ConditionalGraphicsSet)}) instead.");
-        }
-        
-        public override Graphic GraphicFor(Pawn pawn)
-        {
-            var props = UProps;
-            if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache)
-            {
-                var graphicSet = props.GraphicSet.GetGraphicsSet(cache);
-                var texPath = graphicSet.GetPath(cache, noImage);
-                var maskPath = graphicSet.GetMaskPath(cache, null);
-                var conditionalProps = graphicSet.props.GetGraphicProperties(cache);
 
-                if (conditionalProps.drawSize != Vector2.one)
-                {
-                    scaleSet = true;
-                    cachedScale = conditionalProps.drawSize;
-                }
-
-                if (texPath.NullOrEmpty())
-                {
-                    Log.WarningOnce($"[BigAndSmall] No texture path for {pawn}. Returning empty image.", GetHashCode());
-                    return GraphicDatabase.Get<Graphic_Single>(noImage);
-                }
-                if (UProps.autoBodyTypeMasks == true)
-                {
-                    maskPath ??= texPath; // In the unlikely event that the masks have bodytypes but the texPath doesn't.
-                    maskPath = GetBodyTypedPath(pawn.story.bodyType, maskPath);
-                }
-                if (UProps.autoBodyTypePaths == true)
-                {
-                    texPath = GetBodyTypedPath(pawn.story.bodyType, texPath);
-                }
-                if (maskPath == texPath)  // Ensure that the default Ludeon logic for masks gets used. (e.g. `path + "_m"`)
-                {
-                    maskPath = null;
-                }
-
-                Color colorOne = graphicSet.ColorA.GetColor(this, Color.white, ColorSetting.clrOneKey);
-                Color colorTwo = graphicSet.ColorB.GetColor(this, Color.white, ColorSetting.clrTwoKey);
-                Shader shader = props.shader?.Shader ?? ShaderTypeDefOf.CutoutComplex.Shader;
-                if (UProps.useSkinShader)
-                {
-                    Shader skinShader = ShaderUtility.GetSkinShader(pawn);
-                    if (skinShader != null)
-                    {
-                        shader = skinShader;
-                    }
-                }
-
-                return GetCachableGraphics(texPath, Vector2.one, shader, colorOne, colorTwo, maskPath: maskPath);
-            }
-
-            Log.WarningOnce($"No cache found by {this} for {pawn}. Returning empty image.", GetHashCode());
-            return GraphicDatabase.Get<Graphic_Single>(noImage);
-        }
-
-
-        public string GetBodyTypedPath(BodyTypeDef bodyType, string basePath)
-        {
-            if (bodyType == null)
-            {
-                Log.Error("Attempted to get graphic with undefined body type.");
-                bodyType = BodyTypeDefOf.Male;
-            }
-            if (basePath.NullOrEmpty())
-            {
-                return basePath;
-            }
-            return basePath + "_" + bodyType.defName;
-        }
+        public override Graphic GraphicFor(Pawn pawn) => PRN_Ultimate.GraphicFor(pawn, this, UProps);
 
         public override Mesh GetMesh(PawnDrawParms parms)
         {
@@ -139,7 +72,80 @@ namespace BigAndSmall
             }
             if (Props.overrideMeshSize.HasValue)
             {
-                return MeshPool.GetMeshSetForSize(base.Props.overrideMeshSize.Value.x, base.Props.overrideMeshSize.Value.y);
+                return MeshPool.GetMeshSetForSize(Props.overrideMeshSize.Value.x, Props.overrideMeshSize.Value.y);
+            }
+            if (useHeadMesh)
+            {
+                return HumanlikeMeshPoolUtility.GetHumanlikeHeadSetForPawn(pawn);
+            }
+            return HumanlikeMeshPoolUtility.GetHumanlikeBodySetForPawn(pawn);
+        }
+    }
+
+    // Blame Ludeon for splitting the base class and messing up the constructors. -_-'
+    public class PawnRenderNode_UltimateApparel : PawnRenderNode_Apparel, IUltimateRendering
+    {
+        public PawnRenderNode Base => this;
+        public bool ScaleSet { get; set; } = false;
+        public Vector2 CachedScale { get; set; } = Vector2.one;
+        PawnRenderingProps_Ultimate UProps => (PawnRenderingProps_Ultimate)props;
+        public PawnRenderNode_UltimateApparel(Pawn pawn, PawnRenderingProps_Ultimate props, PawnRenderTree tree)
+            : base(pawn, props, tree, null)
+        {
+            Log.WarningOnce($"[BigAndSmall] THIS SHOULD NOT BE CALLED: {pawn} with props {props.GetType().Name} and tree {tree.GetType().Name}", 231239);
+        }
+        public PawnRenderNode_UltimateApparel(Pawn pawn, PawnRenderNodeProperties props, PawnRenderTree tree, Apparel apparel) : base(pawn, props, tree, apparel)
+        {
+            base.apparel = apparel;
+            useHeadMesh = props.parentTagDef == PawnRenderNodeTagDefOf.ApparelHead;
+            meshSet = MeshSetFor(pawn);
+        }
+        public PawnRenderNode_UltimateApparel(Pawn pawn, PawnRenderNodeProperties props, PawnRenderTree tree, Apparel apparel, bool useHeadMesh) : base(pawn, props, tree, apparel, useHeadMesh)
+        {
+            base.apparel = apparel;
+            this.useHeadMesh = props.parentTagDef == PawnRenderNodeTagDefOf.ApparelHead;
+            meshSet = MeshSetFor(pawn);
+        }
+
+        protected override string TexPathFor(Pawn pawn) => 
+            throw new NotImplementedException($"TexPath is not meant to be used with this RenderNode." +
+                $"Use {nameof(UProps.GraphicSet)} ({typeof(ConditionalGraphicsSet)}) instead.");
+
+        protected override IEnumerable<Graphic> GraphicsFor(Pawn pawn)
+        {
+            if (HasGraphic(tree.pawn))
+            {
+                yield return GraphicFor(pawn);
+            }
+            else
+            {
+                foreach (var graphic in base.GraphicsFor(pawn))
+                {
+                    yield return graphic;
+                }
+            }
+        }
+
+        public override Graphic GraphicFor(Pawn pawn) => PRN_Ultimate.GraphicFor(pawn, this, UProps);
+
+        public override Mesh GetMesh(PawnDrawParms parms)
+        {
+            if (parms.facing.IsHorizontal && UProps.invertEastWest)
+            {
+                parms.facing = parms.facing.Opposite;
+            }
+            return base.GetMesh(parms);
+        }
+
+        public override GraphicMeshSet MeshSetFor(Pawn pawn)
+        {
+            if (apparel == null)
+            {
+                return base.MeshSetFor(pawn);
+            }
+            if (Props.overrideMeshSize.HasValue)
+            {
+                return MeshPool.GetMeshSetForSize(Props.overrideMeshSize.Value.x, Props.overrideMeshSize.Value.y);
             }
             if (useHeadMesh)
             {
