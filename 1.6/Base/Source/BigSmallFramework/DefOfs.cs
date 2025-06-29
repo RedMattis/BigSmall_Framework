@@ -137,6 +137,8 @@ namespace BigAndSmall
         public static BodyPartGroupDef Feet;
 
         // BodyParts
+        public static BodyPartDef Brain;
+        public static BodyPartDef ArtificialBrain;
         public static BodyPartDef Tail;
         public static BodyPartDef BS_Wing;
 

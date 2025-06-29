@@ -327,6 +327,12 @@ namespace BigAndSmall
                     list.AddDistinct(kvp.Key);
                 }
             }
+            // A bit lazy and Hardcoded, but we don't want to change the recipes on mechanoid brains otherwise.
+            if (!partImportsFromDictReverse.ContainsKey(BSDefs.Brain))
+            {
+                partImportsFromDictReverse[BSDefs.Brain] = [];
+            }
+            partImportsFromDictReverse[BSDefs.Brain].Add(BSDefs.ArtificialBrain);
         }
     }
 

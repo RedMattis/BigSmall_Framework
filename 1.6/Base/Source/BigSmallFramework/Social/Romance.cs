@@ -15,34 +15,34 @@ namespace BigAndSmall
     [HarmonyPatch]
     public static class RomancePatches
     {
-        [HarmonyPatch(typeof(InteractionWorker_RomanceAttempt), nameof(InteractionWorker_RomanceAttempt.RandomSelectionWeight), MethodType.Normal)]
-        [HarmonyPostfix]
-        public static void RomanceAttemptPostfix(ref float __result, Pawn initiator, Pawn recipient)
-        {
-            if (initiator == null || recipient == null)
-            {
-                return;
-            }
-            if (initiator != null
-                && initiator.needs != null)
-            {
-                var cache = HumanoidPawnScaler.GetCache(initiator);
-                if (cache != null && cache.succubusUnbonded)
-                {
-                    __result *= 20;
-                }
-            }
+        //[HarmonyPatch(typeof(InteractionWorker_RomanceAttempt), nameof(InteractionWorker_RomanceAttempt.RandomSelectionWeight), MethodType.Normal)]
+        //[HarmonyPostfix]
+        //public static void RomanceAttemptPostfix(ref float __result, Pawn initiator, Pawn recipient)
+        //{
+        //    if (initiator == null || recipient == null)
+        //    {
+        //        return;
+        //    }
+        //    if (initiator != null
+        //        && initiator.needs != null)
+        //    {
+        //        var cache = HumanoidPawnScaler.GetCache(initiator);
+        //        if (cache != null && cache.succubusUnbonded)
+        //        {
+        //            __result *= 20;
+        //        }
+        //    }
+        //    float compatibility = initiator.GetCompatibilityWith(recipient, reductionScale: 1.0f, oldValue: 1.0f);
 
-            
 
-            // If recipient has no flirt chance, set result to 0. They are probably something that cannot be romanced.
-            if (recipient.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks:1000) == 0)
-            {
-                __result = 0;
-            }
+        //    // If recipient has no flirt chance, set result to 0. They are probably something that cannot be romanced.
+        //    if (recipient.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks:1000) == 0)
+        //    {
+        //        __result = 0;
+        //    }
 
-            __result *= initiator.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks: 1000);
-        }
+        //    __result *= initiator.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks: 1000) * compatibility;
+        //}
 
         [HarmonyPatch(typeof(InteractionWorker_MarriageProposal), nameof(InteractionWorker_MarriageProposal.RandomSelectionWeight), MethodType.Normal)]
         [HarmonyPrefix]
@@ -114,26 +114,36 @@ namespace BigAndSmall
             return codes.AsEnumerable();
         }
 
-            //[HarmonyTranspiler]
-            //[HarmonyPatch(typeof(Pawn_RelationsTracker), nameof(Pawn_RelationsTracker.SecondaryLovinChanceFactor))]
-            //public static IEnumerable<CodeInstruction> LovingFactor_Transpiler(IEnumerable<CodeInstruction> instructions)
-            //{
-            //    // Same as what HAR does, both S&R so this should be best for compatibility.
-            //    FieldInfo defField = AccessTools.Field(typeof(Thing), nameof(Thing.def));
-            //    MethodInfo racePropsGetter = AccessTools.PropertyGetter(typeof(Pawn), nameof(Pawn.RaceProps));
-            //    MethodInfo humanlikeGetter = AccessTools.PropertyGetter(typeof(RaceProperties), nameof(RaceProperties.Humanlike));
-            //    foreach (CodeInstruction instruction in instructions)
-            //    {
-            //        if (instruction.opcode == OpCodes.Ldfld && instruction.OperandIs(defField))
-            //        {
-            //            yield return new CodeInstruction(OpCodes.Callvirt, racePropsGetter);
-            //            instruction.opcode = OpCodes.Callvirt;
-            //            instruction.operand = humanlikeGetter;
-            //        }
-            //        yield return instruction;
-            //    }
-            // }
-        
+        [HarmonyPatch(typeof(RelationsUtility), nameof(RelationsUtility.RomanceEligiblePair))]
+        [HarmonyPostfix]
+        [HarmonyPriority(Priority.Low)]
+        public static void RomanceEligiblePairPostfix(ref AcceptanceReport __result, Pawn initiator, Pawn target, bool forOpinionExplanation)
+        {
+            if (__result.Accepted && initiator != null && target != null)
+            {
+                if (initiator.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks: 1000) == 0 || target.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks: 1000) == 0)
+                {
+                    __result = new AcceptanceReport("CantRomanceTargetZeroChance".Translate(initiator.LabelShort, target.LabelShort));
+                }
+                else
+                {
+                    var compatiblity = initiator.GetCompatibilityWith(target, reductionScale: 1.0f, oldValue: 1);
+                    if (compatiblity <= 0)
+                    {
+                        __result = new AcceptanceReport("CantRomanceTargetZeroChance".Translate(initiator.LabelShort, target.LabelShort));
+                    }
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(Pawn_RelationsTracker), nameof(Pawn_RelationsTracker.SecondaryRomanceChanceFactor))]
+        [HarmonyPostfix]
+        [HarmonyPriority(Priority.Low)]
+        public static void RomanceFactorPostfix(ref float __result, Pawn_RelationsTracker __instance, Pawn otherPawn, Pawn ___pawn)
+        {
+            __result = GetLovinghanceFactor(___pawn, otherPawn, __result);
+        }
+
         [HarmonyPatch(typeof(Pawn_RelationsTracker), nameof(Pawn_RelationsTracker.SecondaryLovinChanceFactor))]
         [HarmonyPostfix]
         [HarmonyPriority(Priority.Low)]
@@ -142,23 +152,23 @@ namespace BigAndSmall
             __result = GetLovinghanceFactor(___pawn, otherPawn, __result);
 
         }
-        public static float GetLovinghanceFactor(Pawn pawn, Pawn otherPawn, float result)
+        public static float GetLovinghanceFactor(Pawn pawn, Pawn otherPawn, float oldResult)
         {
             if (HumanoidPawnScaler.GetCacheUltraSpeed(pawn) is BSCache cache && HumanoidPawnScaler.GetCacheUltraSpeed(otherPawn) is BSCache cacheTwo)
             {
-                if (pawn == otherPawn || result <= 0) return result;
+                if (pawn == otherPawn || oldResult <= 0) return oldResult;
 
-                float? compatibility = RomanceTagsExtensions.GetHighestSharedTag(cache, cacheTwo);
+                float? compatibility = GetCompatibilityWith(pawn, otherPawn, reductionScale: 1f, oldValue: oldResult);
 
                 if (pawn.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks: 1000) == 0 || otherPawn.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks: 1000) == 0)
                     return 0;
-                if (compatibility == null && pawn.def != otherPawn.def)
+                if (compatibility == null)//  && pawn.def != otherPawn.def
                 {
-                    return result;
+                    return oldResult;
                 }
-                result *= compatibility.Value;
+                oldResult *= compatibility.Value;
             }
-            return result;
+            return oldResult;
         }
 
         public static float GetCompatibilityWith(this Pawn pawn, Pawn otherPawn, float reductionScale=1f, float oldValue = 0)
@@ -175,22 +185,17 @@ namespace BigAndSmall
             {
                 if (pawn == otherPawn) return 0;
 
-                if (pawn == null || cache.isDefaultCache)
+                if (pawn == null || cache.isDefaultCache || cache.romanceTags == null)
                 {
-                    Log.WarningOnce($"GetCompatibilityWith was called by a Null pawn or a Pawn lacking a proper cache (\"{pawn}\"->\"{otherPawn}\")", 9696961);
                     return oldValue;
                 }
-                if (otherPawn == null || cacheTwo.isDefaultCache)
+                if (otherPawn == null || cacheTwo.isDefaultCache || cacheTwo.romanceTags == null)
                 {
-                    Log.WarningOnce($"GetCompatibilityWith is targeting a Null pawn or a Pawn lacking a proper cache (\"{pawn}\"->\"{otherPawn}\")", 9696962);
                     return oldValue;
                 }
 
                 float? compatibility = RomanceTagsExtensions.GetHighestSharedTag(cache, cacheTwo);
-
-                if (pawn.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks: 1000) == 0 || otherPawn.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks: 1000) == 0)
-                    return 0;
-                if (compatibility == null && pawn.def != otherPawn.def)
+                if (compatibility == null)// && pawn.def != otherPawn.def)
                 {
                     return oldValue;
                 }
@@ -199,10 +204,10 @@ namespace BigAndSmall
                 float num = Mathf.Clamp(GenMath.LerpDouble(0f, 20f, 0.45f, -0.45f, x), -0.45f, 0.45f);
                 float num2 = ConstantPerPawnsPairCompatibilityOffset(otherPawn.thingIDNumber);
 
-                float result = (num + num2) * compatibility.Value;
-                if (result < 1)
+                if (compatibility < 1)
                 {
-                    return Mathf.Lerp(1, result, reductionScale);
+                    compatibility = Mathf.Lerp(1, compatibility.Value, reductionScale);
+                    return (num + num2) * compatibility.Value;
                 }
                 return Mathf.Max((num + num2) * compatibility.Value, oldValue);
             }

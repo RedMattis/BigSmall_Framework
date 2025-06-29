@@ -89,10 +89,20 @@ namespace BigAndSmall
             }
             if (first?.romanceTags == null || second?.romanceTags == null)
             {
+                Log.Message($"Debug: One of the romance tags is null. First: {first?.romanceTags}, Second: {second?.romanceTags}");
                 return null;
+            }
+            if (first == second)
+            {
+                Log.ErrorOnce($"Debug: Attempted to compare romance tags of the same BSCache instance. This should not happen.", 123456);
+                return 0;
             }
             CheckTags(first.romanceTags, second.romanceTags);
             CheckTags(second.romanceTags, first.romanceTags);
+            if (compatibilities.Count == 0)
+            {
+                return 0;
+            }
 
             var bestOption = compatibilities.Where(x => !x.Value.exclude).OrderByDescending(x => x.Value.chance).FirstOrDefault();
             return bestOption.Value?.chance * bestOption.Value?.factor;
