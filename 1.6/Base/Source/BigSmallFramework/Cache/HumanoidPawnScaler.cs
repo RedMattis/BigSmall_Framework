@@ -892,8 +892,11 @@ namespace BigAndSmall
         {
             HediffDef targetManipulationHediff = null;
             List<HediffDef> manipulationHediffs = [BSDefs.BS_NoHands, BSDefs.BS_PoorHands];
-            if (fineManipulation < 0.45) targetManipulationHediff = BSDefs.BS_NoHands;
-            else if (fineManipulation < 0.75) targetManipulationHediff = BSDefs.BS_PoorHands;
+            if (fineManipulation != null)
+            {
+                if (fineManipulation < 0.45) targetManipulationHediff = BSDefs.BS_NoHands;
+                else if (fineManipulation < 0.75) targetManipulationHediff = BSDefs.BS_PoorHands;
+            }
 
             // Remove any manipulation hediffs that are not the target one.
             List<Hediff> hediffsToRemove = [];
