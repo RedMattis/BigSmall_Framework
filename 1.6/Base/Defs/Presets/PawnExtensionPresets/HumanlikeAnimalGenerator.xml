@@ -3,7 +3,7 @@
   <BigAndSmall.HumanlikeAnimalSettings>
     <defName>DefaultHumanlikeAnimalSettings</defName>
 
-    <!-- Only comps listed in a list like this wil be transferred. -->
+    <!-- Only comps listed in a list like this will be transferred. -->
     <compWhitelist>
       <li>CompProperties_HoldingPlatformTarget</li>
       <li>CompProperties_Studiable</li>

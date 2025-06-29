@@ -106,6 +106,11 @@ namespace BigAndSmall
         public ApparelRestrictions apparelRestrictions = null;
 
         public bool? canWieldThings = null;
+        /// <summary>
+        /// If found on an animal's raceTracker it will be considered to have fine-manipulation ability.
+        /// E.g. able to use guns. Highest value will be used. E.g. a bionic with 1.0 will make the pawn always avoid penalties.
+        /// </summary>
+        public float? animalFineManipulation = null;
 
         /// <summary>
         /// Transforms the pawn into a specific xenotype under some conditions.
@@ -208,12 +213,6 @@ namespace BigAndSmall
 
         public BodyTypesPerGender bodyTypes = [];
         #endregion
-
-        /// <summary>
-        /// If found on an animal's raceTracker it will be considered to have fine-manipulation ability.
-        /// E.g. able to use guns.
-        /// </summary>
-        public float? animalFineManipulation = null;
 
         /// <summary>
         /// Set what the pawn can eat. By default assumes human diet.

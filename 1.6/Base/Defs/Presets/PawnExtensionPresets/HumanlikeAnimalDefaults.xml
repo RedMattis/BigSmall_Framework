@@ -1,23 +1,14 @@
 <Defs>
+  <!--
+    Much of the functionality here was moved over into Hediffs_SapientAnimals.
+
+    They can still be modified if you want to change things such as the default manipulation ability for the stages though.
+  -->
   <BigAndSmall.PawnExtensionDef>
     <defName>BS_DefaultAnimal_NoHands</defName>
     <pawnExtension>
       <hideHumanlikeRenderNodes>true</hideHumanlikeRenderNodes>
-      <canWieldThings>false</canWieldThings>
-      <aptitudes>
-        <Melee>4</Melee>
-        <Shooting>-20</Shooting>
-        <Construction>-4</Construction>
-        <Mining>-4</Mining>
-        <Cooking>-4</Cooking>
-        <Plants>-4</Plants>
-        <Animals>-20</Animals>
-        <Crafting>-8</Crafting>
-        <Artistic>-2</Artistic>
-        <Medicine>-8</Medicine>
-        <!-- <Social>0</Social>
-        <Intellectual>0</Intellectual> -->
-      </aptitudes>
+      
       <apparelRestrictions>
         <noArmor>true</noArmor>
         <thingDefs>
@@ -42,21 +33,6 @@
     <defName>BS_DefaultAnimal_PoorHands</defName>
     <pawnExtension>
       <hideHumanlikeRenderNodes>true</hideHumanlikeRenderNodes>
-      <canWieldThings>true</canWieldThings>
-      <aptitudes>
-        <Melee>2</Melee>
-        <Shooting>-8</Shooting>
-        <Construction>-2</Construction>
-        <Mining>-3</Mining>
-        <Cooking>-2</Cooking>
-        <Plants>-2</Plants>
-        <Animals>-8</Animals>
-        <Crafting>-6</Crafting>
-        <Artistic>-1</Artistic>
-        <Medicine>-4</Medicine>
-        <!-- <Social>0</Social>
-        <Intellectual>0</Intellectual> -->
-      </aptitudes>
       <apparelRestrictions>
         <noArmor>true</noArmor>
         <thingDefs>

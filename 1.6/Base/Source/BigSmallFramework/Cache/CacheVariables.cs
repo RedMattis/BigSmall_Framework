@@ -92,6 +92,7 @@ namespace BigAndSmall
 
         public ApparelRestrictions apparelRestrictions = null;
         public bool canWield = true;
+        public float? fineManipulation = null;
         //public bool canWearApparel = true;
         //public bool canWearClothing = true;
         //public bool canWearArmor = true;

@@ -62,6 +62,8 @@ namespace BigAndSmall
         public static GeneDef BS_AlienApperanceStandards_Lesser;
 
         // Hediffs
+        public static HediffDef BS_NoHands;
+        public static HediffDef BS_PoorHands;
         public static HediffDef BS_SoulPowerHediff;
         public static HediffDef BS_Soulless;
         public static HediffDef BS_SoulCollector;

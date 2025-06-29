@@ -1,0 +1,54 @@
+<Defs>
+
+  <HediffDef>
+    <defName>BS_NoHands</defName>
+    <label>no fine manipulators</label>
+    <description>This individual lacks fine manipulation ability.\n\nAt best might be able to carry something in their mouth or arms.</description>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <canWieldThings>false</canWieldThings>
+        <aptitudes>
+          <Melee>4</Melee>
+          <Shooting>-20</Shooting>
+          <Construction>-4</Construction>
+          <Mining>-4</Mining>
+          <Cooking>-4</Cooking>
+          <Plants>-4</Plants>
+          <Animals>-20</Animals>
+          <Crafting>-8</Crafting>
+          <Artistic>-2</Artistic>
+          <Medicine>-8</Medicine>
+          <!-- <Social>0</Social>
+          <Intellectual>0</Intellectual> -->
+        </aptitudes>
+      </li>
+    </modExtensions>
+    
+  </HediffDef>
+
+  <HediffDef>
+    <defName>BS_PoorHands</defName>
+    <label>fine manipulation, poor</label>
+    <description>This individual lacks the fine manipulation ability possessed by baseline humans.\n\nThey might still be able to wield tools or weapons with some ingenuity however.</description>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <aptitudes>
+          <Melee>2</Melee>
+          <Shooting>-8</Shooting>
+          <Construction>-2</Construction>
+          <Mining>-3</Mining>
+          <Cooking>-2</Cooking>
+          <Plants>-2</Plants>
+          <Animals>-8</Animals>
+          <Crafting>-6</Crafting>
+          <Artistic>-1</Artistic>
+          <Medicine>-4</Medicine>
+          <!-- <Social>0</Social>
+          <Intellectual>0</Intellectual> -->
+        </aptitudes>
+      </li>
+    </modExtensions>
+  </HediffDef>
+    
+
+</Defs>

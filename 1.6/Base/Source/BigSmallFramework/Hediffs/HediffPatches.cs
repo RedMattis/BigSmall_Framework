@@ -60,6 +60,26 @@ namespace BigAndSmall
             //GeneSuppressorManager.TryAddSuppressorHediff(__instance, pawn);
             HumanoidPawnScaler.GetInvalidateLater(pawn, 30);
         }
+
+        [HarmonyPatch(typeof(Hediff), nameof(Hediff.GetTooltip))]
+        [HarmonyPostfix]
+        public static void Hediff_GetTooltip(Hediff __instance, ref string __result)
+        {
+            if (__instance?.def?.GetAllPawnExtensionsOnHediff() is var extensions && extensions.Any())
+            {
+                try
+                {
+                    if (PawnExtensionExtension.TryGetDescription(extensions, out string pawnDesc))
+                    {
+                        __result += $"\n\n{pawnDesc}";
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Error($"Error generating Hediff.Description: {e}");
+                }
+            }
+        }
     }
 
 }

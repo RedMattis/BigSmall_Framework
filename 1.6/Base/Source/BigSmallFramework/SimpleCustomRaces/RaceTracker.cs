@@ -34,32 +34,32 @@ namespace BigAndSmall
         /// </summary>
         //public override HediffStage CurStage { get { return null; } }
 
-        public override string Description
-        {
-            get
-            {
-                var baseDesc = base.Description;
+        //public override string Description
+        //{
+        //    get
+        //    {
+        //        var baseDesc = base.Description;
 
-                try
-                {
-                    if (PawnExtensionExtension.TryGetDescription(PawnExtensions, out string pawnDesc))
-                    {
-                        baseDesc += $"\n\n{pawnDesc}";
-                    }
+        //        try
+        //        {
+        //            if (PawnExtensionExtension.TryGetDescription(PawnExtensions, out string pawnDesc))
+        //            {
+        //                baseDesc += $"\n\n{pawnDesc}";
+        //            }
 
-                }
-                catch (Exception e)
-                {
-                    Log.Error($"Error generating RaceTracker.Description: {e}");
-                }
-                finally
-                {
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            Log.Error($"Error generating RaceTracker.Description: {e}");
+        //        }
+        //        finally
+        //        {
                     
-                }
+        //        }
 
-                return baseDesc;
-            }
-        }
+        //        return baseDesc;
+        //    }
+        //}
     }
 
 }

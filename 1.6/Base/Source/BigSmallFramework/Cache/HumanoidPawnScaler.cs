@@ -299,6 +299,10 @@ namespace BigAndSmall
                     {
                         apparelRestrictions = null;
                     }
+                    if (allPawnExt.Any(x => x.animalFineManipulation != null))
+                    {
+                        fineManipulation = allPawnExt.Where(x => x.animalFineManipulation != null).Max(x => x.animalFineManipulation.Value);
+                    }
 
                     canWield = allPawnExt.Any(x => x.canWieldThings == true) || !allPawnExt.Any(x => x.canWieldThings == false);
                 }
@@ -700,7 +704,7 @@ namespace BigAndSmall
             var racePawnExts = pawn.GetRacePawnExtensions();
             var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
             var otherPawnExts = ModExtHelper.GetAllExtensions<PawnExtension>(pawn, parentBlacklist: [typeof(RaceTracker)]);
-            List<PawnExtension> allPawnExts = [..racePawnExts, ..otherPawnExts];
+            List<PawnExtension> allPawnExts = [.. racePawnExts, .. otherPawnExts];
 
             allPawnExts.ForEach(x => x.transformGene?.TryTransform(pawn));
 
@@ -761,6 +765,8 @@ namespace BigAndSmall
                     }
                 }
             }
+
+            UpdateFineManipulationHediffs(hediffs);
 
             bool selfRepairingApparel = activeGenes.Any(x => x.def.defName == "BS_SelfRepairingApparel");
             bool indestructibleApparel = activeGenes.Any(x => x.def.defName == "BS_IndestructibleApparel");
@@ -875,10 +881,35 @@ namespace BigAndSmall
                 genesActivated.Clear();
             }
             pawn.skills?.DirtyAptitudes();
-            if (allPawnExts.Any(x=>x.removeTattoos))
+            if (allPawnExts.Any(x => x.removeTattoos))
             {
                 pawn.style.BodyTattoo = null;
                 pawn.style.FaceTattoo = null;
+            }
+        }
+
+        private void UpdateFineManipulationHediffs(List<Hediff> hediffs)
+        {
+            HediffDef targetManipulationHediff = null;
+            List<HediffDef> manipulationHediffs = [BSDefs.BS_NoHands, BSDefs.BS_PoorHands];
+            if (fineManipulation < 0.45) targetManipulationHediff = BSDefs.BS_NoHands;
+            else if (fineManipulation < 0.75) targetManipulationHediff = BSDefs.BS_PoorHands;
+
+            // Remove any manipulation hediffs that are not the target one.
+            List<Hediff> hediffsToRemove = [];
+            foreach (var hediff in hediffs.Where(x => manipulationHediffs.Contains(x.def)))
+            {
+                if (hediff.def != targetManipulationHediff)
+                {
+                    hediffsToRemove.Add(hediff);
+                }
+            }
+            hediffsToRemove.ForEach(pawn.health.RemoveHediff);
+
+            // Add the target manipulation hediff if it is not already present.
+            if (targetManipulationHediff != null && !hediffs.Any(x => x.def == targetManipulationHediff))
+            {
+                pawn.health.AddHediff(targetManipulationHediff);
             }
         }
 
