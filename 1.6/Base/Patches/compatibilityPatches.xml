@@ -1,7 +1,7 @@
 <Patch>
   <Operation Class="PatchOperationAdd">
     <success>Always</success>
-    <xpath>Defs/ThingDef/modExtensions/li[@Class="HeavyWeapons.HeavyWeapon"][not(supportedTraits)]</xpath>
+    <xpath>Defs/ThingDef/modExtensions/li[@Class="VEF.Weapons.HeavyWeapon"][not(supportedTraits)]</xpath>
     <value>
       <supportedTraits/>
     </value>
@@ -9,7 +9,7 @@
   
   <Operation Class="PatchOperationAdd">
     <success>Always</success>
-    <xpath>Defs/ThingDef/modExtensions/li[@Class="HeavyWeapons.HeavyWeapon"]/supportedTraits</xpath>
+    <xpath>Defs/ThingDef/modExtensions/li[@Class="VEF.Weapons.HeavyWeapon"]/supportedTraits</xpath>
     <value>
       <li>BS_Giant</li>
     </value>
@@ -55,14 +55,14 @@
       <operations>
           <!-- Add Trait to accepted tags -->
           <li Class="PatchOperationAdd">
-              <xpath>/Defs/ThingDef[@Name="VFEP_BaseMeleeWeapon_Warcasket"]/modExtensions/li[@Class="HeavyWeapons.HeavyWeapon"]/supportedTraits</xpath>
+              <xpath>/Defs/ThingDef[@Name="VFEP_BaseMeleeWeapon_Warcasket"]/modExtensions/li[@Class="VEF.Weapons.HeavyWeapon"]/supportedTraits</xpath>
               <value>
                   <li>BS_Giant</li>
               </value>
           </li>
           
           <li Class="PatchOperationAdd">
-              <xpath>/Defs/ThingDef[@Name="VFEP_BaseWarcasketGun"]/modExtensions/li[@Class="HeavyWeapons.HeavyWeapon"]/supportedTraits</xpath>
+              <xpath>/Defs/ThingDef[@Name="VFEP_BaseWarcasketGun"]/modExtensions/li[@Class="VEF.Weapons.HeavyWeapon"]/supportedTraits</xpath>
               <value>
                   <li>BS_Giant</li>
               </value>
