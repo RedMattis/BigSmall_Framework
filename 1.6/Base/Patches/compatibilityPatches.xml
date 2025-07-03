@@ -80,7 +80,7 @@
       <operations>
           <!-- Add Trait to accepted tags -->
           <li Class="PatchOperationAdd">
-              <xpath>/Defs/ThingDef[defName="VWE_Gun_Autocannon" or defName="VWE_Gun_HandheldMortar" or defName="VWE_Gun_HeavyFlamer" or defName="VWE_Bullet_HeavyFlamer" or defName="VWE_Gun_SwarmMissileLauncher" or defName="VWE_Bullet_SwarmRocket" or defName="VWE_Gun_Autocannon" or defName="VWE_Gun_UraniumSlugRifle"]/modExtensions/li[@Class="HeavyWeapons.HeavyWeapon"]/supportedTraits</xpath>
+              <xpath>/Defs/ThingDef[defName="VWE_Gun_Autocannon" or defName="VWE_Gun_HandheldMortar" or defName="VWE_Gun_HeavyFlamer" or defName="VWE_Bullet_HeavyFlamer" or defName="VWE_Gun_SwarmMissileLauncher" or defName="VWE_Bullet_SwarmRocket" or defName="VWE_Gun_UraniumSlugRifle"]/modExtensions/li[@Class="VEF.Weapons.HeavyWeapon"]/supportedTraits</xpath>
               <value>
                   <li>BS_Giant</li>
               </value>
