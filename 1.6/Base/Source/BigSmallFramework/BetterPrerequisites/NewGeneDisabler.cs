@@ -41,18 +41,19 @@ namespace BigAndSmall
             return "";
         }
 
-        private void UpdateGeneOverrideStates(List<PawnExtension> allPawnExts)
+        private bool UpdateGeneOverrideStates(List<PawnExtension> allPawnExts)
         {
             if (pawn.genes == null)
             {
-                return;
+                return false;
             }
             
             var allGenes = pawn.genes.GenesListForReading;
             if (allGenes.NullOrEmpty() || allPawnExts.Count == 0)
             {
-                return;
+                return false;
             }
+            bool change = false;
 
             IOrderedEnumerable<Gene> orderedGenes = allGenes
                 .OrderByDescending(gene => (gene.def.GetAllPawnExtensionsOnGene() is List<PawnExtension> genePawnExts && genePawnExts.Any())
@@ -79,6 +80,7 @@ namespace BigAndSmall
                     {
                         // In case it wasn't already disabled, just do it here.
                         gene.OverrideBy(GeneCache.DummyGene);
+                        change = true;
                     }
                 }
                 else
@@ -90,6 +92,7 @@ namespace BigAndSmall
                         geneCache.isOverriden = false;
                         genesActivated.Add(gene);
                         gene.OverrideBy(null);
+                        change = true;
                     }
                     //foreach (var supressor in gene.def.ExtensionsOnDef<GeneSuppressor_Gene, GeneDef>())
                     //{
@@ -100,6 +103,7 @@ namespace BigAndSmall
                     //}
                 }
             }
+            return change;
         }
     }
 

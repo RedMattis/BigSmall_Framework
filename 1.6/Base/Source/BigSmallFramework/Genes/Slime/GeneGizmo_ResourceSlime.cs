@@ -13,7 +13,7 @@ namespace BigAndSmall
         : GeneGizmo_Resource(spGene, drainGenes, barColor, barhighlightColor)
     {
         private List<Pair<IGeneResourceDrain, float>> tmpDrainGenes = []; // Unused.
-
+        protected override bool DraggingBar { get { return field; } set { field = value; } }
         protected override string GetTooltip()
         {
             tmpDrainGenes.Clear();

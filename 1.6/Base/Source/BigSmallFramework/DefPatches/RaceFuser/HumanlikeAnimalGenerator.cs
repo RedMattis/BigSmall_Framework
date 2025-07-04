@@ -241,7 +241,8 @@ namespace BigAndSmall
             newRace.predator = humRace.predator;
             newRace.animalType = humRace.animalType;
             newRace.fleshType = newRace.fleshType == FleshTypeDefOf.Mechanoid ? humRace.FleshType : newRace.FleshType;
-            newRace.meatDef = humRace.meatDef;  // Can cause issues if they are mechanoid meatDef, etc.
+            //newRace.meatDef = humRace.meatDef;  // Can cause issues if they are mechanoid meatDef, etc.
+
             newRace.hideTrainingTab = humRace.hideTrainingTab;
             newRace.canReleaseToWild = humRace.canReleaseToWild;
             newRace.disableAreaControl = humRace.disableAreaControl;
@@ -455,6 +456,8 @@ namespace BigAndSmall
             newThing.SetStatBaseValue(StatDefOf.CarryingCapacity, animalThing.GetStatValueAbstract(StatDefOf.CarryingCapacity));
             newThing.SetStatBaseValue(StatDefOf.ComfyTemperatureMax, animalThing.GetStatValueAbstract(StatDefOf.ComfyTemperatureMax));
             newThing.SetStatBaseValue(StatDefOf.ComfyTemperatureMin, animalThing.GetStatValueAbstract(StatDefOf.ComfyTemperatureMin));
+            newThing.SetStatBaseValue(StatDefOf.LeatherAmount, animalThing.GetStatValueAbstract(StatDefOf.LeatherAmount));
+            newThing.SetStatBaseValue(StatDefOf.MeatAmount, animalThing.GetStatValueAbstract(StatDefOf.MeatAmount));
 
             // Averaged
             newThing.SetStatBaseValue(StatDefOf.DeepDrillingSpeed, (animalThing.GetStatValueAbstract(StatDefOf.DeepDrillingSpeed) + humanThing.GetStatValueAbstract(StatDefOf.DeepDrillingSpeed)) / 2);

@@ -152,7 +152,7 @@ namespace BigAndSmall
                     }
                 }
             }
-            bool verySlowUpdate = currentTick % 300 == 0;
+            bool verySlowUpdate = currentTick % 500 == 0;
             frequentUpdateGenes = new(frequentUpdateGenes.Where(x => x.Key != null && x.Key.pawn != null && !x.Key.pawn.Discarded));
             if (frequentUpdateGenes.Any())
             {

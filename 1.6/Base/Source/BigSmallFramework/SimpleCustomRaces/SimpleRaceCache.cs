@@ -8,11 +8,14 @@ namespace BigAndSmall
 {
     public partial class BSCache : IExposable, ICacheable
     {
-        private void SimpleRaceUpdate(List<PawnExtension> raceExts, List<PawnExtension> otherPawnExt, List<CompProperties_Race> raceCompProps)
+        private void SimpleRaceUpdate(List<PawnExtension> raceExts, List<PawnExtension> otherPawnExts, List<CompProperties_Race> raceCompProps)
         {
-            List<PawnExtension> allExt = [.. raceExts, .. otherPawnExt];
+            List<PawnExtension> allExt = [.. raceExts, .. otherPawnExts];
 
-            UpdateGeneOverrideStates(allExt);
+            bool genesChanged = UpdateGeneOverrideStates(allExt);
+            if (genesChanged) UpdatePawnExts(raceExts, out otherPawnExts, out allExt);
+
+            UpdateFrequentUpdateGeneList();
             Metamorphosis.HandleMetamorph(pawn, allExt);
             ProcessRaceGeneRequirements(raceExts);
             ProcessRaceTraitRequirements(raceExts);
@@ -22,6 +25,26 @@ namespace BigAndSmall
             UpdateGeneOverrideStates(allExt);  // Run again here in case Metamorph etc. changed the state.
             raceCompProps.EnsureValidBodyType(this);
             raceCompProps.EnsureValidHeadType(this);
+
+            void UpdatePawnExts(List<PawnExtension> raceExts, out List<PawnExtension> otherPawnExts, out List<PawnExtension> allExt)
+            {
+                otherPawnExts = ModExtHelper.GetAllExtensions<PawnExtension>(pawn, parentBlacklist: [typeof(RaceTracker)]);
+                allExt = [.. raceExts, .. otherPawnExts];
+            }
+        }
+
+        private void UpdateFrequentUpdateGeneList()
+        {
+            if (pawn.genes != null)
+            {
+                foreach (var gene in pawn.genes.GenesListForReading)
+                {
+                    if (gene.def.GetAllPawnExtensionsOnGene().Any(x => !x.conditionals.NullOrEmpty()))
+                    {
+                        BigAndSmallCache.frequentUpdateGenes[gene] = gene.Active; // Ensure the gene is in the frequent update list.
+                    }
+                }
+            }
         }
 
         private void ProcessRaceGeneRequirements(List<PawnExtension> raceExts)
@@ -108,21 +131,21 @@ namespace BigAndSmall
             }
         }
 
-        private void ProcessForcedHediffs(List<PawnExtension> pawnExtensions)
+        private void ProcessForcedHediffs(List<PawnExtension> pawnExts)
         {
             var prevToBody = this.hediffsToBody;
             var prevToParts = this.hediffsToParts;
 
-            var hediffsToParts = pawnExtensions.SelectMany(x => x.applyPartHediff ?? []).ToList();
-            var hediffsToBody = pawnExtensions.SelectMany(x => x.applyBodyHediff ?? []).ToList();
+            var hediffsToParts = pawnExts.SelectMany(x => x.applyPartHediff ?? []).ToList();
+            var hediffsToBody = pawnExts.SelectMany(x => x.applyBodyHediff ?? []).ToList();
 
-            if (hediffsToParts.Count == 0 && hediffsToBody.Count == 0)
+            if (hediffsToParts.Count == 0 && hediffsToBody.Count == 0 && prevToBody.Count == 0 && prevToParts.Count == 0)
             {
                 return;
             }
 
-            hediffsToParts = [.. hediffsToParts.Where(h => pawnExtensions.All(x =>ConditionalManager.TestConditionals(pawn, h.conditionals) && x.IsHediffLegal(h.hediff).Accepted()))];
-            hediffsToBody = [.. hediffsToBody.Where(h => pawnExtensions.All(x => ConditionalManager.TestConditionals(pawn, h.conditionals) && x.IsHediffLegal(h.hediff).Accepted()))];
+            hediffsToParts = [.. hediffsToParts.Where(h => pawnExts.All(x =>ConditionalManager.TestConditionals(pawn, h.conditionals) && x.IsHediffLegal(h.hediff).Accepted()))];
+            hediffsToBody = [.. hediffsToBody.Where(h => pawnExts.All(x => ConditionalManager.TestConditionals(pawn, h.conditionals) && x.IsHediffLegal(h.hediff).Accepted()))];
 
             var toBodyRemove = prevToBody.Where(h=> !hediffsToBody.Contains(h)).ToList();
             var toPartsRemove = prevToParts.Where(h => !hediffsToParts.Contains(h)).ToList();
