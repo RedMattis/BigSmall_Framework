@@ -16,6 +16,7 @@ namespace BigAndSmall
         public List<GeneDef> appendGenes = [];
         public bool appendAsXenogenes = false;
         public bool removeOverlappingGenes = true;
+        public float animalSapienceChance = 0;
 
         /// <summary>
         /// Generate a "humanlike animal" dummy based on this PawnKindDef.
@@ -23,15 +24,23 @@ namespace BigAndSmall
         /// </summary>
         public bool generateHumanlikeAnimalFromThis = false;
 
-        public void Execute(Pawn pawn)
+        public Pawn Execute(Pawn pawn, bool singlePawn=false)
         {
+            Log.Message($"Debug: Executing PawnKindExtension for {pawn?.Name}. {singlePawn}. Animal Sapience Chance: {animalSapienceChance}, Single Pawn: {singlePawn}");
+            if (singlePawn && Rand.Chance(animalSapienceChance))
+            {
+                pawn = RaceMorpher.SwapAnimalToSapientVersion(pawn);
+            }
             AppendGenes(pawn);
-            ApplyAgeCurve(pawn);
             ApplyPsylink(pawn);
+            ApplyAgeCurve(pawn);
+            
+            return pawn;
         }
 
         public void AppendGenes(Pawn pawn)
         {
+            if (pawn.genes == null) return;
             // Check exclusion tags and remove all conflicting genes.
             List<Gene> pawnGenes = [..pawn.genes.GenesListForReading];
             if (removeOverlappingGenes)
@@ -73,6 +82,7 @@ namespace BigAndSmall
         }
         public void ApplyPsylink(Pawn pawn)
         {
+            if (pawn.RaceProps.Humanlike == false) return;
             if (psylinkLevels is SimpleCurve psyLinkCurve && ModsConfig.RoyaltyActive)
             {
                 int countToSet = (int)psyLinkCurve.Evaluate(Rand.Value);

@@ -4,14 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using RimWorld;
+using UnityEngine;
+using Verse;
+
 namespace BigAndSmall
 {
-    // Assembly-CSharp, Version=1.5.9102.32373, Culture=neutral, PublicKeyToken=null
-    // Verse.PawnRenderNode_AnimalPart
-    using RimWorld;
-    using UnityEngine;
-    using Verse;
-
     public class PawnRenderNode_HAnimalPart : PawnRenderNode
     {
         public PawnRenderNode_HAnimalPart(Pawn pawn, PawnRenderNodeProperties props, PawnRenderTree tree)

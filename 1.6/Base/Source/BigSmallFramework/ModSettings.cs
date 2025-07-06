@@ -103,6 +103,7 @@ namespace BigAndSmall
             {
                 CreateSettingCheckbox(listStd, "BS_SapientAnimals".Translate(), ref settings.sapientAnimals);
             }
+            //CreateSettingsSlider(listStd, "BS_SapientAnimalsChance".Translate(), ref settings.sapientAnimalsChance, 0f, 1f, (f) => $"{f * 100:F1}%");
 
             CreateSettingCheckbox(listStd, "BS_SapientMechanoids".Translate(), ref settings.sapientMechanoids);
 
@@ -185,6 +186,9 @@ namespace BigAndSmall
         private static readonly bool defaultSapientAnimals = false;
         public bool sapientAnimals = defaultSapientAnimals;
 
+        private static readonly float defaultSapientAnimalsChance = 0.00f;
+        public float sapientAnimalsChance = defaultSapientAnimalsChance;
+
         private static readonly bool defaultSapientMechanoids = false;
         public bool sapientMechanoids = defaultSapientMechanoids;
 
@@ -264,6 +268,7 @@ namespace BigAndSmall
             Scribe_Values.Look(ref pathRacesFromOtherMods, "pathRacesFromOtherMods", defaultPathRacesFromOtherMods);
             Scribe_Values.Look(ref generateDefs, "generateDefs", defaultGenerateDefs);
             Scribe_Values.Look(ref sapientAnimals, "sapientAnimals", defaultSapientAnimals);
+            Scribe_Values.Look(ref sapientAnimalsChance, "sapientAnimalsChance", defaultSapientAnimalsChance);
             Scribe_Values.Look(ref sapientMechanoids, "sapientMechanoids", defaultSapientMechanoids);
             Scribe_Values.Look(ref surgeryAndBionics, "surgeryAndBionics", defaultSurgeryAndBionics);
             Scribe_Values.Look(ref visualLargerMult, "visualLargerMult", defaultVisualLargerMult);
@@ -298,7 +303,17 @@ namespace BigAndSmall
 
         public void ResetToDefault()
         {
+            offsetAnimalBodyPos = defaultOffsetAnimalBodyPos;
+            useSciFiNames = defaultUseSciFiNaming;
+            recruitDevSpawned = defaultRecruitDevSpawned;
             generateDefs = defaultGenerateDefs;
+            pathRacesFromOtherMods = defaultPathRacesFromOtherMods;
+            experimental = defaultExperimental;
+            sapientAnimals = defaultSapientAnimals;
+            sapientAnimalsChance = defaultSapientAnimalsChance;
+            sapientMechanoids = defaultSapientMechanoids;
+            surgeryAndBionics = defaultSurgeryAndBionics;
+            immortalReturnTimeFactor = immortalReturnTimeFactorDefault;
             visualLargerMult = defaultVisualLargerMult;
             visualSmallerMult = defaultVisualSmallerMult;
             headPowLarge = defaultHeadPowLarge;

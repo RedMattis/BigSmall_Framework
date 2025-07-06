@@ -7,6 +7,9 @@
     <compWhitelist>
       <li>CompProperties_HoldingPlatformTarget</li>
       <li>CompProperties_Studiable</li>
+      <li>CompProperties_EffecterOnDeath</li>
+      <li>CompProperties_AttachPoints</li>
+      <li>CompProperties_ProducesBioferrite</li>
     </compWhitelist>
 
     <!-- Anything that can plausibly manipulate things if given specialized tools qualify.

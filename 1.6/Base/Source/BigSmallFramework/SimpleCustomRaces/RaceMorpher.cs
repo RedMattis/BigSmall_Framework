@@ -55,117 +55,140 @@ namespace BigAndSmall
 
         public static Pawn SwapAnimalToSapientVersion(this Pawn aniPawn)
         {
-            var targetDef = HumanlikeAnimals.HumanLikeAnimalFor(aniPawn.def);
-            if (targetDef == null) return null;
-            // Empty inventory
-            if (aniPawn.inventory != null && aniPawn.inventory?.innerContainer != null)
+            bool oldPawnDestroyed = false;
+            try
             {
-                aniPawn.inventory.DropAllNearPawn(aniPawn.Position);
-            }
-            bool shouldBeWildman = false;
-            var request = new PawnGenerationRequest(PawnKindDefOf.Colonist,
-                canGeneratePawnRelations:false,
-                allowDead: false, allowDowned: false, allowAddictions: false,
-                forbidAnyTitle: true, forceGenerateNewPawn:true,
-                forceBaselinerChance: 1,
-                forceNoBackstory:true);
-
-            var newPawn = PawnGenerator.GeneratePawn(request);
-            newPawn.inventory.DestroyAll(DestroyMode.Vanish);
-            newPawn.equipment.DestroyAllEquipment(DestroyMode.Vanish);
-            newPawn.apparel.DestroyAll(DestroyMode.Vanish);
-
-            string oldName = aniPawn.Name?.ToStringShort;
-            if (oldName == null)
-            {
-                newPawn.Name = PawnBioAndNameGenerator.GeneratePawnName(newPawn, forceNoNick: true);
-            }
-            else
-            {
-                aniPawn.Name = new NameSingle(aniPawn.Name.ToStringShort + "_Discard");
-                newPawn.Name = new NameSingle(oldName);
-            }
-            newPawn.relations.ClearAllRelations(); // Should add a friend relationship to any bonded pawn here later...
-            newPawn.story.Adulthood = DefDatabase<BackstoryDef>.GetNamed("Colonist97");
-            newPawn.story.Childhood = DefDatabase<BackstoryDef>.GetNamed("TribeChild19");
-            if (aniPawn.Faction == null)
-            {
-                shouldBeWildman = true;
-                newPawn.ideo?.SetIdeo(Faction.OfPlayerSilentFail?.ideos?.PrimaryIdeo);
-            }
-            else
-            {
-                newPawn.ideo?.SetIdeo(aniPawn.Faction.ideos?.PrimaryIdeo);
-                newPawn.SetFaction(aniPawn.Faction);
-            }
-            newPawn.gender = aniPawn.gender == Gender.None ? newPawn.gender : aniPawn.gender;
-            newPawn.ageTracker.AgeChronologicalTicks = aniPawn.ageTracker.AgeChronologicalTicks;
-            if (aniPawn.ageTracker.AgeBiologicalYears < 18)
-            {
-                newPawn.ageTracker.AgeBiologicalTicks = 18 * GenDate.TicksPerYear;
-            }
-            else
-            {
-                newPawn.ageTracker.AgeBiologicalTicks = aniPawn.ageTracker.AgeBiologicalTicks;
-            }
-
-            if (ModsConfig.BiotechActive)
-            {
-                if (newPawn.genes.Xenotype != XenotypeDefOf.Baseliner)
+                var targetDef = HumanlikeAnimals.HumanLikeAnimalFor(aniPawn.def);
+                if (targetDef == null) return null;
+                // Empty inventory
+                if (aniPawn.inventory != null && aniPawn.inventory?.innerContainer != null)
                 {
-                    Log.Message($"[Big and Small] {newPawn} had a xenotype {newPawn.genes.Xenotype.defName} but was supossed to generate as a baseliner." +
-                        $"Removing xenotype and genes.");
-                    // Somehow they can still end up having a xenotype.
-                    for (int idx = newPawn.genes.GenesListForReading.Count - 1; idx >= 0; idx--)
+                    if (aniPawn.Spawned)
                     {
-                        var gene = newPawn.genes.GenesListForReading[idx];
-                        newPawn.genes.RemoveGene(gene);
+                        aniPawn.inventory.DropAllNearPawn(aniPawn.Position);
                     }
-                    newPawn.genes.SetXenotype(XenotypeDefOf.Baseliner);
-                    GeneHelpers.ClearCachedGenes(newPawn);
+                    else
+                    {
+                        aniPawn.inventory.DestroyAll(DestroyMode.Vanish);
+                    }
                 }
-            }
-            CacheAndRemoveHediffs(aniPawn);
-            newPawn.health.hediffSet.hediffs.Clear();
-            //foreach (var hediff in pawn.health.hediffSet.hediffs)
-            //{
-            //    var h = newPawn.health.AddHediff(hediff.def, hediff.Part, null);
-            //    h.Severity = hediff.Severity;
-            //}
-            
+                bool shouldBeWildman = false;
+                var request = new PawnGenerationRequest(PawnKindDefOf.Colonist,
+                    canGeneratePawnRelations: false,
+                    allowDead: false, allowDowned: false, allowAddictions: false,
+                    forbidAnyTitle: true, forceGenerateNewPawn: true,
+                    forceBaselinerChance: 1,
+                    forceNoBackstory: true);
 
-            // Spawn into the same position as the old pawn.
-            GenSpawn.Spawn(newPawn, aniPawn.Position, aniPawn.Map, WipeMode.VanishOrMoveAside);
-            
-            
+                var newPawn = PawnGenerator.GeneratePawn(request);
+                newPawn.inventory.DestroyAll(DestroyMode.Vanish);
+                newPawn.equipment.DestroyAllEquipment(DestroyMode.Vanish);
+                newPawn.apparel.DestroyAll(DestroyMode.Vanish);
 
-            SwapThingDef(newPawn, targetDef, true, forcePriority, force: true, permitFusion:false, clearHediffsToReapply:false);
-            RestoreMatchingHediffs(newPawn, targetDef, aniPawn);
-            if (shouldBeWildman)
-            {
-                newPawn.SetFaction(null);
-                newPawn.ChangeKind(PawnKindDefOf.WildMan);
-                newPawn.jobs.StopAll();
-            }
-            if (aniPawn.RaceProps.IsMechanoid && aniPawn.kindDef?.weaponTags?.Any() == true)
-            {
-                try
+                string oldName = aniPawn.Name?.ToStringShort;
+                if (oldName == null)
                 {
-                    var weaponTag = aniPawn.kindDef.weaponTags.FirstOrDefault();
-                    var weaponFromTag = DefDatabase<ThingDef>.AllDefsListForReading
-                        .Where(x => x.IsWeapon && x.weaponTags?.Contains(weaponTag) == true)
-                        .OrderByDescending(x => x.BaseMarketValue).FirstOrDefault();
-                    var weapon = (ThingWithComps)ThingMaker.MakeThing(weaponFromTag);
-                    newPawn.equipment.AddEquipment(weapon);
+                    newPawn.Name = PawnBioAndNameGenerator.GeneratePawnName(newPawn, forceNoNick: true);
                 }
-                catch (Exception e)
+                else
                 {
-                    Log.Error($"[Big and Small] Error trying to equip {newPawn} with a weapon from {aniPawn.kindDef}: {e.Message}");
+                    aniPawn.Name = new NameSingle(aniPawn.Name.ToStringShort + "_Discard");
+                    newPawn.Name = new NameSingle(oldName);
                 }
-            }
+                newPawn.relations.ClearAllRelations(); // Should add a friend relationship to any bonded pawn here later...
+                newPawn.story.Adulthood = DefDatabase<BackstoryDef>.GetNamed("Colonist97");
+                newPawn.story.Childhood = DefDatabase<BackstoryDef>.GetNamed("TribeChild19");
+                if (aniPawn.Faction == null)
+                {
+                    shouldBeWildman = true;
+                    newPawn.ideo?.SetIdeo(Faction.OfPlayerSilentFail?.ideos?.PrimaryIdeo);
+                }
+                else
+                {
+                    newPawn.ideo?.SetIdeo(aniPawn.Faction.ideos?.PrimaryIdeo);
+                    newPawn.SetFaction(aniPawn.Faction);
+                }
+                newPawn.gender = aniPawn.gender == Gender.None ? newPawn.gender : aniPawn.gender;
+                newPawn.ageTracker.AgeChronologicalTicks = aniPawn.ageTracker.AgeChronologicalTicks;
+                if (aniPawn.ageTracker.AgeBiologicalYears < 18)
+                {
+                    newPawn.ageTracker.AgeBiologicalTicks = 18 * GenDate.TicksPerYear;
+                }
+                else
+                {
+                    newPawn.ageTracker.AgeBiologicalTicks = aniPawn.ageTracker.AgeBiologicalTicks;
+                }
 
-            aniPawn.Destroy(DestroyMode.Vanish);
-            return newPawn;
+                if (ModsConfig.BiotechActive)
+                {
+                    if (newPawn.genes.Xenotype != XenotypeDefOf.Baseliner)
+                    {
+                        Log.Message($"[Big and Small] {newPawn} had a xenotype {newPawn.genes.Xenotype.defName} but was supossed to generate as a baseliner." +
+                            $"Removing xenotype and genes.");
+                        // Somehow they can still end up having a xenotype.
+                        for (int idx = newPawn.genes.GenesListForReading.Count - 1; idx >= 0; idx--)
+                        {
+                            var gene = newPawn.genes.GenesListForReading[idx];
+                            newPawn.genes.RemoveGene(gene);
+                        }
+                        newPawn.genes.SetXenotype(XenotypeDefOf.Baseliner);
+                        GeneHelpers.ClearCachedGenes(newPawn);
+                    }
+                }
+                CacheAndRemoveHediffs(aniPawn);
+                newPawn.health.hediffSet.hediffs.Clear();
+                //foreach (var hediff in pawn.health.hediffSet.hediffs)
+                //{
+                //    var h = newPawn.health.AddHediff(hediff.def, hediff.Part, null);
+                //    h.Severity = hediff.Severity;
+                //}
+
+
+                // Spawn into the same position as the old pawn.
+                if (aniPawn.Spawned)
+                {
+                    GenSpawn.Spawn(newPawn, aniPawn.Position, aniPawn.Map, WipeMode.VanishOrMoveAside);
+                }
+
+
+
+                SwapThingDef(newPawn, targetDef, true, forcePriority, force: true, permitFusion: false, clearHediffsToReapply: false);
+                RestoreMatchingHediffs(newPawn, targetDef, aniPawn);
+                if (shouldBeWildman)
+                {
+                    if (newPawn.Faction != null)
+                    { 
+                        newPawn.SetFaction(null);
+                    }
+                    newPawn.ChangeKind(PawnKindDefOf.WildMan);
+                    newPawn.jobs.StopAll();
+                }
+                if (aniPawn.RaceProps.IsMechanoid && aniPawn.kindDef?.weaponTags?.Any() == true)
+                {
+                    try
+                    {
+                        var weaponTag = aniPawn.kindDef.weaponTags.FirstOrDefault();
+                        var weaponFromTag = DefDatabase<ThingDef>.AllDefsListForReading
+                            .Where(x => x.IsWeapon && x.weaponTags?.Contains(weaponTag) == true)
+                            .OrderByDescending(x => x.BaseMarketValue).FirstOrDefault();
+                        var weapon = (ThingWithComps)ThingMaker.MakeThing(weaponFromTag);
+                        newPawn.equipment.AddEquipment(weapon);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error($"[Big and Small] Error trying to equip {newPawn} with a weapon from {aniPawn.kindDef}: {e.Message}");
+                    }
+                }
+
+                aniPawn.Destroy(DestroyMode.Vanish);
+                oldPawnDestroyed = true;
+                return newPawn;
+            }
+            catch (Exception e)
+            {
+                Log.Error($"[Big and Small] Error trying to swap {aniPawn} to a sapient version: {e.Message}\n{e.StackTrace}");
+                return oldPawnDestroyed ? null : aniPawn;
+            }
         }
 
         public static void SwapThingDef(this Pawn pawn, ThingDef swapTarget, bool state, int targetPriority, bool force=false, object source=null, bool permitFusion=true, bool clearHediffsToReapply=true)

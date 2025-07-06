@@ -20,7 +20,7 @@ namespace BigAndSmall
         {
             if (__result == null || lastTouchedPawn == __result) return;
             lastTouchedPawn = __result;
-            ModifyGeneratedPawn(false, __result);
+            ModifyGeneratedPawn(false, ref __result, singlePawn:true);
         }
 
 
@@ -31,13 +31,13 @@ namespace BigAndSmall
             bool changed = false;
 
             var modifiedPawn = __result.ToList();
-            foreach (var member in modifiedPawn)
+            for (int idx = modifiedPawn.Count - 1; idx >= 0; idx--)
             {
+                Pawn member = modifiedPawn[idx];
                 if (member == null || lastTouchedPawn == member) continue;
                 lastTouchedPawn = member;
-                //Log.Message("DEBUG: Running Generate Patch in Unsafe Mode.");
 
-                changed = ModifyGeneratedPawn(changed, member);
+                changed = ModifyGeneratedPawn(changed, ref member);
             }
             if (changed)
             {
@@ -45,7 +45,7 @@ namespace BigAndSmall
             }
         }
 
-        private static bool ModifyGeneratedPawn(bool changed, Pawn member)
+        private static bool ModifyGeneratedPawn(bool changed, ref Pawn member, bool singlePawn=false)
         {
             try
             {
@@ -53,7 +53,8 @@ namespace BigAndSmall
                 if (HumanoidPawnScaler.GetCache(member, forceRefresh: true) is BSCache cache)
                 {
                     changed = true;
-                    try { TryModifyPawn(member); }
+
+                    try { member = TryModifyPawn(member, singlePawn: singlePawn); }
                     catch (Exception e) { Log.Warning($"BigAndSmall (GeneratePawns): Failed the TryModifyPawn for {member.Name} ({member.Label}): + {e.Message}"); }
                     try { RemoveInvalidThings(member); }
                     catch (Exception e) { Log.Warning($"BigAndSmall (GeneratePawns): Failed to remove invalid apparel for {member.Name} ({member.Label}): + {e.Message}"); }
@@ -109,14 +110,19 @@ namespace BigAndSmall
             }
         }
 
-        private static void TryModifyPawn(Pawn member)
+        private static Pawn TryModifyPawn(Pawn member, bool singlePawn=false)
         {
             if (member.kindDef.GetModExtension<PawnKindExtension>() is PawnKindExtension pawnKindExt)
             {
-                pawnKindExt.Execute(member);
+                member = pawnKindExt.Execute(member, singlePawn: singlePawn);
             }
-            if (member?.RaceProps?.Humanlike != true) return;
-            if (member.genes?.Xenotype == null) return;
+            return TryModifyHumanlike(member);
+        }
+
+        private static Pawn TryModifyHumanlike(Pawn member)
+        {
+            if (member?.RaceProps?.Humanlike != true) return member;
+            if (member.genes?.Xenotype == null) return member;
             if (member.genes.Xenotype.GetModExtension<XenotypeExtension>() is XenotypeExtension xenotypeExt)
             {
                 if (xenotypeExt.setRace != null)
@@ -131,10 +137,21 @@ namespace BigAndSmall
                     }
                 }
             }
+            TrySetInfiltrator(member);
+            return member;
+        }
+
+        private static void TrySetInfiltrator(Pawn member)
+        {
+            if (HumanlikeAnimals.IsHumanlikeAnimal(member?.def) == true)
+            {
+                // Don't set infiltrators for humanlike animals.
+                return;
+            }
             float chance = BigSmallMod.settings.inflitratorChance;
             if (Rand.Chance(0.1f)) /// 10% chance to increase the chance of infiltrator in a raid.
             {
-                chance = Mathf.Min(chance * Rand.Range(1f, 10f), 1f - (1f - chance)/2);
+                chance = Mathf.Min(chance * Rand.Range(1f, 10f), 1f - (1f - chance) / 2);
             }
             bool soloInfiltrator = Rand.Chance(BigSmallMod.settings.inflitratorChance);
 
@@ -145,11 +162,11 @@ namespace BigAndSmall
             {
                 try
                 {
-                    bool isEndogeneHuman = (member.genes?.Xenotype?.inheritable == true || member.genes.Xenotype == XenotypeDefOf.Baseliner) && 
+                    bool isEndogeneHuman = (member.genes?.Xenotype?.inheritable == true || member.genes.Xenotype == XenotypeDefOf.Baseliner) &&
                         member.def == ThingDefOf.Human;
 
-                    int seed = infiltratorRaid ? (int)(BigAndSmallCache.globalRandNum*10000) : Rand.Range(0, 1000000);
-                    (var xenotype, var infiltratorData) = GlobalSettings.GetRandomInfiltratorReplacementXenotype(member, seed, forceNeeded:!isEndogeneHuman, isFullRaid: !soloInfiltrator);
+                    int seed = infiltratorRaid ? (int)(BigAndSmallCache.globalRandNum * 10000) : Rand.Range(0, 1000000);
+                    (var xenotype, var infiltratorData) = GlobalSettings.GetRandomInfiltratorReplacementXenotype(member, seed, forceNeeded: !isEndogeneHuman, isFullRaid: !soloInfiltrator);
                     if (xenotype != null)
                     {
                         var prevXenotype = member.genes.Xenotype;
@@ -183,7 +200,6 @@ namespace BigAndSmall
                     Log.Error($"BigAndSmall: Error swapping {member?.Name} to infiltrator: {e.Message}. Skipping.");
                 }
             }
-
         }
 
         private static void RemoveInvalidThings(Pawn member)

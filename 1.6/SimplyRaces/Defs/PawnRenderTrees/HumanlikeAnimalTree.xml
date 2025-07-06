@@ -8,7 +8,8 @@
         <li>
           <debugLabel>Body</debugLabel>
           <tagDef>Body</tagDef>
-          <nodeClass>BigAndSmall.PawnRenderNode_HAnimalPart</nodeClass>
+          <nodeClass>BigAndSmall.PawnRenderNode_HAnimalBody</nodeClass>
+          <workerClass>BigAndSmall.PawnRenderNodeWorker_HumanlikeAnimalBody</workerClass>
           <useRottenColor>true</useRottenColor>
           <children>
             <li>
