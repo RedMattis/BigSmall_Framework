@@ -404,11 +404,14 @@
             <li>
               <def>BS_SnakeSpine</def>
               <coverage>0.03</coverage>
+              <groups>
+                <li>Legs</li>
+              </groups>
             </li>
             <li>
               <def>Heart</def>
               <customLabel>second heart</customLabel>
-              <coverage>0.020</coverage>
+              <coverage>0.015</coverage>
               <depth>Inside</depth>
               <groups>
                 <li>Legs</li>
@@ -435,7 +438,7 @@
             <li>
               <def>Liver</def>
               <customLabel>liver</customLabel>
-              <coverage>0.025</coverage>
+              <coverage>0.020</coverage>
               <depth>Inside</depth>
               <groups>
                 <li>Legs</li>
@@ -452,7 +455,7 @@
             </li>
             <li>
               <def>Tail</def>
-              <coverage>0.07</coverage>
+              <coverage>0.03</coverage>
 
               <!--To prevent them from putting on infinite shoes.-->
               <groups>

@@ -411,6 +411,7 @@
           <parts>
             <li>
               <def>Stomach</def>
+              <customLabel>second stomach</customLabel>
               <coverage>0.025</coverage>
               <depth>Inside</depth>
               <groups>
@@ -419,7 +420,8 @@
             </li>
             <li>
               <def>Heart</def>
-              <coverage>0.020</coverage>
+              <customLabel>second heart</customLabel>
+              <coverage>0.015</coverage>
               <depth>Inside</depth>
               <groups>
                 <li>Torso</li>
@@ -445,7 +447,7 @@
             </li>
             <li>
               <def>Liver</def>
-              <coverage>0.025</coverage>
+              <coverage>0.020</coverage>
               <depth>Inside</depth>
               <groups>
                 <li>Torso</li>
