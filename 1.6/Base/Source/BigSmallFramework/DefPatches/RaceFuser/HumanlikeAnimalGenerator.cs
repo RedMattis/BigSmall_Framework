@@ -256,8 +256,9 @@ namespace BigAndSmall
             newRace.nameGenerator = humRace.nameGenerator;
             newRace.nameGeneratorFemale = humRace.nameGeneratorFemale;
             newRace.nameOnTameChance = humRace.nameOnTameChance;
-            
-            
+            newRace.roamMtbDays = null;
+
+
 
             // Lets not generate a bunch of unnatural corpses. Set via reflection because of reports that the 
             // field is sometimes not present. Somehow.

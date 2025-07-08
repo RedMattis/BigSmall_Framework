@@ -1,15 +1,15 @@
 <Patch>
-	<Operation Class="PatchOperationAdd">
-		<xpath>Defs/ThingDef[defName="Apparel_Pants" or defName="Apparel_BasicShirt" or defName="Apparel_Parka" or defName="Apparel_KidParka"]/apparel/tags</xpath>
-		<value>
-			<li>BS_MedievalBasic</li>
-		</value>
-	</Operation>
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[defName="Apparel_Pants" or defName="Apparel_BasicShirt" or defName="Apparel_Parka" or defName="Apparel_KidParka"]/apparel/tags</xpath>
+    <value>
+      <li>BS_MedievalBasic</li>
+    </value>
+  </Operation>
 
-		<Operation Class="PatchOperationAdd">
-		<xpath>Defs/ThingDef[defName="Apparel_KidParka" or defName="Apparel_Parka" or defName="Apparel_KidParka" or defName="Apparel_Duster" or defName="Apparel_Burka"]/apparel/tags</xpath>
-		<value>
-			<li>BS_Jackets</li>
-		</value>
-	</Operation>
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[defName="Apparel_KidParka" or defName="Apparel_Parka" or defName="Apparel_KidParka" or defName="Apparel_Duster" or defName="Apparel_Burka"]/apparel/tags</xpath>
+    <value>
+      <li>BS_Jackets</li>
+    </value>
+  </Operation>
 </Patch>
