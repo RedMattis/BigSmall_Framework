@@ -615,7 +615,7 @@ namespace BigAndSmall
             foreach (var pilotable in pawnList)
             {
                 // Check if pawn has a piloted hediff
-                var pilotedHediff = pilotable?.health?.hediffSet?.hediffs?.Where(x => x is Piloted).FirstOrDefault();
+                var pilotedHediff = pilotable?.health?.hediffSet?.hediffs?.Where(x => x is Piloted)?.FirstOrDefault();
                 if (pilotedHediff != null && pilotedHediff is Piloted piloted)
                 {
                     string errorMsg = "";

@@ -182,7 +182,7 @@ namespace BigAndSmall
                     bothComps.Add(comp);
                 }
             }
-            var filteredComps = bothComps.Where(x=> compWhitelist.Contains(x.GetType().ToString())).ToList();
+            var filteredComps = bothComps.Where(x => compWhitelist.Contains(x.GetType().ToString())).ToList();
 
             // From Human
             newThing.modExtensions = [];  // Doubt we want to load ModExtensions from either.
@@ -258,8 +258,6 @@ namespace BigAndSmall
             newRace.nameOnTameChance = humRace.nameOnTameChance;
             newRace.roamMtbDays = null;
 
-
-
             // Lets not generate a bunch of unnatural corpses. Set via reflection because of reports that the 
             // field is sometimes not present. Somehow.
             var hasUnnaturalCorpseField = newRace.GetType().GetField("hasUnnaturalCorpse");
@@ -276,6 +274,9 @@ namespace BigAndSmall
                     $"No warning will be sent for any further animals skipped for humanlike-animal generation to avoid spamming the log.", 6661337);
             }
 
+            // Fix animal body so animals can equip stuff. This also caches the parts if this is not already done.
+            SetupBodyTags(newThing, newRace);
+
             string raceHediffName = $"HL_{aniThing.defName}_RaceHediff";    // This can be used to override the hediff of the race.
             var raceHediff = raceHediffName.TryGetExistingDef<HediffDef>();
             bool hasHands = false;
@@ -287,7 +288,7 @@ namespace BigAndSmall
             {
                 List<string> manipulatorBlackList = ["Mouth", "Jaw", "Beak", "Leg"];
                 var allParts = newRace.body.corePart.GetAllBodyPartsRecursive();
-                
+
                 if (HumanlikeAnimalSettings.AllHASettings.Any(x => x.hasHandsWildcards.Any(wc => aniThing.defName.ToLower().Contains(wc))))
                 {
                     hasHands = true;
@@ -350,12 +351,12 @@ namespace BigAndSmall
                         disabledWorkTags = WorkTags.Crafting | WorkTags.Shooting | WorkTags.Animals
                     });
                 }
-                
+
                 if (aniPawnKind.RaceProps.IsMechanoid)
                 {
                     targetAnimalBase = BSDefs.BS_DefaultMechanoid;
                 }
-                
+
                 foreach (var field in typeof(PawnExtension)
                     .GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                     .Where(f => !f.IsStatic && !f.IsInitOnly))
@@ -429,6 +430,63 @@ namespace BigAndSmall
             static string GetTraitIcon(PawnKindDef aniPawnKind)
             {
                 return aniPawnKind.lifeStages.Last().bodyGraphicData.texPath + "_east";
+            }
+        }
+
+        private static void SetupBodyTags(ThingDef newThing, RaceProperties newRace)
+        {
+            bool foundUtilitySlot = false;
+            var bodyPartDefWaist = DefDatabase<BodyPartDef>.AllDefs.FirstOrDefault(x => x.defName == "Waist");
+            var armGrp = DefDatabase<BodyPartGroupDef>.AllDefs.FirstOrDefault(x => x.defName == "Arms");
+            var shouldGrp = DefDatabase<BodyPartGroupDef>.AllDefs.FirstOrDefault(x => x.defName == "Shoulders");
+            var waistGrp = DefDatabase<BodyPartGroupDef>.AllDefs.FirstOrDefault(x => x.defName == "Waist");
+            //Log.Message($"{newThing.defName} has {newRace.body.AllParts.Count} body parts");
+            if (newRace.body.AllParts.Count == 0)
+            {
+                newRace.body.CacheDataRecursive(newRace.body.corePart);
+                //Log.Message($"...{newThing.defName} has {newRace.body.AllParts.Count} body parts after caching.");
+            }
+            newRace.body.AllParts.ForEach(part =>
+            {
+                if (part.def.defName == "Waist")
+                {
+                    foundUtilitySlot = true;
+                }
+                if (part == newRace.body.corePart)
+                {
+                    AddGroupIfNoneDefined(part, [BodyPartGroupDefOf.Torso], newThing);
+                }
+                else if (part.def.defName == "Leg" || part.parent?.def?.defName == "Leg")
+                {
+                    AddGroupIfNoneDefined(part, [BodyPartGroupDefOf.Legs], newThing);
+                }
+                else if (part.def.defName == "Arm" || part.parent?.def?.defName == "Arm")
+                {
+                    AddGroupIfNoneDefined(part, [armGrp], newThing);
+                }
+            });
+            if (!foundUtilitySlot)
+            {
+                var corePart = newRace.body.corePart;
+                var utilityPart = new BodyPartRecord
+                {
+                    def = bodyPartDefWaist,
+                    coverage = 0.0f,
+                    parent = corePart,
+                    groups = [waistGrp],
+                };
+                corePart.parts.Add(utilityPart);
+                newRace.body.ClearCachedData();
+                newRace.body.CacheDataRecursive(newRace.body.corePart);
+            }
+        }
+
+        private static void AddGroupIfNoneDefined(BodyPartRecord part, List<BodyPartGroupDef> groupToAdd, ThingDef thingDef)
+        {
+            if (part.groups.NullOrEmpty())
+            {
+                part.groups = groupToAdd;
+                //Log.Message($"Adding group {groupToAdd.First().defName} to {thingDef.defName} body part {part.def.defName}.");
             }
         }
 

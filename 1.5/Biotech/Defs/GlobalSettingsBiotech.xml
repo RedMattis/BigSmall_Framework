@@ -136,7 +136,7 @@
         </thingFilter>
         <doubleXenotypes>
           <BS_SynthSpy MayRequire="RedMattis.BigSmall.SimpleAndroids">10</BS_SynthSpy>
-          <BS_NanomachineVampire MayRequire="RedMattis.BigSmall.SimpleAndroids">5</BS_NanomachineVampire>
+          <BS_NanomachineVampire MayRequire="RedMattis.BigSmall.SimpleAndroids,RedMattis.BigSmall.Core">5</BS_NanomachineVampire>
         </doubleXenotypes>
       </li>
       <li MayRequire="Ludeon.Rimworld.Biotech">
