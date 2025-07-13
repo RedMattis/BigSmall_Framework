@@ -202,9 +202,9 @@ namespace BigAndSmall
                             }
                             else if (prerequisiteSet.type == PrerequisiteSet.PrerequisiteType.NoneOf)
                             {
-                                if (prerequisiteSet.nonOfPercentage > 0)
+                                if (prerequisiteSet.noneOfPercentage > 0)
                                 {
-                                    typeStr = ($"BP_{prerequisiteSet.type}Percent".Translate(prerequisiteSet.nonOfPercentage) + ":").Colorize(GeneUtility.GCXColor);
+                                    typeStr = ($"BP_{prerequisiteSet.type}Percent".Translate(prerequisiteSet.noneOfPercentage) + ":").Colorize(GeneUtility.GCXColor);
                                 }
                                 else
                                 {

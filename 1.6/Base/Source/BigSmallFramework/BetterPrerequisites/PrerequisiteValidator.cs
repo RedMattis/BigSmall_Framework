@@ -18,7 +18,7 @@ namespace BigAndSmall
         }
 
         public float allOfPerecntage = 1.0f; // Percentage of genes that must be present for AllOf to be considered met.
-        public float nonOfPercentage = 0f;
+        public float noneOfPercentage = 0f;
         public List<string> prerequisites;
         public PrerequisiteType type;
     }
@@ -77,7 +77,7 @@ namespace BigAndSmall
                                     case PrerequisiteSet.PrerequisiteType.NoneOf:
                                         int bannedMatches = prerequisiteSet.prerequisites.Count(geneName => otherGenes.Any(y => y.def.defName == geneName));
                                         float bannedPercentage = (float)bannedMatches / prerequisiteSet.prerequisites.Count;
-                                        result = bannedPercentage <= prerequisiteSet.nonOfPercentage;
+                                        result = bannedPercentage <= prerequisiteSet.noneOfPercentage;
                                         if (!result)
                                         {
                                             var bannedGenesPresent = prerequisiteSet.prerequisites.Where(geneName => otherGenes.Any(y => y.def.defName == geneName)).ToList();
