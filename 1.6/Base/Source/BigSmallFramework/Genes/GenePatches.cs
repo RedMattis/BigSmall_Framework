@@ -184,7 +184,39 @@ namespace BigAndSmall
                         if (prerequisiteSet.prerequisites != null)
                         {
                             stringBuilder.AppendLine();
-                            stringBuilder.AppendLine(($"BP_{prerequisiteSet.type}".Translate() + ":").Colorize(GeneUtility.GCXColor));
+                            string typeStr = "";
+                            if (prerequisiteSet.type == PrerequisiteSet.PrerequisiteType.AnyOf)
+                            {
+                                typeStr = ($"BP_{prerequisiteSet.type}".Translate() + ":").Colorize(GeneUtility.GCXColor);
+                            }
+                            else if (prerequisiteSet.type == PrerequisiteSet.PrerequisiteType.AllOf)
+                            {
+                                if (prerequisiteSet.allOfPerecntage < 1)
+                                {
+                                    typeStr = ($"BP_{prerequisiteSet.type}Percent".Translate(prerequisiteSet.allOfPerecntage) + ":").Colorize(GeneUtility.GCXColor);
+                                }
+                                else
+                                {
+                                    typeStr = ($"BP_{prerequisiteSet.type}".Translate() + ":").Colorize(GeneUtility.GCXColor);
+                                }
+                            }
+                            else if (prerequisiteSet.type == PrerequisiteSet.PrerequisiteType.NoneOf)
+                            {
+                                if (prerequisiteSet.nonOfPercentage > 0)
+                                {
+                                    typeStr = ($"BP_{prerequisiteSet.type}Percent".Translate(prerequisiteSet.nonOfPercentage) + ":").Colorize(GeneUtility.GCXColor);
+                                }
+                                else
+                                {
+                                    typeStr = ($"BP_{prerequisiteSet.type}".Translate() + ":").Colorize(GeneUtility.GCXColor);
+                                }
+                            }
+                            else
+                            {
+                                typeStr = ("BP_GenePrerequisitesUnknownType".Translate() + ":").Colorize(GeneUtility.GCXColor);
+                            }
+                        
+                            stringBuilder.AppendLine(typeStr);
                             foreach (var prerequisite in prerequisiteSet.prerequisites)
                             {
                                 var gene = DefDatabase<GeneDef>.GetNamedSilentFail(prerequisite);

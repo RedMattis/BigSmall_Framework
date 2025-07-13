@@ -17,6 +17,8 @@ namespace BigAndSmall
             AnyOf, AllOf, NoneOf
         }
 
+        public float allOfPerecntage = 1.0f; // Percentage of genes that must be present for AllOf to be considered met.
+        public float nonOfPercentage = 0f;
         public List<string> prerequisites;
         public PrerequisiteType type;
     }
@@ -64,14 +66,18 @@ namespace BigAndSmall
                                         }
                                         break;
                                     case PrerequisiteSet.PrerequisiteType.AllOf:
-                                        result = prerequisiteSet.prerequisites.All(geneName => otherGenes.Any(y => y.def.defName == geneName));
+                                        int matches = prerequisiteSet.prerequisites.Count(geneName => otherGenes.Any(y => y.def.defName == geneName));
+                                        float percentage = (float)matches / prerequisiteSet.prerequisites.Count;
+                                        result = percentage >= prerequisiteSet.allOfPerecntage;
                                         if (!result)
                                         {
                                             return "BS_PrerequisitesNotMetAllOf".Translate($"{string.Join(", ", prerequisiteSet.prerequisites.Select(GeneDefLabelDefName))}");
                                         }
                                         break;
                                     case PrerequisiteSet.PrerequisiteType.NoneOf:
-                                        result = prerequisiteSet.prerequisites.All(geneName => otherGenes.All(y => y.def.defName != geneName));
+                                        int bannedMatches = prerequisiteSet.prerequisites.Count(geneName => otherGenes.Any(y => y.def.defName == geneName));
+                                        float bannedPercentage = (float)bannedMatches / prerequisiteSet.prerequisites.Count;
+                                        result = bannedPercentage <= prerequisiteSet.nonOfPercentage;
                                         if (!result)
                                         {
                                             var bannedGenesPresent = prerequisiteSet.prerequisites.Where(geneName => otherGenes.Any(y => y.def.defName == geneName)).ToList();

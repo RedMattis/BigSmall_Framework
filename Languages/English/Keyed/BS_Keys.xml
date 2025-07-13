@@ -4,7 +4,9 @@
   <BP_PrerequisiteSet>prerequisites</BP_PrerequisiteSet>
   <BP_AnyOf>Requires ANY of the listed</BP_AnyOf>
   <BP_AllOf>Requires ALL of the listed</BP_AllOf>
+  <BP_AllOfPercent>Requires {0}% of the listed</BP_AllOfPercent>
   <BP_NoneOf>Must not have ANY of the listed</BP_NoneOf>
+  <BP_NoneOfPercent>Can at most have {0}% of the listed</BP_NoneOfPercent>
   <BP_GeneNotFoundInGame>Gene not active in your game</BP_GeneNotFoundInGame>
   <BP_GenesSuppressed>Genes Suppressed</BP_GenesSuppressed>
   
