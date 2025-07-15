@@ -116,10 +116,6 @@ namespace BigAndSmall
             Scribe_Values.Look(ref cur, "cur", 0f);
             Scribe_Values.Look(ref max, "max", 0f);
             Scribe_Values.Look(ref targetValue, "targetValue", 0.5f);
-            if (Scribe.mode == LoadSaveMode.PostLoadInit)
-            {
-                targetValue *= max;
-            }
         }
     }
 }

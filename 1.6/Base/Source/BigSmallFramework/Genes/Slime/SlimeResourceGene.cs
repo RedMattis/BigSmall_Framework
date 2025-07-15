@@ -250,10 +250,6 @@ namespace BigAndSmall
         {
             base.ExposeData();
             Scribe_Values.Look(ref cachedIncrease, "cachedIncrease", 0);
-            if (Scribe.mode == LoadSaveMode.PostLoadInit)
-            {
-                targetValue *= max;
-            }
         }
     }
 }
