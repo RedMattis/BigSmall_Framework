@@ -384,6 +384,14 @@ namespace BigAndSmall
                 {
                     racePawnExtension.canWieldThings = false;
                 }
+
+                racePawnExtension.nullsThoughts ??= [];
+                var allUncoveredThoughts = DefDatabase<ThoughtDef>.AllDefs.Where(x => x.defName.ToLower().Contains("uncovered"));
+                var allSweatThoughts = DefDatabase<ThoughtDef>.AllDefs.Where(x => x.defName.ToLower().Contains("sweat"));
+                var tableThoughts = DefDatabase<ThoughtDef>.AllDefs.Where(x => x.defName.ToLower().Contains("table"));
+                racePawnExtension.nullsThoughts.AddRange(allUncoveredThoughts);
+                racePawnExtension.nullsThoughts.AddRange(allSweatThoughts);
+                racePawnExtension.nullsThoughts.AddRange(tableThoughts);
             }
             if (aniPawnKind.abilities != null)
             {

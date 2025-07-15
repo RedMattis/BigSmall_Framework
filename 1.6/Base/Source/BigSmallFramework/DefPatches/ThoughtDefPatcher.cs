@@ -30,7 +30,6 @@ namespace BigAndSmall.SimpleCustomRaces
                         {
                             thought.nullifyingGenes ??= [];
                             thought.nullifyingGenes.AddDistinct(geneDef);
-                            //Log.Message($"DEBUG: Added {gene.defName} to {thought.defName}'s nullifying genes.");
                         }
                     }
                 }
