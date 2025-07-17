@@ -96,6 +96,9 @@ namespace BigAndSmall
         [MayRequire("RedMattis.BigSmall.Core")]
         public static HediffDef BS_IndestructibelApparel;
 
+        // Items
+        public static ThingDef BS_MeatGeneric;
+
         // Weapons
         public static WeaponClassDef BS_GiantWeapon;
 

@@ -90,34 +90,32 @@ namespace BigAndSmall
             {
                 Pawn Partner = (Pawn)__instance.job.GetTarget(___PartnerInd);
 
-                if (Partner != null)
+                if (Partner?.story != null && __instance?.pawn?.story != null)
                 {
                     // Get pawn trait of name "BS_Giant"
                     var matchingTraits = Partner.story.traits.allTraits.Where(x => x.def.defName == "BS_Giant");
 
                     // If the pawn has the Gentle trait, abort.
-                    bool isGentle = Partner.story.traits.HasTrait(BSDefs.BS_Gentle) || Partner.story.traits.HasTrait(TraitDefOf.Kind);
+                    bool isGentle = Partner.story.traits?.HasTrait(BSDefs.BS_Gentle) == true || Partner.story.traits?.HasTrait(TraitDefOf.Kind) == true;
 
                     // The nullifying traits/genes should make it fine to try (and fail) to apply it to other giants.
                     // If not we'll need to check for that.
 
-                    if (matchingTraits.Any() && !isGentle)
+                    if (matchingTraits?.Any() == true && !isGentle)
                     {
                         // Get list of all possible memories
                         List<ThoughtDef> allThoughts = DefDatabase<ThoughtDef>.AllDefsListForReading;
-                        // Get memory called "RBM_CrushedMasochist"
                         ThoughtDef crushedMasochist = allThoughts.Find(x => x.defName == "RBM_CrushedMasochist");
-                        // Get memory called "RBM_Crushed"
                         ThoughtDef crushed = allThoughts.Find(x => x.defName == "RBM_Crushed");
 
 
-                        if (__instance.pawn.story?.traits?.HasTrait(BSDefs.Masochist) == true && crushedMasochist != null)  //Give a positive version to masochists
+                        if (__instance.pawn.story.traits?.HasTrait(BSDefs.Masochist) == true && crushedMasochist != null)  //Give a positive version to masochists
                         {
-                            __instance.pawn.needs.mood.thoughts.memories.TryGainMemory(crushedMasochist);
+                            __instance.pawn.needs?.mood?.thoughts?.memories.TryGainMemory(crushedMasochist);
                         }
                         else if (crushed != null)
                         {
-                            __instance.pawn.needs.mood.thoughts.memories.TryGainMemory(crushed);
+                            __instance.pawn.needs?.mood?.thoughts?.memories.TryGainMemory(crushed);
                         }
                     }
                 }

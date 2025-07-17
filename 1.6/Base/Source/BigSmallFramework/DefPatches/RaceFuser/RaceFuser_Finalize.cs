@@ -77,6 +77,21 @@ namespace BigAndSmall
                 }
 
                 CopyRaceProperties(sRace, newRace);
+                if (sRace.hasMeat)
+                {
+                    if (sRace.useMeatFrom != null)
+                    {
+                        newRace.useMeatFrom = sRace.useMeatFrom;
+                    }
+                    else
+                    {
+                        newRace.useMeatFrom = sThing;
+                    }
+                }
+                else
+                {
+                    newRace.specificMeatDef = BSDefs.BS_MeatGeneric;
+                }
 
 
                 // Set the body of the base race rather than that of the Fuse Set.

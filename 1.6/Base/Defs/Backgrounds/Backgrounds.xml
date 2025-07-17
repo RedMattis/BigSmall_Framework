@@ -1,0 +1,33 @@
+<Defs>
+  <!-- Used for animals which have been made sapient. -->
+  <BackstoryDef>
+    <defName>BS_AnimalBaby</defName>
+    <title>baby animal</title>
+    <titleShort>baby animal</titleShort>
+    <baseDesc>[PAWN_nameDef] was born as a baby animal.</baseDesc>
+    <slot>Childhood</slot>
+    <skillGains>
+    </skillGains>
+    <spawnCategories>
+      <li>BS_AnimalBaby</li>
+    </spawnCategories>
+  </BackstoryDef>
+
+  <BackstoryDef>
+    <defName>BS_AnimalAdult</defName>
+    <title>animal</title>
+    <titleShort>animal</titleShort>
+    <baseDesc>[PAWN_nameDef] grew up to be an adult animal.</baseDesc>
+    <slot>Adulthood</slot>
+    <bodyTypeMale>Male</bodyTypeMale>
+    <bodyTypeFemale>Female</bodyTypeFemale>
+    <skillGains>
+      <Melee>2</Melee>
+      <Animals>2</Animals>
+      <Social>2</Social>
+    </skillGains>
+    <spawnCategories>
+      <li>BS_AnimalAdult</li>
+    </spawnCategories>
+  </BackstoryDef>
+</Defs>

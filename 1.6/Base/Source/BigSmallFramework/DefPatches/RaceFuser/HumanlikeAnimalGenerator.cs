@@ -241,8 +241,22 @@ namespace BigAndSmall
             newRace.predator = humRace.predator;
             newRace.animalType = humRace.animalType;
             newRace.fleshType = newRace.fleshType == FleshTypeDefOf.Mechanoid ? humRace.FleshType : newRace.FleshType;
-            //newRace.meatDef = humRace.meatDef;  // Can cause issues if they are mechanoid meatDef, etc.
-
+            newRace.meatDef = humRace.meatDef;
+            if (aniRace.hasMeat)
+            {
+                if (aniRace.useMeatFrom != null)
+                {
+                    newRace.useMeatFrom = aniRace.useMeatFrom;
+                }
+                else
+                {
+                    newRace.useMeatFrom = aniThing;
+                }
+            }
+            else
+            {
+                newRace.specificMeatDef = BSDefs.BS_MeatGeneric;
+            }
             newRace.hideTrainingTab = humRace.hideTrainingTab;
             newRace.canReleaseToWild = humRace.canReleaseToWild;
             newRace.disableAreaControl = humRace.disableAreaControl;
@@ -525,6 +539,8 @@ namespace BigAndSmall
             newThing.SetStatBaseValue(StatDefOf.ComfyTemperatureMin, animalThing.GetStatValueAbstract(StatDefOf.ComfyTemperatureMin));
             newThing.SetStatBaseValue(StatDefOf.LeatherAmount, animalThing.GetStatValueAbstract(StatDefOf.LeatherAmount));
             newThing.SetStatBaseValue(StatDefOf.MeatAmount, animalThing.GetStatValueAbstract(StatDefOf.MeatAmount));
+            newThing.SetStatBaseValue(StatDefOf.FlightCooldown, animalThing.GetStatValueAbstract(StatDefOf.FlightCooldown));
+            newThing.SetStatBaseValue(StatDefOf.MaxFlightTime, animalThing.GetStatValueAbstract(StatDefOf.MaxFlightTime));
 
             // Averaged
             newThing.SetStatBaseValue(StatDefOf.DeepDrillingSpeed, (animalThing.GetStatValueAbstract(StatDefOf.DeepDrillingSpeed) + humanThing.GetStatValueAbstract(StatDefOf.DeepDrillingSpeed)) / 2);
