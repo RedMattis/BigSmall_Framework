@@ -105,7 +105,7 @@ namespace BigAndSmall
         public bool deathlike = false;
         public bool isMechanical = false;
 
-        public List<RacialFeatureDef> racialFeatures = [];
+        public HashSet<RacialFeatureDef> racialFeatures = [];
 
         /// <summary>
         /// Banns addictions that are not whitelisted or better.

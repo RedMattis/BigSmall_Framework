@@ -56,12 +56,16 @@ namespace BigAndSmall
         protected string GetDescriptionFull()
         {
             StringBuilder stringBuilder = new();
-            stringBuilder.AppendLine(description);
-            stringBuilder.AppendLine();
-            if (hediffDescriptionSource != null)
+            if (description.NullOrEmpty())
+            {
+                stringBuilder.AppendLine(description);
+            }
+            else
             {
                 stringBuilder.AppendLine(hediffDescriptionSource.Description);
             }
+            stringBuilder.AppendLine();
+            
             return stringBuilder.ToString();
         }
     }

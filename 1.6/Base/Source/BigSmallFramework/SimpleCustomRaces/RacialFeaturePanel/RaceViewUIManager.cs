@@ -153,6 +153,7 @@ namespace BigAndSmall
         private static void RecacheEntries(Thing target, GeneSet genesOverride)
         {
             racialFeatures.Clear();
+            HashSet<string> featureKeysAdded = [];
             geneDefs.Clear();
             xenogenes.Clear();
             endogenes.Clear();
@@ -176,6 +177,11 @@ namespace BigAndSmall
                 {
                     foreach(var feature in hediff.def.GetAllPawnExtensionsOnHediff().Where(x=>x.traitIcon != null))
                     {
+                        if (!featureKeysAdded.Add(hediff.def + hediff.Description + feature.traitIcon))
+                        {
+                            // Already added an identical entry.
+                            continue;
+                        }
                         var featureDef = new RacialFeatureDef
                         {
                             label = hediff.Label.CapitalizeFirst(),
@@ -183,6 +189,7 @@ namespace BigAndSmall
                             iconPath = feature.traitIcon,
                             hediffDescriptionSource = hediff.def,
                         };
+
                         racialFeatures.AddDistinct(featureDef);
                     }
                 }
