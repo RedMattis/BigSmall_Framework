@@ -66,17 +66,20 @@ namespace BigAndSmall
     {
         public static Dictionary<ThingDef, HumanlikeAnimal> humanlikeAnimals = [];
         public static Dictionary<ThingDef, HumanlikeAnimal> reverseLookupHumanlikeAnimals = [];
+        public static HashSet<BodyDef> modifiedBodies = [];
 
         public static void GenerateHumanlikeAnimals(bool hotReload)
         {
             if (BigSmall.BSSapientAnimalsActive || BigSmall.BSSapientMechanoidsActive)  // Just replace this with the actual mod's name later.
             {
+                modifiedBodies.Clear();
                 HashSet<ThingDef> thingDefsGenerated = [];
 
                 var aniPawnKinds = DefDatabase<PawnKindDef>.AllDefs
                     .Where(x => x.race is ThingDef aniThing && aniThing?.race is RaceProperties race &&
                         race.Animal && race.intelligence == Intelligence.Animal)
                     .ToList();
+
                 if (BigSmall.BSSapientMechanoidsActive)
                 {
                     var mechPawnKinds = DefDatabase<PawnKindDef>.AllDefs
@@ -107,6 +110,7 @@ namespace BigAndSmall
                 {
                     reverseLookupHumanlikeAnimals[hAnim.animal] = hAnim;
                 }
+                modifiedBodies.Clear();
             }
         }
 
@@ -244,7 +248,11 @@ namespace BigAndSmall
             newRace.meatDef = humRace.meatDef;
             if (aniRace.hasMeat)
             {
-                if (aniRace.useMeatFrom != null)
+                if (aniRace.specificMeatDef != null)
+                {
+                    newRace.specificMeatDef = aniRace.specificMeatDef;
+                }
+                else if (aniRace.useMeatFrom != null)
                 {
                     newRace.useMeatFrom = aniRace.useMeatFrom;
                 }
@@ -455,20 +463,29 @@ namespace BigAndSmall
             }
         }
 
+        private static void GetPartsRecursive(BodyPartRecord part, List<BodyPartRecord> parts)
+        {
+            parts.Add(part);
+            foreach (var child in part.parts)
+            {
+                GetPartsRecursive(child, parts);
+            }
+        }
+
         private static void SetupBodyTags(ThingDef newThing, RaceProperties newRace)
         {
+            if (modifiedBodies.Add(newRace.body) == false)
+            {
+                return;
+            }
             bool foundUtilitySlot = false;
             var bodyPartDefWaist = DefDatabase<BodyPartDef>.AllDefs.FirstOrDefault(x => x.defName == "Waist");
             var armGrp = DefDatabase<BodyPartGroupDef>.AllDefs.FirstOrDefault(x => x.defName == "Arms");
             var shouldGrp = DefDatabase<BodyPartGroupDef>.AllDefs.FirstOrDefault(x => x.defName == "Shoulders");
             var waistGrp = DefDatabase<BodyPartGroupDef>.AllDefs.FirstOrDefault(x => x.defName == "Waist");
-            //Log.Message($"{newThing.defName} has {newRace.body.AllParts.Count} body parts");
-            if (newRace.body.AllParts.Count == 0)
-            {
-                newRace.body.CacheDataRecursive(newRace.body.corePart);
-                //Log.Message($"...{newThing.defName} has {newRace.body.AllParts.Count} body parts after caching.");
-            }
-            newRace.body.AllParts.ForEach(part =>
+            List<BodyPartRecord> allParts = [];
+            GetPartsRecursive(newRace.body.corePart, allParts);
+            allParts.ForEach(part =>
             {
                 if (part.def.defName == "Waist")
                 {
@@ -498,8 +515,6 @@ namespace BigAndSmall
                     groups = [waistGrp],
                 };
                 corePart.parts.Add(utilityPart);
-                newRace.body.ClearCachedData();
-                newRace.body.CacheDataRecursive(newRace.body.corePart);
             }
         }
 
