@@ -114,7 +114,7 @@ namespace BigAndSmall
 
             if (tick % 100 == 0)
             {
-                SlowUpdate(tick);
+                SlowUpdate(tick/100);
             }
         }
 
@@ -133,16 +133,19 @@ namespace BigAndSmall
             }
             else
             {
-                // If the queue is not empty, dequeue the first cache and refresh it.
-                var cachedPawn = refreshQueue.Dequeue();
-                if (cachedPawn != null && (cachedPawn.Spawned || cachedPawn.Corpse?.Spawned == true))
+                if (currentTick % 5 == 0)
                 {
-                    HumanoidPawnScaler.GetCache(cachedPawn, forceRefresh: true);
+                    // If the queue is not empty, dequeue the first cache and refresh it.
+                    var cachedPawn = refreshQueue.Dequeue();
+                    if (cachedPawn != null && (cachedPawn.Spawned || cachedPawn.Corpse?.Spawned == true))
+                    {
+                        HumanoidPawnScaler.GetCache(cachedPawn, forceRefresh: true);
+                    }
                 }
             }
             if (BigSmallMod.settings.jesusMode)
             {
-                if (currentTick % 1000 == 0)
+                if (currentTick % 10 == 0)
                 {
                     // Set all needs to full, and mood to max for testing purposes. Avoids mental breaks when testing, etc.
                     var allPawns = PawnsFinder.AllMapsAndWorld_Alive;
@@ -152,7 +155,7 @@ namespace BigAndSmall
                     }
                 }
             }
-            bool verySlowUpdate = currentTick % 500 == 0;
+            bool verySlowUpdate = currentTick % 4 == 0;
             frequentUpdateGenes = new(frequentUpdateGenes.Where(x => x.Key != null && x.Key.pawn != null && !x.Key.pawn.Discarded));
             if (frequentUpdateGenes.Any())
             {

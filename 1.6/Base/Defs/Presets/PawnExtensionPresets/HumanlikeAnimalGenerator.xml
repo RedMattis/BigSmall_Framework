@@ -68,6 +68,11 @@
       <li>paramedic</li>
       <li>lancer</li>
       <li>centipede</li>
+      <li>HiveQueen</li>
+      <li>HiveKing</li>
+      <li>Princess</li>
+      <li>Emperor</li>
+      <li>Empress</li>
     </hasHandsWildcards>
 
     <!-- Generally the category for creatures that can just barely hold something without using their mouth -->
@@ -102,6 +107,7 @@
       <li>constrictor</li>
       <li>alligator</li>
       <li>crocodile</li>
+      <li>seal</li>
     </hasPoorHandsWildcards>
     <!-- Wolves horses, etc. do not have fine manipulators and are thus not listed. -->
   </BigAndSmall.HumanlikeAnimalSettings>

@@ -292,8 +292,9 @@ namespace BigAndSmall
             else if (newRace.renderTree.defName == "Human") { }  // Could be replaced by a whitelist.
             else
             {
-                Log.WarningOnce($"Skipping generating humanlike-animal from {aniPawnKind.defName} as it has an unhandled type of renderTree: {newRace.renderTree.defName}.\n" +
+                Log.WarningOnce($"{aniPawnKind.defName} has as it has an unhandled type of renderTree: {newRace.renderTree.defName}. It may not render as expected.\n" +
                     $"No warning will be sent for any further animals skipped for humanlike-animal generation to avoid spamming the log.", 6661337);
+                newRace.renderTree = aniRace.renderTree;
             }
 
             // Fix animal body so animals can equip stuff. This also caches the parts if this is not already done.
