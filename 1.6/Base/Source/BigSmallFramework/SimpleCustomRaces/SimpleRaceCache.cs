@@ -165,7 +165,7 @@ namespace BigAndSmall
             {
                 foreach (var htb in toBodyAdd)
                 {
-                    pawn.health.AddHediff(htb.hediff);
+                    pawn.health.GetOrAddHediff(htb.hediff);
                 }
             }
             if (toBodyRemove.Count > 0)

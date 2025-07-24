@@ -447,6 +447,7 @@ namespace BigAndSmall
                 pregnancySpeed = allPawnExt.Aggregate(1f, (acc, x) => acc * x.pregnancySpeedMultiplier);
                 this.everFertile = everFertile;
                 renderCacheOff = allPawnExt.Any(x => x.renderCacheOff);
+                partsCanBeHarvested = allPawnExt.All(x => x.partsCanBeHarvested);
 
                 this.bodyPosOffset = bodyPosOffset;
 

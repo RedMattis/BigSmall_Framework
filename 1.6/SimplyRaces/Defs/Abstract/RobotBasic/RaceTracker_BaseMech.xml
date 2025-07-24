@@ -115,7 +115,15 @@
             <li>BS_RepairAndroidPartSmall</li>
           </allowlist>
         </surgeryRecipes>
-      </li>
+				<applyBodyHediff>
+					<li>
+						<hediff>BS_VacuumInsulation</hediff>
+						<conditionals>
+							<li Class="BigAndSmall.ConditionalStatAffecter_InVacuum"/>
+						</conditionals>
+					</li>
+				</applyBodyHediff>
+			</li>
     </modExtensions>
   </HediffDef>
 </Defs>

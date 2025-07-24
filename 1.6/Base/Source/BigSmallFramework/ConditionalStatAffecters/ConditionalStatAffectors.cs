@@ -64,6 +64,20 @@ namespace BigAndSmall
         }
     }
 
+    public class ConditionalStatAffecter_InVacuum : ConditionalStatAffecter
+    {
+        public override string Label => "BS_InVacuum".Translate();
+
+        public override bool Applies(StatRequest req)
+        {
+            if (req.Thing?.Spawned == true && req.Thing.Map.BiomeAt(req.Thing.Position)?.inVacuum == true)
+            {
+                return true;
+            }
+            return false;
+        }
+    }
+
     public class ConditionalStatAffecter_Drunk : ConditionalStatAffecter
     {
         public override string Label => "BS_StatsReport_Drunk".Translate();

@@ -3,7 +3,7 @@
   <RecipeDef>
     <defName>BS_VacuumProof</defName>
     <label>vacuum proof components</label>
-    <description>vacuum proof mechanical components.</description>
+    <description>vacuum proof mechanical components for robots that require it.</description>
     <uiIconPath>BS_RaceIcons/Robot</uiIconPath>
     <jobString>proofing components...</jobString>
 

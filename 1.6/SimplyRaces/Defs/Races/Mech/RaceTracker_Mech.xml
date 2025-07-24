@@ -160,6 +160,14 @@
           </allowlist>
         </surgeryRecipes>
         <babyStartAge>20</babyStartAge>
+        <applyBodyHediff>
+					<li>
+						<hediff>BS_VacuumInsulation</hediff>
+						<conditionals>
+							<li Class="BigAndSmall.ConditionalStatAffecter_InVacuum"/>
+						</conditionals>
+					</li>
+				</applyBodyHediff>
       </li>
     </modExtensions>
   </HediffDef>

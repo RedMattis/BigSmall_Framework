@@ -1,0 +1,33 @@
+<Defs>
+  <HediffDef>
+    <defName>BS_VacuumInsulationPoor</defName>
+    <label>Moderate Vacuum Insulation</label>
+    <description>This creature can somewhat handle the temperature extremes of space.</description>
+    <isBad>false</isBad>
+    <everCurableByItem>false</everCurableByItem>
+    <stages>
+      <li>
+        <statOffsets>
+          <ComfyTemperatureMin>-60</ComfyTemperatureMin>
+        </statOffsets>
+      </li>
+    </stages>
+    <allowMothballIfLowPriorityWorldPawn>true</allowMothballIfLowPriorityWorldPawn>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>BS_VacuumInsulation</defName>
+    <label>Vacuum Insulation</label>
+    <description>This creature can handle the temperature extremes of space.</description>
+    <isBad>false</isBad>
+    <everCurableByItem>false</everCurableByItem>
+    <stages>
+      <li>
+        <statOffsets>
+          <ComfyTemperatureMin>-100</ComfyTemperatureMin>
+        </statOffsets>
+      </li>
+    </stages>
+    <allowMothballIfLowPriorityWorldPawn>true</allowMothballIfLowPriorityWorldPawn>
+  </HediffDef>
+</Defs>

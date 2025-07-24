@@ -111,6 +111,7 @@ namespace BigAndSmall
         /// Banns addictions that are not whitelisted or better.
         /// </summary>
         public bool banAddictions = false;
+        public bool partsCanBeHarvested = true;
         public bool willBeUndead = false;
         public bool unarmedOnly = false;
         public bool succubusUnbonded = false;

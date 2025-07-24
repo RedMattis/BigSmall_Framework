@@ -159,7 +159,7 @@ namespace BigAndSmall
             frequentUpdateGenes = new(frequentUpdateGenes.Where(x => x.Key != null && x.Key.pawn != null && !x.Key.pawn.Discarded));
             if (frequentUpdateGenes.Any())
             {
-                var fug = frequentUpdateGenes.Where(x => x.Key.pawn.Spawned).ToList();
+                var fug = frequentUpdateGenes.Where(x => x.Key.pawn.Spawned || x.Key.pawn.IsColonist).ToList();
                 foreach ((var gene, bool? oldState) in fug)
                 {
                     LockedNeed.UpdateLockedNeeds(gene);

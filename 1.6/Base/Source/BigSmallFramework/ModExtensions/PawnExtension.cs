@@ -85,6 +85,8 @@ namespace BigAndSmall
         /// </summary>
         public bool forceThingDefSwap = false;
 
+        public bool partsCanBeHarvested = true;
+
         /// <summary>
         /// Used by Genes. A bit of a miseleading name.
         /// The listed genes will be added to the pawn when this gene is added.

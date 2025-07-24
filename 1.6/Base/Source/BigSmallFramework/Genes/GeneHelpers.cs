@@ -9,7 +9,7 @@ using Verse;
 
 namespace BigAndSmall
 {
-    public partial class GeneHelpers
+    public static partial class GeneHelpers
     {
         public static void RefreshAllGenes(Pawn pawn, List<Gene> genesAdded, List<Gene> genesRemoved)
         {
