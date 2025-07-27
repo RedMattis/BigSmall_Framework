@@ -181,7 +181,8 @@ namespace BigAndSmall
             if (aniThing.comps != null) { bothComps.AddRange(aniThing.comps); }
             foreach (var comp in humThing.comps)
             {
-                if (!compWhitelist.Contains(comp.GetType().Name))
+                // Check if the comp is already in the list, to avoid duplicates.
+                if (!bothComps.Any(x=>x.GetType() == comp.GetType()))
                 {
                     bothComps.Add(comp);
                 }

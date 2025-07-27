@@ -206,6 +206,15 @@ namespace BigAndSmall
             }
             if (runningRaceSwap || pawn?.genes == null || (pawn.def == swapTarget && state)) return;
 
+            var firstMechanical = BodyDefFusionsHelper.MergableBodies.Where(x => x.defaultMechanical).FirstOrDefault();
+
+            if (pawn.def == firstMechanical.thingDef && swapTarget.IsMechanicalDef())
+            {
+                force = true;
+                permitFusion = false;
+                targetPriority = forcePriority;
+            }
+
             if (clearHediffsToReapply)
             {
                 hediffsToReapply.Clear();
@@ -306,7 +315,6 @@ namespace BigAndSmall
                         if (cache.isMechanical)
                         {
                             // Find first MergableBody with defaultMechanical.
-                            var firstMechanical = BodyDefFusionsHelper.MergableBodies.Where(x => x.defaultMechanical).FirstOrDefault();
                             if (firstMechanical != null && firstMechanical?.thingDef != swapTarget)
                             {
                                 originalThing = firstMechanical.thingDef;

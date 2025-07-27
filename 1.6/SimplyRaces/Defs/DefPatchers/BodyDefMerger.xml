@@ -46,6 +46,7 @@
         <raceTrackers>
           <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_TVAndroid</li>
           <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_TVAndroid_Sapient</li>
+          <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_SynthHediff</li>
         </raceTrackers>
       </li>
     </retainableTrackers>

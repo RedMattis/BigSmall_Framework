@@ -41,7 +41,7 @@
     <match Class="PatchOperationReplace">
       <xpath>Defs/ThingDef[defName="VNPE_NutrientPasteFeeder"]/comps/li[@Class="PipeSystem.CompProperties_ConvertResourceToThing"]/maxOutputStackSize</xpath>
       <value>
-        <maxOutputStackSize>50</maxOutputStackSize>
+        <maxOutputStackSize>24</maxOutputStackSize>
       </value>
     </match>
   </Operation>
