@@ -96,6 +96,12 @@ namespace BigAndSmall
         [MayRequire("RedMattis.BigSmall.Core")]
         public static HediffDef BS_IndestructibelApparel;
 
+        // Precepts
+        [MayRequire("RedMattis.BigSmall.Core,Ludeon.RimWorld.Ideology")]
+        public static PreceptDef BS_AlienAppearanceTolerance_SomeTolerance;
+        [MayRequire("RedMattis.BigSmall.Core,Ludeon.RimWorld.Ideology")]
+        public static PreceptDef BS_AlienAppearanceTolerance_FullTolerance;
+
         // Items
         public static ThingDef BS_MeatGeneric;
 

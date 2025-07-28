@@ -128,6 +128,25 @@ namespace BigAndSmall
             {
                 return false;
             }
+            bool someTolerance = false;
+            if (ModsConfig.IdeologyActive)
+            {
+                bool fullTolerance = observingPawn.Ideo?.HasPrecept(BSDefs.BS_AlienAppearanceTolerance_FullTolerance) == true;
+                if (fullTolerance)
+                {
+                    return false;
+                }
+                someTolerance = observingPawn.Ideo?.HasPrecept(BSDefs.BS_AlienAppearanceTolerance_SomeTolerance) == true;
+            }
+            if (observingPawn.story?.traits != null)
+            {
+                if (observingPawn.story.traits.HasTrait(TraitDefOf.Kind) == true ||
+                    observingPawn.story.traits.HasTrait(TraitDefOf.Transhumanist))
+                {
+                    if (someTolerance) return false;  // If there was already tolerance, exit out early.
+                    someTolerance = true;
+                }
+            }
             if (targetPawn.genes is Pawn_GeneTracker tgtGenes && observingPawn.genes is Pawn_GeneTracker obGenes)
             {
                 var tgtActiveGenes = GeneHelpers.GetAllActiveGeneDefs(targetPawn);
@@ -149,9 +168,9 @@ namespace BigAndSmall
                 if (!(targetApperance == AlienApperanceUtils.AlienState.Neutral && targetApperance == observerApperance)) // If both are neutral, no need to check.
                 {
                     bool someoneIsVeryAlien = targetApperance == AlienApperanceUtils.AlienState.VeryAlien || observerApperance == AlienApperanceUtils.AlienState.VeryAlien;
-
+                    
                     int offsetState = 0;
-                    if (someoneIsVeryAlien)
+                    if (someoneIsVeryAlien && !someTolerance)
                     {
                         offsetState = 6;
                         int tgtBeauty = (int)targetPawn.GetStatValue(StatDefOf.PawnBeauty);
@@ -161,6 +180,22 @@ namespace BigAndSmall
                         }
                     }
                     var result = AlienApperanceUtils.GetAlienApperanceThoughtState(tgtActiveGenes.ToList(), targetApperance, obActiveGenes.ToList(), observerApperance, offsetState); ;
+                    if (someTolerance && result.StageIndex > 1)
+                    {
+                        if (result.StageIndex > 4 && someoneIsVeryAlien)
+                        {
+                            result = ThoughtState.ActiveAtStage(3); // Clamp to "uncomfortably alien" if above 4.
+                        }
+                        else if (result.StageIndex == 2)
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            result = ThoughtState.ActiveAtStage(2); // Clamp to "uncanny" if just above 2.
+                        }
+                    }
+                    
                     return result;
                 }
             }

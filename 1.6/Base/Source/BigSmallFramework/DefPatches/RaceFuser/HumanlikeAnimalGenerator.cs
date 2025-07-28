@@ -495,6 +495,11 @@ namespace BigAndSmall
             var armGrp = DefDatabase<BodyPartGroupDef>.AllDefs.FirstOrDefault(x => x.defName == "Arms");
             var shouldGrp = DefDatabase<BodyPartGroupDef>.AllDefs.FirstOrDefault(x => x.defName == "Shoulders");
             var waistGrp = DefDatabase<BodyPartGroupDef>.AllDefs.FirstOrDefault(x => x.defName == "Waist");
+
+            List<string> multiUseTorso = ["snakebody"];
+            List<string> legAndArmParts = ["tentacle"];
+            List<string> legParts = ["leg", "snakeBody"];
+            List<string> armParts = ["arm", "wing"];
             List<BodyPartRecord> allParts = [];
             GetPartsRecursive(newRace.body.corePart, allParts);
             allParts.ForEach(part =>
@@ -505,16 +510,13 @@ namespace BigAndSmall
                 }
                 if (part == newRace.body.corePart)
                 {
+                    TryAddTags(newThing, part, multiUseTorso, [BodyPartGroupDefOf.Torso, BodyPartGroupDefOf.Legs]);
                     AddGroupIfNoneDefined(part, [BodyPartGroupDefOf.Torso], newThing);
                 }
-                else if (part.def.defName == "Leg" || part.parent?.def?.defName == "Leg")
-                {
-                    AddGroupIfNoneDefined(part, [BodyPartGroupDefOf.Legs], newThing);
-                }
-                else if (part.def.defName == "Arm" || part.parent?.def?.defName == "Arm")
-                {
-                    AddGroupIfNoneDefined(part, [armGrp], newThing);
-                }
+                else if (TryAddTags(newThing, part, legAndArmParts, [BodyPartGroupDefOf.Legs, armGrp])) { }
+                else if (TryAddTags(newThing, part, legParts, [BodyPartGroupDefOf.Legs])) { }
+                else if (TryAddTags(newThing, part, armParts, [armGrp])) { }
+                
             });
             if (!foundUtilitySlot)
             {
@@ -528,6 +530,18 @@ namespace BigAndSmall
                 };
                 corePart.parts.Add(utilityPart);
             }
+        }
+
+        private static bool TryAddTags(ThingDef newThing, BodyPartRecord part, List<string> tags, List<BodyPartGroupDef> grp)
+        {
+            bool partHasTag = tags.Any(tag => part.def.defName.ToLower().Contains(tag) == true);
+            bool parentHasTag = part.parent != null && tags.Any(tag => part.parent.def.defName.ToLower().Contains(tag) == true);
+            if (partHasTag || parentHasTag)
+            {
+                AddGroupIfNoneDefined(part, grp, newThing);
+                return true;
+            }
+            return false;
         }
 
         private static void AddGroupIfNoneDefined(BodyPartRecord part, List<BodyPartGroupDef> groupToAdd, ThingDef thingDef)
