@@ -2,7 +2,9 @@
 using Prepatcher;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Verse;
@@ -12,15 +14,20 @@ namespace BigAndSmall
 {
     public static class BSCacheExtensions
     {
+        public static bool prepatched = false;
+
         [ThreadStatic]
         private static BSCache _placeholderCache;
         [PrepatcherField]
-        [ValueInitializer(nameof(BSCache.GetDefaultCache))]
+        //[ValueInitializer("BigAndSmall.BSCache.GetDefaultCache")]
+        [ValueInitializer(nameof(GetDefaultCache))]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref BSCache GetCachePrepatched(this Pawn pawn)
         {
             _placeholderCache = GetCacheUltraSpeed(pawn, canRegenerate:false);
             return ref _placeholderCache;
         }
+        private static BSCache GetDefaultCache() => BSCache.GetDefaultCache();
 
         //private static BSCache _placeholderCache2;
         //[PrepatcherField]

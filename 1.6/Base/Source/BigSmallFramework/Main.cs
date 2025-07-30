@@ -27,13 +27,10 @@ namespace BigAndSmall
             //RunDefPatchesWithHotReload(hotReload: false);
             
             NewFoodCategory.SetupFoodCategories();
-            
-
-            
             DefAltNamer.Initialize();
-
             HARCompat.SetupHARThingsIfHARIsActive();
 
+            BSCacheExtensions.prepatched = ModsConfig.IsActive("zetrith.prepatcher");
 
             if (NalsToggles.FALoaded)
             {

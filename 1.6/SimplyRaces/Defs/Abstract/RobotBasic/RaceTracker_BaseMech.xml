@@ -20,6 +20,7 @@
         </statFactors>
         <statOffsets>
           <VacuumResistance MayRequire="Ludeon.Rimworld.Odyssey">2</VacuumResistance>
+          <ToxicResistance>2</ToxicResistance>
         </statOffsets>
         <damageFactors>
           <Frostbite>0</Frostbite>

@@ -56,7 +56,7 @@ namespace BigAndSmall
             public bool doComplexBodyOffset;
             public bool spawned;
             public Rot4 rotation;
-            public int tick;
+            public int tick10;
             public uint changeIndex; // Used to check if the cache has changed since the last time this was run.
         }
         [ThreadStatic]
@@ -83,10 +83,10 @@ namespace BigAndSmall
                 return;
             }
             var rotInt = ___pawn.rotationInt;
-            if (requestNewCache || BS.Tick10 != threadStaticCache.tick || threadStaticCache.rotation != rotInt)
+            if (requestNewCache || BS.Tick10 != threadStaticCache.tick10 || threadStaticCache.rotation != rotInt)
             {
                 threadStaticCache.approxNoChange = threadStaticCache.cache.approximatelyNoChange;
-                threadStaticCache.tick = BS.Tick10;
+                threadStaticCache.tick10 = BS.Tick10;
                 threadStaticCache.cachingDisabled = (!disableCache && BigSmallMod.settings.disableTextureCaching) &&
                     (threadStaticCache.cache.totalSizeOffset > 0 || threadStaticCache.cache.scaleMultiplier.linear > 1 || threadStaticCache.cache.renderCacheOff);
                 threadStaticCache.doOffset = BigSmallMod.settings.offsetBodyPos && ___pawn.GetPosture() == PawnPosture.Standing &&
@@ -101,30 +101,32 @@ namespace BigAndSmall
                 disableCache = true;
             }
             // Offset pawn upwards if the option is enabled.
-            if (!skipOffset && threadStaticCache.doOffset)
+            if (!skipOffset)
             {
-                drawLoc.z += threadStaticCache.cache.worldspaceOffset;
-            }
-            if (!skipOffset && threadStaticCache.doComplexBodyOffset)
-            {
-                // rotate the offset based on the orientation.
-                switch (rotInt.AsInt)
+                if (threadStaticCache.doOffset)
                 {
-                    case 0:
-                        drawLoc += threadStaticCache.cache.complexBodyOffsets[0];
-                        break;
-                    case 1:
-                        drawLoc += threadStaticCache.cache.complexBodyOffsets[1];
-                        break;
-                    case 2:
-                        drawLoc += threadStaticCache.cache.complexBodyOffsets[2];
-                        break;
-                    case 3:
-                        drawLoc += threadStaticCache.cache.complexBodyOffsets[3];
-                        break;
+                    drawLoc.z += threadStaticCache.cache.worldspaceOffset;
+                }
+                if (threadStaticCache.doComplexBodyOffset)
+                {
+                    // rotate the offset based on the orientation.
+                    switch (rotInt.AsInt)
+                    {
+                        case 0:
+                            drawLoc += threadStaticCache.cache.complexBodyOffsets[0];
+                            break;
+                        case 1:
+                            drawLoc += threadStaticCache.cache.complexBodyOffsets[1];
+                            break;
+                        case 2:
+                            drawLoc += threadStaticCache.cache.complexBodyOffsets[2];
+                            break;
+                        case 3:
+                            drawLoc += threadStaticCache.cache.complexBodyOffsets[3];
+                            break;
+                    }
                 }
             }
-            
         }
     }
 
@@ -241,9 +243,9 @@ namespace BigAndSmall
                     }
                     else if (node is PawnRenderNode_Head)
                     {
-                        double headerRenderSizeD = cache.headRenderSize;
-                        __result.x = (float)(resultX * headerRenderSizeD);
-                        __result.z = (float)(resultZ * headerRenderSizeD);
+                        double headRenderSizeD = cache.headRenderSize;
+                        __result.x = (float)(resultX * headRenderSizeD);
+                        __result.z = (float)(resultZ * headRenderSizeD);
                     }
                     else if (node is PawnRenderNode_HAnimalPart)
                     {
