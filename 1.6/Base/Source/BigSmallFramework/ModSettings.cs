@@ -146,14 +146,12 @@ namespace BigAndSmall
             CreateSettingCheckbox(listStd, "BS_SciFiNames".Translate(), ref settings.useSciFiNames);
             CreateSettingCheckbox(listStd, "BS_FantasyNames".Translate(), ref settings.useFantasyNames);
 
-            // Check if in dev-mode
             if (Prefs.DevMode)
             {
                 listStd.GapLine();
                 listStd.Label("BS_DevSettings".Translate().AsTipTitle());
                 CreateSettingCheckbox(listStd, "BS_JesusMode".Translate(), ref settings.jesusMode);
                 CreateSettingCheckbox(listStd, "BS_RecruitDevSpawned".Translate(), ref settings.recruitDevSpawned);
-
             }
 
 

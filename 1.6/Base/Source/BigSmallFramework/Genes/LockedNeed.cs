@@ -22,7 +22,7 @@ namespace BigAndSmall
                     bool minValue = lockedNeed.minValue;
                     NeedDef needDef = lockedNeed.need;
 
-                    var need = gene.pawn.needs.TryGetNeed(needDef);
+                    var need = gene.pawn?.needs?.TryGetNeed(needDef);
 
                     if (need != null)
                     {

@@ -15,7 +15,7 @@ namespace BigAndSmall
     public class HumanlikeAnimal
     {
         public PawnKindDef animalKind;
-        public ThingDef humanlikeThing;
+        public ThingDef humanlikeAnimal;
         public ThingDef humanlike;
         public ThingDef animal;
 
@@ -56,7 +56,7 @@ namespace BigAndSmall
             return null;
         }
 
-        public static ThingDef HumanLikeAnimalFor(ThingDef td) => GetHumanlikeAnimalFor(td)?.humanlikeThing;
+        public static ThingDef HumanLikeAnimalFor(ThingDef td) => GetHumanlikeAnimalFor(td)?.humanlikeAnimal;
         public static ThingDef HumanLikeSourceFor(ThingDef td) => GetHumanlikeAnimalFor(td)?.humanlike;
         public static ThingDef AnimalSourceFor(ThingDef td) => GetHumanlikeAnimalFor(td)?.animal;
         public static bool IsHumanlikeAnimal(ThingDef td) => humanlikeAnimals.ContainsKey(td);
@@ -131,7 +131,7 @@ namespace BigAndSmall
             HumanlikeAnimal hla = new()
             {
                 animalKind = animalLikePK,
-                humanlikeThing = animalLikePK.race,
+                humanlikeAnimal = animalLikePK.race,
                 humanlike = animalLikePK.race,
                 animal = animalLikePK.race
             };
@@ -162,36 +162,46 @@ namespace BigAndSmall
             RaceFuser.CopyThingDefFields(humThing, newThing);
             newThing.defName = thingDefName;
 
-            // Whitelist for comps.
-            var forcedCompWhitelist = new HashSet<string>
-            {
-                "CompProperties_HoldingPlatformTarget",
-                "CompProperties_Studiable",
-                // Add more here when verified to work.
-            };
             HashSet<string> compWhitelist = [];
             foreach (var setting in HumanlikeAnimalSettings.AllHASettings)
             {
                 compWhitelist.AddRange(setting.compWhitelist);
             }
-            compWhitelist.AddRange(forcedCompWhitelist);
 
-
+            // Lowercase comparer
             List<CompProperties> bothComps = [];
             if (aniThing.comps != null) { bothComps.AddRange(aniThing.comps); }
             foreach (var comp in humThing.comps)
             {
                 // Check if the comp is already in the list, to avoid duplicates.
-                if (!bothComps.Any(x=>x.GetType() == comp.GetType()))
+                if (!bothComps.Any(x=>x.GetType() == comp.GetType() && x.compClass == comp.compClass))
                 {
                     bothComps.Add(comp);
                 }
             }
-            var filteredComps = bothComps.Where(x => compWhitelist.Contains(x.GetType().ToString())).ToList();
+            //bothComps.ForEach(comp =>
+            //{
+            //    // Debugging.
+            //    if (!(compWhitelist.Contains(comp.GetType().ToString(), StringComparer.OrdinalIgnoreCase) ||
+            //        compWhitelist.Contains(comp.compClass.ToString(), StringComparer.OrdinalIgnoreCase))
+            //    )
+            //    {
+            //        Log.Message($"Removing comp {comp.GetType()} {comp.compClass} from {aniThing.defName} as it is not in the whitelist.");
+            //    }
+            //});
+            var filteredComps = bothComps
+                .Where(x =>
+                    compWhitelist.Contains(x.GetType().ToString(), StringComparer.OrdinalIgnoreCase) ||
+                    compWhitelist.Contains(x.compClass.ToString(), StringComparer.OrdinalIgnoreCase))
+                .ToList();
 
             // From Human
             newThing.modExtensions = [];  // Doubt we want to load ModExtensions from either.
             newThing.comps = filteredComps;
+            //if (newThing.comps.Any())
+            //{
+            //    Log.Message($"{newThing.defName} has {string.Join("\n", newThing.comps.Select(x => x.GetType().ToString() + " " + x.compClass.ToString()))} as comps.");
+            //}
 
             newThing.thingCategories = humThing.thingCategories != null ? [.. humThing.thingCategories] : [];
             newThing.inspectorTabs = humThing.inspectorTabs != null ? [.. humThing.inspectorTabs] : null;
@@ -323,7 +333,7 @@ namespace BigAndSmall
                 List<string> manipulatorBlackList = ["Mouth", "Jaw", "Beak", "Leg"];
                 var allParts = newRace.body.corePart.GetAllBodyPartsRecursive();
 
-                if (HumanlikeAnimalSettings.AllHASettings.Any(x => x.hasHandsWildcards.Any(wc => aniThing.defName.ToLower().Contains(wc))))
+                if (HumanlikeAnimalSettings.AllHASettings.Any(x => x.hasHandsWildcards.Any(wc => aniThing.defName.Contains(wc, StringComparison.OrdinalIgnoreCase))))
                 {
                     hasHands = true;
                     fineManipulation = 1.0f;
@@ -334,7 +344,7 @@ namespace BigAndSmall
                     hasHands = true;
                     fineManipulation = 0.65f;
                 }
-                else if (HumanlikeAnimalSettings.AllHASettings.Any(x => x.hasPoorHandsWildcards.Any(wc => aniThing.defName.ToLower().Contains(wc))))
+                else if (HumanlikeAnimalSettings.AllHASettings.Any(x => x.hasPoorHandsWildcards.Any(wc => aniThing.defName.Contains(wc, StringComparison.OrdinalIgnoreCase))))
                 {
                     hasHands = true;
                     fineManipulation = 0.5f;
@@ -420,9 +430,9 @@ namespace BigAndSmall
                 }
 
                 racePawnExtension.nullsThoughts ??= [];
-                var allUncoveredThoughts = DefDatabase<ThoughtDef>.AllDefs.Where(x => x.defName.ToLower().Contains("uncovered"));
-                var allSweatThoughts = DefDatabase<ThoughtDef>.AllDefs.Where(x => x.defName.ToLower().Contains("sweat"));
-                var tableThoughts = DefDatabase<ThoughtDef>.AllDefs.Where(x => x.defName.ToLower().Contains("table"));
+                var allUncoveredThoughts = DefDatabase<ThoughtDef>.AllDefs.Where(x => x.defName.Contains("uncovered", StringComparison.OrdinalIgnoreCase));
+                var allSweatThoughts = DefDatabase<ThoughtDef>.AllDefs.Where(x => x.defName.Contains("sweat", StringComparison.OrdinalIgnoreCase));
+                var tableThoughts = DefDatabase<ThoughtDef>.AllDefs.Where(x => x.defName.Contains("table", StringComparison.OrdinalIgnoreCase));
                 racePawnExtension.nullsThoughts.AddRange(allUncoveredThoughts);
                 racePawnExtension.nullsThoughts.AddRange(allSweatThoughts);
                 racePawnExtension.nullsThoughts.AddRange(tableThoughts);
@@ -454,16 +464,23 @@ namespace BigAndSmall
                 }
             }
 
+            //if (newThing.comps.Any())
+            //{
+            //    Log.Message($"{newThing.defName} has {string.Join("\n", newThing.comps.Select(x => x.GetType().ToString() + " " + x.compClass.ToString()))} as comps.");
+            //}
+
             DefGenerator.AddImpliedDef(newThing, hotReload: true);
             DefGenerator.AddImpliedDef(newRace.body, hotReload: true);
             DefGenerator.AddImpliedDef(raceHediff, hotReload: true);
+
+            
 
             newThing.ResolveReferences();
             raceHediff.ResolveReferences();
 
             humanlikeAnimals[newThing] = new HumanlikeAnimal
             {
-                humanlikeThing = newThing,
+                humanlikeAnimal = newThing,
                 animalKind = aniPawnKind,
                 humanlike = humThing,
                 animal = aniThing

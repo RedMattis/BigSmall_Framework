@@ -110,13 +110,15 @@ namespace BigAndSmall
                 }
                 newPawn.gender = aniPawn.gender == Gender.None ? newPawn.gender : aniPawn.gender;
                 newPawn.ageTracker.AgeChronologicalTicks = aniPawn.ageTracker.AgeChronologicalTicks;
-                if (aniPawn.ageTracker.AgeBiologicalYears < 18)
+                if (aniPawn.ageTracker.AgeBiologicalYears < 3)
                 {
-                    newPawn.ageTracker.AgeBiologicalTicks = 18 * GenDate.TicksPerYear;
+                    newPawn.ageTracker.AgeBiologicalTicks = 3 * GenDate.TicksPerYear;
                 }
                 else
                 {
-                    newPawn.ageTracker.AgeBiologicalTicks = aniPawn.ageTracker.AgeBiologicalTicks;
+                    float percentOfLifespan = aniPawn.ageTracker.AgeBiologicalYears / aniPawn.RaceProps.lifeExpectancy;
+                    newPawn.ageTracker.AgeBiologicalTicks = (long)(newPawn.RaceProps.lifeExpectancy * percentOfLifespan) * GenDate.TicksPerYear;
+                    //newPawn.ageTracker.AgeBiologicalTicks = aniPawn.ageTracker.AgeBiologicalTicks;
                 }
 
                 if (ModsConfig.BiotechActive)
@@ -182,6 +184,12 @@ namespace BigAndSmall
 
                 aniPawn.Destroy(DestroyMode.Vanish);
                 oldPawnDestroyed = true;
+
+                //TEST
+                //Log.Message($"DEBUG for {newPawn} {newPawn.def}");
+                //Log.Message($"ACTIVE COMPS: {string.Join("\n", newPawn.AllComps.Select(x => x.GetType() + " " + x.ToString()))}");
+                //Log.Message($"DEF PROPS: {string.Join("\n", newPawn.def.comps.Select(x => x.GetType().ToString() + " " + x.compClass.ToString()))}");
+                
                 return newPawn;
             }
             catch (Exception e)
