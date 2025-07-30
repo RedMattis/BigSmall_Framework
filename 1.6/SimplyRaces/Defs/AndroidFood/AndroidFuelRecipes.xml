@@ -3,7 +3,7 @@
   <RecipeDef>
     <defName>BS_MakeAndroidFuelFromChemfuel_CookingStation</defName>
     <label>inefficiently make android fuel from chemfuel</label>
-    <description>Make processed fuel suitable for safe use use by androids, slower and less efficient than using a refinery.</description>
+    <description>Make processed fuel safe for androids to consume. Slower and less efficient than using a refinery.</description>
     <jobString>Refining android fuel.</jobString>
     <effectWorking>Cremate</effectWorking>
     <soundWorking>Recipe_Cremate</soundWorking>
@@ -39,7 +39,7 @@
   <RecipeDef>
     <defName>BS_MakeAndroidFuelFromWood_CookingStation</defName>
     <label>inefficiently make android fuel from wood</label>
-    <description>Make processed fuel suitable for safe use use by androids\n\nVery Slow and inefficient compared to using chemfuel or a refinery.</description>
+    <description>Make processed fuel safe for androids to consume.\n\nVery Slow and inefficient compared to using chemfuel or a refinery.</description>
     <jobString>Refining android fuel.</jobString>
     <effectWorking>Cremate</effectWorking>
     <soundWorking>Recipe_Cremate</soundWorking>
@@ -76,7 +76,7 @@
   <RecipeDef>
     <defName>BS_MakeAndroidFuelFromChemfuel_Refinery</defName>
     <label>make android fuel from chemfuel</label>
-    <description>Make processed fuel suitable for safe use use by androids.</description>
+    <description>Make processed fuel safe for androids to consume.</description>
     <jobString>Refining android fuel.</jobString>
     <effectWorking>Cremate</effectWorking>
     <soundWorking>Recipe_Cremate</soundWorking>

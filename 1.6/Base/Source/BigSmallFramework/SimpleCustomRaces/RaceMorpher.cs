@@ -559,6 +559,15 @@ namespace BigAndSmall
             {
                 pawn.needs.AddOrRemoveNeedsAsAppropriate();
             }
+            try
+            {
+                AddMissingComps(pawn);
+            }
+            catch (Exception e)
+            {
+                Log.Error($"[Big and Small] Error trying to add missing comps to {pawn}: {e.Message}\n{e.StackTrace}");
+            }
+
             return true;
         }
 
@@ -659,6 +668,54 @@ namespace BigAndSmall
                 foreach (var chemGene in GeneHelpers.GetAllActiveXenoGenes(pawn).Where(x => x is Gene_ChemicalDependency).Select(x => (Gene_ChemicalDependency)x).ToList())
                 {
                     RestoreDependencies(pawn, chemGene, xenoGene: true);
+                }
+            }
+        }
+
+        private static void AddMissingComps(Pawn pawn)
+        {
+            var def = pawn.def;
+            if (!def.comps.Any())
+            {
+                return;
+            }
+
+            var existingComps = pawn.AllComps.ToList();
+            List<CompProperties> compPropsToAdd = [..def.comps];
+            for (int idx = existingComps.Count - 1; idx >= 0; idx--)
+            {
+                var comp = existingComps[idx];
+                var firstMatch = compPropsToAdd.FirstOrDefault(x => comp.props.GetType() == x.GetType() && x.compClass == comp.GetType());
+                if (firstMatch != null)
+                {
+                    compPropsToAdd.Remove(firstMatch);
+                    //Log.Message($"Found existing comp {comp} on {pawn.Name} ({pawn.def.defName}), removing from list of comps to add.");
+                }
+                else
+                {
+                    pawn.AllComps.Remove(comp);
+                    //Log.Message($"Removed existing comp {comp} from {pawn.Name} ({pawn.def.defName}) as it was not found in the def's comp list. {string.Join(", ", def.comps.Select(x => x.ToString() + " " + x.compClass.ToString()))}.");
+                }
+            }
+
+            for (int i = 0; i < compPropsToAdd.Count; i++)
+            {
+                var compProp = compPropsToAdd[i];
+                ThingComp thingComp = null;
+                try
+                {
+                    thingComp = (ThingComp)Activator.CreateInstance(compProp.compClass);
+                    thingComp.parent = pawn;
+                    pawn.AllComps.Add(thingComp);
+                    thingComp.Initialize(compProp);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"Could not instantiate or initialize a ThingComp: {ex}");
+                    if (thingComp != null)
+                    {
+                        pawn.AllComps.Remove(thingComp);
+                    }
                 }
             }
         }

@@ -2,7 +2,7 @@
   <ThingDef Name="BS_AndroidFuel">  <!--MealBase-->
     <defName>BS_AndroidFuel</defName>
     <label>android fuel</label>
-    <description>Processed energy-packed fuel suitable for safe use use by androids.</description>
+    <description>Processed energy-packed fuel safe for use by androids.</description>
     <thingClass>ThingWithComps</thingClass>
     <category>Item</category>
     <drawerType>MapMeshOnly</drawerType>
