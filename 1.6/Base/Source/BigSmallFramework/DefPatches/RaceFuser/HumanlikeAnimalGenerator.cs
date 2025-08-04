@@ -404,7 +404,7 @@ namespace BigAndSmall
                         hasHands = true;
                     }
                 }
-                if (!hasHands)
+                if (!hasHands && !BigSmallMod.settings.animalsLowSkillPenalty)
                 {
                     raceHediff.stages ??= [];
                     raceHediff.stages.Add(new HediffStage
