@@ -2,6 +2,7 @@
 using RimWorld;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 using Verse;
@@ -175,7 +176,7 @@ namespace BigAndSmall
             }
             catch (Exception e)
             {
-                Log.Warning("Failed to add pilot to piloted hediff: " + e.Message);
+                Log.Warning("Failed to add pilot to piloted hediff: " + e.Message + e.StackTrace);
             }
             try
             { 
@@ -183,14 +184,14 @@ namespace BigAndSmall
                 var otherPilot = InnerContainer.Where(x => x is Pawn && x != thing).FirstOrDefault();
                 if (otherPilot == null && thing is Pawn pilot)
                 {
-                    try { InheritPilotSkills(pilot, pawn); } catch (Exception e) { Log.Warning("Failed to transfer pilot skills: " + e.Message); }
-                    try { InheritPilotTraits(pilot); } catch (Exception e) { Log.Warning("Failed to transfer pilot traits: " + e.Message); }
-                    try { InheritRelationships(pilot, pawn); } catch (Exception e) { Log.Warning("Failed to transfer pilot relationships: " + e.Message); }
+                    try { InheritPilotSkills(pilot, pawn); } catch (Exception e) { Log.Warning("Failed to transfer pilot skills: " + e.Message + e.StackTrace); }
+                    try { InheritPilotTraits(pilot); } catch (Exception e) { Log.Warning("Failed to transfer pilot traits: " + e.Message + e.StackTrace); }
+                    try { InheritRelationships(pilot, pawn); } catch (Exception e) { Log.Warning("Failed to transfer pilot relationships: " + e.Message + e.StackTrace); }
                 }
             }
             catch (Exception e)
             {
-                Log.Warning("Failed to transfer all pilot properties to pilotable: " + e.Message);
+                Log.Warning("Failed to transfer all pilot properties to pilotable: " + e.Message + e.StackTrace);
             }
             forcePilotableUpdate = true;
             pawn.health.Notify_HediffChanged(this);
@@ -204,32 +205,52 @@ namespace BigAndSmall
 
         public void InheritRelationships(Pawn source, Pawn target)
         {
+            // Transfer faction
+            if (source.Faction != null && source.Faction != target.Faction)
+            {
+                target.SetFaction(source.Faction);
+            }
+
+            // Transfer ideology
+            if (source.Ideo != null)
+            {
+                target.ideo.SetIdeo(source.Ideo);
+            }
+
+            // Transfer resistance values
+            target.guest.resistance = source.guest.resistance;
+
+            // Transfer Will
+            target.guest.will = source.guest.will;
+
             if (Props.inheritRelationShips == false)
             {
                 return;
             }
 
             // Get the pilot's relations
-            List<DirectPawnRelation> pilotRelations = source.relations.DirectRelations.ToList();
+            List<DirectPawnRelation> pilotRelations = source.relations?.DirectRelations.ToList();
 
             // Get the pilot's thoughts
-            List<Thought_Memory> pilotThoughts = source.needs.mood.thoughts.memories.Memories.ToList();
+            List<Thought_Memory> pilotThoughts = source.needs?.mood?.thoughts?.memories?.Memories?.ToList();
 
             // Clear the target's relations and thoughts
-            target.relations.ClearAllRelations();
-            target.needs.mood.thoughts.memories.Memories.Clear();
+            target.relations?.ClearAllRelations();
+            target.needs?.mood?.thoughts?.memories?.Memories?.Clear();
 
             var literallyAllPawns = Find.WorldPawns.AllPawnsAliveOrDead.ToList();
 
             // Add all other relations-pawns that show up in the pilot's thoughts to "literallyAllPawns".
-            foreach (var thought in pilotThoughts)
+            if (pilotThoughts != null)
             {
-                if (thought.otherPawn != null)
+                foreach (var thought in pilotThoughts)
                 {
-                    literallyAllPawns.Add(thought.otherPawn);
+                    if (thought.otherPawn != null)
+                    {
+                        literallyAllPawns.Add(thought.otherPawn);
+                    }
                 }
             }
-
 
             var directPawnRelationsToSource = new Dictionary<DirectPawnRelation, Pawn>();
             // Fetch all relations to the pilot.
@@ -239,12 +260,15 @@ namespace BigAndSmall
                 {
                     continue;
                 }
-                var relations = somePawn.relations.DirectRelations.ToList();
-                foreach (var relation in relations)
+                var relations = somePawn.relations?.DirectRelations?.ToList();
+                if (relations != null)
                 {
-                    if (relation.otherPawn == source)
+                    foreach (var relation in relations)
                     {
-                        directPawnRelationsToSource.Add(relation, somePawn);
+                        if (relation.otherPawn == source)
+                        {
+                            directPawnRelationsToSource.Add(relation, somePawn);
+                        }
                     }
                 }
             }
@@ -256,14 +280,14 @@ namespace BigAndSmall
                 DirectPawnRelation relation = pilotRelations[idx];
                 try
                 {
-                    if (!target.relations.DirectRelationExists(relation.def, relation.otherPawn))
+                    if (!target.relations?.DirectRelationExists(relation.def, relation.otherPawn) == true)
                     {
-                        target.relations.AddDirectRelation(relation.def, relation.otherPawn);
+                        target?.relations?.AddDirectRelation(relation.def, relation.otherPawn);
                     }
                 }
                 catch (Exception e)
                 {
-                    Log.Error("Failed to add relation " + relation.def.defName + " to " + target.Name + " from " + source.Name + " with error: " + e.Message);
+                    Log.Error($"Failed to add relation {relation.def.defName} to {target.Name} from {source.Name} with error: {e.Message}");
                 }
             }
 
@@ -275,11 +299,10 @@ namespace BigAndSmall
                 try
                 {
                     otherPawn.relations.AddDirectRelation(relationDef, target);
-                    //Log.Message($"Added (other->source) relation {relationDef.defName} from {otherPawn.Name} to {target.Name}.");
                 }
                 catch (Exception e)
                 {
-                    Log.Error("Failed to add relation " + relationDef.defName + " to " + otherPawn.Name + " from " + target.Name + " with error: " + e.Message);
+                    Log.Error($"Failed to add relation {relationDef.defName} to {otherPawn.Name} from {target.Name} with error: {e.Message}");
                 }
             }
 
@@ -293,50 +316,36 @@ namespace BigAndSmall
                 }
                 catch (Exception e)
                 {
-                    Log.Error("Failed to add thought " + thought.def.defName + " to " + target.Name + " from " + source.Name + " with error: " + e.Message);
+                    Log.Error($"Failed to add thought {thought.def.defName} to {target.Name} from {source.Name} with error: {e.Message}");
                 }
             }
 
-            // Transfer ideology
-            if (source.Ideo != null)
-            {
-                target.ideo.SetIdeo(source.Ideo);
-            }
-
-            // Transfer faction
-            if (source.Faction != null && source.Faction != target.Faction)
-            {
-                target.SetFaction(source.Faction);
-            }
-
-            // Transfer resistance values
-            target.guest.resistance = source.guest.resistance;
-            
-            // Transfer Will
-            target.guest.will = source.guest.will;
-
-
-
             if (pawn.needs?.mood?.thoughts != null)
             {
-                pawn.needs.mood.thoughts.situational.Notify_SituationalThoughtsDirty();
+                pawn.needs.mood.thoughts.situational?.Notify_SituationalThoughtsDirty();
             }
 
             if (ModsConfig.RoyaltyActive)
             {
                 target.royalty = new Pawn_RoyaltyTracker(pawn);
                 // Transfer titles
-                foreach (var title in source.royalty.AllTitlesForReading)
+                var titles = source.royalty?.AllTitlesForReading;
+                if (titles != null)
                 {
-                    target.royalty.SetTitle(title.faction, title.def, grantRewards: false, sendLetter: false);
-                    int favorAmount = pawn.royalty.GetFavor(title.faction);
-                    target.royalty.SetFavor(title.faction, favorAmount);
+                    foreach (var title in titles)
+                    {
+                        target.royalty?.SetTitle(title.faction, title.def, grantRewards: false, sendLetter: false);
+                        if (pawn?.royalty?.GetFavor(title.faction) is int favorAmount)
+                        {
+                            target.royalty.SetFavor(title.faction, favorAmount);
+                        }
+                    }
                 }
             }
 
             //// Remove all relations and thoughts of the source.
-            source.relations.ClearAllRelations();
-            source.needs.mood.thoughts.memories.Memories.Clear();
+            source.relations?.ClearAllRelations();
+            source.needs?.mood?.thoughts?.memories?.Memories?.Clear();
 
         }
 

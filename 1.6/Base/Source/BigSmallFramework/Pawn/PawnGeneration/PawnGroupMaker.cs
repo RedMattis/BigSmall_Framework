@@ -55,14 +55,14 @@ namespace BigAndSmall
                     changed = true;
 
                     try { member = TryModifyPawn(member, singlePawn: singlePawn); }
-                    catch (Exception e) { Log.Warning($"BigAndSmall (GeneratePawns): Failed the TryModifyPawn for {member.Name} ({member.Label}): + {e.Message}"); }
+                    catch (Exception e) { Log.Warning($"BigAndSmall (GeneratePawns): Failed the TryModifyPawn for {member.Name} ({member.Label}): + {e.Message}\n{e.StackTrace}"); }
                     try { RemoveInvalidThings(member); }
-                    catch (Exception e) { Log.Warning($"BigAndSmall (GeneratePawns): Failed to remove invalid apparel for {member.Name} ({member.Label}): + {e.Message}"); }
+                    catch (Exception e) { Log.Warning($"BigAndSmall (GeneratePawns): Failed to remove invalid apparel for {member.Name} ({member.Label}): + {e.Message}\n{e.StackTrace}"); }
                 }
             }
             catch (Exception e)
             {
-                Log.Warning($"BigAndSmall (GeneratePawns): Failed to pregenerate pawn cache for {member.Name} ({member.Label}): + {e.Message}");
+                Log.Warning($"BigAndSmall (GeneratePawns): Failed to pregenerate pawn cache for {member.Name} ({member.Label}): {e.Message}\n{e.StackTrace}");
             }
 
             try
@@ -71,7 +71,7 @@ namespace BigAndSmall
             }
             catch (Exception e)
             {
-                Log.Error($"BigAndSmall: Error in {nameof(ModifyGeneratedPawn)} generating pilot for {member.Name}:\n{e.Message}");
+                Log.Error($"BigAndSmall: Error in {nameof(ModifyGeneratedPawn)} generating pilot for {member.Name}:\n{e.Message}\n{e.StackTrace}");
             }
 
             return changed;
@@ -103,7 +103,7 @@ namespace BigAndSmall
                 }
                 catch (Exception e)
                 {
-                    Log.Error($"BigAndSmall: Error generating pilot for {member.Name}: {e.Message}");
+                    Log.Error($"BigAndSmall: Error generating pilot for {member.Name}: {e.Message}\n{e.StackTrace}");
                 }
 
                 return changed;
@@ -112,7 +112,7 @@ namespace BigAndSmall
 
         private static Pawn TryModifyPawn(Pawn member, bool singlePawn=false)
         {
-            if (member.kindDef.GetModExtension<PawnKindExtension>() is PawnKindExtension pawnKindExt)
+            if (member.kindDef?.GetModExtension<PawnKindExtension>() is PawnKindExtension pawnKindExt)
             {
                 member = pawnKindExt.Execute(member, singlePawn: singlePawn);
             }

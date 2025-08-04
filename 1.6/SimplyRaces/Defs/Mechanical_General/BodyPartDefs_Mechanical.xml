@@ -16,6 +16,16 @@
 
   <!-- Mechanical Organs -->
   <BodyPartDef>
+    <defName>BS_InorganicWaist</defName>
+    <label>utility slot</label>
+    <conceptual>true</conceptual>
+    <bleedRate>0</bleedRate>
+    <alive>false</alive>
+    <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
+    <skinCovered>false</skinCovered>
+  </BodyPartDef>
+
+  <BodyPartDef>
     <defName>BS_FuelProcessor</defName>
     <label>fuel processor</label>
     <hitPoints>30</hitPoints>

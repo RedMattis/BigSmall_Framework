@@ -11,7 +11,7 @@ namespace BigAndSmall
     {
         // private static Pawn TryGenerateNewPawnInternal(ref PawnGenerationRequest request, out string error, bool ignoreScenarioRequirements, bool ignoreValidator)
         [HarmonyPatch(typeof(PawnGenerator), "GenerateNewPawnInternal")]
-        [HarmonyPostfix]
+        [HarmonyPrefix]
         public static void GenerateNewPawnInternalPrefix(ref Pawn __result, ref PawnGenerationRequest request)
         {
             try

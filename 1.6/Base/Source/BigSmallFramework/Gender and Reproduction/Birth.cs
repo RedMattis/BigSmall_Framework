@@ -3,6 +3,7 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.Networking.Types;
 using Verse;
 
 namespace BigAndSmall
@@ -104,6 +105,22 @@ namespace BigAndSmall
             return false;
         }
 
+        //[HarmonyPatch (typeof(AgeInjuryUtility), nameof(AgeInjuryUtility.GenerateRandomOldAgeInjuries),
+        //    new Type[] { typeof(Pawn), typeof(bool) })]
+        //[HarmonyPrefix]
+        //public static void GenerateRandomOldAgeInjuriesPrefix(Pawn pawn, bool tryNotToKillPawn)
+        //{
+        //    Log.Message($"GenerateRandomOldAgeInjuriesPrefix : {pawn} {pawn?.def}");
+
+        //    IEnumerable<BodyPartRecord> source = from x in pawn.health.hediffSet.GetNotMissingParts()
+        //                                        where x.depth == BodyPartDepth.Outside && (x.def.permanentInjuryChanceFactor != 0f || x.def.pawnGeneratorCanAmputate) && !pawn.health.hediffSet.PartOrAnyAncestorHasDirectlyAddedParts(x)
+        //                                        select x; ;
+        //    foreach (BodyPartRecord bodyPartRecord in source)
+        //    {
+        //        Log.Message($"{bodyPartRecord} {bodyPartRecord?.def} {bodyPartRecord?.coverage}");
+        //    }
+        //}
+
         [HarmonyPatch(
             typeof(PawnGenerator),
             nameof(PawnGenerator.GeneratePawn),
@@ -112,16 +129,15 @@ namespace BigAndSmall
         [HarmonyPostfix]
         public static void GeneratePawnPostfix(Pawn __result, PawnGenerationRequest request)
         {
-
-            //Log.Message($"[DEBUG] Running GeneratePawnPostfix for baby {__result.Name}");
-            Pawn baby = __result;
-            if (parents.Count > 0)
+            if (parents.NullOrEmpty())
             {
-                var fParent = parents.First();
-                if (HumanlikeAnimals.IsHumanlikeAnimal(fParent.def))
-                {
-                    RaceMorpher.SwapThingDef(baby, fParent.def, true, 9999, force:true);
-                }
+                return;
+            }
+            Pawn baby = __result;
+            var fParent = parents.First();
+            if (HumanlikeAnimals.IsHumanlikeAnimal(fParent.def))
+            {
+                RaceMorpher.SwapThingDef(baby, fParent.def, true, 9999, force: true);
             }
             if (newBabyGenes != null)
             {

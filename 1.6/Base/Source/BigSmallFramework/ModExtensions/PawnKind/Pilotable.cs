@@ -32,7 +32,7 @@ namespace BigAndSmall
                 {
                     foreach (var pExt in gene.def.GetAllPawnExtensionsOnGene())
                     {
-                        if (pExt.applyBodyHediff?.Where(x => x.hediff.comps.Any(x => x is CompProperties_Piloted)).FirstOrDefault()?.hediff is HediffDef pilotableHediff)
+                        if (pExt.applyBodyHediff?.Where(x => x.hediff.comps?.Any(x => x is CompProperties_Piloted) == true)?.FirstOrDefault()?.hediff is HediffDef pilotableHediff)
                         {
                             pilotedHediff = HediffMaker.MakeHediff(pilotableHediff, pPawn);
                             pPawn.health.AddHediff(pilotedHediff);

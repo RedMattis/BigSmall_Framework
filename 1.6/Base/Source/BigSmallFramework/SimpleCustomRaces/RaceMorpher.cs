@@ -685,7 +685,19 @@ namespace BigAndSmall
             for (int idx = existingComps.Count - 1; idx >= 0; idx--)
             {
                 var comp = existingComps[idx];
-                var firstMatch = compPropsToAdd.FirstOrDefault(x => comp.props.GetType() == x.GetType() && x.compClass == comp.GetType());
+                if (comp == null)
+                {
+                    Log.Warning($"Found a null comp on {pawn} ({pawn?.def?.defName})");
+                    continue;
+                }
+                if (comp.props == null)
+                {
+                    continue;
+                }
+                var firstMatch = compPropsToAdd.FirstOrDefault(x => x.compClass != null
+                    && x != null
+                    && comp.props.GetType() == x.GetType()
+                    && x.compClass == comp.GetType());
                 if (firstMatch != null)
                 {
                     compPropsToAdd.Remove(firstMatch);

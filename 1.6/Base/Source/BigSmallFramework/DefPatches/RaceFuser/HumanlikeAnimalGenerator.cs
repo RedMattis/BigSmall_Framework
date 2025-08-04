@@ -508,7 +508,10 @@ namespace BigAndSmall
                 return;
             }
             bool foundUtilitySlot = false;
-            var bodyPartDefWaist = DefDatabase<BodyPartDef>.AllDefs.FirstOrDefault(x => x.defName == "Waist");
+
+            // Waist. Now without being... alive.
+            var bodyPartDefWaist = DefDatabase<BodyPartDef>.AllDefs.FirstOrDefault(x => x.defName == "BS_InorganicWaist");
+            //var bodyPartDefWaist = DefDatabase<BodyPartDef>.AllDefs.FirstOrDefault(x => x.defName == "Waist");
             var armGrp = DefDatabase<BodyPartGroupDef>.AllDefs.FirstOrDefault(x => x.defName == "Arms");
             var shouldGrp = DefDatabase<BodyPartGroupDef>.AllDefs.FirstOrDefault(x => x.defName == "Shoulders");
             var waistGrp = DefDatabase<BodyPartGroupDef>.AllDefs.FirstOrDefault(x => x.defName == "Waist");
