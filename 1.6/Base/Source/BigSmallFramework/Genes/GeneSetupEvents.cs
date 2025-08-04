@@ -23,7 +23,7 @@ namespace BigAndSmall
                 }
                 catch (Exception e)
                 {
-                    Log.Error($"Error while trying to swap {pawn.Name} to {forcedRace.defName} during GenerateGenes step: {e.Message}");
+                    Log.Error($"Error while trying to swap {pawn.Name} to {forcedRace.defName} during GenerateGenes step.\n{e.Message}\n{e.StackTrace}");
                 }
             }
         }

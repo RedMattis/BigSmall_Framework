@@ -43,6 +43,7 @@ namespace BigAndSmall
         public List<string> hasHandsWildcards = [];
         public List<string> hasPoorHandsWildcards = [];
         public List<string> compWhitelist = [];
+        public List<string> tabWhitelist = [];
     }
 
     public static class HumanlikeAnimals
@@ -149,6 +150,8 @@ namespace BigAndSmall
         {
             var aniThing = aniPawnKind.race;
 
+            bool forceHands = BigSmallMod.settings.allAnimalsHaveHands;
+
             //if (aniThing.race?.IsFlesh != true) return;
 
             string thingDefName = $"HL_{aniThing.defName}";
@@ -179,29 +182,17 @@ namespace BigAndSmall
                     bothComps.Add(comp);
                 }
             }
-            //bothComps.ForEach(comp =>
-            //{
-            //    // Debugging.
-            //    if (!(compWhitelist.Contains(comp.GetType().ToString(), StringComparer.OrdinalIgnoreCase) ||
-            //        compWhitelist.Contains(comp.compClass.ToString(), StringComparer.OrdinalIgnoreCase))
-            //    )
-            //    {
-            //        Log.Message($"Removing comp {comp.GetType()} {comp.compClass} from {aniThing.defName} as it is not in the whitelist.");
-            //    }
-            //});
-            var filteredComps = bothComps
+            var filteredComps =bothComps
                 .Where(x =>
                     compWhitelist.Contains(x.GetType().ToString(), StringComparer.OrdinalIgnoreCase) ||
                     compWhitelist.Contains(x.compClass.ToString(), StringComparer.OrdinalIgnoreCase))
                 .ToList();
 
+
+
             // From Human
             newThing.modExtensions = [];  // Doubt we want to load ModExtensions from either.
             newThing.comps = filteredComps;
-            //if (newThing.comps.Any())
-            //{
-            //    Log.Message($"{newThing.defName} has {string.Join("\n", newThing.comps.Select(x => x.GetType().ToString() + " " + x.compClass.ToString()))} as comps.");
-            //}
 
             newThing.thingCategories = humThing.thingCategories != null ? [.. humThing.thingCategories] : [];
             newThing.inspectorTabs = humThing.inspectorTabs != null ? [.. humThing.inspectorTabs] : null;
@@ -222,6 +213,26 @@ namespace BigAndSmall
             newThing.recipes = [.. (humThing.recipes ?? []), .. aniThing?.recipes ?? []];
             newThing.recipes = newThing.recipes.Distinct().ToList();
             newThing.tradeTags = ([.. (humThing.tradeTags ?? []), .. (aniThing.tradeTags ?? [])]);
+
+            HashSet<string> tabWhiteList = [];
+            foreach (var setting in HumanlikeAnimalSettings.AllHASettings)
+            {
+                tabWhiteList.AddRange(setting.tabWhitelist);
+            }
+
+            foreach(var tab in aniThing.inspectorTabs ?? [])
+            {
+                if (tabWhiteList.Contains(tab.ToString(), StringComparer.OrdinalIgnoreCase))// ||
+                    //tabWhiteList.Contains(tab.Name, StringComparer.Ordinal))  // Eh... maybe not this. I think we want to keep the namespace to be safe.
+                {
+                    newThing.inspectorTabs ??= [];
+                    newThing.inspectorTabs.Add(tab);
+                }
+                //else
+                //{
+                //    Log.Message($"Skipping inspector tab ({tab} - {tab.Name} - {tab.GetType()}) for {aniThing.defName} because it is not whitelisted in the HumanlikeAnimalSettings.");
+                //}
+            }
 
             // Deduplicate inspector tabs
             if (newThing.inspectorTabs != null)
@@ -358,6 +369,12 @@ namespace BigAndSmall
                     fineManipulation = hasHands ? 1.0f : 0f;
                 }
 
+                if (forceHands)
+                {
+                    fineManipulation = 1.0f;
+                    hasHands = true;
+                }
+
                 raceHediff = new HediffDef
                 {
                     defName = raceHediffName,
@@ -408,6 +425,24 @@ namespace BigAndSmall
                     var value = field.GetValue(targetAnimalBase.pawnExtension);
                     if (value == null) continue;  // Skip null values.
                     field.SetValue(pawnExt, value);
+                }
+                if (BigSmallMod.settings.animalsLowSkillPenalty && pawnExt.aptitudes != null)
+                {
+                    foreach(var skill in pawnExt.aptitudes)
+                    {
+                        if (skill.level < -8)
+                        {
+                            skill.level = -4;
+                        }
+                        else if (skill.level < -4)
+                        {
+                            skill.level = -2;
+                        }
+                        else if (skill.level < 0)
+                        {
+                            skill.level = 0;
+                        }
+                    }
                 }
                 if (pawnExt.traitIcon == null && aniPawnKind.lifeStages?.Any() == true)
                 {
@@ -647,8 +682,12 @@ namespace BigAndSmall
                         [animalThing.label] = new RomanceTags.Compatibility { chance = 1.0f, factor = 1.0f }
                     }
                 };
+                if (BigSmallMod.settings.animalOnAnimal)
+                {
+                    pExt.romanceTags.compatibilities["BS_SapientAnimal".Translate()] = new RomanceTags.Compatibility { chance = 0.5f, factor = 0.5f };
+                }
             }
-            
+
         }
 
         private static bool HasPartWithTag(List<BodyPartRecord> parts, BodyPartTagDef tag, List<string> blackListKeyword)

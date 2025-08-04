@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -172,9 +173,10 @@ namespace BigAndSmall
                         pawn.story.traits.GainTrait(trait);
                     }
                 }
-                catch
+                catch (Exception e)
                 {
-                    Log.Error($"Failed to transfer size traits for {pawn}");
+                    // Log an error if we fail to transfer size traits
+                    Log.Error($"Error transferring size traits for {pawn}: {e.Message}\n{e.StackTrace}");
                 }
             }
             if (target.def?.race.Humanlike == true)

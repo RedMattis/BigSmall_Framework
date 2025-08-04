@@ -17,6 +17,9 @@
       <li>Verse.CompAttachBase</li>
     </compWhitelist>
 
+    <tabWhitelist>
+    </tabWhitelist>
+
     <!-- Anything that can plausibly manipulate things if given specialized tools qualify.
      E.g. Elephants have trunks. Spiders have limbs and possibly web to assist, etc. -->
     <hasHandsWildcards>

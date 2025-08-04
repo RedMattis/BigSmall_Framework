@@ -28,7 +28,7 @@ namespace BigAndSmall
             }
             catch (Exception e)
             {
-                Log.Error($"Managed error when setting female gender chance in GenerateNewPawnInternalPrefix: {e}");
+                Log.Error($"Managed error when setting female gender chance in GenerateNewPawnInternalPrefix:\n{e.Message}\n{e.StackTrace}");
             }
         }
 
@@ -55,7 +55,7 @@ namespace BigAndSmall
                 }
                 catch (Exception e)
                 {
-                    Log.Error($"Managed error in GiveAppropriateBioAndNameToPrefix when setting gender based on genes: {e}");
+                    Log.Error($"Managed error in GiveAppropriateBioAndNameToPrefix when setting gender based on genes:\n{e.Message}\n{e.StackTrace}");
                 }
             }
         }

@@ -396,9 +396,9 @@ namespace BigAndSmall
                     }
                 }
             }
-            catch
+            catch (Exception e)
             {
-
+                Log.Warning($"Warning: Failed to update hair for {pawn}.\n{e.Message}\n{e.StackTrace}");
             }
 
             // Get head whitelist

@@ -69,9 +69,9 @@ namespace BigAndSmall
                     GameUtils.UnhealingRessurection(pawn);
                 }
             }
-            catch (Exception ex)
-            {
-                //Log.Warning("BS_ReturnedReanimation failed to apply hediff to " + pawn.LabelShort + ": " + ex.Message);
+            catch (Exception e)
+            { 
+                Log.Warning($"BS_ReturnedReanimation failed to apply hediff to {pawn.LabelShort}: {e.Message}\n{e.StackTrace}");
             }
 
             bool incidentTriggered = false;

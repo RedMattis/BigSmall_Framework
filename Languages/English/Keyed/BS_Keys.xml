@@ -134,4 +134,5 @@
   <BS_NotEnoughSoulEnergy>Not enough soul energy</BS_NotEnoughSoulEnergy>
   <BS_StopSomething>Stop {0}</BS_StopSomething>
   <BS_StopActiveDesc>Stops the active effect</BS_StopActiveDesc>
+  <BS_SapientAnimal>Sapient Animal</BS_SapientAnimal>
 </LanguageData>

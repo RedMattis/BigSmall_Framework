@@ -178,7 +178,7 @@ namespace BigAndSmall
                     }
                     catch (Exception e)
                     {
-                        Log.Error($"[Big and Small] Error trying to equip {newPawn} with a weapon from {aniPawn.kindDef}: {e.Message}");
+                        Log.Error($"[Big and Small] Error trying to equip {newPawn} with a weapon from {aniPawn.kindDef}:\n{e.Message}\n{e.StackTrace}");
                     }
                 }
 

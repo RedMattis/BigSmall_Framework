@@ -1,61 +1,69 @@
 <LanguageData>
-  <BS_BigAndSmall>Big and Small</BS_BigAndSmall>
+  <!-- Tabs -->
+  <BS_General>General</BS_General>
+  <BS_Races>Races</BS_Races>
+  <BS_Size>Size</BS_Size>
+  <BS_GameMechanics>Game Mechanics</BS_GameMechanics>
+  <BS_Extras>Extras</BS_Extras>
+  <BS_Advanced>Advanced</BS_Advanced>
+  <BS_Developer>Developer</BS_Developer>
 
+  <!-- General -->
+  <BS_BigAndSmall>Big and Small</BS_BigAndSmall>
   <BS_ResetCache>Clear and Regenerate Caches</BS_ResetCache>
   <BS_ResetSettings>Reset Settings to Default</BS_ResetSettings>
+  <BS_ResetToRecommendedSettings>Reset to Recommended Settings</BS_ResetToRecommendedSettings>
+  <BS_ActivateExperimental>Experimental Features (Requires Restart)</BS_ActivateExperimental>
 
-  <BS_CacheUpdateTickRate>Tick Update Frequency (Higher = Better Performance)</BS_CacheUpdateTickRate>
-  <BS_RealtimeUpdate>Real-time Update System</BS_RealtimeUpdate>
-  <BS_MiscGameMechanics>Misc Game Mechanics</BS_MiscGameMechanics>
-  <BS_PatchPlayerFactions>Patch Player Faction</BS_PatchPlayerFactions>
-  <BS_GameMechanics>Game Mechanics</BS_GameMechanics>
+  <!-- Races -->
+  <BS_ToggleFeatures>Toggle Content Features (Requires Restart)</BS_ToggleFeatures>
+  <BS_Surgery>Bionics and Surgery</BS_Surgery>
+  <BS_SapientSettings>Sapient Animal Settings</BS_SapientSettings>
+  <BS_SapientAnimals_Forced>Sapient Animals (Forced ON by mods)</BS_SapientAnimals_Forced>
+  <BS_SapientAnimals>Enable Sapient Animals (Restart Required)</BS_SapientAnimals>
+  <BS_AnimalsNoSkillPenalty>Smaller skill penalty from lack of hands</BS_AnimalsNoSkillPenalty>
+  <BS_AllAnimalsHaveHands>All animals have hands </BS_AllAnimalsHaveHands>
+  <BS_SapientAnimalsCanRomanceAnySapientAnimals>Sapient animals can romance any sapient animals</BS_SapientAnimalsCanRomanceAnySapientAnimals>
+  <BS_SapientMechanoids>Enable Sapient Mechanoids (Restart Required)</BS_SapientMechanoids>
+
+  <!-- Size -->
   <BS_ScaleAnimals>Apply Scaling and other behaviour to Animals</BS_ScaleAnimals>
   <BS_LowestUsed>The lowest of these two will be used as a bonus for melee attacks.</BS_LowestUsed>
   <BS_MultDamageExplain>Multiplicative damage change from size.</BS_MultDamageExplain>
-  <BS_DamageExponentExplain>Damage Exponent</BS_DamageExponentExplain>
   <BS_FlatDMGExplain>Flat bonus to all attacks per size-level.</BS_FlatDMGExplain>
-  <BS_FlatDamageBonunsField>Flat Damage bonus</BS_FlatDamageBonunsField>
-  <BS_NutritionBurnExplain>Nutrition Burn..</BS_NutritionBurnExplain>
   <BS_HungerMultiplierField>Size effect on Hunger</BS_HungerMultiplierField>
   <BS_Rendering>Rendering</BS_Rendering>
   <BS_SizeOffsetPawn>Size offsets humanoids position</BS_SizeOffsetPawn>
   <BS_SizeOffsetAnimalPawn>Size offsets animals position.</BS_SizeOffsetAnimalPawn>
   <BS_DisabeVFCachine>Disable Texture Caching (fixes cropped pawns):</BS_DisabeVFCachine>
   <BS_ScalePawnDefault>Scale Pawn. Default values are 1.</BS_ScalePawnDefault>
-  <BS_ScaleLargerPawns>Scale Larger Pawns </BS_ScaleLargerPawns>
-  <BS_ScaleSmallerPawns>Scale Smaller Pawns </BS_ScaleSmallerPawns>
+  <BS_ScaleLargerPawns>Scale Larger Pawns</BS_ScaleLargerPawns>
+  <BS_ScaleSmallerPawns>Scale Smaller Pawns</BS_ScaleSmallerPawns>
   <BS_HeadSizeExplain>Head Size of large pawns. Higher Value = Large Head.</BS_HeadSizeExplain>
   <BS_HeadExponentLargeField>Head exponent larger</BS_HeadExponentLargeField>
   <BS_HeadExponentSmallExplain>Change head size of small pawns. Smaller Values = Larger Head.</BS_HeadExponentSmallExplain>
   <BS_HeadExponentSmalleField>Head exponent smaller</BS_HeadExponentSmalleField>
   <BS_NormalizeBodyType>Normalize bodytype scale for Hulks and Fat (Recommended).</BS_NormalizeBodyType>
-  <BS_GenesSpecific>Big and Small Genes Settings</BS_GenesSpecific>
-  <BS_DoDefGeneration>Permit generated GeneDefs (Recommended, requires restart)</BS_DoDefGeneration>
+
+  <!-- Game Mechanics -->
+  <BS_GameMechanics>Game Mechanics</BS_GameMechanics>
   <BS_PreventUndead>Prevent random undead</BS_PreventUndead>
   <BS_InflitratorChance>Chance of infiltrators</BS_InflitratorChance>
   <BS_InflitratorRaidChance>Chance of infiltrator raid</BS_InflitratorRaidChance>
-  <BS_ImmortalReturnFactor>immortal return time factor (less means faster)</BS_ImmortalReturnFactor>
+  <BS_ImmortalReturnFactor>Immortal return time factor (less means faster)</BS_ImmortalReturnFactor>
 
+  <!-- Extras -->
   <BS_SciFiNames>Use Sci-Fi Names (restart required)</BS_SciFiNames>
   <BS_FantasyNames>Fantasy naming auto-patcher (restart required)</BS_FantasyNames>
+  <BS_PatchPlayerFactions>Patch Player Faction</BS_PatchPlayerFactions>
 
-  <!-- Experimental -->
-  <BS_ActivateExperimental>Experimental Features (Requires Restart)</BS_ActivateExperimental>
-  <BS_BodyDefFusions>Dynamically generated races</BS_BodyDefFusions>
-  <BS_PathRacesFromOtherMods>Apply races to other mod genes</BS_PathRacesFromOtherMods>
+  <!-- Advanced -->
+  <BS_GenesSpecific>Big and Small Genes Settings</BS_GenesSpecific>
+  <BS_DoDefGeneration>Permit generated GeneDefs (Recommended, requires restart)</BS_DoDefGeneration>
 
-  <BS_ToggleFeatures>Toggle Content Features (Requires Restart)</BS_ToggleFeatures>
-  <BS_SapientAnimals_Forced>Sapient Animals (Forced ON by mods)</BS_SapientAnimals_Forced>
-  <BS_SapientAnimalsChance>Sapient Animal Chance</BS_SapientAnimalsChance>
-  <BS_SapientAnimals>Enable Sapient Animals (Restart Required)</BS_SapientAnimals>
-  <BS_SapientMechanoids>Enable Sapient Mechanoids (Restart Required)</BS_SapientMechanoids>
-  <BS_Surgery>Bionics and Surgery</BS_Surgery>
-
-  <!-- DEV-Settings -->
+  <!-- Developer -->
   <BS_DevSettings>Dev Options</BS_DevSettings>
   <BS_JesusMode>Max all needs</BS_JesusMode>
   <BS_RecruitDevSpawned>Set B&amp;S Dev-Spawned pawns to Player faction.</BS_RecruitDevSpawned>
-  <BS_HideNonBSGene>HideNoneBSGenes</BS_HideNonBSGene>
-
-
+  <BS_HideNonBSGene>Hide non-BS Genes</BS_HideNonBSGene>
 </LanguageData>

@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using System;
 using Verse;
 
 namespace BigAndSmall
@@ -39,9 +40,9 @@ namespace BigAndSmall
                 HumanoidPawnScaler.GetCache(pawn, forceRefresh: true);
                 GenderMethods.UpdateBodyHeadAndBeardPostGenderChange(pawn, force:true);
             }
-            catch
+            catch (Exception e)
             {
-                Log.Error($"Error when gender-bending {pawn.LabelShortCap}");
+                Log.Error($"Error when gender-bending {pawn.LabelShortCap}\n{e.Message}\n{e.StackTrace}");
             }
             pawn.Drawer.renderer.SetAllGraphicsDirty();
 

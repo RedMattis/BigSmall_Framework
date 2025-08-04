@@ -40,7 +40,7 @@ namespace BigAndSmall
                             }
                             catch (Exception e)
                             {
-                                Log.Error($"Error while restoring injuries: {e}");
+                                Log.Error($"Error while restoring injuries: {e}\n{e.StackTrace}");
                             }
                         }
 

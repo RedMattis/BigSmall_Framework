@@ -105,9 +105,9 @@ namespace BigAndSmall
                     return false;
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Log.Error($"Error in Override of GenerateWandererFactionPrefix: {ex.Message}. Using Vanilla Method as a fallback.");
+                Log.Error($"Error in Override of GenerateWandererFactionPrefix:Using Vanilla Method as a fallback.\n{e.Message}\n{e.StackTrace}");
             }
             return true;
         }
@@ -158,9 +158,9 @@ namespace BigAndSmall
                     return false;
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Log.Error($"Error in Override of GenerateRefugeePodPrefix: {ex.Message}. Using Vanilla Method as a fallback.");
+                Log.Error($"Error in Override of GenerateRefugeePodPrefix: Using Vanilla Method as a fallback.\n{e.Message}\n{e.StackTrace}");
             }
             return true;
         }

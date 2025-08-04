@@ -16,15 +16,6 @@ namespace BigAndSmall
         [HarmonyPostfix]
         public static void Notify_GenesChanged_Postfix(GeneDef addedOrRemovedGene, Pawn_GeneTracker __instance)
         {
-            //try
-            //{
-            //    PGene.UpdateOverridenGenes(addedOrRemovedGene, __instance);
-            //}
-            //catch (Exception e)
-            //{
-            //    Log.Warning(e.ToString());
-            //}
-
             // Update the Cache
             if (__instance?.pawn != null)
             {

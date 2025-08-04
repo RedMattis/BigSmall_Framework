@@ -119,7 +119,7 @@ namespace BigAndSmall
             }
             catch (Exception e)
             {
-                Log.Error($"Exception duing Big and Small DefGen: GenerateXenotypeGenes: Exception caught: {e}\n\nGenerating the genes has been aborted.");
+                Log.Error($"Exception duing Big and Small DefGen: GenerateXenotypeGenes.\nGenerating the genes has been aborted.\n{e.Message}\n{e.StackTrace}");
             }
 
             return result;

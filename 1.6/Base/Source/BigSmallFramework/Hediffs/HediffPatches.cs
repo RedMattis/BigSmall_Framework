@@ -76,7 +76,7 @@ namespace BigAndSmall
                 }
                 catch (Exception e)
                 {
-                    Log.Error($"Error generating Hediff.Description: {e}");
+                    Log.Error($"Error generating Hediff.Description.\n{e.Message}\n{e.StackTrace}");
                 }
             }
         }

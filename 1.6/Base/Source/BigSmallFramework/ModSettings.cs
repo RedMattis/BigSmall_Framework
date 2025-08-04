@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime;
 using UnityEngine;
@@ -15,45 +16,60 @@ namespace BigAndSmall
         public BigSmallMod(ModContentPack content) : base(content)
         {
             settings ??= GetSettings<BSSettings>();
-
-            //// Check if pawnmorhper (tachyonite.pawnmorpherpublic) is active
-            //if (ModLister.HasActiveModWithName("Pawnmorpher"))
-            //{
-            //    Log.Warning($"Big and Small: Auotmatically disabled Big and Small's scaling for animals because Pawnmorpher is active.\n" +
-            //        $"A compatibility patch might show up at a later date.");
-            //    settings.scaleAnimals = false;
-            //}
         }
 
         private static Vector2 scrollPosition = Vector2.zero;
+        private int selectedTab = 0;
+
+        private static readonly string[] tabKeys = new[] // "BS_GameMechanics"
+        {
+            "BS_General", "BS_Races", "BS_Size", "BS_Extras", "BS_Advanced", "BS_Developer"
+        };
         public override void DoSettingsWindowContents(Rect inRect)
         {
             base.DoSettingsWindowContents(inRect);
 
+            const float contentHeight = 30f;
+            const float tabHeight = 35f;
+            Rect tabRect = new(inRect.x, inRect.y + tabHeight, inRect.width, tabHeight);
+            Rect contentRect = new( inRect.x, inRect.y + contentHeight, inRect.width, inRect.height - contentHeight);
+
+            Widgets.DrawMenuSection(contentRect);
+
+            // Tab stuff
+            int tabCount = tabKeys.Length;
+            var tabs = new List<TabRecord>();
+            for (int i = 0; i < tabCount; i++)
+            {
+                int tabIndex = i;
+                tabs.Add(new TabRecord(tabKeys[i].Translate(), () => selectedTab = tabIndex, selectedTab == tabIndex));
+            }
+            TabDrawer.DrawTabs(tabRect, tabs);
+
+            // Content
+            Rect innerRect = contentRect.ContractedBy(15f);
+
+            switch (selectedTab)
+            {
+                case 0: DrawGeneralTab(innerRect); break;
+                case 1: DrawRacesTab(innerRect); break;
+                case 2: DrawSizeTab(innerRect); break;
+                //case 3: DrawGameMechanicsTab(innerRect); break;
+                case 3: DrawExtrasTab(innerRect); break;
+                case 4: DrawAdvancedTab(innerRect); break;
+                case 5: DrawDeveloperTab(innerRect); break;
+            }
+        }
+
+        private void DrawGeneralTab(Rect inRect)
+        {
             Listing_Standard listStd = new Listing_Standard();
+            BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 300f);
+            listStd.Begin(viewRect);
 
-            Rect mainRect = inRect; //.ContractedBy(2f);
-            mainRect.height -= listStd.CurHeight;
-            mainRect.y += listStd.CurHeight;
-            Widgets.DrawBoxSolid(mainRect, Color.grey);
-            Rect Border = mainRect.ContractedBy(1f);
-            Widgets.DrawBoxSolid(Border, new ColorInt(42, 43, 44).ToColor);
-            Rect scrollRect = Border.ContractedBy(5f);
-            //rect3.y += 15f;
-            //rect3.height -= 15f;
-            Rect innerScrollRect = scrollRect;
-            innerScrollRect.x = 0f;
-            innerScrollRect.y = 0f;
-            innerScrollRect.width -= 16f;
-            innerScrollRect.height = 950f;
-            Widgets.BeginScrollView(scrollRect, ref scrollPosition, innerScrollRect);
-
-            listStd.Begin(innerScrollRect.AtZero());
-
-            // Reset Cache Button
             if (listStd.ButtonText("BS_ResetCache".Translate()))
             {
-                var pawns = HumanoidPawnScaler.Cache.Keys.Select(x=>x).ToList();
+                var pawns = HumanoidPawnScaler.Cache.Keys.Select(x => x).ToList();
                 BigAndSmallCache.ScribedCache = [];
                 BigAndSmallCache.refreshQueue.Clear();
                 BigAndSmallCache.queuedJobs.Clear();
@@ -63,68 +79,79 @@ namespace BigAndSmall
                 Log.Message($"Reset Cache. Updating cache for {pawns.Count} pawns.");
                 foreach (var pawn in pawns.Where(x => x != null && !x.Discarded && !x.Destroyed))
                 {
-                    if (HumanoidPawnScaler.GetCache(pawn, forceRefresh:true, canRegenerate:true) is BSCache cache)
+                    if (HumanoidPawnScaler.GetCache(pawn, forceRefresh: true, canRegenerate: true) is BSCache cache)
                     {
                         Log.Message($"Big and Small: Reset cache for {pawn}");
-                        //try
-                        //{
-                        //    //Log.Message($"Big and Small: Force-Regen...{pawn}");
-                        //    //cache.RegenerateCache();
-                        //}
-                        //catch (Exception e)
-                        //{
-                        //    Log.Warning($"Big and Small: Error updating cache for {pawn}: {e}");
-                        //}
                     }
                 }
-                //HumanoidPawnScaler.permitThreadedCaches = false;
             }
             if (listStd.ButtonText("BS_ResetSettings".Translate()))
             {
                 settings.ResetToDefault();
             }
-
-            listStd.Label("BS_ActivateExperimental".Translate().AsTipTitle());
-            CreateSettingCheckbox(listStd, "BS_ActivateExperimental".Translate(), ref settings.experimental);
-            //CreateSettingCheckbox(listStd, "BS_PathRacesFromOtherMods".Translate(), ref settings.pathRacesFromOtherMods);
+            if (listStd.ButtonText("BS_ResetToRecommendedSettings".Translate()))
+            {
+                settings.ResetToRecommended();
+            }
             listStd.GapLine();
-
-            listStd.Label("BS_GenesSpecific".Translate().AsTipTitle());
-            CreateSettingCheckbox(listStd, "BS_DoDefGeneration".Translate(), ref settings.generateDefs);
+            listStd.Label("BS_GameMechanics".Translate().AsTipTitle());
             listStd.GapLine();
+            CreateSettingCheckbox(listStd, "BS_PreventUndead".Translate(), ref settings.preventUndead);
+            CreateSettingsSlider(listStd, "BS_InflitratorChance".Translate(), ref settings.inflitratorChance, 0f, 1f, (f) => $"{f * 100:F1}%");
+            CreateSettingsSlider(listStd, "BS_InflitratorRaidChance".Translate(), ref settings.inflitratorRaidChance, 0f, 1f, (f) => $"{f * 100:F1}%");
+            listStd.GapLine();
+            CreateSettingsSlider(listStd, "BS_ImmortalReturnFactor".Translate(), ref settings.immortalReturnTimeFactor, 0.01f, 5f, (f) => $"{f * 100:F1}%");
+
+            listStd.End();
+            EndScrollArea();
+        }
+
+        private void DrawRacesTab(Rect inRect)
+        {
+            Listing_Standard listStd = new Listing_Standard();
+            BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 300f);
+            listStd.Begin(viewRect);
 
             listStd.Label("BS_ToggleFeatures".Translate().AsTipTitle());
             CreateSettingCheckbox(listStd, "BS_Surgery".Translate(), ref settings.surgeryAndBionics);
+
+            //listStd.Label("BS_GameMechanics".Translate().AsTipTitle());
+            listStd.GapLine();
+            listStd.Label("BS_SapientSettings".Translate().AsTipTitle());
             if (BigSmall.BSSapientAnimalsActive_ForcedByMods)
             {
-                CreateSettingCheckbox(listStd, "BS_SapientAnimals_Forced".Translate(), ref settings.forcedOn, disabled:true);
+                CreateSettingCheckbox(listStd, "BS_SapientAnimals_Forced".Translate(), ref settings.forcedOn, disabled: true);
             }
             else
             {
                 CreateSettingCheckbox(listStd, "BS_SapientAnimals".Translate(), ref settings.sapientAnimals);
             }
             //CreateSettingsSlider(listStd, "BS_SapientAnimalsChance".Translate(), ref settings.sapientAnimalsChance, 0f, 1f, (f) => $"{f * 100:F1}%");
-
+            CreateSettingCheckbox(listStd, "BS_AnimalsNoSkillPenalty".Translate(), ref settings.animalsLowSkillPenalty);
+            CreateSettingCheckbox(listStd, "BS_AllAnimalsHaveHands".Translate(), ref settings.allAnimalsHaveHands);
+            CreateSettingCheckbox(listStd, "BS_SapientAnimalsCanRomanceAnySapientAnimals".Translate(), ref settings.animalOnAnimal);
             CreateSettingCheckbox(listStd, "BS_SapientMechanoids".Translate(), ref settings.sapientMechanoids);
 
-            listStd.Label("BS_GameMechanics".Translate().AsTipTitle());
+            listStd.End();
+            EndScrollArea();
+        }
+
+        private void DrawSizeTab(Rect inRect)
+        {
+            Listing_Standard listStd = new Listing_Standard();
+            BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 700f);
+            listStd.Begin(viewRect);
+
+            
             CreateSettingCheckbox(listStd, "BS_ScaleAnimals".Translate(), ref settings.scaleAnimals);
-            CreateSettingCheckbox(listStd, "BS_PreventUndead".Translate(), ref settings.preventUndead);
-            CreateSettingsSlider(listStd, "BS_InflitratorChance".Translate(), ref settings.inflitratorChance, 0f, 1f, (f) => $"{f*100:F1}%");
-            CreateSettingsSlider(listStd, "BS_InflitratorRaidChance".Translate(), ref settings.inflitratorRaidChance, 0f, 1f, (f) => $"{f*100:F1}%");
-            CreateSettingsSlider(listStd, "BS_ImmortalReturnFactor".Translate(), ref settings.immortalReturnTimeFactor, 0.01f, 5f, (f) => $"{f * 100:F1}%");
             listStd.GapLine();
             listStd.Label("BS_LowestUsed".Translate());
 
-            CreateSettingsSlider(listStd, "BS_MultDamageExplain".Translate(), ref settings.dmgExponent, min:0, max:2, valueFormatter: (f) => $"{f*100:F2}%");
+            CreateSettingsSlider(listStd, "BS_MultDamageExplain".Translate(), ref settings.dmgExponent, min: 0, max: 2, valueFormatter: (f) => $"{f * 100:F2}%");
             CreateSettingsSlider(listStd, "BS_FlatDMGExplain".Translate(), ref settings.flatDamageIncrease, 1f, 20f, (f) => $"{f:F0}");
 
             listStd.GapLine();
-            CreateSettingsSlider(listStd, "BS_HungerMultiplierField".Translate(), ref settings.hungerRate, 0f, 1, (f) => $"{f*100:F0}%");
-            listStd.GapLine();
-
-            listStd.Label("BS_MiscGameMechanics".Translate().AsTipTitle());
-            CreateSettingCheckbox(listStd, "BS_PatchPlayerFactions".Translate(), ref settings.patchPlayerFactions);
+            CreateSettingsSlider(listStd, "BS_HungerMultiplierField".Translate(), ref settings.hungerRate, 0f, 1, (f) => $"{f * 100:F0}%");
             listStd.GapLine();
 
             listStd.Label("BS_Rendering".Translate().AsTipTitle());
@@ -142,23 +169,77 @@ namespace BigAndSmall
             listStd.GapLine();
             CreateSettingCheckbox(listStd, "BS_NormalizeBodyType".Translate(), ref settings.scaleBodyTypes);
 
+            listStd.End();
+            EndScrollArea();
+        }
+
+        //private void DrawGameMechanicsTab(Rect inRect)
+        //{
+        //    Listing_Standard listStd = new Listing_Standard();
+        //    BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 300f);
+        //    listStd.Begin(viewRect);
+
+            
+
+        //    listStd.End();
+        //    EndScrollArea();
+        //}
+
+        private void DrawExtrasTab(Rect inRect)
+        {
+            Listing_Standard listStd = new Listing_Standard();
+            BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 200f);
+            listStd.Begin(viewRect);
+
+            CreateSettingCheckbox(listStd, "BS_PatchPlayerFactions".Translate(), ref settings.patchPlayerFactions);
             listStd.GapLine();
             CreateSettingCheckbox(listStd, "BS_SciFiNames".Translate(), ref settings.useSciFiNames);
             CreateSettingCheckbox(listStd, "BS_FantasyNames".Translate(), ref settings.useFantasyNames);
 
-            if (Prefs.DevMode)
-            {
-                listStd.GapLine();
-                listStd.Label("BS_DevSettings".Translate().AsTipTitle());
-                CreateSettingCheckbox(listStd, "BS_JesusMode".Translate(), ref settings.jesusMode);
-                CreateSettingCheckbox(listStd, "BS_RecruitDevSpawned".Translate(), ref settings.recruitDevSpawned);
-            }
+            listStd.End();
+            EndScrollArea();
+        }
 
+        private void DrawAdvancedTab(Rect inRect)
+        {
+            Listing_Standard listStd = new Listing_Standard();
+            BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 200f);
+            listStd.Begin(viewRect);
 
+            listStd.Label("BS_ActivateExperimental".Translate().AsTipTitle());
+            CreateSettingCheckbox(listStd, "BS_ActivateExperimental".Translate(), ref settings.experimental);
+            listStd.GapLine();
+
+            listStd.Label("BS_GenesSpecific".Translate().AsTipTitle());
+            CreateSettingCheckbox(listStd, "BS_DoDefGeneration".Translate(), ref settings.generateDefs);
 
             listStd.End();
+            EndScrollArea();
+        }
+
+        private void DrawDeveloperTab(Rect inRect)
+        {
+            Listing_Standard listStd = new Listing_Standard();
+            BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 200f);
+            listStd.Begin(viewRect);
+
+            listStd.Label("BS_DevSettings".Translate().AsTipTitle());
+            CreateSettingCheckbox(listStd, "BS_JesusMode".Translate(), ref settings.jesusMode);
+            CreateSettingCheckbox(listStd, "BS_RecruitDevSpawned".Translate(), ref settings.recruitDevSpawned);
+
+            listStd.End();
+            EndScrollArea();
+        }
+
+        private void BeginScrollArea(Rect inRect, ref Vector2 scrollPos, out Rect viewRect, float height = 600f)
+        {
+            Rect scrollRect = inRect;
+            viewRect = new Rect(0f, 0f, scrollRect.width - 16f, height);
+            Widgets.BeginScrollView(scrollRect, ref scrollPos, viewRect);
+        }
+        private void EndScrollArea()
+        {
             Widgets.EndScrollView();
-            base.DoSettingsWindowContents(inRect);
         }
 
         public override string SettingsCategory()
@@ -178,7 +259,7 @@ namespace BigAndSmall
         private static readonly bool defaultPathRacesFromOtherMods = true;
         public bool pathRacesFromOtherMods = defaultPathRacesFromOtherMods;
 
-        private static readonly bool defaultExperimental = true;
+        private static readonly bool defaultExperimental = false;
         public bool experimental = defaultExperimental;
 
         private static readonly bool defaultSapientAnimals = false;
@@ -253,6 +334,17 @@ namespace BigAndSmall
         public static readonly float immortalReturnTimeFactorDefault = 1f;
         public float immortalReturnTimeFactor = immortalReturnTimeFactorDefault;
 
+        private static readonly bool defaultAllAnimalsHaveHands = false;
+        public bool allAnimalsHaveHands = defaultAllAnimalsHaveHands;
+
+        private static readonly bool defaultAnimalOnAnimal = false;
+        public bool animalOnAnimal = defaultAnimalOnAnimal;
+
+        private static readonly bool defaultAnimalsLowSkillPenalty = false;
+        public bool animalsLowSkillPenalty = defaultAnimalsLowSkillPenalty;
+
+
+
         // DEV Settings
         public static readonly bool defaultJesusMode = false;
         public bool jesusMode = defaultJesusMode;
@@ -290,6 +382,10 @@ namespace BigAndSmall
             Scribe_Values.Look(ref inflitratorChance, "inflitratorChance", inflitratorChanceDefault);
             Scribe_Values.Look(ref inflitratorRaidChance, "inflitratorRaidChance", inflitratorRaidChanceDefault);
             Scribe_Values.Look(ref immortalReturnTimeFactor, "immortalReturnTimeFactor", immortalReturnTimeFactorDefault);
+            Scribe_Values.Look(ref allAnimalsHaveHands, "allAnimalsHaveHands", defaultAllAnimalsHaveHands);
+            Scribe_Values.Look(ref animalOnAnimal, "sapientAnimalsCanRomanceAnySapientAnimals", defaultAnimalOnAnimal);
+            Scribe_Values.Look(ref animalsLowSkillPenalty, "animalsNoSkillPenalty", defaultAnimalsLowSkillPenalty);
+
 
             // Scribe Dev Settings
             Scribe_Values.Look(ref jesusMode, "jesusMode", defaultJesusMode);
@@ -301,9 +397,6 @@ namespace BigAndSmall
 
         public void ResetToDefault()
         {
-            offsetAnimalBodyPos = defaultOffsetAnimalBodyPos;
-            useSciFiNames = defaultUseSciFiNaming;
-            recruitDevSpawned = defaultRecruitDevSpawned;
             generateDefs = defaultGenerateDefs;
             pathRacesFromOtherMods = defaultPathRacesFromOtherMods;
             experimental = defaultExperimental;
@@ -311,26 +404,36 @@ namespace BigAndSmall
             sapientAnimalsChance = defaultSapientAnimalsChance;
             sapientMechanoids = defaultSapientMechanoids;
             surgeryAndBionics = defaultSurgeryAndBionics;
-            immortalReturnTimeFactor = immortalReturnTimeFactorDefault;
             visualLargerMult = defaultVisualLargerMult;
             visualSmallerMult = defaultVisualSmallerMult;
             headPowLarge = defaultHeadPowLarge;
             headPowSmall = defaultHeadPowSmall;
             dmgExponent = defaultDmgExponent;
-            hungerRate = defaultHungerRate;
-            scaleAnimals = defaultScaleAnimals;
-            scaleBodyTypes = defaultScaleBT;
             flatDamageIncrease = defaultFlatDmgIncrease;
+            hungerRate = defaultHungerRate;
+            scaleBodyTypes = defaultScaleBT;
+            scaleAnimals = defaultScaleAnimals;
             disableTextureCaching = defaultDisableTextureCaching;
             realTimeUpdates = defaultRealTimeUpdates;
             offsetBodyPos = defaultOffsetBodyPos;
+            offsetAnimalBodyPos = defaultOffsetAnimalBodyPos;
             patchPlayerFactions = defaultPatchPlayerFactions;
             preventUndead = defaultPreventUndead;
+            useSciFiNames = defaultUseSciFiNaming;
             useFantasyNames = defaultUseFantasyNaming;
             inflitratorChance = inflitratorChanceDefault;
             inflitratorRaidChance = inflitratorRaidChanceDefault;
+            immortalReturnTimeFactor = immortalReturnTimeFactorDefault;
+            allAnimalsHaveHands = defaultAllAnimalsHaveHands;
+            animalOnAnimal = defaultAnimalOnAnimal;
+            animalsLowSkillPenalty = defaultAnimalsLowSkillPenalty;
             jesusMode = defaultJesusMode;
-
+            recruitDevSpawned = defaultRecruitDevSpawned;
+        }
+        public void ResetToRecommended()
+        {
+            ResetToDefault();
+            scaleBodyTypes = true;
         }
     }
 }

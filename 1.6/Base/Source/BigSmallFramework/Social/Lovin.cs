@@ -64,7 +64,7 @@ namespace BigAndSmall
             }
             catch (Exception e)
             {
-                Log.Message(e.Message + "\n" + e.StackTrace);
+                Log.Warning($"{e.Message}\n{e.StackTrace}");
             }
             foreach (var toil in __result)
             {

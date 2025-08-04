@@ -95,9 +95,9 @@ namespace BigAndSmall
                 {
                     __instance.pawn.health.RemoveHediff(__instance);
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
-                    Log.Error("Exception removing hediff: " + ex.Message);
+                    Log.Error($"Exception removing hediff:\n{e.Message}\n{e.StackTrace}");
                 }
             }
         }

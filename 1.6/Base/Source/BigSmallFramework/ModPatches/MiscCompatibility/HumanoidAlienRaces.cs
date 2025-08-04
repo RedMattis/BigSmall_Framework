@@ -111,9 +111,9 @@ namespace BigAndSmall
 
                 return result.NullOrEmpty() ? null : result;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Log.Error($"Exception occurred while retrieving bodyTypes: {ex.Message}");
+                Log.Error($"Exception occurred while retrieving bodyTypes:\n{e.Message}\n{e.StackTrace}");
                 return null;
             }
         }

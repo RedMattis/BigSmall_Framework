@@ -621,7 +621,7 @@ namespace BigAndSmall
             }
             catch (Exception e)
             {
-                Log.Warning("Error adding through after destroying corpse: " + e);
+                Log.Warning($"Error adding thought after destroying corpse: {e.Message}\n{e.StackTrace}");
             }
 
             if (attacker.needs?.TryGetNeed<Need_KillThirst>() is Need_KillThirst killThirst)

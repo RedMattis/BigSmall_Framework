@@ -204,8 +204,7 @@ namespace BigAndSmall
                 }
                 catch (Exception e)
                 {
-                    Log.Error($"Failed to copy field {field.Name} from race.");
-                    Log.Error(e.ToString());
+                    Log.Error($"Failed to copy field {field.Name} from race.\n{e.Message}\n{e.StackTrace}");
                 }
             }
         }
@@ -227,8 +226,7 @@ namespace BigAndSmall
                             }
                             catch (Exception e)
                             {
-                                Log.Error($"Failed to access field {field.Name}.");
-                                Log.Error(e.ToString());
+                                Log.Error($"Failed to access field {field.Name}.\n{e.Message}\n{e.StackTrace}");
                             }
                         }
                     }
@@ -247,8 +245,7 @@ namespace BigAndSmall
                 }
                 catch (Exception e)
                 {
-                    Log.Error($"Failed to copy field {field.Name} from thingDef.");
-                    Log.Error(e.ToString());
+                    Log.Error($"Failed to copy field {field.Name} from thingDef.\n{e.Message}\n{e.StackTrace}");
                 }
             }
         }
@@ -326,8 +323,7 @@ namespace BigAndSmall
                 }
                 catch (Exception e)
                 {
-                    Log.Error($"Failed to copy field {field.Name} from race.");
-                    Log.Error(e.ToString());
+                    Log.Error($"Failed to copy field {field.Name} from race.\n{e.Message}\n{e.StackTrace}");
                 }
 
             }

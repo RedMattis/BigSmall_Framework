@@ -42,7 +42,7 @@ namespace BigAndSmall
                 }
                 catch (Exception e)
                 {
-                    Log.Error($"Failed to patch VFEInsectoids 2's Creep with additional genes. {e.Message}");
+                    Log.Error($"Failed to patch VFEInsectoids 2's Creep with additional genes.\n{e.Message}\n{e.StackTrace}");
                 }
             }
         }

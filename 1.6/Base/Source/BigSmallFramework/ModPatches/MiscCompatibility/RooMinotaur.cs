@@ -120,9 +120,9 @@ namespace BigAndSmall
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Log.Warning($"{ex}\n{ex.StackTrace}");
+                Log.Warning($"{e.Message}\n{e.StackTrace}");
             }
         }
     }

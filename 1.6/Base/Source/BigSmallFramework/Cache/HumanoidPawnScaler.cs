@@ -231,10 +231,10 @@ namespace BigAndSmall
                     dStage = pawn.DevelopmentalStage;
                     developmentalStage = dStage;
                 }
-                catch
+                catch(Exception e)
                 {
                     Log.Warning($"[BigAndSmall] caught an exception when fetching Developmental Stage for {pawn.Name} Aborting generation of pawn cache.\n" +
-                        $"This likely means the pawn lacks \"lifeStageAges\" or another requirement for fetching the age is missing.");
+                        $"This likely means the pawn lacks \"lifeStageAges\" or another requirement for fetching the age is missing.\n{e.Message}\n{e.StackTrace}");
                     return false;
                 }
 
@@ -492,12 +492,12 @@ namespace BigAndSmall
                 // More stuff should probably be moved here.
                 ScheduleUpdate(1);
             }
-            catch
+            catch (Exception e)
             {
                 // Remove the cache entry so it can be regenerated if this has not already been attempted.
                 if (!BigAndSmallCache.regenerationAttempted)
                 {
-                    Log.Warning($"Issue reloading cache of {pawn} ({id}). Removing entire cache so it can be regenerated.");
+                    Log.Warning($"Issue reloading cache of {pawn} ({id}). Removing entire cache so it can be regenerated.\n{e.Message}\n{e.StackTrace}");
                     // Reassigning instead of clearing in case it is null for some reason.
                     HumanoidPawnScaler.Cache = new ConcurrentDictionary<Pawn, BSCache>();
                     BigAndSmallCache.ScribedCache = [];
@@ -841,9 +841,10 @@ namespace BigAndSmall
                                     pawn.apparel.Remove(apItem);
                                 }
                             }
-                            catch
+                            catch (Exception e)
                             {
-                                Log.Warning($"[BigAndSmall] Failed to remove apparel {apItem} from {pawn.Name}.");
+                                // If it fails, log a warning.
+                                Log.Warning($"[BigAndSmall] Failed to remove apparel {apItem} from {pawn.Name}.\n{e.Message}\n{e.StackTrace}");
                             }
                         }
                     }
@@ -868,11 +869,11 @@ namespace BigAndSmall
                 SimpleRaceUpdate(racePawnExts, otherPawnExts, pawn.GetRaceCompProps());
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 if (!BigAndSmallCache.regenerationAttempted)
                 {
-                    Log.Warning($"Issue updating RaceCache of {pawn} ({id}). Cleaing and regenerating cache.");
+                    Log.Warning($"Issue updating RaceCache of {pawn} ({id}). Cleaing and regenerating cache.\n{e.Message}\n{e.StackTrace}");
                     // Reassigning instead of clearing in case it is null for some reason.
                     HumanoidPawnScaler.Cache = new ConcurrentDictionary<Pawn, BSCache>();
                     BigAndSmallCache.ScribedCache = [];

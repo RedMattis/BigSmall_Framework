@@ -104,9 +104,9 @@ namespace BigAndSmall
                     var weaponThing = ThingMaker.MakeThing(weaponDef);
                     pawn.equipment.AddEquipment((ThingWithComps)weaponThing);
                 }
-                catch
+                catch (Exception e)
                 {
-                    Log.Warning($"Failed to add new weapon to {pawn.Name}");
+                    Log.Error($"Failed to add new weapon to {pawn.Name}: {e.Message}\n{e.StackTrace}");
                 }
 
             }

@@ -211,7 +211,10 @@ namespace BigAndSmall
                     genesToPick.Add(allGeneDefs.Where(x => x.defName == "Body_FemaleOnly").First());
                 }
             }
-            catch { Log.Warning($"Gender genes not found. Skipping."); }
+            catch (Exception e)
+            {
+                Log.Warning($"Gender genes not found. Skipping.\n{e.Message}\n{e.StackTrace}");
+            }
 
             if (target?.story.bodyType == BodyTypeDefOf.Male)
             {

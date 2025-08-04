@@ -151,9 +151,9 @@ namespace BigAndSmall
                 statWasActive = onStat;
                 //TestConditionals
             }
-            catch
+            catch (Exception e)
             {
-                throw;
+                Log.Error($"Error in TransitioningHediff.PostTick: {e.Message}\n{e.StackTrace}");
             }
         }
 

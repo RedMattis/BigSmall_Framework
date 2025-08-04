@@ -27,39 +27,6 @@ namespace BigAndSmall
         public override void Tended(float quality, float maxQuality, int batchPosition = 0) { }
 
         public override float PainOffset { get { return 0; } }
-        /// <summary>
-        /// Don't use stages on the RaceTracker, it causes it to start ticking.
-        /// 
-        /// Add a new Hediff instead if you want to use stages.
-        /// </summary>
-        //public override HediffStage CurStage { get { return null; } }
-
-        //public override string Description
-        //{
-        //    get
-        //    {
-        //        var baseDesc = base.Description;
-
-        //        try
-        //        {
-        //            if (PawnExtensionExtension.TryGetDescription(PawnExtensions, out string pawnDesc))
-        //            {
-        //                baseDesc += $"\n\n{pawnDesc}";
-        //            }
-
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            Log.Error($"Error generating RaceTracker.Description: {e}");
-        //        }
-        //        finally
-        //        {
-                    
-        //        }
-
-        //        return baseDesc;
-        //    }
-        //}
     }
 
 }

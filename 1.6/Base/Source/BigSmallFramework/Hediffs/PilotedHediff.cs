@@ -176,17 +176,17 @@ namespace BigAndSmall
             }
             catch (Exception e)
             {
-                Log.Warning("Failed to add pilot to piloted hediff: " + e.Message + e.StackTrace);
+                Log.Warning($"Failed to add pilot to piloted hediff.{e.Message}\n{e.StackTrace}");
             }
             try
             { 
                 // Check if the is a pilot there already:
                 var otherPilot = InnerContainer.Where(x => x is Pawn && x != thing).FirstOrDefault();
                 if (otherPilot == null && thing is Pawn pilot)
-                {
-                    try { InheritPilotSkills(pilot, pawn); } catch (Exception e) { Log.Warning("Failed to transfer pilot skills: " + e.Message + e.StackTrace); }
-                    try { InheritPilotTraits(pilot); } catch (Exception e) { Log.Warning("Failed to transfer pilot traits: " + e.Message + e.StackTrace); }
-                    try { InheritRelationships(pilot, pawn); } catch (Exception e) { Log.Warning("Failed to transfer pilot relationships: " + e.Message + e.StackTrace); }
+                { 
+                    try { InheritPilotSkills(pilot, pawn); } catch (Exception e) { Log.Warning($"Failed to transfer pilot skills:\n{e.Message}\n{e.StackTrace}"); }
+                    try { InheritPilotTraits(pilot); } catch (Exception e) { Log.Warning($"Failed to transfer pilot traits:\n{e.Message}\n{e.StackTrace}"); }
+                    try { InheritRelationships(pilot, pawn); } catch (Exception e) { Log.Warning($"Failed to transfer pilot relationships:\n{e.Message}\n{e.StackTrace}"); }
                 }
             }
             catch (Exception e)
@@ -287,7 +287,7 @@ namespace BigAndSmall
                 }
                 catch (Exception e)
                 {
-                    Log.Error($"Failed to add relation {relation.def.defName} to {target.Name} from {source.Name} with error: {e.Message}");
+                    Log.Error($"Failed to add relation {relation.def.defName} to {target.Name} from {source.Name} with error: \n{e.Message}\n{e.StackTrace}");
                 }
             }
 
@@ -302,7 +302,7 @@ namespace BigAndSmall
                 }
                 catch (Exception e)
                 {
-                    Log.Error($"Failed to add relation {relationDef.defName} to {otherPawn.Name} from {target.Name} with error: {e.Message}");
+                    Log.Error($"Failed to add relation {relationDef.defName} to {otherPawn.Name} from {target.Name} with error: \n{e.Message}\n{e.StackTrace}");
                 }
             }
 
@@ -316,7 +316,7 @@ namespace BigAndSmall
                 }
                 catch (Exception e)
                 {
-                    Log.Error($"Failed to add thought {thought.def.defName} to {target.Name} from {source.Name} with error: {e.Message}");
+                    Log.Error($"Failed to add thought {thought.def.defName} to {target.Name} from {source.Name} with error: \n{e.Message}\n{e.StackTrace}");
                 }
             }
 
@@ -397,17 +397,17 @@ namespace BigAndSmall
         {
             IList<Thing> content = InnerContainer;
 
-            if(content.Count == 0)
+            if (content.Count == 0)
             {
                 return;
             }
             foreach (Thing thing in content.Where(x => x is Pawn))
             {
                 // Push skills improvements back from the pilotable entity to the pilot.
-                try { InheritPilotSkills(pawn, thing as Pawn); } catch (Exception e) { Log.Error("Failed to inherit skills from " + pawn.Name + " with error: " + e.Message); }
+                try { InheritPilotSkills(pawn, thing as Pawn); } catch (Exception e) { Log.Error($"Failed to inherit skills from {pawn.Name} with error:\n{e.Message}\n{e.StackTrace}"); }
 
                 // Restore relationships from the pilotable entity to the pilot.
-                try { InheritRelationships(pawn, thing as Pawn); } catch (Exception e) { Log.Error("Failed to inherit relationships from " + pawn.Name + " with error: " + e.Message); }
+                try { InheritRelationships(pawn, thing as Pawn); } catch (Exception e) { Log.Error($"Failed to inherit relationships from {pawn.Name} with error:\n{e.Message}\n{e.StackTrace}"); }
                 break; // Never add skills from more than one pilot, or we might overwrite some other pawn's skills.
             }
 
@@ -432,7 +432,7 @@ namespace BigAndSmall
             }
             catch (Exception e)
             {
-                Log.Error("Failed to remove pilot from " + pawn.Name + " with error: " + e.Message);
+                Log.Error($"Failed to remove pilot from {pawn.Name} with error:\n{e.Message}\n{e.StackTrace}");
             }
         }
 

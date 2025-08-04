@@ -96,7 +96,7 @@ namespace BigAndSmall
             }
             catch (Exception e)
             {
-                Log.Error("Caught Exception in PrerequisiteValidator: " + e.Message);
+                Log.Error($"Caught Exception in PrerequisiteValidator: {e.Message}\n{e.StackTrace}");
             }
             return "";
         }

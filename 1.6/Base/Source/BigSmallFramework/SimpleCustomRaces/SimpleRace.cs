@@ -103,7 +103,7 @@ namespace BigAndSmall
             {
                 if (!didWarn)
                 {
-                    Log.Error($"[BigAndSmall] Error in RandomSkinColorGene_Postfix for {pawn}: {e}");
+                    Log.Error($"[BigAndSmall] Error in RandomSkinColorGene_Postfix for {pawn}:\n{e.Message}\n{e.StackTrace}");
                     didWarn = true;
                 }
             }

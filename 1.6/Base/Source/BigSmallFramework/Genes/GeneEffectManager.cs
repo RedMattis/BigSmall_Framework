@@ -74,9 +74,9 @@ namespace BigAndSmall
                 }
 
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Log.Error($"Error in GainOrRemoveAbilities: {ex.Message}");
+                Log.Error($"Error in GainOrRemoveAbilities: \n{e.Message}\n{e.StackTrace}");
             }
         }
 

@@ -411,8 +411,9 @@ namespace BigAndSmall
                         }
                     }
                 }
-                catch (IndexOutOfRangeException)
+                catch (IndexOutOfRangeException ie)
                 {
+                    Log.Warning($"Caught exception while trying to reanimate {pawn.Name} with DraculVampirism hediff. This *may* prevent reanimation. {ie.Message}\n{ie.StackTrace}");
                     // Don't think this should happen anymore, but just to be safe.
                 }
 

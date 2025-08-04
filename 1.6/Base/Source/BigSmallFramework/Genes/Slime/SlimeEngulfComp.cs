@@ -105,7 +105,7 @@ namespace BigAndSmall
             catch (Exception e)
             {
                 // Capture the error if any, because otherwise the pawn will fail to spawn back in which is bad.
-                Log.Error($"Error in OnJumpCompleted (target {target.Pawn}, user: {parent?.pawn}) : {e.Message}");
+                Log.Error($"Error in OnJumpCompleted (target {target.Pawn}, user: {parent?.pawn}).\n{e.Message}\n{e.StackTrace}");
             }
         }
     }
