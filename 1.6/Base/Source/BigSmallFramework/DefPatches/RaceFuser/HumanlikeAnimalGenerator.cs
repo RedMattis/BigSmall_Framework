@@ -34,6 +34,12 @@ namespace BigAndSmall
         }
     }
 
+    public class RenderTreeOverride
+    {
+        public List<string> thingDefNames;
+        public string renderTreeDefName;
+    }
+
     public class HumanlikeAnimalSettings : Def
     {
         private static List<HumanlikeAnimalSettings> allSettings = null;
@@ -44,6 +50,7 @@ namespace BigAndSmall
         public List<string> hasPoorHandsWildcards = [];
         public List<string> compWhitelist = [];
         public List<string> tabWhitelist = [];
+        public List<RenderTreeOverride> renderTreeWhitelist = [];
     }
 
     public static class HumanlikeAnimals
@@ -177,12 +184,12 @@ namespace BigAndSmall
             foreach (var comp in humThing.comps)
             {
                 // Check if the comp is already in the list, to avoid duplicates.
-                if (!bothComps.Any(x=>x.GetType() == comp.GetType() && x.compClass == comp.compClass))
+                if (!bothComps.Any(x => x.GetType() == comp.GetType() && x.compClass == comp.compClass))
                 {
                     bothComps.Add(comp);
                 }
             }
-            var filteredComps =bothComps
+            var filteredComps = bothComps
                 .Where(x =>
                     compWhitelist.Contains(x.GetType().ToString(), StringComparer.OrdinalIgnoreCase) ||
                     compWhitelist.Contains(x.compClass.ToString(), StringComparer.OrdinalIgnoreCase))
@@ -220,10 +227,10 @@ namespace BigAndSmall
                 tabWhiteList.AddRange(setting.tabWhitelist);
             }
 
-            foreach(var tab in aniThing.inspectorTabs ?? [])
+            foreach (var tab in aniThing.inspectorTabs ?? [])
             {
                 if (tabWhiteList.Contains(tab.ToString(), StringComparer.OrdinalIgnoreCase))// ||
-                    //tabWhiteList.Contains(tab.Name, StringComparer.Ordinal))  // Eh... maybe not this. I think we want to keep the namespace to be safe.
+                                                                                            //tabWhiteList.Contains(tab.Name, StringComparer.Ordinal))  // Eh... maybe not this. I think we want to keep the namespace to be safe.
                 {
                     newThing.inspectorTabs ??= [];
                     newThing.inspectorTabs.Add(tab);
@@ -306,28 +313,7 @@ namespace BigAndSmall
             // field is sometimes not present. Somehow.
             var hasUnnaturalCorpseField = newRace.GetType().GetField("hasUnnaturalCorpse");
             hasUnnaturalCorpseField?.SetValue(newRace, false);
-
-            if (newRace.renderTree.defName == "Animal" || newRace.renderTree.defName == "Misc")
-            {
-                newRace.renderTree = DefDatabase<PawnRenderTreeDef>.GetNamed("BS_HumanlikeAnimal");
-            }
-            else if (newRace.renderTree.defName == "Human") { }  // Could be replaced by a whitelist.
-            else
-            {
-                
-                if (aniRace.Humanlike)
-                {
-                    Log.WarningOnce($"Unhandled Render-Tree: {aniPawnKind.defName} has an unhandled render tree: {newRace.renderTree.defName}. It will likely not render as expected if made sapient. Keeping previous.\n" +
-                    $"No warning of this type will be sent to avoid spamming the log.", 6661337);
-                    newRace.renderTree = humRace.renderTree;
-                }
-                else
-                {
-                    Log.WarningOnce($"Unhandled Render-Tree: {aniPawnKind.defName} has an unhandled render tree: {newRace.renderTree.defName}. It will likely not render as expected if made sapient. Defaulting to BS_HumanlikeAnimal.\n" +
-                    $"No warning of this type will be sent to avoid spamming the log.", 6661338);
-                    newRace.renderTree = DefDatabase<PawnRenderTreeDef>.GetNamed("BS_HumanlikeAnimal");
-                }
-            }
+            SetRenderTree(aniPawnKind, aniThing, aniRace, humRace, newRace);
 
             // Fix animal body so animals can equip stuff. This also caches the parts if this is not already done.
             SetupBodyTags(newThing, newRace);
@@ -428,7 +414,7 @@ namespace BigAndSmall
                 }
                 if (BigSmallMod.settings.animalsLowSkillPenalty && pawnExt.aptitudes != null)
                 {
-                    foreach(var skill in pawnExt.aptitudes)
+                    foreach (var skill in pawnExt.aptitudes)
                     {
                         if (skill.level < -8)
                         {
@@ -508,7 +494,7 @@ namespace BigAndSmall
             DefGenerator.AddImpliedDef(newRace.body, hotReload: true);
             DefGenerator.AddImpliedDef(raceHediff, hotReload: true);
 
-            
+
 
             newThing.ResolveReferences();
             raceHediff.ResolveReferences();
@@ -524,6 +510,50 @@ namespace BigAndSmall
             static string GetTraitIcon(PawnKindDef aniPawnKind)
             {
                 return aniPawnKind.lifeStages.Last().bodyGraphicData.texPath + "_east";
+            }
+        }
+
+        private static void SetRenderTree(PawnKindDef aniPawnKind, ThingDef aniThing, RaceProperties aniRace, RaceProperties humRace, RaceProperties newRace)
+        {
+            bool renderTreeOverriden = false;
+            List<RenderTreeOverride> renderTreeOverrides = [];
+            foreach (var setting in HumanlikeAnimalSettings.AllHASettings)
+            {
+                renderTreeOverrides.AddRange(setting.renderTreeWhitelist);
+            }
+            foreach (var overrideDef in renderTreeOverrides)
+            {
+                if (overrideDef.thingDefNames.Contains(aniThing.defName, StringComparer.OrdinalIgnoreCase))
+                {
+                    newRace.renderTree = DefDatabase<PawnRenderTreeDef>.GetNamed(overrideDef.renderTreeDefName);
+                    renderTreeOverriden = true;
+                    break;
+                }
+            }
+
+            if (!renderTreeOverriden)
+            {
+                if (newRace.renderTree.defName == "Animal" || newRace.renderTree.defName == "Misc")
+                {
+                    newRace.renderTree = DefDatabase<PawnRenderTreeDef>.GetNamed("BS_HumanlikeAnimal");
+                }
+                else if (newRace.renderTree.defName == "Human") { }  // Could be replaced by a whitelist.
+                else
+                {
+
+                    if (aniRace.Humanlike)
+                    {
+                        Log.WarningOnce($"Unhandled Render-Tree: {aniPawnKind.defName} has an unhandled render tree: {newRace.renderTree.defName}. It will likely not render as expected if made sapient. Keeping previous.\n" +
+                        $"No warning of this type will be sent to avoid spamming the log.", 6661337);
+                        newRace.renderTree = humRace.renderTree;
+                    }
+                    else
+                    {
+                        Log.WarningOnce($"Unhandled Render-Tree: {aniPawnKind.defName} has an unhandled render tree: {newRace.renderTree.defName}. It will likely not render as expected if made sapient. Defaulting to BS_HumanlikeAnimal.\n" +
+                        $"No warning of this type will be sent to avoid spamming the log.", 6661338);
+                        newRace.renderTree = DefDatabase<PawnRenderTreeDef>.GetNamed("BS_HumanlikeAnimal");
+                    }
+                }
             }
         }
 

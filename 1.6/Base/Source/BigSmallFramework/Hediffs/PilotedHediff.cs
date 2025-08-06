@@ -312,7 +312,10 @@ namespace BigAndSmall
                 Thought_Memory thought = pilotThoughts[idx];
                 try
                 {
-                    target.needs.mood.thoughts.memories.TryGainMemory(thought.def, thought.otherPawn);
+                    var newThought = ThoughtMaker.MakeThought(thought.def, thought.sourcePrecept);
+                    newThought.CopyFrom(thought);
+                    thought.pawn = target;
+                    target.needs.mood.thoughts.memories.TryGainMemory(newThought, thought.otherPawn);
                 }
                 catch (Exception e)
                 {
