@@ -144,8 +144,16 @@ namespace BigAndSmall
                 return;
             }
 
-            hediffsToParts = [.. hediffsToParts.Where(h => pawnExts.All(x =>ConditionalManager.TestConditionals(pawn, h.conditionals) && x.IsHediffLegal(h.hediff).Accepted()))];
-            hediffsToBody = [.. hediffsToBody.Where(h => pawnExts.All(x => ConditionalManager.TestConditionals(pawn, h.conditionals) && x.IsHediffLegal(h.hediff).Accepted()))];
+            hediffsToParts = [.. hediffsToParts
+                .Where(h => pawnExts
+                    .All(x =>ConditionalManager.TestConditionals(pawn, h.conditionals)
+                        && PrerequisiteValidator.SetIsValid(pawn, h.prerequisiteSets)
+                        && x.IsHediffLegal(h.hediff).Accepted()))];
+            hediffsToBody = [.. hediffsToBody
+                .Where(h => pawnExts
+                    .All(x => ConditionalManager.TestConditionals(pawn, h.conditionals)
+                        && PrerequisiteValidator.SetIsValid(pawn, h.prerequisiteSets)
+                        && x.IsHediffLegal(h.hediff).Accepted()))];
 
             var toBodyRemove = prevToBody.Where(h=> !hediffsToBody.Contains(h)).ToList();
             var toPartsRemove = prevToParts.Where(h => !hediffsToParts.Contains(h)).ToList();

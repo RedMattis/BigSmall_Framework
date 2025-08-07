@@ -50,47 +50,7 @@ namespace BigAndSmall
                     var geneExtension = gene.GetModExtension<GenePrerequisites>();
                     if (geneExtension.prerequisiteSets != null)
                     {
-                        List <Gene> otherGenes = pawn.genes.GenesListForReading.Where(x=>x.overriddenByGene == null).ToList();
-                        foreach (var prerequisiteSet in geneExtension.prerequisiteSets)
-                        {
-                            if (prerequisiteSet.prerequisites != null)
-                            {
-                                bool result = false;
-                                switch (prerequisiteSet.type)
-                                {
-                                    case PrerequisiteSet.PrerequisiteType.AnyOf:
-                                        result = prerequisiteSet.prerequisites.Any(geneName => otherGenes.Any(y => y.def.defName == geneName));
-                                        if (!result)
-                                        {
-                                            return "BS_PrerequisitesNotMetAnyOf".Translate($"{string.Join(", ", prerequisiteSet.prerequisites.Select(GeneDefLabelDefName))}");
-                                        }
-                                        break;
-                                    case PrerequisiteSet.PrerequisiteType.AllOf:
-                                        int matches = prerequisiteSet.prerequisites.Count(geneName => otherGenes.Any(y => y.def.defName == geneName));
-                                        float percentage = (float)matches / prerequisiteSet.prerequisites.Count;
-                                        result = percentage >= prerequisiteSet.allOfPerecntage;
-                                        if (!result)
-                                        {
-                                            return "BS_PrerequisitesNotMetAllOf".Translate($"{string.Join(", ", prerequisiteSet.prerequisites.Select(GeneDefLabelDefName))}");
-                                        }
-                                        break;
-                                    case PrerequisiteSet.PrerequisiteType.NoneOf:
-                                        int bannedMatches = prerequisiteSet.prerequisites.Count(geneName => otherGenes.Any(y => y.def.defName == geneName));
-                                        float bannedPercentage = (float)bannedMatches / prerequisiteSet.prerequisites.Count;
-                                        result = bannedPercentage <= prerequisiteSet.noneOfPercentage;
-                                        if (!result)
-                                        {
-                                            var bannedGenesPresent = prerequisiteSet.prerequisites.Where(geneName => otherGenes.Any(y => y.def.defName == geneName)).ToList();
-                                            return "BS_PrerequisitesNotMetNoneOf".Translate($"{string.Join(", ", bannedGenesPresent.Select(GeneDefLabelDefName))}");
-                                        }
-                                        break;
-                                }
-                                if (!result)
-                                {
-                                    return "";
-                                }
-                            }
-                        }
+                        return ValidationDescription(pawn, geneExtension.prerequisiteSets);
                     }
                 }
             }
@@ -99,6 +59,67 @@ namespace BigAndSmall
                 Log.Error($"Caught Exception in PrerequisiteValidator: {e.Message}\n{e.StackTrace}");
             }
             return "";
+        }
+
+        public static bool SetIsValid(Pawn pawn, List<PrerequisiteSet> prerequisiteSets) =>
+            ValidationDescription(pawn, prerequisiteSets) == "";
+
+        public static string ValidationDescription(Pawn pawn, List<PrerequisiteSet> prerequisiteSets)
+        {
+            if (prerequisiteSets == null || prerequisiteSets.Count == 0)
+            {
+                return "";
+            }
+            try
+            {
+                List<Gene> otherGenes = pawn.genes.GenesListForReading.Where(x => x.overriddenByGene == null).ToList();
+                foreach (var prerequisiteSet in prerequisiteSets)
+                {
+                    if (prerequisiteSet.prerequisites != null)
+                    {
+                        bool result = false;
+                        switch (prerequisiteSet.type)
+                        {
+                            case PrerequisiteSet.PrerequisiteType.AnyOf:
+                                result = prerequisiteSet.prerequisites.Any(geneName => otherGenes.Any(y => y.def.defName == geneName));
+                                if (!result)
+                                {
+                                    return "BS_PrerequisitesNotMetAnyOf".Translate($"{string.Join(", ", prerequisiteSet.prerequisites.Select(GeneDefLabelDefName))}");
+                                }
+                                break;
+                            case PrerequisiteSet.PrerequisiteType.AllOf:
+                                int matches = prerequisiteSet.prerequisites.Count(geneName => otherGenes.Any(y => y.def.defName == geneName));
+                                float percentage = (float)matches / prerequisiteSet.prerequisites.Count;
+                                result = percentage >= prerequisiteSet.allOfPerecntage;
+                                if (!result)
+                                {
+                                    return "BS_PrerequisitesNotMetAllOf".Translate($"{string.Join(", ", prerequisiteSet.prerequisites.Select(GeneDefLabelDefName))}");
+                                }
+                                break;
+                            case PrerequisiteSet.PrerequisiteType.NoneOf:
+                                int bannedMatches = prerequisiteSet.prerequisites.Count(geneName => otherGenes.Any(y => y.def.defName == geneName));
+                                float bannedPercentage = (float)bannedMatches / prerequisiteSet.prerequisites.Count;
+                                result = bannedPercentage <= prerequisiteSet.noneOfPercentage;
+                                if (!result)
+                                {
+                                    var bannedGenesPresent = prerequisiteSet.prerequisites.Where(geneName => otherGenes.Any(y => y.def.defName == geneName)).ToList();
+                                    return "BS_PrerequisitesNotMetNoneOf".Translate($"{string.Join(", ", bannedGenesPresent.Select(GeneDefLabelDefName))}");
+                                }
+                                break;
+                        }
+                        if (!result)
+                        {
+                            return "";
+                        }
+                    }
+                }
+                return "";
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Caught Exception in PrerequisiteValidator.ValidationDescription: {e.Message}\n{e.StackTrace}");
+                return "ERROR";
+            }
         }
     }
 }

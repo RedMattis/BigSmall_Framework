@@ -225,31 +225,6 @@ namespace BigAndSmall
                 }
             }
 
-            //if (__instance.HasModExtension<GeneSuppressor_Gene>())
-            //{
-            //    var suppressExtension = __instance.GetModExtension<GeneSuppressor_Gene>();
-            //    if (suppressExtension.supressedGenes != null)
-            //    {
-            //        StringBuilder stringBuilder = new();
-            //        stringBuilder.AppendLine(__result);
-            //        stringBuilder.AppendLine();
-            //        stringBuilder.AppendLine(("BP_GenesSuppressed".Translate() + ":").Colorize(ColoredText.TipSectionTitleColor));
-            //        foreach (var geneDefName in suppressExtension.supressedGenes)
-            //        {
-            //            var gene = DefDatabase<GeneDef>.GetNamedSilentFail(geneDefName);
-            //            if (gene != null)
-            //            {
-            //                stringBuilder.AppendLine(" - " + gene.LabelCap);
-            //            }
-            //            else
-            //            {
-            //                stringBuilder.AppendLine($" - {geneDefName} ({"BP_GeneNotFoundInGame".Translate()})");
-            //            }
-            //        }
-            //        __result = stringBuilder.ToString();
-            //    }
-            //}
-
             if (__instance.HasModExtension<PawnExtension>())
             {
                 var pawnExt = __instance.GetModExtension<PawnExtension>();
@@ -262,27 +237,6 @@ namespace BigAndSmall
                     stringBuilder.AppendLine();
                     stringBuilder.AppendLine(description);
                 }
-
-
-                //if (geneExt.conditionals != null)
-                //{
-                //    stringBuilder.AppendLine();
-                //    stringBuilder.AppendLine(("BP_ActiveOnCondition".Translate() + ":").Colorize(ColoredText.TipSectionTitleColor));
-                //    foreach (var conditional in geneExt.conditionals)
-                //    {
-                //        stringBuilder.AppendLine(" - " + conditional.Label);
-                //    }
-                //}
-                //if (geneExt.sizeByAge != null)
-                //{
-                //    stringBuilder.AppendLine();
-                //    stringBuilder.AppendLineTagged(("SizeOffsetByAge".Translate().CapitalizeFirst() + ":").Colorize(ColoredText.TipSectionTitleColor));
-                //    stringBuilder.AppendLine(geneExt.sizeByAge.Select((CurvePoint pt) => "PeriodYears".Translate(pt.x).ToString() + ": +" + pt.y.ToString()).ToLineList("  - ", capitalizeItems: true));
-                //}
-
-                //var effectorB = geneExt.GetAllEffectorDescriptions();
-                //stringBuilder.Append(effectorB);
-
 
 
                 __result = stringBuilder.ToString();

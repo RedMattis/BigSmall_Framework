@@ -102,6 +102,10 @@ namespace BigAndSmall
             // If full, produce resources and add to inventory.
             if (props != null && ActiveAndFull)
             {
+                if (pawn?.Dead != false || pawn.Deathresting)
+                {
+                    return;
+                }
                 var resourceToProduce = ResourceDef;
                 var amountToProduce = ResourceAmount;
 

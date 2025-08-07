@@ -33,6 +33,7 @@ namespace BigAndSmall
         public HediffDef hediff;
 
         public List<ConditionalStatAffecter> conditionals;
+        public List<PrerequisiteSet> prerequisiteSets;
     }
 
     public class HediffToBodyparts
@@ -40,8 +41,10 @@ namespace BigAndSmall
         public HediffDef hediff;
 
         public List<ConditionalStatAffecter> conditionals;
+        public List<PrerequisiteSet> prerequisiteSets;
 
         public List<BodyPartDef> bodyparts = [];
+
     }
 
     public class GraphicPathPerBodyType

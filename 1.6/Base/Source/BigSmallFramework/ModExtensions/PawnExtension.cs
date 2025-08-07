@@ -64,13 +64,13 @@ namespace BigAndSmall
         /// Used by Genes. When the gene is added/activated it will apply these hediffs to the pawn.
         /// </summary>
         public List<HediffToBody> applyBodyHediff;
-        public List<string> ApplyBodyHediffDescription => applyBodyHediff?.Where(x=>x.conditionals == null)?
+        public List<string> ApplyBodyHediffDescription => applyBodyHediff?.Where(x=>x.conditionals == null && x.prerequisiteSets == null)?
             .Select(x => (string)"BS_ApplyBodyHediff".Translate(x.hediff.LabelCap)).ToList();
         /// <summary>
         /// Same as above but applies to specific bodyparts.
         /// </summary>
         public List<HediffToBodyparts> applyPartHediff;
-        public List<string> ApplyPartHediffDescription => applyPartHediff?.Where(x => x.conditionals == null)?
+        public List<string> ApplyPartHediffDescription => applyPartHediff?.Where(x => x.conditionals == null && x.prerequisiteSets == null)?
             .Select(x => (string)"BS_ApplyPartHediff".Translate(x.hediff.LabelCap, string.Join(", ", x.bodyparts))).ToList();
 
         /// <summary>
