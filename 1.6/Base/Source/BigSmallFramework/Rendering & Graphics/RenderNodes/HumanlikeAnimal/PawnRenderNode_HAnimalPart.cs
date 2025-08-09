@@ -38,10 +38,25 @@ namespace BigAndSmall
             var animalKind = hueAni.animalKind;
             PawnKindLifeStage curKindLifeStage = animalKind.lifeStages[hueAni.GetLifeStageIndex(pawn)];
 
-            // All the code below is mostly copy-pasta from PawnRenderNode_AnimalPart.
+			// All the code below is mostly copy-pasta from PawnRenderNode_AnimalPart.
+			Graphic graphic = null;
+			AlternateGraphic ag = null;
+			if (pawn.overrideGraphicIndex != null && animalKind.alternateGraphics?.Count > pawn.overrideGraphicIndex + 1)
+			{
+				ag = animalKind.alternateGraphics[pawn.overrideGraphicIndex.Value];
+				graphic = ag.GetGraphic(curKindLifeStage.bodyGraphicData.Graphic);
+			}
 
-            Graphic graphic = (pawn.TryGetAlternate(out AlternateGraphic ag, out int index) ? ag.GetGraphic(curKindLifeStage.bodyGraphicData.Graphic) : ((pawn.gender == Gender.Female && curKindLifeStage.femaleGraphicData != null) ? curKindLifeStage.femaleGraphicData.Graphic : curKindLifeStage.bodyGraphicData.Graphic));
-            if ((pawn.Dead || (pawn.IsMutant && pawn.mutant.Def.useCorpseGraphics)) && curKindLifeStage.corpseGraphicData != null)
+			// Try to fetch alternate graphic if available otherwise fetch default.
+			if (graphic == null)
+			{
+				if (pawn.gender == Gender.Female && curKindLifeStage.femaleGraphicData != null)
+					graphic = curKindLifeStage.femaleGraphicData.Graphic;
+				else
+					graphic = curKindLifeStage.bodyGraphicData.Graphic;
+			}
+						
+			if ((pawn.Dead || (pawn.IsMutant && pawn.mutant.Def.useCorpseGraphics)) && curKindLifeStage.corpseGraphicData != null)
             {
                 graphic = ((pawn.gender == Gender.Female && curKindLifeStage.femaleCorpseGraphicData != null) ? curKindLifeStage.femaleCorpseGraphicData.Graphic.GetColoredVersion(curKindLifeStage.femaleCorpseGraphicData.Graphic.Shader, graphic.Color, graphic.ColorTwo) : curKindLifeStage.corpseGraphicData.Graphic.GetColoredVersion(curKindLifeStage.corpseGraphicData.Graphic.Shader, graphic.Color, graphic.ColorTwo));
             }

@@ -152,9 +152,10 @@ namespace BigAndSmall
                     GenSpawn.Spawn(newPawn, aniPawn.Position, aniPawn.Map, WipeMode.VanishOrMoveAside);
                 }
 
+				if (PawnGraphicUtils.TryGetAlternate(aniPawn, out _, out int index))
+					newPawn.overrideGraphicIndex = index;
 
-
-                SwapThingDef(newPawn, targetDef, true, forcePriority, force: true, permitFusion: false, clearHediffsToReapply: false);
+				SwapThingDef(newPawn, targetDef, true, forcePriority, force: true, permitFusion: false, clearHediffsToReapply: false);
                 RestoreMatchingHediffs(newPawn, targetDef, aniPawn);
                 if (shouldBeWildman)
                 {
