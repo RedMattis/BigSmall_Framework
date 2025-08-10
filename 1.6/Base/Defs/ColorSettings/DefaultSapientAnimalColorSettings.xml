@@ -1,0 +1,38 @@
+<Defs>
+	<BigAndSmall.ColorSettingDef>
+		<defName>BS_DefaultSapientAnimalColorA</defName>
+		<color>
+			<!-- Default color is white -->
+			<color>1,1,1,1</color>
+			<alts>
+				<li>
+					<triggers>
+						<li>HasForcedHairColorGene</li>
+					</triggers>
+					<hairColor>true</hairColor>
+				</li>
+				<li>
+					<triggers>
+						<li>IdeologyDLC</li>
+					</triggers>
+					<hairColor>true</hairColor>
+				</li>
+			</alts>
+		</color>
+	</BigAndSmall.ColorSettingDef>
+	<BigAndSmall.ColorSettingDef>
+		<defName>BS_DefaultSapientAnimalColorB</defName>
+		<color>
+			<!-- Default color is white -->
+			<color>1,1,1,1</color>
+			<alts>
+				<li>
+					<triggers>
+						<li>IdeologyDLC</li>
+					</triggers>
+					<favoriteColor>true</favoriteColor>
+				</li>
+			</alts>
+		</color>
+	</BigAndSmall.ColorSettingDef>
+</Defs>

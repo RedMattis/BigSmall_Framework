@@ -35,7 +35,8 @@ namespace BigAndSmall
             Rotted,
             Dessicated,
             HasForcedSkinColorGene,
-            IsRecolored,  // Only works for AdvancedColor.
+			HasForcedHairColorGene,
+			IsRecolored,  // Only works for AdvancedColor.
             BiotechDLC,
             IdeologyDLC,
             AnomalyDLC,
@@ -217,7 +218,8 @@ namespace BigAndSmall
                 AltTrigger.Rotted => pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Rotting,
                 AltTrigger.Dessicated => pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Dessicated,
                 AltTrigger.HasForcedSkinColorGene => GeneHelpers.GetAllActiveGenes(pawn).Any(x => x.def.skinColorOverride != null),
-                AltTrigger.IsRecolored => node?.GetApparelFromNode()?.GetComp<CompColorable>()?.Active == true,
+				AltTrigger.HasForcedHairColorGene => GeneHelpers.GetAllActiveGenes(pawn).Any(x => x.def.hairColorOverride != null),
+				AltTrigger.IsRecolored => node?.GetApparelFromNode()?.GetComp<CompColorable>()?.Active == true,
                 AltTrigger.BiotechDLC => ModsConfig.BiotechActive,
                 AltTrigger.IdeologyDLC => ModsConfig.IdeologyActive,
                 AltTrigger.AnomalyDLC => ModsConfig.AnomalyActive,

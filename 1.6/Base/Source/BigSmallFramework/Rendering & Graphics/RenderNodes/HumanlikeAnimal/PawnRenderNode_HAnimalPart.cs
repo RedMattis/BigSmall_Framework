@@ -66,19 +66,21 @@ namespace BigAndSmall
             }
 
 
-			Color color1 = pawn.story?.HairColor ?? graphic.Color;
-			Color color2 = pawn.story?.favoriteColor?.color ?? graphic.ColorTwo;
+			ColorSetting colorA = BSDefs.BS_DefaultSapientAnimalColorA.color;
+			ColorSetting colorB = BSDefs.BS_DefaultSapientAnimalColorB.color;
 
 			var material = HumanoidPawnScaler.GetCache(pawn).bodyMaterial;
 			if (material != null)
 			{
 				if (material.colorA != null)
-					color1 = material.colorA.GetColor(this, color1, ColorSetting.clrOneKey);
+					colorA = material.colorA;
 
 				if (material.colorB != null)
-					color2 = material.colorB.GetColor(this, color2, ColorSetting.clrTwoKey);
+					colorB = material.colorB;
 			}
 
+			Color color1 = colorA.GetColor(this, graphic.color, ColorSetting.clrOneKey);
+			Color color2 = colorB.GetColor(this, graphic.colorTwo, ColorSetting.clrTwoKey);
 			graphic = graphic.GetColoredVersion(graphic.Shader, color1, color2);
 
 			switch (pawn.Drawer.renderer.CurRotDrawMode)
