@@ -92,7 +92,12 @@ namespace BigAndSmall
         public PawnRenderNode_UltimateApparel(Pawn pawn, PawnRenderingProps_Ultimate props, PawnRenderTree tree)
             : base(pawn, props, tree, null)
         {
-            Log.WarningOnce($"[BigAndSmall] THIS SHOULD NOT BE CALLED: {pawn} with props {props.GetType().Name} and tree {tree.GetType().Name}", 231239);
+            Log.WarningOnce($"[BigAndSmall] THIS SHOULD NOT BE CALLED.\n\n" +
+                $"If it was called it was likely due to XML errors or patch applying the Apparel node to a non-apparel item.\n" +
+                $"{pawn} with props {props.GetType().Name} and tree {tree.GetType().Name}", 231239);
+            base.apparel = apparel;
+            useHeadMesh = props.parentTagDef == PawnRenderNodeTagDefOf.ApparelHead;
+            meshSet = MeshSetFor(pawn);
         }
         public PawnRenderNode_UltimateApparel(Pawn pawn, PawnRenderNodeProperties props, PawnRenderTree tree, Apparel apparel) : base(pawn, props, tree, apparel)
         {

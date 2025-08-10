@@ -25,6 +25,7 @@ namespace BigAndSmall
         {
             "BS_General", "BS_Races", "BS_Size", "BS_Extras", "BS_Advanced", "BS_Developer"
         };
+        
         public override void DoSettingsWindowContents(Rect inRect)
         {
             base.DoSettingsWindowContents(inRect);
@@ -191,6 +192,8 @@ namespace BigAndSmall
             BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 200f);
             listStd.Begin(viewRect);
 
+            CreateSettingCheckbox(listStd, "BS_EnabledDraftedJobs".Translate(), ref settings.enableDraftedJobs);
+            listStd.GapLine();
             CreateSettingCheckbox(listStd, "BS_PatchPlayerFactions".Translate(), ref settings.patchPlayerFactions);
             listStd.GapLine();
             CreateSettingCheckbox(listStd, "BS_SciFiNames".Translate(), ref settings.useSciFiNames);
@@ -343,6 +346,8 @@ namespace BigAndSmall
         private static readonly bool defaultAnimalsLowSkillPenalty = false;
         public bool animalsLowSkillPenalty = defaultAnimalsLowSkillPenalty;
 
+        private static readonly bool defaultEnableDraftedJobs = false;
+        public bool enableDraftedJobs = defaultEnableDraftedJobs;
 
 
         // DEV Settings
@@ -385,6 +390,8 @@ namespace BigAndSmall
             Scribe_Values.Look(ref allAnimalsHaveHands, "allAnimalsHaveHands", defaultAllAnimalsHaveHands);
             Scribe_Values.Look(ref animalOnAnimal, "sapientAnimalsCanRomanceAnySapientAnimals", defaultAnimalOnAnimal);
             Scribe_Values.Look(ref animalsLowSkillPenalty, "animalsNoSkillPenalty", defaultAnimalsLowSkillPenalty);
+            Scribe_Values.Look(ref enableDraftedJobs, "enableDraftedJobs", defaultEnableDraftedJobs);
+
 
 
             // Scribe Dev Settings
@@ -429,11 +436,15 @@ namespace BigAndSmall
             animalsLowSkillPenalty = defaultAnimalsLowSkillPenalty;
             jesusMode = defaultJesusMode;
             recruitDevSpawned = defaultRecruitDevSpawned;
+            enableDraftedJobs = defaultEnableDraftedJobs;
+
         }
         public void ResetToRecommended()
         {
             ResetToDefault();
             scaleBodyTypes = true;
+            enableDraftedJobs = true;
+
         }
     }
 }

@@ -140,7 +140,20 @@ namespace BigAndSmall
 
         public override bool AICanTargetNow(LocalTargetInfo target)
         {
-            // Implement AI targeting logic if needed.
+            if (Pawn.Faction != null)
+            {
+                foreach (IntVec3 item in AffectedCells(target))
+                {
+                    List<Thing> thingList = item.GetThingList(Pawn.Map);
+                    for (int i = 0; i < thingList.Count; i++)
+                    {
+                        if (thingList[i].Faction == Pawn.Faction)
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
             return true;
         }
 
