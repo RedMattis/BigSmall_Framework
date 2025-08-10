@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Verse.Noise;
 
 namespace BigAndSmall
 {
@@ -58,18 +59,38 @@ namespace BigAndSmall
 						
 			if ((pawn.Dead || (pawn.IsMutant && pawn.mutant.Def.useCorpseGraphics)) && curKindLifeStage.corpseGraphicData != null)
             {
-                graphic = ((pawn.gender == Gender.Female && curKindLifeStage.femaleCorpseGraphicData != null) ? curKindLifeStage.femaleCorpseGraphicData.Graphic.GetColoredVersion(curKindLifeStage.femaleCorpseGraphicData.Graphic.Shader, graphic.Color, graphic.ColorTwo) : curKindLifeStage.corpseGraphicData.Graphic.GetColoredVersion(curKindLifeStage.corpseGraphicData.Graphic.Shader, graphic.Color, graphic.ColorTwo));
+				if (pawn.gender == Gender.Female && curKindLifeStage.femaleCorpseGraphicData != null)
+					graphic = curKindLifeStage.femaleCorpseGraphicData.Graphic.GetColoredVersion(curKindLifeStage.femaleCorpseGraphicData.Graphic.Shader, graphic.Color, graphic.ColorTwo);
+				else
+					graphic = curKindLifeStage.corpseGraphicData.Graphic.GetColoredVersion(curKindLifeStage.corpseGraphicData.Graphic.Shader, graphic.Color, graphic.ColorTwo);
             }
-            switch (pawn.Drawer.renderer.CurRotDrawMode)
+
+
+			Color color1 = pawn.story?.HairColor ?? graphic.Color;
+			Color color2 = pawn.story?.favoriteColor?.color ?? graphic.ColorTwo;
+
+			var material = HumanoidPawnScaler.GetCache(pawn).bodyMaterial;
+			if (material != null)
+			{
+				if (material.colorA != null)
+					color1 = material.colorA.GetColor(this, color1, ColorSetting.clrOneKey);
+
+				if (material.colorB != null)
+					color2 = material.colorB.GetColor(this, color2, ColorSetting.clrTwoKey);
+			}
+
+			graphic = graphic.GetColoredVersion(graphic.Shader, color1, color2);
+
+			switch (pawn.Drawer.renderer.CurRotDrawMode)
             {
                 case RotDrawMode.Fresh:
                     if (ModsConfig.AnomalyActive && pawn.IsMutant && pawn.mutant.HasTurned)
                     {
-                        return graphic.GetColoredVersion(ShaderDatabase.Cutout, MutantUtility.GetMutantSkinColor(pawn, graphic.Color), MutantUtility.GetMutantSkinColor(pawn, graphic.ColorTwo));
+                        return graphic.GetColoredVersion(ShaderDatabase.Cutout, MutantUtility.GetMutantSkinColor(pawn, color1), MutantUtility.GetMutantSkinColor(pawn, color2));
                     }
                     return graphic;
                 case RotDrawMode.Rotting:
-                    return graphic.GetColoredVersion(ShaderDatabase.Cutout, PawnRenderUtility.GetRottenColor(graphic.Color), PawnRenderUtility.GetRottenColor(graphic.ColorTwo));
+                    return graphic.GetColoredVersion(ShaderDatabase.Cutout, PawnRenderUtility.GetRottenColor(color1), PawnRenderUtility.GetRottenColor(color2));
                 case RotDrawMode.Dessicated:
                     if (curKindLifeStage.dessicatedBodyGraphicData != null)
                     {
