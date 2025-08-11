@@ -19,7 +19,7 @@ namespace BigAndSmall
         protected override bool OnlyUseAbilityVerbs => !actionData.hunt;
         protected override bool OnlyUseRangedSearch => false;
 
-        public List<AbilityDef> blacklist = new();
+        public List<AbilityDef> blacklist = [];
 
         // Not totally sure what this is used for, but it seems standard for these things. / Red.
         public override ThinkNode DeepCopy(bool resolve = true)
@@ -41,7 +41,7 @@ namespace BigAndSmall
                     newReq.target = enemyTarget;
                     newReq.verb = ability.verb;
                     newReq.maxRangeFromTarget = ability.verb.verbProps.range;
-                    newReq.wantCoverFromTarget = false;
+                    newReq.wantCoverFromTarget = actionData.takeCover;
                     newReq.preferredCastPosition = pawn.Position;
                     return CastPositionFinder.TryFindCastPosition(newReq, out dest);
                 }
@@ -71,7 +71,7 @@ namespace BigAndSmall
             actionData = DraftedActionHolder.GetData(pawn);
             if (!Hunt)
             {
-                if (actionData.autocastAbilities.Empty() || pawn.abilities.abilities.NullOrEmpty())
+                if (actionData.autocastAbilities.Empty() || pawn.abilities?.abilities.NullOrEmpty() == false)
                 {
                     // If we're not in hunt mode, and there are literally no valid abilities, just let it continue to the regular indefinite wait job.
                     return null;
@@ -211,19 +211,22 @@ namespace BigAndSmall
                 meleeJob.expiryInterval = 100;
                 return meleeJob;
             }
-
-            bool num = CoverUtility.CalculateOverallBlockChance(pawn, enemyTarget.Position, pawn.Map) > 0.05f;
+            bool takeCover = actionData.takeCover;
+            float coverAmount = takeCover ? 0.00f : 0.19f;
+            bool coverOkay = CoverUtility.CalculateOverallBlockChance(pawn, enemyTarget.Position, pawn.Map) >= coverAmount;
             bool standable = pawn.Position.Standable(pawn.Map) && pawn.Map.pawnDestinationReservationManager.CanReserve(pawn.Position, pawn, pawn.Drafted);
-            bool cantHitTarget = verb.CanHitTarget(enemyTarget);
-            bool closeEnough = (pawn.Position - enemyTarget.Position).LengthHorizontalSquared < 25;
-            if ((num && standable && cantHitTarget) || (closeEnough && cantHitTarget))
+            bool canHitTarget = verb.CanHitTarget(enemyTarget);
+            float verbRange = verb.verbProps.range;
+            bool closeEnough = (pawn.Position - enemyTarget.Position).LengthHorizontalSquared < verbRange * verbRange;
+            //bool closeEnough = (pawn.Position - enemyTarget.Position).LengthHorizontalSquared < 25;
+            if (coverOkay && standable && canHitTarget && closeEnough)
             {
                 return JobMaker.MakeJob(JobDefOf.Wait_Combat, ExpiryInterval_ShooterSucceeded.RandomInRange, checkOverrideOnExpiry: true);
             }
 
-            if (!TryFindShootingPosition(pawn, out var shootingPos))
+            if (!TryFindShootingPosition(pawn, out var shootingPos, verbToUse: verb))
             {
-                return null;
+                return JobMaker.MakeJob(JobDefOf.Wait_Combat, 100, checkOverrideOnExpiry: true);
             }
 
             if (shootingPos == pawn.Position)
@@ -332,6 +335,7 @@ namespace BigAndSmall
             }
 
             List<Ability> autoCastAbilities = [.. pawn.abilities.AllAbilitiesForReading.Where(x => actionData.autocastAbilities.Contains(x.def))];
+
             if (TrySelfBuff(pawn, autoCastAbilities) is Job selfBuff)
             {
                 return selfBuff;

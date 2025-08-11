@@ -138,4 +138,6 @@
 
   <BS_DraftHuntLabel>Auto-Combat</BS_DraftHuntLabel>
   <BS_HuntDescription>Track down and attack nearby foes. Any abilities on auto-cast (right-click) will be automatically used.</BS_HuntDescription>
+  <BS_TakeCoverLabel>Auto-Cover</BS_TakeCoverLabel>
+  <BS_TakeCoverDescription>Automatically try to move into cover while in combat.</BS_TakeCoverDescription>
 </LanguageData>

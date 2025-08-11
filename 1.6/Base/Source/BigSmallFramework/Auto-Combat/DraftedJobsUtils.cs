@@ -35,6 +35,7 @@ namespace BigAndSmall
     {
         public static readonly Texture2D AutoCastTex = ContentFinder<Texture2D>.Get("BS_UI/Auto_Tiny");
         public static readonly Texture2D HuntIcon = ContentFinder<Texture2D>.Get("BS_UI/Hunt");
+        public static readonly Texture2D TakeCoverIcon = ContentFinder<Texture2D>.Get("BS_UI/TakeCover");
         private static bool? autoCombatEnabled = null;
         public static bool AutoCombatEnabled { get { return autoCombatEnabled ??= ModsConfig.IsActive("RedMattis.AutoCombat"); } }
 
@@ -47,7 +48,7 @@ namespace BigAndSmall
         [HarmonyPostfix]
         public static IEnumerable<Gizmo> GetGizmosPostfix(IEnumerable<Gizmo> __result, Pawn_DraftController __instance)
         {
-            static IEnumerable<Gizmo> UpdateEnumerable(IEnumerable<Gizmo> gizmos, Command_ToggleWithRClick draftHunt)
+            static IEnumerable<Gizmo> UpdateEnumerable(IEnumerable<Gizmo> gizmos, Command_ToggleWithRClick draftHunt, Command_ToggleWithRClick takeCover)
             {
                 foreach (var gizmo in gizmos)
                 {
@@ -55,6 +56,7 @@ namespace BigAndSmall
                     {
                         yield return draftCommand;
                         yield return draftHunt;
+                        yield return takeCover;
                     }
                     else
                     {
@@ -64,7 +66,7 @@ namespace BigAndSmall
             }
 
             var pawn = __instance.pawn;
-            if ((BigSmallMod.settings.enableDraftedJobs || AutoCombatEnabled) && IsDraftedPlayerPawn(pawn))
+            if (IsDraftedPlayerPawn(pawn))
             {
                 // Add Hunt Toggle Gizmo
                 var huntCommand = new Command_ToggleWithRClick
@@ -81,9 +83,24 @@ namespace BigAndSmall
                     },
                     activateSound = SoundDefOf.Click,
                     groupKey = 6173613,
-                    hotKey = KeyBindingDefOf.Misc2
+                    hotKey = KeyBindingDefOf.Misc3
                 };
-                return UpdateEnumerable(__result, huntCommand);
+                var takeCover = new Command_ToggleWithRClick
+                {
+                    defaultLabel = "BS_TakeCoverLabel".Translate(),
+                    defaultDesc = "BS_TakeCoverDescription".Translate(),
+                    icon = TakeCoverIcon,
+                    isActive = () => DraftedActionHolder.GetData(pawn).takeCover,
+                    toggleAction = () => DraftedActionHolder.GetData(pawn).ToggleCoverMode(),
+                    rightClickAction = () =>
+                    {
+                    },
+                    activateSound = SoundDefOf.Click,
+                    groupKey = 6173614,
+                    hotKey = KeyBindingDefOf.Misc4
+                };
+
+                return UpdateEnumerable(__result, huntCommand, takeCover);
             }
             return __result;
         }
@@ -142,6 +159,7 @@ namespace BigAndSmall
         private Pawn pawn = null;
         public string pawnID;
         public bool hunt = false;
+        public bool takeCover = true;
         public List<AbilityDef> autocastAbilities = new();
 
         public Pawn Pawn  // Always use this to get the pawn, not the field since it might be null.
@@ -180,6 +198,12 @@ namespace BigAndSmall
             Pawn.jobs.EndCurrentJob(JobCondition.InterruptForced);
         }
 
+        public bool ToggleCoverMode()
+        {
+            takeCover = !takeCover;
+            Pawn.jobs.EndCurrentJob(JobCondition.InterruptForced);
+            return takeCover;
+        }
         public bool ToggleHuntMode()
         {
             hunt = !hunt;
