@@ -43,7 +43,10 @@ namespace BigAndSmall
 
     public static class RaceMorpher
     {
-        public const int forcePriority = 9001;
+		public static event Action<Pawn, Pawn> OnAnimalSwapped;
+		public static event Action<Pawn, ThingDef> OnDefSwapped;
+
+		public const int forcePriority = 9001;
         public const int irremovablePriority = 900;
         public const int withoutSourcePriority = 200; // Means it is probably from surgery or something. High priority.
         public const int hediffPriority = 100;
@@ -183,15 +186,18 @@ namespace BigAndSmall
                     }
                 }
 
+				OnAnimalSwapped?.Invoke(aniPawn, newPawn);
+
                 aniPawn.Destroy(DestroyMode.Vanish);
                 oldPawnDestroyed = true;
 
-                //TEST
-                //Log.Message($"DEBUG for {newPawn} {newPawn.def}");
-                //Log.Message($"ACTIVE COMPS: {string.Join("\n", newPawn.AllComps.Select(x => x.GetType() + " " + x.ToString()))}");
-                //Log.Message($"DEF PROPS: {string.Join("\n", newPawn.def.comps.Select(x => x.GetType().ToString() + " " + x.compClass.ToString()))}");
-                
-                return newPawn;
+				//TEST
+				//Log.Message($"DEBUG for {newPawn} {newPawn.def}");
+				//Log.Message($"ACTIVE COMPS: {string.Join("\n", newPawn.AllComps.Select(x => x.GetType() + " " + x.ToString()))}");
+				//Log.Message($"DEF PROPS: {string.Join("\n", newPawn.def.comps.Select(x => x.GetType().ToString() + " " + x.compClass.ToString()))}");
+
+
+				return newPawn;
             }
             catch (Exception e)
             {

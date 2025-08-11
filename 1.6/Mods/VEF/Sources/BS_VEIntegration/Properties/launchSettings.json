@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Doorstop": {
+      "commandName": "Executable",
+      "executablePath": "F:\\SteamLibrary\\steamapps\\common\\RimWorld\\RimWorldWin64.exe",
+      "commandLineArgs": "--doorstop-enabled true --doorstop-mono-debug-enabled true --doorstop-mono-debug-suspend true"
+    }
+  }
+}
