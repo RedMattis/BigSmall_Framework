@@ -43,7 +43,10 @@ namespace BigAndSmall
 
     public static class RaceMorpher
     {
-        public const int forcePriority = 9001;
+		public static event Action<Pawn, Pawn> OnAnimalSwapped;
+		public static event Action<Pawn, ThingDef> OnDefSwapped;
+
+		public const int forcePriority = 9001;
         public const int irremovablePriority = 900;
         public const int withoutSourcePriority = 200; // Means it is probably from surgery or something. High priority.
         public const int hediffPriority = 100;
@@ -77,7 +80,7 @@ namespace BigAndSmall
                     canGeneratePawnRelations: false,
                     allowDead: false, allowDowned: false, allowAddictions: false,
                     forbidAnyTitle: true, forceGenerateNewPawn: true,
-                    forceBaselinerChance: 1,
+                    forceBaselinerChance: 2,
                     forceNoBackstory: true);
 
                 var newPawn = PawnGenerator.GeneratePawn(request);
@@ -107,18 +110,6 @@ namespace BigAndSmall
                 {
                     newPawn.ideo?.SetIdeo(aniPawn.Faction.ideos?.PrimaryIdeo);
                     newPawn.SetFaction(aniPawn.Faction);
-                }
-                newPawn.gender = aniPawn.gender == Gender.None ? newPawn.gender : aniPawn.gender;
-                newPawn.ageTracker.AgeChronologicalTicks = aniPawn.ageTracker.AgeChronologicalTicks;
-                if (aniPawn.ageTracker.AgeBiologicalYears < 3)
-                {
-                    newPawn.ageTracker.AgeBiologicalTicks = 3 * GenDate.TicksPerYear;
-                }
-                else
-                {
-                    float percentOfLifespan = aniPawn.ageTracker.AgeBiologicalYears / aniPawn.RaceProps.lifeExpectancy;
-                    newPawn.ageTracker.AgeBiologicalTicks = (long)(newPawn.RaceProps.lifeExpectancy * percentOfLifespan) * GenDate.TicksPerYear;
-                    //newPawn.ageTracker.AgeBiologicalTicks = aniPawn.ageTracker.AgeBiologicalTicks;
                 }
 
                 if (ModsConfig.BiotechActive)
@@ -152,11 +143,27 @@ namespace BigAndSmall
                     GenSpawn.Spawn(newPawn, aniPawn.Position, aniPawn.Map, WipeMode.VanishOrMoveAside);
                 }
 
+				if (PawnGraphicUtils.TryGetAlternate(aniPawn, out _, out int index))
+					newPawn.overrideGraphicIndex = index;
 
-
-                SwapThingDef(newPawn, targetDef, true, forcePriority, force: true, permitFusion: false, clearHediffsToReapply: false);
+				SwapThingDef(newPawn, targetDef, true, forcePriority, force: true, permitFusion: false, clearHediffsToReapply: false);
                 RestoreMatchingHediffs(newPawn, targetDef, aniPawn);
-                if (shouldBeWildman)
+
+				// Wait until def is swapped to transfer age.
+				newPawn.gender = aniPawn.gender == Gender.None ? newPawn.gender : aniPawn.gender;
+				newPawn.ageTracker.AgeChronologicalTicks = aniPawn.ageTracker.AgeChronologicalTicks;
+				if (aniPawn.ageTracker.AgeBiologicalYears < 3)
+				{
+					newPawn.ageTracker.AgeBiologicalTicks = 3 * GenDate.TicksPerYear;
+				}
+				else
+				{
+					float percentOfLifespan = aniPawn.ageTracker.AgeBiologicalYears / aniPawn.RaceProps.lifeExpectancy;
+					newPawn.ageTracker.AgeBiologicalTicks = (long)(newPawn.RaceProps.lifeExpectancy * percentOfLifespan) * GenDate.TicksPerYear;
+					//newPawn.ageTracker.AgeBiologicalTicks = aniPawn.ageTracker.AgeBiologicalTicks;
+				}
+
+				if (shouldBeWildman)
                 {
                     if (newPawn.Faction != null)
                     { 
@@ -182,15 +189,26 @@ namespace BigAndSmall
                     }
                 }
 
+				// Remove hair color gene
+				GeneDef hairDef = newPawn.genes.GetHairColorGene();
+				Gene hairGene = newPawn.genes.Endogenes.FirstOrDefault(x => x.def == hairDef);
+				if (hairGene != null)
+					newPawn.genes.RemoveGene(hairGene);
+
+				//newPawn.story.HairColor = UnityEngine.Color.white;
+
+				OnAnimalSwapped?.Invoke(aniPawn, newPawn);
+
                 aniPawn.Destroy(DestroyMode.Vanish);
                 oldPawnDestroyed = true;
 
-                //TEST
-                //Log.Message($"DEBUG for {newPawn} {newPawn.def}");
-                //Log.Message($"ACTIVE COMPS: {string.Join("\n", newPawn.AllComps.Select(x => x.GetType() + " " + x.ToString()))}");
-                //Log.Message($"DEF PROPS: {string.Join("\n", newPawn.def.comps.Select(x => x.GetType().ToString() + " " + x.compClass.ToString()))}");
-                
-                return newPawn;
+				//TEST
+				//Log.Message($"DEBUG for {newPawn} {newPawn.def}");
+				//Log.Message($"ACTIVE COMPS: {string.Join("\n", newPawn.AllComps.Select(x => x.GetType() + " " + x.ToString()))}");
+				//Log.Message($"DEF PROPS: {string.Join("\n", newPawn.def.comps.Select(x => x.GetType().ToString() + " " + x.compClass.ToString()))}");
+
+
+				return newPawn;
             }
             catch (Exception e)
             {

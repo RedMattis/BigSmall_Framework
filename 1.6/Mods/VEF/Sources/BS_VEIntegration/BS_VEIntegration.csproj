@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>NET48</TargetFramework>
+    <LangVersion>10</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <OutDir>..\..\Assemblies</OutDir>
+    <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
+    <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.4545-beta">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="BigAndSmall">
+      <HintPath>..\..\..\..\Base\Assemblies\BigAndSmall.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VEF">
+      <HintPath>..\Dependencies\VEF.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>

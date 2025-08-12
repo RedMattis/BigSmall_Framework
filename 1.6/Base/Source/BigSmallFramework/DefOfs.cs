@@ -178,8 +178,11 @@ namespace BigAndSmall
         public static PawnExtensionDef BS_DefaultAnimal;
         public static PawnExtensionDef BS_DefaultMechanoid;
 
+		public static ColorSettingDef BS_DefaultSapientAnimalColorA;
+		public static ColorSettingDef BS_DefaultSapientAnimalColorB;
 
-        static BSDefs()
+
+		static BSDefs()
         {
             DefOfHelper.EnsureInitializedInCtor(typeof(BSDefs));
         }
