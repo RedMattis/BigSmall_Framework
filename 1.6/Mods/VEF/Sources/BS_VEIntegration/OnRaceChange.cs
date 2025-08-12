@@ -1,4 +1,5 @@
-﻿using VEF.Abilities;
+﻿using BigAndSmall.EventArgs;
+using VEF.Abilities;
 using Verse;
 
 namespace BS_VEIntegration
@@ -11,12 +12,12 @@ namespace BS_VEIntegration
 			BigAndSmall.RaceMorpher.OnAnimalSwapped += RaceMorpher_OnAnimalSwapped;
 		}
 
-		private static void RaceMorpher_OnAnimalSwapped(Verse.Pawn originalPawn, Verse.Pawn newPawn)
+		private static void RaceMorpher_OnAnimalSwapped(object sender, AnimalSwappedEventArgs e)
 		{
-			CompAbilities abilitiesCompOld = originalPawn.GetComp<CompAbilities>();
+			CompAbilities abilitiesCompOld = e.OriginalPawn.GetComp<CompAbilities>();
 			if (abilitiesCompOld != null)
 			{
-				CompAbilities abilitiesCompNew = newPawn.GetComp<CompAbilities>();
+				CompAbilities abilitiesCompNew = e.NewPawn.GetComp<CompAbilities>();
 				if (abilitiesCompNew != null)
 				{
 					foreach (Ability ability in abilitiesCompOld.LearnedAbilities)

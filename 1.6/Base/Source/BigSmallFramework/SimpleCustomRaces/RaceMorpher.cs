@@ -43,8 +43,8 @@ namespace BigAndSmall
 
     public static class RaceMorpher
     {
-		public static event Action<Pawn, Pawn> OnAnimalSwapped;
-		public static event Action<Pawn, ThingDef> OnDefSwapped;
+		public static event EventHandler<EventArgs.AnimalSwappedEventArgs> OnAnimalSwapped;
+		public static event EventHandler<EventArgs.DefSwappedEventArgs> OnDefSwapped;
 
 		public const int forcePriority = 9001;
         public const int irremovablePriority = 900;
@@ -197,7 +197,7 @@ namespace BigAndSmall
 
 				//newPawn.story.HairColor = UnityEngine.Color.white;
 
-				OnAnimalSwapped?.Invoke(aniPawn, newPawn);
+				OnAnimalSwapped?.Invoke(null, new EventArgs.AnimalSwappedEventArgs(aniPawn, newPawn));
 
                 aniPawn.Destroy(DestroyMode.Vanish);
                 oldPawnDestroyed = true;
