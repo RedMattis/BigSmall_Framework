@@ -195,7 +195,9 @@ namespace BigAndSmall
 				if (hairGene != null)
 					newPawn.genes.RemoveGene(hairGene);
 
-				//newPawn.story.HairColor = UnityEngine.Color.white;
+				UnityEngine.Color? bodyColor = aniPawn.ageTracker.CurKindLifeStage?.bodyGraphicData?.color;
+				if (bodyColor != null)
+					newPawn.story.HairColor = bodyColor.Value;
 
 				OnAnimalSwapped?.Invoke(null, new EventArgs.AnimalSwappedEventArgs(aniPawn, newPawn));
 
