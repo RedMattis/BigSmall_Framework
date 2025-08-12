@@ -50,7 +50,8 @@ namespace BigAndSmall
         public List<string> hasPoorHandsWildcards = [];
         public List<string> compWhitelist = [];
         public List<string> tabWhitelist = [];
-        public List<RenderTreeOverride> renderTreeWhitelist = [];
+		public List<string> modExtensionWhitelist = [];
+		public List<RenderTreeOverride> renderTreeWhitelist = [];
     }
 
     public static class HumanlikeAnimals
@@ -173,13 +174,17 @@ namespace BigAndSmall
             newThing.defName = thingDefName;
 
             HashSet<string> compWhitelist = [];
-            foreach (var setting in HumanlikeAnimalSettings.AllHASettings)
+			HashSet<string> tabWhiteList = [];
+			HashSet<string> extWhiteList = [];
+			foreach (var setting in HumanlikeAnimalSettings.AllHASettings)
             {
                 compWhitelist.AddRange(setting.compWhitelist);
-            }
-
-            // Lowercase comparer
-            List<CompProperties> bothComps = [];
+				tabWhiteList.AddRange(setting.tabWhitelist);
+				extWhiteList.AddRange(setting.modExtensionWhitelist);
+			}
+			
+			// Lowercase comparer
+			List<CompProperties> bothComps = [];
             if (aniThing.comps != null) { bothComps.AddRange(aniThing.comps); }
             foreach (var comp in humThing.comps)
             {
@@ -189,17 +194,17 @@ namespace BigAndSmall
                     bothComps.Add(comp);
                 }
             }
-            var filteredComps = bothComps
-                .Where(x =>
-                    compWhitelist.Contains(x.GetType().ToString(), StringComparer.OrdinalIgnoreCase) ||
-                    compWhitelist.Contains(x.compClass.ToString(), StringComparer.OrdinalIgnoreCase))
-                .ToList();
+			var filteredComps = bothComps
+				.Where(x =>
+					compWhitelist.Contains(x.GetType().ToString(), StringComparer.OrdinalIgnoreCase) ||
+					compWhitelist.Contains(x.compClass.ToString(), StringComparer.OrdinalIgnoreCase))
+				.Distinct()
+				.ToList();
 
-
+			newThing.comps = filteredComps;
+			newThing.thingClass = aniThing.thingClass;
 
             // From Human
-            newThing.modExtensions = [];  // Doubt we want to load ModExtensions from either.
-            newThing.comps = filteredComps;
 
             newThing.thingCategories = humThing.thingCategories != null ? [.. humThing.thingCategories] : [];
             newThing.inspectorTabs = humThing.inspectorTabs != null ? [.. humThing.inspectorTabs] : null;
@@ -208,7 +213,13 @@ namespace BigAndSmall
             newThing.thingSetMakerTags = humThing.thingSetMakerTags != null ? [.. humThing.thingSetMakerTags] : null;
             newThing.virtualDefs = humThing.virtualDefs != null ? [.. humThing.virtualDefs] : null;
 
-            // From Animal
+			// From Animal
+            newThing.modExtensions = [];  // Doubt we want to load ModExtensions from either.
+			if (aniThing.modExtensions?.Count > 0)
+			{
+				newThing.modExtensions.AddRange(aniThing.modExtensions.Where(x => extWhiteList.Contains(x.GetType().ToString(), StringComparer.OrdinalIgnoreCase)));
+			}
+
             newThing.tools = aniThing.tools != null ? [.. aniThing.tools] : null;
             newThing.verbs = aniThing.verbs != null ? [.. aniThing.verbs] : null;
             newThing.butcherProducts = ([.. (humThing.butcherProducts ?? []), .. (aniThing.butcherProducts ?? [])]);
@@ -220,12 +231,6 @@ namespace BigAndSmall
             newThing.recipes = [.. (humThing.recipes ?? []), .. aniThing?.recipes ?? []];
             newThing.recipes = newThing.recipes.Distinct().ToList();
             newThing.tradeTags = ([.. (humThing.tradeTags ?? []), .. (aniThing.tradeTags ?? [])]);
-
-            HashSet<string> tabWhiteList = [];
-            foreach (var setting in HumanlikeAnimalSettings.AllHASettings)
-            {
-                tabWhiteList.AddRange(setting.tabWhitelist);
-            }
 
             foreach (var tab in aniThing.inspectorTabs ?? [])
             {
@@ -473,7 +478,7 @@ namespace BigAndSmall
             newThing.description = aniThing.description;
             newThing.race = newRace;
 
-            newThing.modExtensions = [raceExt];
+            newThing.modExtensions.Add(raceExt);
 
             SetAnimalStatDefValues(humThing, aniThing, newThing, fineManipulation.Value, racePawnExtension);
             if (newRace.gestationPeriodDays == -1)
