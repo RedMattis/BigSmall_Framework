@@ -2,8 +2,6 @@
 	<BigAndSmall.ColorSettingDef>
 		<defName>BS_DefaultSapientAnimalColorA</defName>
 		<color>
-			<!-- Default color is white -->
-			<color>1,1,1,1</color>
 			<alts>
 				<li>
 					<triggers>
@@ -23,8 +21,6 @@
 	<BigAndSmall.ColorSettingDef>
 		<defName>BS_DefaultSapientAnimalColorB</defName>
 		<color>
-			<!-- Default color is white -->
-			<color>1,1,1,1</color>
 			<alts>
 				<li>
 					<triggers>

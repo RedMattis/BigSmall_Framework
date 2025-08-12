@@ -80,7 +80,7 @@ namespace BigAndSmall
                     canGeneratePawnRelations: false,
                     allowDead: false, allowDowned: false, allowAddictions: false,
                     forbidAnyTitle: true, forceGenerateNewPawn: true,
-                    forceBaselinerChance: 1,
+                    forceBaselinerChance: 2,
                     forceNoBackstory: true);
 
                 var newPawn = PawnGenerator.GeneratePawn(request);
@@ -188,6 +188,14 @@ namespace BigAndSmall
                         Log.Error($"[Big and Small] Error trying to equip {newPawn} with a weapon from {aniPawn.kindDef}:\n{e.Message}\n{e.StackTrace}");
                     }
                 }
+
+				// Remove hair color gene
+				GeneDef hairDef = newPawn.genes.GetHairColorGene();
+				Gene hairGene = newPawn.genes.Endogenes.FirstOrDefault(x => x.def == hairDef);
+				if (hairGene != null)
+					newPawn.genes.RemoveGene(hairGene);
+
+				//newPawn.story.HairColor = UnityEngine.Color.white;
 
 				OnAnimalSwapped?.Invoke(aniPawn, newPawn);
 
