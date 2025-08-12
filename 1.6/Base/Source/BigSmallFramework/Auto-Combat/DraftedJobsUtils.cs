@@ -48,15 +48,17 @@ namespace BigAndSmall
         [HarmonyPostfix]
         public static IEnumerable<Gizmo> GetGizmosPostfix(IEnumerable<Gizmo> __result, Pawn_DraftController __instance)
         {
-            static IEnumerable<Gizmo> UpdateEnumerable(IEnumerable<Gizmo> gizmos, Command_ToggleWithRClick draftHunt, Command_ToggleWithRClick takeCover)
+            static IEnumerable<Gizmo> UpdateEnumerable(IEnumerable<Gizmo> gizmos, List<Command_ToggleWithRClick> commands)
             {
                 foreach (var gizmo in gizmos)
                 {
                     if (gizmo is Command_Toggle draftCommand && draftCommand.icon == TexCommand.Draft)
                     {
                         yield return draftCommand;
-                        yield return draftHunt;
-                        yield return takeCover;
+                        foreach (var command in commands)
+                        {
+                            yield return command;
+                        }
                     }
                     else
                     {
@@ -64,9 +66,8 @@ namespace BigAndSmall
                     }
                 }
             }
-
             var pawn = __instance.pawn;
-            if (IsDraftedPlayerPawn(pawn))
+            if (BigSmallMod.settings.enableDraftedJobs && IsDraftedPlayerPawn(pawn))
             {
                 // Add Hunt Toggle Gizmo
                 var huntCommand = new Command_ToggleWithRClick
@@ -85,22 +86,22 @@ namespace BigAndSmall
                     groupKey = 6173613,
                     hotKey = KeyBindingDefOf.Misc3
                 };
-                var takeCover = new Command_ToggleWithRClick
-                {
-                    defaultLabel = "BS_TakeCoverLabel".Translate(),
-                    defaultDesc = "BS_TakeCoverDescription".Translate(),
-                    icon = TakeCoverIcon,
-                    isActive = () => DraftedActionHolder.GetData(pawn).takeCover,
-                    toggleAction = () => DraftedActionHolder.GetData(pawn).ToggleCoverMode(),
-                    rightClickAction = () =>
-                    {
-                    },
-                    activateSound = SoundDefOf.Click,
-                    groupKey = 6173614,
-                    hotKey = KeyBindingDefOf.Misc4
-                };
+                //var takeCover = new Command_ToggleWithRClick
+                //{
+                //    defaultLabel = "BS_TakeCoverLabel".Translate(),
+                //    defaultDesc = "BS_TakeCoverDescription".Translate(),
+                //    icon = TakeCoverIcon,
+                //    isActive = () => DraftedActionHolder.GetData(pawn).takeCover,
+                //    toggleAction = () => DraftedActionHolder.GetData(pawn).ToggleCoverMode(),
+                //    rightClickAction = () =>
+                //    {
+                //    },
+                //    activateSound = SoundDefOf.Click,
+                //    groupKey = 6173614,
+                //    hotKey = KeyBindingDefOf.Misc4
+                //};
 
-                return UpdateEnumerable(__result, huntCommand, takeCover);
+                return UpdateEnumerable(__result, [huntCommand]);
             }
             return __result;
         }

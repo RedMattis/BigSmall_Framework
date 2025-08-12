@@ -357,6 +357,11 @@ namespace BigAndSmall
         public static readonly bool defaultRecruitDevSpawned = true;
         public bool recruitDevSpawned = defaultRecruitDevSpawned;
 
+        public bool GetAndroidsEnabled()
+        {
+            return sapientMechanoids || ModsConfig.IsActive("RedMattis.BigSmall.SimpleAndroids") || ModsConfig.IsActive("RedMattis.BigSmall.Core");
+        }
+
         public override void ExposeData()
         {
             Scribe_Values.Look(ref experimental, "experimental", defaultExperimental);

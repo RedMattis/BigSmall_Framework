@@ -32,6 +32,7 @@ namespace BigAndSmall
 
     public class PatchOp_SciFiEnabled : PatchOp_IfSettings { protected override bool ShouldApply() => BigSmallMod.settings.useSciFiNames; }
 
+    public class PatchOp_RobotsEnabled : PatchOp_IfSettings { protected override bool ShouldApply() => BigSmallMod.settings.GetAndroidsEnabled(); }
 
     public class PatchOp_ReplaceText : PatchOperationPathed
     {

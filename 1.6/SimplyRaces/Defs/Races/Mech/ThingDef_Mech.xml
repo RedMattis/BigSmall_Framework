@@ -72,7 +72,9 @@
       <!-- <soundCallIntervalRange>1000~2000</soundCallIntervalRange> -->
 
       <lifeStageWorkSettings Inherit="False"/>
-      <hediffGiverSets Inherit="False"/>
+      <hediffGiverSets Inherit="False">
+        <li>BS_RobotHediffGiver</li>
+      </hediffGiverSets>
       
       <lifeStageAges Inherit="False">
         <!-- We're not using custom defs because some Rimworld stuff is hardcoded to look for certain defs.
