@@ -86,22 +86,22 @@ namespace BigAndSmall
                     groupKey = 6173613,
                     hotKey = KeyBindingDefOf.Misc3
                 };
-                //var takeCover = new Command_ToggleWithRClick
-                //{
-                //    defaultLabel = "BS_TakeCoverLabel".Translate(),
-                //    defaultDesc = "BS_TakeCoverDescription".Translate(),
-                //    icon = TakeCoverIcon,
-                //    isActive = () => DraftedActionHolder.GetData(pawn).takeCover,
-                //    toggleAction = () => DraftedActionHolder.GetData(pawn).ToggleCoverMode(),
-                //    rightClickAction = () =>
-                //    {
-                //    },
-                //    activateSound = SoundDefOf.Click,
-                //    groupKey = 6173614,
-                //    hotKey = KeyBindingDefOf.Misc4
-                //};
+                var takeCover = new Command_ToggleWithRClick
+                {
+                    defaultLabel = "BS_TakeCoverLabel".Translate(),
+                    defaultDesc = "BS_TakeCoverDescription".Translate(),
+                    icon = TakeCoverIcon,
+                    isActive = () => DraftedActionHolder.GetData(pawn).takeCover,
+                    toggleAction = () => DraftedActionHolder.GetData(pawn).ToggleCoverMode(),
+                    rightClickAction = () =>
+                    {
+                    },
+                    activateSound = SoundDefOf.Click,
+                    groupKey = 6173614,
+                    hotKey = KeyBindingDefOf.Misc4
+                };
 
-                return UpdateEnumerable(__result, [huntCommand]);
+                return UpdateEnumerable(__result, [huntCommand, takeCover]);
             }
             return __result;
         }
