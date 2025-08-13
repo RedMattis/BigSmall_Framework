@@ -1,10 +1,27 @@
 <Patch> <Operation Class="BigAndSmall.PatchOp_RobotsEnabled"> <match Class="PatchOperationAdd"> <xpath>Defs</xpath><value>
   
+  <WorkGiverDef>
+    <defName>BS_MakeAndroidFuel</defName>
+    <label>refine android fuel</label>
+    <giverClass>WorkGiver_DoBill</giverClass>
+    <workType>Cooking</workType>
+    <priorityInType>100</priorityInType>
+    <fixedBillGiverDefs>
+      <li>BS_AndroidFuelRefinery</li>
+    </fixedBillGiverDefs>
+    <verb>refine at</verb>
+    <gerund>refining at</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
   <ThingDef ParentName="BenchBase">
     <defName>BS_AndroidFuelRefinery</defName>
     <label>android fuel refinery</label>
-    <description>Very efficiently refines wood or chemfuel into android fuel for android consumption. For use in a Kitchen.</description>
-    <thingClass>Building_WorkTable</thingClass>
+    <description>Very efficiently refines wood or chemfuel into android fuel for android consumption. For placement in a Kitchen.</description>
+    <thingClass>Building_WorkTable_HeatPush</thingClass>
     <altitudeLayer>Building</altitudeLayer>
     <passability>PassThroughOnly</passability>
     <pathCost>50</pathCost>
@@ -14,8 +31,12 @@
       <Flammability>0.0</Flammability>
     </statBases>
     <minifiedDef>MinifiedThing</minifiedDef>
-    <thingCategories Inherit="false" />
+    <!-- <thingCategories Inherit="false" /> -->
     <size>(2,1)</size>
+    <recipes>
+      <li>BS_MakeAndroidFuelFromChemfuel_Refinery</li>
+      <li>BS_MakeAndroidFuelFromWood_Refinery</li>
+    </recipes>
     <costList>
       <Steel>40</Steel>
       <ComponentIndustrial>1</ComponentIndustrial>
@@ -28,11 +49,11 @@
       </li>
       <li Class="CompProperties_Flickable"/>
       <li Class="CompProperties_Breakdownable"/>
+      <li Class="CompProperties_HeatPusher">
+        <compClass>CompHeatPusherPowered</compClass>
+        <heatPerSecond>2</heatPerSecond>
+      </li>
     </comps>
-    <recipes>
-      <li>BS_MakeAndroidFuelFromChemfuel_Refinery</li>
-      <li>BS_MakeAndroidFuelFromWood_Refinery</li>
-    </recipes>
     <castEdgeShadows>true</castEdgeShadows>
     <staticSunShadowHeight>0.35</staticSunShadowHeight>
     <graphicData>
@@ -51,10 +72,15 @@
       <li>ITab_Bills</li>
     </inspectorTabs>
     <building>
+      <isMealSource>true</isMealSource>
       <spawnedConceptLearnOpportunity>BillsTab</spawnedConceptLearnOpportunity>
       <workTableRoomRole>Kitchen</workTableRoomRole>
       <workTableNotInRoomRoleFactor>0.95</workTableNotInRoomRoleFactor>
       <destroySound>BuildingDestroyed_Metal_Small</destroySound>
+      <heatPerTickWhileWorking>0.2</heatPerTickWhileWorking>
+      <buildingTags>
+        <li>Production</li>
+      </buildingTags>
     </building>
     <fillPercent>0.5</fillPercent>
     <interactionCellOffset>(1,0,-1)</interactionCellOffset>
@@ -151,7 +177,7 @@
     <effectWorking>Cremate</effectWorking>
     <soundWorking>Recipe_Cremate</soundWorking>
     <workAmount>1000</workAmount>
-    <workSpeedStat>DrugCookingSpeed</workSpeedStat>
+    <workSpeedStat>CookSpeed</workSpeedStat>
     <workSkill>Cooking</workSkill>
     <requiredGiverWorkType>Cooking</requiredGiverWorkType>
     <recipeUsers>
@@ -187,7 +213,7 @@
     <effectWorking>Cremate</effectWorking>
     <soundWorking>Recipe_Cremate</soundWorking>
     <workAmount>3000</workAmount>
-    <workSpeedStat>DrugCookingSpeed</workSpeedStat>
+    <workSpeedStat>CookSpeed</workSpeedStat>
     <workSkill>Cooking</workSkill>
     <requiredGiverWorkType>Cooking</requiredGiverWorkType>
     <recipeUsers>
@@ -224,10 +250,12 @@
     <effectWorking>Cremate</effectWorking>
     <soundWorking>Recipe_Cremate</soundWorking>
     <workAmount>250</workAmount>
-    <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
-    <recipeUsers>
-      <!-- <li>BS_AndroidFuelRefinery</li> -->
-    </recipeUsers>
+    <workSpeedStat>CookSpeed</workSpeedStat>
+    <workSkill>Cooking</workSkill>
+    <requiredGiverWorkType>Cooking</requiredGiverWorkType>
+    <!-- <recipeUsers>
+      <li>BS_AndroidFuelRefinery</li>
+    </recipeUsers> -->
     <ingredients>
       <li>
         <filter>
@@ -238,11 +266,11 @@
         <count>50</count>
       </li>
     </ingredients>
-    <fixedIngredientFilter>
+    <!-- <fixedIngredientFilter>
       <thingDefs>
         <li>Chemfuel</li>
       </thingDefs>
-    </fixedIngredientFilter>
+    </fixedIngredientFilter> -->
     <products>
       <BS_AndroidFuel>8</BS_AndroidFuel>
     </products>
@@ -255,11 +283,13 @@
     <jobString>Refining android fuel.</jobString>
     <effectWorking>Cremate</effectWorking>
     <soundWorking>Recipe_Cremate</soundWorking>
-    <workAmount>250</workAmount>
-    <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
-    <recipeUsers>
-      <!-- <li>BS_AndroidFuelRefinery</li> -->
-    </recipeUsers>
+    <workAmount>750</workAmount>
+    <workSpeedStat>CookSpeed</workSpeedStat>
+    <workSkill>Cooking</workSkill>
+    <requiredGiverWorkType>Cooking</requiredGiverWorkType>
+    <!-- <recipeUsers>
+      <li>BS_AndroidFuelRefinery</li>
+    </recipeUsers> -->
     <ingredients>
       <li>
         <filter>
@@ -270,11 +300,11 @@
         <count>100</count>
       </li>
     </ingredients>
-    <fixedIngredientFilter>
+    <!-- <fixedIngredientFilter>
       <thingDefs>
-        <li>Chemfuel</li>
+        <li>WoodLog</li>
       </thingDefs>
-    </fixedIngredientFilter>
+    </fixedIngredientFilter> -->
     <products>
       <BS_AndroidFuel>8</BS_AndroidFuel>
     </products>

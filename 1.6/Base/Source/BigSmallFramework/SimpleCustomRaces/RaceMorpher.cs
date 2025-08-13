@@ -3,6 +3,7 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Verse;
 
 namespace BigAndSmall
@@ -61,6 +62,8 @@ namespace BigAndSmall
             bool oldPawnDestroyed = false;
             try
             {
+                if (aniPawn.def.IsHumanlikeAnimal()) return null;
+
                 var targetDef = HumanlikeAnimals.HumanLikeAnimalFor(aniPawn.def);
                 if (targetDef == null) return null;
                 // Empty inventory
@@ -194,6 +197,7 @@ namespace BigAndSmall
 				Gene hairGene = newPawn.genes.Endogenes.FirstOrDefault(x => x.def == hairDef);
 				if (hairGene != null)
 					newPawn.genes.RemoveGene(hairGene);
+                newPawn.story.HairColor = new Color(0, 0, 0, 0);
 
 				UnityEngine.Color? bodyColor = aniPawn.ageTracker.CurKindLifeStage?.bodyGraphicData?.color;
 				if (bodyColor != null)

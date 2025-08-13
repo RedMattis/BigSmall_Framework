@@ -237,6 +237,7 @@ namespace BigAndSmall
             // Clear the target's relations and thoughts
             target.relations?.ClearAllRelations();
             target.needs?.mood?.thoughts?.memories?.Memories?.Clear();
+            target.needs?.mood?.thoughts?.situational?.Notify_SituationalThoughtsDirty();
 
             var literallyAllPawns = Find.WorldPawns.AllPawnsAliveOrDead.ToList();
 
@@ -349,6 +350,8 @@ namespace BigAndSmall
             //// Remove all relations and thoughts of the source.
             source.relations?.ClearAllRelations();
             source.needs?.mood?.thoughts?.memories?.Memories?.Clear();
+            source.needs?.mood?.thoughts?.situational?.Notify_SituationalThoughtsDirty();
+            target.needs?.mood?.thoughts?.situational?.Notify_SituationalThoughtsDirty();
 
         }
 

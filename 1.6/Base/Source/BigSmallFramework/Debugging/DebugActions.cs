@@ -98,6 +98,68 @@ namespace BigAndSmall.Debugging
             }
             return list;
         }
+        
+        [DebugAction("Big & Small - Spawn", "Random Human Pawnkind", actionType = DebugActionType.ToolMap, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        public static void SpawnRandomHumanKind()
+        {
+            var randomKinds = DefDatabase<PawnKindDef>.AllDefs.Where(x => x.race?.race.Humanlike == true && x.race?.IsHumanlikeAnimal() == false);
+            if (randomKinds.Any())
+            {
+                var kind = randomKinds.RandomElement();
+                Pawn pawn = PawnGenerator.GeneratePawn(kind, null);
+                GenSpawn.Spawn(pawn, UI.MouseCell(), Find.CurrentMap);
+            }
+        }
+
+        [DebugAction("Big & Small - Spawn", "Random Animal Pawnkind", actionType = DebugActionType.ToolMap, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        public static void SpawnRandomAnimal()
+        {
+            var randomKinds = DefDatabase<PawnKindDef>.AllDefs.Where(x => x.race?.race.Animal == true);
+            if (randomKinds.Any())
+            {
+                var kind = randomKinds.RandomElement();
+                Pawn pawn = PawnGenerator.GeneratePawn(kind, null);
+                GenSpawn.Spawn(pawn, UI.MouseCell(), Find.CurrentMap);
+            }
+        }
+
+        [DebugAction("Big & Small - Spawn", "Random Sapient Animal", actionType = DebugActionType.ToolMap, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        public static void SpawnRandomSapientAnimal()
+        {
+            var randomKinds = DefDatabase<PawnKindDef>.AllDefs.Where(x => x.race?.race.Animal == true);
+            if (randomKinds.Any())
+            {
+                var kind = randomKinds.RandomElement();
+                Pawn pawn = PawnGenerator.GeneratePawn(kind, null);
+                var sapientPawn = RaceMorpher.SwapAnimalToSapientVersion(pawn);
+                GenSpawn.Spawn(sapientPawn, UI.MouseCell(), Find.CurrentMap);
+            }
+        }
+
+        [DebugAction("Big & Small - Spawn", "Random Mechanoid Pawnkind", actionType = DebugActionType.ToolMap, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        public static void SpawnRandomMechanoid()
+        {
+            var randomKinds = DefDatabase<PawnKindDef>.AllDefs.Where(x => x.race?.race.IsMechanoid == true);
+            if (randomKinds.Any())
+            {
+                var kind = randomKinds.RandomElement();
+                Pawn pawn = PawnGenerator.GeneratePawn(kind, null);
+                GenSpawn.Spawn(pawn, UI.MouseCell(), Find.CurrentMap);
+            }
+        }
+
+        [DebugAction("Big & Small - Spawn", "Random Sapient Mechanoid", actionType = DebugActionType.ToolMap, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        public static void SpawnRandomSapientMechanoid()
+        {
+            var randomKinds = DefDatabase<PawnKindDef>.AllDefs.Where(x => x.race?.race.IsMechanoid == true);
+            if (randomKinds.Any())
+            {
+                var kind = randomKinds.RandomElement();
+                Pawn pawn = PawnGenerator.GeneratePawn(kind, null);
+                var sapientPawn = RaceMorpher.SwapAnimalToSapientVersion(pawn);
+                GenSpawn.Spawn(sapientPawn, UI.MouseCell(), Find.CurrentMap);
+            }
+        }
 
         [DebugAction("Big & Small - Spawn", "Random of Xenotype", actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         public static List<DebugActionNode> SpawnRandomPawnOf()

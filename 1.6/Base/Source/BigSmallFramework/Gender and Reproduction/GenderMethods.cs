@@ -314,27 +314,27 @@ namespace BigAndSmall
             {
                 pawn.style.beardDef = BeardDefOf.NoBeard;
             }
+        }
 
-            static void TrySetMissingBodytype(Pawn pawn, Gender gender)
+        private static void TrySetMissingBodytype(Pawn pawn, Gender gender)
+        {
+            if (pawn.story == null) return;
+            if (pawn.story.Adulthood != null)
             {
-                if (pawn.story?.Adulthood != null)
-                {
-                    pawn.story.bodyType = pawn.story.Adulthood.BodyTypeFor(gender);
-                }
+                pawn.story.bodyType = pawn.story.Adulthood.BodyTypeFor(gender);
                 pawn.story.bodyType ??= pawn.story.Adulthood.BodyTypeFor(pawn.gender);
-                if (pawn.story.bodyType == null && ModsConfig.BiotechActive && pawn.DevelopmentalStage.Juvenile())
+            }
+            if (pawn.story.bodyType == null && ModsConfig.BiotechActive && pawn.DevelopmentalStage.Juvenile())
+            {
+                if (pawn.DevelopmentalStage == DevelopmentalStage.Baby)
                 {
-                    if (pawn.DevelopmentalStage == DevelopmentalStage.Baby)
-                    {
-                        pawn.story.bodyType = BodyTypeDefOf.Baby;
-                    }
-                    else { pawn.story.bodyType = BodyTypeDefOf.Child; }
+                    pawn.story.bodyType = BodyTypeDefOf.Baby;
                 }
-                if (pawn.story.bodyType == null)
-                {
-                    PawnGenerator.GetBodyTypeFor(pawn);
-                }
-                //.BodyTypeToGeneticBodyType().ToBodyType(pawn);
+                else { pawn.story.bodyType = BodyTypeDefOf.Child; }
+            }
+            if (pawn.story.bodyType == null)
+            {
+                PawnGenerator.GetBodyTypeFor(pawn);
             }
         }
 

@@ -68,7 +68,7 @@ namespace BigAndSmall
         public static ThingDef HumanLikeAnimalFor(ThingDef td) => GetHumanlikeAnimalFor(td)?.humanlikeAnimal;
         public static ThingDef HumanLikeSourceFor(ThingDef td) => GetHumanlikeAnimalFor(td)?.humanlike;
         public static ThingDef AnimalSourceFor(ThingDef td) => GetHumanlikeAnimalFor(td)?.animal;
-        public static bool IsHumanlikeAnimal(ThingDef td) => humanlikeAnimals.ContainsKey(td);
+        public static bool IsHumanlikeAnimal(this ThingDef td) => humanlikeAnimals.ContainsKey(td);
     }
 
     public static class HumanlikeAnimalGenerator

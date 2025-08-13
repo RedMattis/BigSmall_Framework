@@ -67,7 +67,7 @@ namespace BigAndSmall
                 }
             }
             var pawn = __instance.pawn;
-            if (BigSmallMod.settings.enableDraftedJobs && IsDraftedPlayerPawn(pawn))
+            if ((BigSmallMod.settings.enableDraftedJobs || AutoCombatEnabled) && IsDraftedPlayerPawn(pawn))
             {
                 // Add Hunt Toggle Gizmo
                 var huntCommand = new Command_ToggleWithRClick
