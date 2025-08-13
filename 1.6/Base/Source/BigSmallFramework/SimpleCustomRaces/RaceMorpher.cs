@@ -143,7 +143,7 @@ namespace BigAndSmall
                 // Spawn into the same position as the old pawn.
                 if (aniPawn.Spawned)
                 {
-                    GenSpawn.Spawn(newPawn, aniPawn.Position, aniPawn.Map, WipeMode.VanishOrMoveAside);
+                    GenSpawn.Spawn(newPawn, aniPawn.Position, aniPawn.Map, aniPawn.Rotation, WipeMode.VanishOrMoveAside);
                 }
 
 				if (PawnGraphicUtils.TryGetAlternate(aniPawn, out _, out int index))
