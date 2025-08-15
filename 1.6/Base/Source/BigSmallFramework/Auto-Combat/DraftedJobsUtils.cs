@@ -36,8 +36,15 @@ namespace BigAndSmall
         public static readonly Texture2D AutoCastTex = ContentFinder<Texture2D>.Get("BS_UI/Auto_Tiny");
         public static readonly Texture2D HuntIcon = ContentFinder<Texture2D>.Get("BS_UI/Hunt");
         public static readonly Texture2D TakeCoverIcon = ContentFinder<Texture2D>.Get("BS_UI/TakeCover");
-        private static bool? autoCombatEnabled = null;
-        public static bool AutoCombatEnabled { get { return autoCombatEnabled ??= ModsConfig.IsActive("RedMattis.AutoCombat"); } }
+        private static bool? autoCombatModEnabled = null;
+        public static bool AutoCombatEnabled
+        {
+            get
+            {
+                autoCombatModEnabled ??= ModsConfig.IsActive("RedMattis.AutoCombat");
+                return autoCombatModEnabled == true || BigSmallMod.settings.enableDraftedJobs;
+            }
+        }
 
         public static bool IsDraftedPlayerPawn(Pawn pawn)
         {
@@ -67,7 +74,7 @@ namespace BigAndSmall
                 }
             }
             var pawn = __instance.pawn;
-            if ((BigSmallMod.settings.enableDraftedJobs || AutoCombatEnabled) && IsDraftedPlayerPawn(pawn))
+            if (AutoCombatEnabled && IsDraftedPlayerPawn(pawn))
             {
                 // Add Hunt Toggle Gizmo
                 var huntCommand = new Command_ToggleWithRClick
@@ -152,6 +159,13 @@ namespace BigAndSmall
         {
             base.ExposeData();
             Scribe_Collections.Look(ref pawnDraftActionData, "draftedActions", LookMode.Value, LookMode.Deep);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                if (!DraftGizmos.AutoCombatEnabled)
+                {
+                    pawnDraftActionData.Clear();
+                }
+            }
         }
     }
 
@@ -160,7 +174,7 @@ namespace BigAndSmall
         private Pawn pawn = null;
         public string pawnID;
         public bool hunt = false;
-        public bool takeCover = true;
+        public bool takeCover = false;
         public List<AbilityDef> autocastAbilities = new();
 
         public Pawn Pawn  // Always use this to get the pawn, not the field since it might be null.
@@ -250,6 +264,7 @@ namespace BigAndSmall
         {
             Scribe_Values.Look(ref pawnID, "pawnID");
             Scribe_Values.Look(ref hunt, "huntMode", false);
+            Scribe_Values.Look(ref takeCover, "takeCoverMode", false);
             Scribe_Collections.Look(ref autocastAbilities, "autocastAbilities", LookMode.Def);
         }
     }

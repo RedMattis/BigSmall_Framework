@@ -33,7 +33,7 @@
     <keyTag>Retromorphosis</keyTag>
     <description>Carriers of this gene can undergo retromorphosis to a {0} if the right conditions are met.</description>
     <customEffectDescriptions>
-      <li>Genes such as "Retromorphmorph [when] Pre-Adult" are valid conditions.</li>
+      <li>Genes such as "Retromorph [when] Pre-Adult" are valid conditions.</li>
     </customEffectDescriptions>
     <displayCategory>BS_MetamorphTarget</displayCategory>
     <canGenerateInGeneSet>false</canGenerateInGeneSet>

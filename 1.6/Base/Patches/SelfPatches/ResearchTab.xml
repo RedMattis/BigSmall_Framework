@@ -1,8 +1,8 @@
 <Patch>
-    <Operation Class="PatchOperationConditional">
-        <xpath>Defs/ResearchProjectDef[tab="big_and_small"]</xpath>
-        <nomatch Class="PatchOperationRemove">
-            <xpath>Defs/ResearchTabDef[defName="big_and_small"]</xpath>
-        </nomatch>
-    </Operation>
+  <!-- <Operation Class="PatchOperationConditional">
+    <xpath>Defs/ResearchProjectDef[tab="big_and_small"]</xpath>
+    <nomatch Class="PatchOperationRemove">
+      <xpath>Defs/ResearchTabDef[defName="big_and_small"]</xpath>
+    </nomatch>
+  </Operation> -->
 </Patch>

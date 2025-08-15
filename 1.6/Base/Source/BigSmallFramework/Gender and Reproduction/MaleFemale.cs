@@ -20,15 +20,4 @@
             return true;
         }
     }
-
-    //[HarmonyPatch(typeof(Pawn_GeneTracker), "Notify_GenesChanged")]
-    //public static class GenderChangeCheck
-    //{
-    //    //[HarmonyPostfix]
-    //    public static void TrySetGenderOrApparentGender(BSCache cache)
-    //    {
-            
-    //    }
-    //}
-
 }

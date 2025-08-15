@@ -436,7 +436,7 @@ namespace BigAndSmall
                 this.succubusUnbonded = succubusUnbonded;
                 romanceTags = allPawnExt.Select(x => x.romanceTags).Where(x => x != null)?.GetMerged();
                 if (
-                    romanceTags == null && HumanLikes.Humanlikes.Contains(pawn?.def) ||
+                    (romanceTags == null && HumanLikes.Humanlikes.Contains(pawn?.def)) ||
                     (racePawnExts.Any() && racePawnExts.All(x => x.romanceTags == null)) ||
                     pawn?.def == ThingDefOf.Human ||
                     pawn?.def == ThingDefOf.CreepJoiner

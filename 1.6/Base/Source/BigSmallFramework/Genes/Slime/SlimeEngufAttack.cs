@@ -162,11 +162,11 @@ namespace BigAndSmall
                 {
                     // get inner pawn overal health percentage
                     float healthPercent = innerPawn.health.summaryHealth.SummaryHealthPercent;
-                    stringBuilder.AppendLine(thing.LabelCap + $" ({healthPercent * 100}%" + (innerPawn.Downed ? ", downed" : "") + ")");
+                    stringBuilder.AppendLine($"{thing.LabelCap} {healthPercent * 100f}% {(innerPawn.Downed ? ", downed" : "")}");
                 }
                 else
                 {
-                    stringBuilder.AppendLine(thing.LabelCap + $"{thing.HitPoints / thing.MaxHitPoints * 100}%");
+                    stringBuilder.AppendLine($"{thing.LabelCap} {thing.HitPoints / thing.MaxHitPoints * 100f}%");
                 }
             }
             return stringBuilder.ToString().TrimEndNewlines();
