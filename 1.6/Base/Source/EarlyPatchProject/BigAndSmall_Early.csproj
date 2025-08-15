@@ -27,26 +27,30 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="$(RimWorldPath)/*.dll">
-      <Private>False</Private>
-    </Reference>
-    <PackageReference Include="Krafs.Publicizer" Version="2.3.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    <PackageReference Include="Krafs.Rimworld.Ref">
+      <Version>1.6.*</Version>
+      <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="RimWorld.MultiplayerAPI" Version="0.5.0" />
-    <Publicize Include="Assembly-CSharp:RimWorld.ThingDefGenerator_Corpses.GenerateCorpseDef" />
-    <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\..\..\..\..\workshop\content\294100\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <!-- <PackageReference Include="Krafs.Publicizer" Version="2.*"/> -->
-    <!-- <PackageReference Include="Zetrith.Prepatcher" Version="1.*" /> -->
+
+    <PackageReference Include="Krafs.Publicizer">
+      <Version>2.3.*</Version>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+
+    <PackageReference Include="Lib.Harmony">
+      <Version>2.3.6</Version>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\BigSmallFramework\BigAndSmall.csproj">
       <Project>{f0272df1-d703-495d-8f95-48d6bab3a0b9}</Project>
       <Name>BigAndSmall</Name>
     </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Publicize Include="Assembly-CSharp:RimWorld.ThingDefGenerator_Corpses.GenerateCorpseDef" />
   </ItemGroup>
 </Project>
