@@ -120,7 +120,9 @@ namespace BigAndSmall
 
         private static void SlowUpdate(int currentTick)
         {
+            Rand.PushState(currentTick);
             globalRandNum = Rand.Value;
+            Rand.PopState();
 
             // If the queue is empty, enqueue the HumanoidPawnScaler.Cache.
             if (refreshQueue.Count == 0)
