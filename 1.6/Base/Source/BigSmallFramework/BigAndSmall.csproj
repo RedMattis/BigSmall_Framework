@@ -16,20 +16,32 @@
     <DebugType>none</DebugType>
     
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<RimWorldPath Condition="'$(RimWorldPath)' == '' AND '$(OS)' == 'Windows_NT'">..\..\..\..\..\..\RimWorldWin64_Data/Managed</RimWorldPath>
-    <RimWorldPath Condition="'$(RimWorldPath)' == '' AND '$(OS)' != 'Windows_NT'">..\..\..\..\..\..\RimWorldLinux_Data/Managed</RimWorldPath>
     <NoStdLib>true</NoStdLib>
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="$(RimWorldPath)/*.dll">
-      <Private>False</Private>
-    </Reference>
-    <PackageReference Include="Krafs.Publicizer" Version="2.3.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    <PackageReference Include="Krafs.Rimworld.Ref">
+      <Version>1.6.*</Version>
+      <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="RimWorld.MultiplayerAPI" Version="0.5.0" />
+
+    <PackageReference Include="Krafs.Publicizer">
+      <Version>2.3.*</Version>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+
+    <PackageReference Include="Zetrith.Prepatcher">
+      <Version>1.2.0</Version>
+    </PackageReference>
+
+    <PackageReference Include="Lib.Harmony">
+      <Version>2.3.6</Version>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <Publicize Include="Assembly-CSharp:RimWorld.Pawn_GeneTracker.xenotype" />
     <Publicize Include="Assembly-CSharp:RimWorld.Pawn_GeneTracker.Notify_GenesChanged" />
     <Publicize Include="Assembly-CSharp:RimWorld.Pawn_GeneTracker.CheckForOverrides" />
@@ -58,12 +70,5 @@
     <Publicize Include="Assembly-CSharp:Verse.RaceProperties.nameGeneratorFemale" />
     <Publicize Include="Assembly-CSharp:Verse.PawnRenderNode.props" />
     <Publicize Include="Assembly-CSharp:Verse.RaceProperties.fleshType" />
-    
-    <PackageReference Include="Zetrith.Prepatcher" Version="1.2.0" />
-
-    <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\..\..\..\..\workshop\content\294100\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
 </Project>
