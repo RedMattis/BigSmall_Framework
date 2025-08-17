@@ -15,7 +15,7 @@ namespace BigAndSmall
         {
             Pawn pawn = __instance.pawn;
 
-            if (pawn.GetCachePrepatched() is BSCache sizeCache)
+            if (pawn.GetCachePrepatchedThreaded() is BSCache sizeCache)
             {
                 __result = new Vector3(__result.x * sizeCache.headPositionMultiplier, __result.y, __result.z * sizeCache.headPositionMultiplier);
 
@@ -70,7 +70,7 @@ namespace BigAndSmall
             bool requestNewCache = threadStaticCache.pawn != ___pawn || threadStaticCache.cache.isDefaultCache;
             if (requestNewCache)
             {
-                threadStaticCache.cache = ___pawn.GetCachePrepatched();
+                threadStaticCache.cache = ___pawn.GetCachePrepatchedThreaded();
                 threadStaticCache.pawn = ___pawn;
                 threadStaticCache.approxNoChange = threadStaticCache.cache.approximatelyNoChange;
                 if (!threadStaticCache.approxNoChange)
@@ -153,7 +153,7 @@ namespace BigAndSmall
 
             if (threadStaticCache.pawn != ___pawn || threadStaticCache.tick10 != BS.Tick10)
             {
-                threadStaticCache.cache = ___pawn.GetCachePrepatched();
+                threadStaticCache.cache = ___pawn.GetCachePrepatchedThreaded();
                 threadStaticCache.pawn = ___pawn;
                 threadStaticCache.hasForcedRotDrawMode = threadStaticCache.cache.forcedRotDrawMode.HasValue;
                 threadStaticCache.rotDrawMode = threadStaticCache.cache.forcedRotDrawMode ?? RotDrawMode.Fresh;
@@ -218,7 +218,7 @@ namespace BigAndSmall
             {
                 return;
             }
-            var cache = pawn.GetCachePrepatched();
+            var cache = pawn.GetCachePrepatchedThreaded();
             //if (cache.changeIndex != threadStaticCache.changeIndex || threadStaticCache.pawn != pawn)
             //{
             //    threadStaticCache.cache = cache;

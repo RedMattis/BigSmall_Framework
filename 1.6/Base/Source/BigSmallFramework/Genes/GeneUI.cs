@@ -89,7 +89,7 @@ namespace BigAndSmall
         [HarmonyPrefix]
         public static void DrawGenesInfoPrefix(Rect rect, Thing target, float initialHeight, ref Vector2 size, ref Vector2 scrollPosition, GeneSet pregnancyGenes = null)
         {
-            if (target is Pawn p && p.GetCachePrepatched() is BSCache cache)
+            if (target is Pawn p && p.GetCachePrepatchedThreaded() is BSCache cache)
             {
                 pCache = cache;
             }
@@ -138,7 +138,7 @@ namespace BigAndSmall
         [HarmonyPostfix]
         public static void GetLabelForPostfix(ref string __result, PawnCapacityDef __instance, Pawn pawn)
         {
-            if (pawn.GetCachePrepatched() is BSCache cache)
+            if (pawn.GetCachePrepatchedThreaded() is BSCache cache)
             {
                 if (cache.isMechanical)
                 {

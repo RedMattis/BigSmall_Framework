@@ -16,27 +16,39 @@ namespace BigAndSmall
     {
         public static bool prepatched = false;
 
+        private static BSCache GetDefaultCache() => BSCache.GetDefaultCache();
+
         [ThreadStatic]
         private static BSCache _placeholderCache;
+        [ThreadStatic]
+        private static BSCache _placeholderCacheThreaded;
+
+        /// <summary>
+        /// Gets the cache in the fastest way possible. Can generate a new cache if needed on creation but never refreshes it.
+        /// </summary>
         [PrepatcherField]
-        //[ValueInitializer("BigAndSmall.BSCache.GetDefaultCache")]
         [ValueInitializer(nameof(GetDefaultCache))]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref BSCache GetCachePrepatched(this Pawn pawn)
         {
-            _placeholderCache = GetCacheUltraSpeed(pawn, canRegenerate:false);
+            _placeholderCache = GetCacheUltraSpeed(pawn, canRegenerate: true);
             return ref _placeholderCache;
         }
-        private static BSCache GetDefaultCache() => BSCache.GetDefaultCache();
 
-        //private static BSCache _placeholderCache2;
-        //[PrepatcherField]
-        //[ValueInitializer(nameof(BSCache.GetDefaultCache))]
-        //public static ref BSCache GetCacheFast(this Pawn pawn)
-        //{
-        //    _placeholderCache2 = GetCache(pawn, canRegenerate: false);
-        //    return ref _placeholderCache2;
-        //}
+        /// <summary>
+        /// The threaded version of GetCache is for use on rendering threads where we DON'T want to regenerate the cache.
+        /// </summary>
+        [PrepatcherField]
+        [ValueInitializer(nameof(GetDefaultCache))]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ref BSCache GetCachePrepatchedThreaded(this Pawn pawn)
+        {
+            _placeholderCacheThreaded = GetCacheUltraSpeed(pawn, canRegenerate:false);
+            return ref _placeholderCacheThreaded;
+        }
+        
+
+        
 
 
     }

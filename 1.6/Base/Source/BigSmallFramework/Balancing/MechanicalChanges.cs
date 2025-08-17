@@ -97,7 +97,7 @@ namespace BigAndSmall
         public static void Prefix(ref Pawn ___pawn, out float __state)
         {
             __state = ___pawn.def.race.baseHungerRate;
-            if (FastAcccess.GetCache(___pawn) is BSCache sizeCache && ___pawn.DevelopmentalStage > DevelopmentalStage.Baby)
+            if (___pawn.GetCachePrepatched() is BSCache sizeCache && ___pawn.DevelopmentalStage > DevelopmentalStage.Baby)
             {
                 float hungerRate = __state * Mathf.Max(sizeCache.scaleMultiplier.linear, sizeCache.scaleMultiplier.DoubleMaxLinear);
                 float finalHungerRate = Mathf.Lerp(__state, hungerRate, BigSmallMod.settings.hungerRate);
@@ -119,7 +119,7 @@ namespace BigAndSmall
     {
         public static void Postfix(ref float __result, LocalTargetInfo target)
         {
-            if (target.Thing is Pawn pawn && __result < 0.99f && HumanoidPawnScaler.GetCache(pawn) is BSCache sizeCache)
+            if (target.Thing is Pawn pawn && __result < 0.99f && pawn.GetCachePrepatched() is BSCache sizeCache)
             {
                 __result /= sizeCache.scaleMultiplier.linear;
                 if (__result >= 0.96)

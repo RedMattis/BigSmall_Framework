@@ -122,6 +122,7 @@ namespace BigAndSmall
                 }
                 if (!result.isDefaultCache) // BS.PrePatcherActive && 
                 {
+                    pawn.GetCachePrepatchedThreaded() = result;
                     pawn.GetCachePrepatched() = result;
                 }
                 
