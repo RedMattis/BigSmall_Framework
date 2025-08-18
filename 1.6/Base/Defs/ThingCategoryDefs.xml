@@ -1,0 +1,14 @@
+
+<Defs>
+	<ThingCategoryDef>
+		<defName>BS_CorpsesHumanlikeAnimals</defName>
+		<label>Sapient animals</label>
+		<parent>CorpsesHumanlike</parent>
+    </ThingCategoryDef>
+
+	<ThingCategoryDef>
+		<defName>BS_CorpsesHumanlikeHybrids</defName>
+		<label>Hybrids</label>
+		<parent>CorpsesHumanlike</parent>
+    </ThingCategoryDef>
+</Defs>

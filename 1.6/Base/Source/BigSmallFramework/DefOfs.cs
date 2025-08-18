@@ -155,9 +155,11 @@ namespace BigAndSmall
 
         // Categories
         public static ThingCategoryDef BS_RobotCorpses;
-
-        // Recipes
-        public static RecipeDef BS_ShredRobot;
+		public static ThingCategoryDef BS_CorpsesHumanlikeAnimals;
+		public static ThingCategoryDef BS_CorpsesHumanlikeHybrids;
+		
+		// Recipes
+		public static RecipeDef BS_ShredRobot;
         public static RecipeDef BS_SmashRobot;
 
         // Shaders

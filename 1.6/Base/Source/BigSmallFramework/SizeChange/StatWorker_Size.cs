@@ -30,7 +30,6 @@ namespace BigAndSmall
     //    }
     //}
 
-    [StaticConstructorOnStartup]
     public class StatWorker_MaxNutritionFromSize : StatWorker
     {
         // delegate for temporaryStatCache (private Dictionary<Thing, StatCacheEntry> temporaryStatCache;)

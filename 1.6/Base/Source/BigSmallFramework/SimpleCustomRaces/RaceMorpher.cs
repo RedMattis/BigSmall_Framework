@@ -223,6 +223,17 @@ namespace BigAndSmall
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="pawn"></param>
+		/// <param name="swapTarget"></param>
+		/// <param name="state"></param>
+		/// <param name="targetPriority"></param>
+		/// <param name="force"></param>
+		/// <param name="source"></param>
+		/// <param name="permitFusion"></param>
+		/// <param name="clearHediffsToReapply"></param>
         public static void SwapThingDef(this Pawn pawn, ThingDef swapTarget, bool state, int targetPriority, bool force=false, object source=null, bool permitFusion=true, bool clearHediffsToReapply=true)
         {
             static bool IsDiscardable(ThingDef def) => def == ThingDefOf.Human || def == ThingDefOf.CreepJoiner;
