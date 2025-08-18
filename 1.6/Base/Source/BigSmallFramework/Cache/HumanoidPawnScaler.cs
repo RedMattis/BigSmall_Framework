@@ -28,6 +28,7 @@ namespace BigAndSmall
         {
             public Pawn pawn;
             public BSCache cache;
+            public bool properCache;
         }
         [ThreadStatic]
         static bool threadInit = false;
@@ -40,7 +41,7 @@ namespace BigAndSmall
 
         public static BSCache GetCacheUltraSpeed(Pawn pawn, bool canRegenerate = false)
         {
-            if (_tCache.pawn != pawn)
+            if (_tCache.pawn != pawn || !_tCache.properCache)
             {
                 _tCache.pawn = pawn;
                 if (!threadInit)
@@ -59,6 +60,7 @@ namespace BigAndSmall
                     return cache;
                 }
                 _tCache.cache = GetCache(pawn, canRegenerate: canRegenerate);
+                _tCache.properCache = !_tCache.cache.isDefaultCache;
                 return _tCache.cache;
             }
             else return _tCache.cache;

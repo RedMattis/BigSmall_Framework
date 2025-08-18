@@ -34,25 +34,7 @@ namespace BigAndSmall
         }
     }
 
-    public class RenderTreeOverride
-    {
-        public List<string> thingDefNames;
-        public string renderTreeDefName;
-    }
-
-    public class HumanlikeAnimalSettings : Def
-    {
-        private static List<HumanlikeAnimalSettings> allSettings = null;
-        public static List<HumanlikeAnimalSettings> AllHASettings =>
-            allSettings ??= DefDatabase<HumanlikeAnimalSettings>.AllDefsListForReading;
-
-        public List<string> hasHandsWildcards = [];
-        public List<string> hasPoorHandsWildcards = [];
-        public List<string> compWhitelist = [];
-        public List<string> tabWhitelist = [];
-		public List<string> modExtensionWhitelist = [];
-		public List<RenderTreeOverride> renderTreeWhitelist = [];
-    }
+    
 
     public static class HumanlikeAnimals
     {
@@ -176,12 +158,23 @@ namespace BigAndSmall
             HashSet<string> compWhitelist = [];
 			HashSet<string> tabWhiteList = [];
 			HashSet<string> extWhiteList = [];
-			foreach (var setting in HumanlikeAnimalSettings.AllHASettings)
+            HashSet<RomanceTags> romanceTags = [];
+            RomanceTags romanceOverride = null;
+            foreach (var setting in HumanlikeAnimalSettings.AllHASettings)
             {
                 compWhitelist.AddRange(setting.compWhitelist);
 				tabWhiteList.AddRange(setting.tabWhitelist);
 				extWhiteList.AddRange(setting.modExtensionWhitelist);
-			}
+                romanceTags.AddRange(setting.animalFamilySettings
+                    .Where(x=>
+                        x.members.Any(x=>aniThing.defName.Contains(x, StringComparison.OrdinalIgnoreCase)) ||
+                        x.membersExact.Any(x => aniThing.defName.Equals(x, StringComparison.OrdinalIgnoreCase)))
+                    .Select(x=>x.romanceTags));
+            }
+            if (romanceTags.Any())
+            {
+                romanceOverride = romanceTags.GetMerged();
+            }
 			
 			// Lowercase comparer
 			List<CompProperties> bothComps = [];
@@ -417,6 +410,7 @@ namespace BigAndSmall
                     if (value == null) continue;  // Skip null values.
                     field.SetValue(pawnExt, value);
                 }
+
                 if (BigSmallMod.settings.animalsLowSkillPenalty && pawnExt.aptitudes != null)
                 {
                     foreach (var skill in pawnExt.aptitudes)
@@ -440,6 +434,7 @@ namespace BigAndSmall
                     pawnExt.traitIcon = GetTraitIcon(aniPawnKind);
                 }
                 pawnExt.animalFineManipulation = fineManipulation ?? 1.0f;
+                pawnExt.romanceTags = romanceOverride;
                 raceHediff.modExtensions = [pawnExt];
             }
             racePawnExtension = raceHediff?.GetAllPawnExtensionsOnHediff().FirstOrDefault();
@@ -702,10 +697,24 @@ namespace BigAndSmall
                 }
             }
 
-            
+
             if (pExt == null)
             {
                 newThing.SetStatBaseValue(BSDefs.SM_FlirtChance, 0);  // This prevents Lovin' from happening as well.
+            }
+            else if (animalThing.race.Animal && animalThing.race.Insect && pExt?.romanceTags == null)
+            {
+                pExt.romanceTags = new RomanceTags()
+                {
+                    compatibilities = new()
+                    {
+                        ["BS_Insect".Translate()] = new RomanceTags.Compatibility { chance = 1.0f, factor = 1.0f }
+                    }
+                };
+                if (BigSmallMod.settings.animalOnAnimal)
+                {
+                    pExt.romanceTags.compatibilities["BS_SapientAnimal".Translate()] = new RomanceTags.Compatibility { chance = 0.5f, factor = 0.5f };
+                }
             }
             // No "Bee Movie" please.
             else if (animalThing.race.Animal && pExt?.romanceTags == null)

@@ -22,7 +22,7 @@ namespace BigAndSmall
         {
             compatibilities = new()
             {
-                ["Humanlike"] = new() { chance = 0.75f, factor = 0.75f },
+                ["Humanlike"] = new() { chance = 1.0f, factor = 0.75f },
                 ["Human"] = new() { chance = 1.0f, factor = 1.0f }
             }
         };

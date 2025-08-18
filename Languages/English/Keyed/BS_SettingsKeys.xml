@@ -60,7 +60,7 @@
 
   <!-- Advanced -->
   <BS_GenesSpecific>Big and Small Genes Settings</BS_GenesSpecific>
-  <BS_DoDefGeneration>Permit generated GeneDefs (Recommended, requires restart)</BS_DoDefGeneration>
+  <BS_DoDefGeneration>Generate Xenotype Morph Genes</BS_DoDefGeneration>
 
   <!-- Developer -->
   <BS_DevSettings>Dev Options</BS_DevSettings>
