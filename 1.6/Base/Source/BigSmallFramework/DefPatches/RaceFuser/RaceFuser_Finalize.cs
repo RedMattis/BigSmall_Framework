@@ -337,7 +337,6 @@ namespace BigAndSmall
 
             newCorpse.race = newRace;
             newCorpse.recipes = [.. sCorpse.recipes];
-            newCorpse.thingCategories = [.. sCorpse.thingCategories];
             newCorpse.inspectorTabs = [.. sCorpse.inspectorTabs];
             newThing.race.corpseDef = newCorpse;
             newThing.race.hasCorpse = true;

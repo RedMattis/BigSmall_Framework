@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿using BigAndSmall.Utilities;
+using HarmonyLib;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime;
@@ -8,7 +10,6 @@ using static BigAndSmall.SettingsWidgets;
 
 namespace BigAndSmall
 {
-    [StaticConstructorOnStartup]
     public class BigSmallMod : Mod
     {
         public static BSSettings settings = null;
@@ -16,7 +17,19 @@ namespace BigAndSmall
         public BigSmallMod(ModContentPack content) : base(content)
         {
             settings ??= GetSettings<BSSettings>();
-        }
+			DebugLog.Message("Initialising...");
+
+			NewFoodCategory.SetupFoodCategories();
+			DefAltNamer.Initialize();
+			HARCompat.SetupHARThingsIfHARIsActive();
+			//BSCore.RunPostGenerateDefs();
+
+			
+
+
+			BSCacheExtensions.prepatched = ModsConfig.IsActive("zetrith.prepatcher");
+			DebugLog.Message("Initialisation finished.");
+		}
 
         private static Vector2 scrollPosition = Vector2.zero;
         private int selectedTab = 0;

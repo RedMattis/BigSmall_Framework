@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Reflection;
 using Verse;
+using BigAndSmall.Utilities;
 //using VariedBodySizes;
 
 namespace BigAndSmall
@@ -16,31 +17,31 @@ namespace BigAndSmall
     [StaticConstructorOnStartup]
     public static class BSCore
     {
-        private static readonly Type patchType;
+		private static readonly Type patchType;
         public static Harmony harmony = new("RedMattis.BetterPrerequisites");
         static BSCore()
-        {
-            patchType = typeof(BSCore);
-            harmony.PatchAll();
+		{
+			DebugLog.Message("Harmony patching.");
 
-            PregnancyPatches.ApplyPatches();
-            //RunDefPatchesWithHotReload(hotReload: false);
-            
-            NewFoodCategory.SetupFoodCategories();
-            DefAltNamer.Initialize();
-            HARCompat.SetupHARThingsIfHARIsActive();
+			patchType = typeof(BSCore);
+			harmony.PatchAll();
 
-            BSCacheExtensions.prepatched = ModsConfig.IsActive("zetrith.prepatcher");
+			PregnancyPatches.ApplyPatches();
+			//RunDefPatchesWithHotReload(hotReload: false);
 
-            if (NalsToggles.FALoaded)
-            {
-                NalsToggles.ApplyNLPatches(harmony);
-            }
-        }
+			if (NalsToggles.FALoaded)
+			{
+				NalsToggles.ApplyNLPatches(harmony);
+			}
+
+			DebugLog.Message("Finished harmony patching.");
+		}
 
         public static void RunBeforeGenerateImpliedDefs(bool hotReload)
-        {
-            if (!hotReload)
+		{
+			DebugLog.Message("Generate Defs.");
+
+			if (!hotReload)
             {
                 GlobalSettings.Initialize();
             }
@@ -48,11 +49,15 @@ namespace BigAndSmall
             RaceFuser.PreHotreload();
             RaceFuser.CreateMergedBodyTypes(hotReload);
             HumanlikeAnimalGenerator.GenerateHumanlikeAnimals(hotReload);
-        }
+
+			DebugLog.Message("Generate defs complete.");
+		}
 
         public static void RunDuringGenerateImpliedDefs(bool hotReload)
-        {
-            GeneDefPatcher.PatchExistingDefs();
+		{
+			DebugLog.Message("Patch defs.");
+
+			GeneDefPatcher.PatchExistingDefs();
             RaceFuser.GenerateCorpses(hotReload);
             if (!hotReload) HumanPatcher.MechanicalCorpseSetup();
             XenotypeDefPatcher.PatchDefs();
@@ -61,9 +66,36 @@ namespace BigAndSmall
             ThoughtDefPatcher.PatchDefs();
             if (BigSmallMod.settings.experimental)
             {
-                // Put the animal stuff here maybe?
-            }
-        }
+				// Put the animal stuff here maybe?
+			}
+
+			DebugLog.Message("Patch defs finished.");
+		}
+
+		public static void RunAfterGenerateImpliedDefs(bool hotReload)
+		{
+			// Replace sapient animal corpses thing category.
+			foreach (ThingDef sapientAnimal in HumanlikeAnimalGenerator.humanlikeAnimals.Keys)
+			{
+				ThingDef corpse = sapientAnimal.race.corpseDef;
+				if (corpse != null)
+				{
+					corpse.thingCategories.Clear();
+					corpse.thingCategories.Add(BSDefs.BS_CorpsesHumanlikeAnimals);
+				}
+			}
+
+			// Replace hybrid corpses thing category.
+			foreach (ThingDef hybridDef in FusedBody.FusedBodyByThing.Keys)
+			{
+				ThingDef corpse = hybridDef.race.corpseDef;
+				if (corpse != null)
+				{
+					corpse.thingCategories.Clear();
+					corpse.thingCategories.Add(BSDefs.BS_CorpsesHumanlikeHybrids);
+				}
+			}
+		}
     }
 
     public class DefAltNamer : Def
