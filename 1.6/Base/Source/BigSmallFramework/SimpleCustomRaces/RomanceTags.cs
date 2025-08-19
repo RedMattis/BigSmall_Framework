@@ -22,7 +22,7 @@ namespace BigAndSmall
         {
             compatibilities = new()
             {
-                ["Humanlike"] = new() { chance = 1.0f, factor = 0.75f },
+                ["Humanlike"] = new() { chance = 0.75f, factor = 1.0f },
                 ["Human"] = new() { chance = 1.0f, factor = 1.0f }
             }
         };
@@ -87,6 +87,7 @@ namespace BigAndSmall
                     }
                 }
             }
+            
             if (first?.romanceTags == null || second?.romanceTags == null)
             {
                 Log.Message($"Debug: One of the romance tags is null. First: {first?.romanceTags}, Second: {second?.romanceTags}");
@@ -99,12 +100,17 @@ namespace BigAndSmall
             }
             CheckTags(first.romanceTags, second.romanceTags);
             CheckTags(second.romanceTags, first.romanceTags);
+
             if (compatibilities.Count == 0)
             {
                 return 0;
             }
 
-            var bestOption = compatibilities.Where(x => !x.Value.exclude).OrderByDescending(x => x.Value.chance).FirstOrDefault();
+            var bestOption = compatibilities
+                .Where(x => !x.Value.exclude)
+                .OrderByDescending(x => x.Value.chance * x.Value.factor)
+                .FirstOrDefault();
+
             return bestOption.Value?.chance * bestOption.Value?.factor;
         }
 

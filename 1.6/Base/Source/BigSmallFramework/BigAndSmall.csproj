@@ -77,5 +77,6 @@
     <Publicize Include="Assembly-CSharp:Verse.RaceProperties.nameGeneratorFemale" />
     <Publicize Include="Assembly-CSharp:Verse.PawnRenderNode.props" />
     <Publicize Include="Assembly-CSharp:Verse.RaceProperties.fleshType" />
+    <Publicize Include="Assembly-CSharp:Verse.PriorityWork.pawn" />
   </ItemGroup>
 </Project>

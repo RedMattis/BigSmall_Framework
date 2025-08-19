@@ -73,8 +73,10 @@ namespace BigAndSmall
         [HarmonyPriority(Priority.Low)]
         public static void CompatibilityWith_Postfix(ref float __result, Pawn_RelationsTracker __instance, Pawn otherPawn, Pawn ___pawn)
         {
-            __result = GetCompatibilityWith(___pawn, otherPawn, reductionScale:0.5f, __result);
-
+            if (___pawn.TryGetCompatibilityWith(out float result, otherPawn, reductionScale: 0.5f, 1.0f))
+            {
+                __result = result;
+            }
         }
 
         [HarmonyTranspiler]
@@ -127,10 +129,12 @@ namespace BigAndSmall
                 }
                 else
                 {
-                    var compatiblity = initiator.GetCompatibilityWith(target, reductionScale: 1.0f, oldValue: 1);
-                    if (compatiblity <= 0)
-                    {
-                        __result = new AcceptanceReport("CantRomanceTargetZeroChance".Translate(initiator.LabelShort, target.LabelShort));
+                    if (initiator.TryGetCompatibilityWith(out float compatiblity, target, reductionScale: 1.0f, oldValue: 1))
+                    { 
+                        if (compatiblity <= 0)
+                        {
+                            __result = new AcceptanceReport("CantRomanceTargetZeroChance".Translate(initiator.LabelShort, target.LabelShort));
+                        }
                     }
                 }
             }
@@ -141,7 +145,29 @@ namespace BigAndSmall
         [HarmonyPriority(Priority.Low)]
         public static void RomanceFactorPostfix(ref float __result, Pawn_RelationsTracker __instance, Pawn otherPawn, Pawn ___pawn)
         {
-            __result = GetLovinghanceFactor(___pawn, otherPawn, __result);
+            MultiplyByBestRomanceTag(ref __result, otherPawn, ___pawn);
+        }
+
+        private static void MultiplyByBestRomanceTag(ref float __result, Pawn otherPawn, Pawn pawn)
+        {
+            if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache && HumanoidPawnScaler.GetCache(otherPawn) is BSCache cacheTwo)
+            {
+                if (pawn == otherPawn) return;
+
+                if (pawn == null || cache.isDefaultCache || cache.romanceTags == null)
+                {
+                    return;
+                }
+                if (otherPawn == null || cacheTwo.isDefaultCache || cacheTwo.romanceTags == null)
+                {
+                    return;
+                }
+
+                if (RomanceTagsExtensions.GetHighestSharedTag(cache, cacheTwo) is float bestTag)
+                {
+                    __result *= bestTag;
+                }
+            }
         }
 
         [HarmonyPatch(typeof(Pawn_RelationsTracker), nameof(Pawn_RelationsTracker.SecondaryLovinChanceFactor))]
@@ -149,29 +175,13 @@ namespace BigAndSmall
         [HarmonyPriority(Priority.Low)]
         public static void LovingFactorPostfix(ref float __result, Pawn_RelationsTracker __instance, Pawn otherPawn, Pawn ___pawn)
         {
-            __result = GetLovinghanceFactor(___pawn, otherPawn, __result);
+            MultiplyByBestRomanceTag(ref __result, otherPawn, ___pawn);
+            if (___pawn.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks: 1000) == 0 || otherPawn.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks: 1000) == 0)
+                __result = 0;
 
         }
-        public static float GetLovinghanceFactor(Pawn pawn, Pawn otherPawn, float oldResult)
-        {
-            if (HumanoidPawnScaler.GetCacheUltraSpeed(pawn) is BSCache cache && HumanoidPawnScaler.GetCacheUltraSpeed(otherPawn) is BSCache cacheTwo)
-            {
-                if (pawn == otherPawn || oldResult <= 0) return oldResult;
 
-                float? compatibility = GetCompatibilityWith(pawn, otherPawn, reductionScale: 1f, oldValue: oldResult);
-
-                if (pawn.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks: 1000) == 0 || otherPawn.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks: 1000) == 0)
-                    return 0;
-                if (compatibility == null)//  && pawn.def != otherPawn.def
-                {
-                    return oldResult;
-                }
-                oldResult *= compatibility.Value;
-            }
-            return oldResult;
-        }
-
-        public static float GetCompatibilityWith(this Pawn pawn, Pawn otherPawn, float reductionScale=1f, float oldValue = 0)
+        public static bool TryGetCompatibilityWith(this Pawn pawn, out float result, Pawn otherPawn, float reductionScale=1f, float oldValue = 0)
         {
             float ConstantPerPawnsPairCompatibilityOffset(int otherPawnID)
             {
@@ -181,23 +191,24 @@ namespace BigAndSmall
                 Rand.PopState();
                 return result;
             }
+            result = oldValue;
             if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache && HumanoidPawnScaler.GetCache(otherPawn) is BSCache cacheTwo)
             {
-                if (pawn == otherPawn) return 0;
+                if (pawn == otherPawn) return false;
 
                 if (pawn == null || cache.isDefaultCache || cache.romanceTags == null)
                 {
-                    return oldValue;
+                    return false;
                 }
                 if (otherPawn == null || cacheTwo.isDefaultCache || cacheTwo.romanceTags == null)
                 {
-                    return oldValue;
+                    return false;
                 }
 
                 float? compatibility = RomanceTagsExtensions.GetHighestSharedTag(cache, cacheTwo);
                 if (compatibility == null)// && pawn.def != otherPawn.def)
                 {
-                    return oldValue;
+                    return false;
                 }
 
                 float x = Mathf.Abs(cache.apparentAge - cacheTwo.apparentAge);
@@ -207,11 +218,15 @@ namespace BigAndSmall
                 if (compatibility < 1)
                 {
                     compatibility = Mathf.Lerp(1, compatibility.Value, reductionScale);
-                    return (num + num2) * compatibility.Value;
+                    result = (num + num2) * compatibility.Value;
                 }
-                return Mathf.Max((num + num2) * compatibility.Value, oldValue);
+                else
+                {
+                    result = Mathf.Max((num + num2) * compatibility.Value, oldValue);
+                }
+                return true;
             }
-            return oldValue;
+            return false;
         }
 
         

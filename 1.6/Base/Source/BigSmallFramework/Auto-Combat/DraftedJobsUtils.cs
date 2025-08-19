@@ -137,11 +137,28 @@ namespace BigAndSmall
                 }
             }
         }
+
+        [HarmonyPatch(typeof(PriorityWork), nameof(PriorityWork.ClearPrioritizedWorkAndJobQueue))]
+        [HarmonyPostfix]
+        public static void ClearPrioritizedWorkAndJobQueuePostfix(PriorityWork __instance)
+        {
+            if (BigSmallMod.settings.autoCombatResets)
+            {
+                if (!__instance.pawn.Drafted)
+                {
+                    var pawn = __instance.pawn;
+                    if (DraftedActionHolder.GetData(pawn) is DraftedActionData data)
+                    {
+                        data.hunt = false;
+                    }
+                }
+            }
+        }
     }
 
     public class DraftedActionHolder : GameComponent
     {
-        public static Dictionary<string, DraftedActionData> pawnDraftActionData = new();
+        public static Dictionary<string, DraftedActionData> pawnDraftActionData = [];
 
         public static DraftedActionData GetData(Pawn pawn)
         {

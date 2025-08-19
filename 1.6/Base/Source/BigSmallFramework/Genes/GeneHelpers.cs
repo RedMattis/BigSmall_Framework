@@ -19,10 +19,6 @@ namespace BigAndSmall
             {
                 foreach (var rGene in genesRemoved)
                 {
-                    //foreach(var pe in rGene.def.ExtensionsOnDef<PawnExtension, GeneDef>())
-                    //{
-                    //    GeneEffectManager.RefreshGeneEffects(rGene, active: false, pe);
-                    //}
                     // Removes all abilities with missing genes.
                     if (rGene.def.abilities.NullOrEmpty() == false)
                     {
@@ -86,10 +82,6 @@ namespace BigAndSmall
                 }
                 foreach (var geneAdded in genesAdded)
                 {
-                    //foreach (var pe in geneAdded.def.ExtensionsOnDef<PawnExtension, GeneDef>())
-                    //{
-                    //    GeneEffectManager.RefreshGeneEffects(geneAdded, active: true, pe);
-                    //}
                     geneAdded.PostAdd();
                 }
                 if (genesRemoved.Count > 0)
@@ -477,7 +469,7 @@ namespace BigAndSmall
 
         public static void ChangeXenotypeFast(Pawn pawn, XenotypeDef targetXenottype)
         {
-            var allGenesBefore = pawn.genes.GenesListForReading.ToList();
+            List<Gene> allGenesBefore = [..pawn.genes.GenesListForReading];
             var activeGenesBefore = GetAllActiveGenes(pawn);
             var activeGeneDefsBefore = activeGenesBefore.Select(x => x.def).ToHashSet();
             //bool sourceIsEndo = pawn.genes.Xenotype.inheritable;
@@ -520,10 +512,10 @@ namespace BigAndSmall
             pawn.genes.CheckForOverrides();
 
             //var activeGenes = GetAllActiveGenes(pawn);
-            List<Gene> allGenesNow = pawn.genes.GenesListForReading.ToList();
-            List<Gene> newGenes = allGenesNow.Where(n => !allGenesBefore.Any(b=> b.def == n.def)).ToList();
+            List<Gene> allGenesNow = [.. pawn.genes.GenesListForReading];
+            List<Gene> newGenes = [.. allGenesNow.Where(n => !allGenesBefore.Any(b=> b.def == n.def))];
 
-            List<Gene> removedGenes = allGenesBefore.Where(b => !allGenesNow.Any(n => n.def == b.def)).ToList();
+            List<Gene> removedGenes = [.. allGenesBefore.Where(b => !allGenesNow.Any(n => n.def == b.def))];
 
             RefreshAllGenes(pawn, newGenes, removedGenes);
             pawn.genes.SetXenotypeDirect(targetXenottype);

@@ -36,7 +36,7 @@ namespace BigAndSmall
 
         private static readonly string[] tabKeys = new[] // "BS_GameMechanics"
         {
-            "BS_General", "BS_Races", "BS_Size", "BS_Extras", "BS_Advanced", "BS_Developer"
+            "BS_General", "BS_Races", "BS_Size", "BS_AutoCombat", "BS_Extras", "BS_Advanced", "BS_Developer"
         };
         
         public override void DoSettingsWindowContents(Rect inRect)
@@ -69,9 +69,10 @@ namespace BigAndSmall
                 case 1: DrawRacesTab(innerRect); break;
                 case 2: DrawSizeTab(innerRect); break;
                 //case 3: DrawGameMechanicsTab(innerRect); break;
-                case 3: DrawExtrasTab(innerRect); break;
-                case 4: DrawAdvancedTab(innerRect); break;
-                case 5: DrawDeveloperTab(innerRect); break;
+                case 3: DrawAutoCombat(innerRect); break;
+                case 4: DrawExtrasTab(innerRect); break;
+                case 5: DrawAdvancedTab(innerRect); break;
+                case 6: DrawDeveloperTab(innerRect); break;
             }
         }
 
@@ -193,11 +194,26 @@ namespace BigAndSmall
         //    BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 300f);
         //    listStd.Begin(viewRect);
 
-            
+
 
         //    listStd.End();
         //    EndScrollArea();
         //}
+
+        private void DrawAutoCombat(Rect inRect)
+        {
+            Listing_Standard listStd = new Listing_Standard();
+            BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 200f);
+            listStd.Begin(viewRect);
+            
+            listStd.Label("BS_AutoCombatExplain".Translate());
+            listStd.GapLine();
+            CreateSettingCheckbox(listStd, "BS_EnabledDraftedJobs".Translate(), ref settings.enableDraftedJobs);
+            CreateSettingCheckbox(listStd, "BS_AutCombatResets".Translate(), ref settings.autoCombatResets);
+
+            listStd.End();
+            EndScrollArea();
+        }
 
         private void DrawExtrasTab(Rect inRect)
         {
@@ -205,10 +221,8 @@ namespace BigAndSmall
             BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 200f);
             listStd.Begin(viewRect);
 
-            CreateSettingCheckbox(listStd, "BS_EnabledDraftedJobs".Translate(), ref settings.enableDraftedJobs);
-            listStd.GapLine();
-            CreateSettingCheckbox(listStd, "BS_PatchPlayerFactions".Translate(), ref settings.patchPlayerFactions);
-            listStd.GapLine();
+            //CreateSettingCheckbox(listStd, "BS_PatchPlayerFactions".Translate(), ref settings.patchPlayerFactions);
+            //listStd.GapLine();
             CreateSettingCheckbox(listStd, "BS_SciFiNames".Translate(), ref settings.useSciFiNames);
             CreateSettingCheckbox(listStd, "BS_FantasyNames".Translate(), ref settings.useFantasyNames);
 
@@ -362,6 +376,9 @@ namespace BigAndSmall
         private static readonly bool defaultEnableDraftedJobs = false;
         public bool enableDraftedJobs = defaultEnableDraftedJobs;
 
+        public static readonly bool defaultAutoCombatResets = false;
+        public bool autoCombatResets = defaultAutoCombatResets;
+
 
         // DEV Settings
         public static readonly bool defaultJesusMode = false;
@@ -408,7 +425,10 @@ namespace BigAndSmall
             Scribe_Values.Look(ref allAnimalsHaveHands, "allAnimalsHaveHands", defaultAllAnimalsHaveHands);
             Scribe_Values.Look(ref animalOnAnimal, "sapientAnimalsCanRomanceAnySapientAnimals", defaultAnimalOnAnimal);
             Scribe_Values.Look(ref animalsLowSkillPenalty, "animalsNoSkillPenalty", defaultAnimalsLowSkillPenalty);
+
+
             Scribe_Values.Look(ref enableDraftedJobs, "enableDraftedJobs", defaultEnableDraftedJobs);
+            Scribe_Values.Look(ref autoCombatResets, "autoCombatResets", defaultAutoCombatResets);
 
 
 
