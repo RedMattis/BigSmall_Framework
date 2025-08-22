@@ -165,8 +165,11 @@ namespace BigAndSmall
         {
             HashSet<Gene> result = [];
             var genes = pawn?.genes?.GenesListForReading;
-            if (genes == null) return result;
-            for (int i = 0; i < genes.Count; i++)
+            if (genes == null) 
+				return result;
+
+			int count = genes.Count;
+			for (int i = 0; i < count; i++)
             {
                 if (genes[i].Active)
                 {

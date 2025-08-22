@@ -20,24 +20,34 @@ namespace BigAndSmall
         private readonly List<Gene> genesActivated = [];
         private readonly List<Gene> genesDeactivated = [];
 
-        private string GeneShouldBeActive(Gene gene, List<PawnExtension> genePawnExts, List<PawnExtension> hediffPawnExts, List<PawnExtension> allPawnExts, List<Gene> activeGenes)
+        private string GeneShouldBeActive(Gene gene, List<PawnExtension> genePawnExts, List<PawnExtension> hediffPawnExts, List<PawnExtension> allPawnExts)
         {
             if (genePawnExts.Count != 0 && !ConditionalManager.TestConditionals(gene, genePawnExts))
             {
                 return "BS_ConditionForActivationNotMet".Translate().CapitalizeFirst();
             }
-            if (hediffPawnExts.Count != 0 && hediffPawnExts.Select(ext => ext.IsGeneLegal(gene.def, removalCheck: false)).FuseNoNullCheck().Denied())
+
+            if (hediffPawnExts.Count != 0)
             {
-                return "BS_DisabledByHediff".Translate().CapitalizeFirst();
+				IEnumerable<FilterResult> legalExtensions = hediffPawnExts.Select(ext => ext.IsGeneLegal(gene.def, removalCheck: false));
+				if (legalExtensions.Any() && legalExtensions.Max().Denied())
+				{
+					return "BS_DisabledByHediff".Translate().CapitalizeFirst();
+				}
             }
+
             if (PrerequisiteValidator.Validate(gene.def, pawn) is string pFailReason && pFailReason != "")
             {
                 return pFailReason;
             }
-            if (allPawnExts.Count != 0 && allPawnExts.Select(ext=>ext.IsGeneLegal(gene.def, removalCheck:false)).FuseNoNullCheck().Denied())
+
+            if (allPawnExts.Count != 0)
             {
-                return "BS_DisabledByFilter".Translate().CapitalizeFirst();
+				IEnumerable<FilterResult> legalExtensions = allPawnExts.Select(ext => ext.IsGeneLegal(gene.def, removalCheck: false));
+				if (legalExtensions.Any() && legalExtensions.Max().Denied())
+					return "BS_DisabledByFilter".Translate().CapitalizeFirst();
             }
+
             return "";
         }
 
@@ -67,10 +77,9 @@ namespace BigAndSmall
                 {
                     GeneCache.globalCache[gene] = geneCache = new GeneCache(gene);
                 }
-                var allActiveGenes = GeneHelpers.GetAllActiveGenes(pawn).ToList();
+
                 var genePawnExts = gene.def.GetAllPawnExtensionsOnGene();
-                
-                string failReason = GeneShouldBeActive(gene, genePawnExts, hediffPawnExts, allPawnExts, allActiveGenes);
+                string failReason = GeneShouldBeActive(gene, genePawnExts, hediffPawnExts, allPawnExts);
                 if (failReason != "")
                 {
                     //Log.Message($"Debug: {gene.def.defName} failed to activate: {failReason}");
