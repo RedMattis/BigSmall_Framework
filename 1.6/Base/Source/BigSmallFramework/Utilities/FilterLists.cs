@@ -133,7 +133,7 @@ namespace BigAndSmall
 
             public static FilterResult Fuse(this FilterResult previous, FilterResult next) => Max(previous, next);
 
-            public static FilterResult FuseNoNullCheck(this IEnumerable<FilterResult> results) => results.Count() == 0 ? FilterResult.None : results.MaxList();
+            public static FilterResult FuseNoNullCheck(this IEnumerable<FilterResult> results) => results.Any() == false ? FilterResult.None : results.MaxList();
             public static FilterResult Fuse(this IEnumerable<FilterResult> results) => results.EnumerableNullOrEmpty() ? FilterResult.None : results.MaxList();
 
             public static FilterResult Fuse(this FilterResult previous, IEnumerable<FilterResult> next) =>

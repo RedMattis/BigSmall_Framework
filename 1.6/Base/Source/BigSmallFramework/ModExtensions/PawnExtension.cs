@@ -383,7 +383,7 @@ namespace BigAndSmall
         public bool frequentUpdate = false;
 
 
-        [Obsolete]
+        [Obsolete("Use forceUnarmed instead.")]
         public bool unarmedOnly = false;    // Still plugged in, but the name was kind of bad. Use forceUnarmed instead.
 
         // Some of these are RACE ONLY. Use elsewhere at your own risk.

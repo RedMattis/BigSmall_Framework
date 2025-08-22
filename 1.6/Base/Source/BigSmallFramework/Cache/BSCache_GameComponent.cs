@@ -83,34 +83,40 @@ namespace BigAndSmall
                 job();
             }
 
-            if (schedulePostUpdate.ContainsKey(tick))
-            {
-                foreach (var cache in schedulePostUpdate[tick])
-                {
-                    cache?.DelayedUpdate();
-                }
-                schedulePostUpdate.Remove(tick);
-            }
-            if (scheduleFullUpdate.ContainsKey(tick))
-            {
+			if (schedulePostUpdate.Count > 0)
+			{
+				if (schedulePostUpdate.TryGetValue(tick, out HashSet<BSCache> values))
+				{
+					foreach (var cache in values)
+					{
+						cache?.DelayedUpdate();
+					}
+					schedulePostUpdate.Remove(tick);
+				}
+			}
 
-                foreach (var cache in scheduleFullUpdate[tick])
-                {
-                    var cPawn = cache?.pawn;
-                    try
-                    {
-                        if (cPawn != null && !cPawn.Discarded)
-                        {
-                            HumanoidPawnScaler.GetCache(cPawn, forceRefresh: true);
-                        }
-                    }
-                    finally
-                    {
-                        currentlyQueued.Remove(cache);
-                    }
-                }
-                scheduleFullUpdate.Remove(tick);
-            }
+			if (scheduleFullUpdate.Count > 0)
+			{
+				if (scheduleFullUpdate.TryGetValue(tick, out HashSet<BSCache> values))
+				{
+					foreach (var cache in values)
+					{
+						var cPawn = cache?.pawn;
+						try
+						{
+							if (cPawn != null && !cPawn.Discarded)
+							{
+								HumanoidPawnScaler.GetCache(cPawn, forceRefresh: true);
+							}
+						}
+						finally
+						{
+							currentlyQueued.Remove(cache);
+						}
+					}
+					scheduleFullUpdate.Remove(tick);
+				}
+			}
 
             if (tick % 100 == 0)
             {
@@ -127,7 +133,7 @@ namespace BigAndSmall
             // If the queue is empty, enqueue the HumanoidPawnScaler.Cache.
             if (refreshQueue.Count == 0)
             {
-                foreach (var cache in HumanoidPawnScaler.Cache.Values)
+                foreach (BSCache cache in HumanoidPawnScaler.Cache.Values)
                 {
                     if (cache.pawn != null)
                         refreshQueue.Enqueue(cache.pawn);
@@ -145,6 +151,7 @@ namespace BigAndSmall
                     }
                 }
             }
+
             if (BigSmallMod.settings.jesusMode)
             {
                 if (currentTick % 10 == 0)
@@ -157,32 +164,48 @@ namespace BigAndSmall
                     }
                 }
             }
+
             bool verySlowUpdate = currentTick % 4 == 0;
-            frequentUpdateGenes = new(frequentUpdateGenes.Where(x => x.Key != null && x.Key.pawn != null && !x.Key.pawn.Discarded));
-            if (frequentUpdateGenes.Any())
-            {
-                var fug = frequentUpdateGenes.Where(x => x.Key.pawn.Spawned || x.Key.pawn.IsColonist).ToList();
-                foreach ((var gene, bool? oldState) in fug)
-                {
-                    LockedNeed.UpdateLockedNeeds(gene);
-                    bool stateChange = gene.Active != oldState;
-                    if (verySlowUpdate)
-                    {
-                        if (stateChange && oldState != null)
-                        {
-                            HumanoidPawnScaler.GetInvalidateLater(gene.pawn);
-                        }
-                        // This triggers the Transpiler which will check if the gene should be active or not.
-                        gene.OverrideBy(gene.overriddenByGene);
-                        if (!stateChange) stateChange = gene.Active != stateChange;
-                    }
-                    if (stateChange)
-                    {
-                        frequentUpdateGenes[gene] = gene.Active;
-                        gene.pawn.genes.Notify_GenesChanged(gene.def);
-                    }
-                }
-            }
-        }
+
+
+			// Remove any entries from frequentUpdateGenes where the key or its pawn is null or discarded
+			var toRemove = new List<Gene>();
+			foreach (var fug in frequentUpdateGenes)
+			{
+				Gene gene = fug.Key;
+				Pawn pawn = gene?.pawn;
+				if (pawn == null || pawn.Discarded)
+				{
+					toRemove.Add(fug.Key);
+					continue;
+				}
+
+				if (pawn.Spawned || pawn.IsColonist)
+				{
+					bool? oldState = fug.Value;
+
+					LockedNeed.UpdateLockedNeeds(gene);
+					bool stateChange = gene.Active != oldState;
+					if (verySlowUpdate)
+					{
+						if (stateChange && oldState != null)
+						{
+							HumanoidPawnScaler.GetInvalidateLater(gene.pawn);
+						}
+						// This triggers the Transpiler which will check if the gene should be active or not.
+						gene.OverrideBy(gene.overriddenByGene);
+						if (!stateChange) stateChange = gene.Active != stateChange;
+					}
+					if (stateChange)
+					{
+						frequentUpdateGenes[gene] = gene.Active;
+						gene.pawn.genes.Notify_GenesChanged(gene.def);
+					}
+				}
+			}
+
+			for (int i = 0; i < toRemove.Count; i++)
+				frequentUpdateGenes.Remove(toRemove[i]);
+		}
     }
 }
