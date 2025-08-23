@@ -127,7 +127,7 @@ namespace BigAndSmall
         {
             if (pawn.RaceProps.Humanlike && (pawn.needs != null || pawn.Dead) && pawn.genes != null)
             {
-                var matchingGenes = new List<string>() { "VU_NoBlood", "VU_WhiteRoseBite", "VU_DraculBite", "VU_SuccubusBloodFeeder" };
+                var matchingGenes = new List<string>() { "VU_WhiteRoseBite", "VU_DraculBite", "VU_SuccubusBloodFeeder" };
                 var validGenes = GeneHelpers.GetActiveGenesByNames(pawn, matchingGenes);
                 if (validGenes.Count() > 0)
                 {
@@ -138,10 +138,13 @@ namespace BigAndSmall
         }
     }
 
-    [HarmonyPatch(typeof(JobGiver_GetHemogen), "CanFeedOnPrisoner")]
-    public static class CanFeedOnPrisoner_HarmonyPatch
+    
+    [HarmonyPatch]
+    public static class BloodPatches
     {
-        public static void Postfix(Pawn bloodfeeder, Pawn prisoner, ref AcceptanceReport __result)
+        [HarmonyPatch(typeof(JobGiver_GetHemogen), "CanFeedOnPrisoner")]
+        [HarmonyPostfix]
+        public static void CanFeedOnPrisoner_Postfix(Pawn bloodfeeder, Pawn prisoner, ref AcceptanceReport __result)
         {
             if (__result && HumanoidPawnScaler.GetCacheUltraSpeed(prisoner) is BSCache cache)
             {
@@ -151,17 +154,32 @@ namespace BigAndSmall
                 }
             }
         }
-    }
 
-    [HarmonyPatch(typeof(Recipe_ExtractHemogen), nameof(Recipe_ExtractHemogen.AvailableOnNow))]
-    public static class Recipe_ExtractHemogenPatch
-    {
-        public static void Postfix(ref bool __result, Thing thing, BodyPartRecord part)
+        [HarmonyPatch(typeof(Recipe_ExtractHemogen), nameof(Recipe_ExtractHemogen.AvailableOnNow))]
+        [HarmonyPostfix]
+        public static void Recipe_ExtractHemogen_Postfix(ref bool __result, Thing thing, BodyPartRecord part)
         {
             if (__result && thing is Pawn pawn && HumanoidPawnScaler.GetCacheUltraSpeed(pawn) is BSCache cache)
             {
                 if (cache.isBloodFeeder || cache.isUnliving || cache.isMechanical || cache.bleedRate == BSCache.BleedRateState.NoBleeding)
                 {
+                    __result = false;
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(CompAbilityEffect_BloodfeederBite), nameof(CompAbilityEffect_BloodfeederBite.Valid))]
+        [HarmonyPostfix]
+        public static void CompAbilityEffect_BloodfeederBite_Postfix(ref bool __result, LocalTargetInfo target, bool throwMessages)
+        {
+            if (__result && target.Thing is Pawn pawn && HumanoidPawnScaler.GetCacheUltraSpeed(pawn) is BSCache cache)
+            {
+                if (cache.isUnliving || cache.isMechanical || cache.bleedRate == BSCache.BleedRateState.NoBleeding)
+                {
+                    if (throwMessages)
+                    {
+                        Messages.Message("BS_TargetNoBlood".Translate(pawn.LabelShort, pawn), pawn, MessageTypeDefOf.RejectInput, false);
+                    }
                     __result = false;
                 }
             }

@@ -3,6 +3,7 @@
   <MessagerTargetTooBigToFeastOn>Target is too large to feast on.</MessagerTargetTooBigToFeastOn>
   <MessageUserIsNotHungry>Not hungry.</MessageUserIsNotHungry>
   <StatsReport_AtNight>At night</StatsReport_AtNight>
+  <BS_TargetNoBlood>Target has no blood</BS_TargetNoBlood>
   
   <PsychicSensitivity_High>Psychic Sensitivity above 160%</PsychicSensitivity_High>
   <PsychicSensitivity_VeryHigh>Psychic Sensitivity above 225%</PsychicSensitivity_VeryHigh>

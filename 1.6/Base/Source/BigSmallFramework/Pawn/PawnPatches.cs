@@ -28,7 +28,11 @@ namespace BigAndSmall
                 int? minAge = pawnExtensions.Max(x => x.babyStartAge);
                 if (minAge != null && pawn.ageTracker.AgeBiologicalYears < minAge)
                 {
-                    pawn.ageTracker.AgeBiologicalTicks = (long)(minAge * 3600000);
+                    pawn.ageTracker.AgeBiologicalTicks = (long)(minAge * 3600000) + 1000;
+
+                    // If a scenario/script forced them to a younger age then we will likely want to yeet the old cache completely.
+                    HumanoidPawnScaler.Cache.TryRemove(pawn, out _);
+                    HumanoidPawnScaler.GetCache(pawn, forceRefresh: true);
                 }
             }
         }

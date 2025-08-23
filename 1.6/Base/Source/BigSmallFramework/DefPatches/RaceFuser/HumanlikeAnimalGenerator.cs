@@ -689,7 +689,7 @@ namespace BigAndSmall
                 float surgeryMult = Mathf.Lerp(1.0f, 0.5f, fineManipulation);
                 newThing.SetStatBaseValue(StatDefOf.SurgerySuccessChanceFactor, newThing.GetStatValueAbstract(StatDefOf.SurgerySuccessChanceFactor) * surgeryMult);
             }
-            if (pExt.isMechanical)
+            if (pExt.isMechanical || animalThing.race.IsMechanoid)
             {
                 if (ModsConfig.BiotechActive)
                 {
@@ -698,11 +698,7 @@ namespace BigAndSmall
             }
 
 
-            if (pExt == null)
-            {
-                newThing.SetStatBaseValue(BSDefs.SM_FlirtChance, 0);  // This prevents Lovin' from happening as well.
-            }
-            else if (animalThing.race.Animal && animalThing.race.Insect && pExt?.romanceTags == null)
+            if (animalThing.race.Animal && animalThing.race.Insect && pExt.romanceTags == null)
             {
                 pExt.romanceTags = new RomanceTags()
                 {
@@ -713,13 +709,13 @@ namespace BigAndSmall
                 };
                 if (BigSmallMod.settings.animalOnAnimal)
                 {
-                    pExt.romanceTags.compatibilities["BS_SapientAnimal".Translate()] = new RomanceTags.Compatibility { chance = 0.5f, factor = 0.5f };
+                    pExt.romanceTags.compatibilities["BS_SapientAnimal".Translate()] = new RomanceTags.Compatibility { chance = 0.75f, factor = 1.0f };
                 }
             }
             // No "Bee Movie" please.
-            else if (animalThing.race.Animal && pExt?.romanceTags == null)
+            else if (animalThing.race.Animal)
             {
-                pExt.romanceTags = new RomanceTags()
+                pExt.romanceTags ??= new RomanceTags()
                 {
                     compatibilities = new()
                     {
@@ -728,7 +724,7 @@ namespace BigAndSmall
                 };
                 if (BigSmallMod.settings.animalOnAnimal)
                 {
-                    pExt.romanceTags.compatibilities["BS_SapientAnimal".Translate()] = new RomanceTags.Compatibility { chance = 0.5f, factor = 0.5f };
+                    pExt.romanceTags.compatibilities["BS_SapientAnimal".Translate()] = new RomanceTags.Compatibility { chance = 0.75f, factor = 1.0f };
                 }
             }
 

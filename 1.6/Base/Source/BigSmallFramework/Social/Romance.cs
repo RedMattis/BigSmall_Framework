@@ -206,7 +206,7 @@ namespace BigAndSmall
                 }
 
                 float? compatibility = RomanceTagsExtensions.GetHighestSharedTag(cache, cacheTwo);
-                if (compatibility == null)// && pawn.def != otherPawn.def)
+                if (compatibility == null)
                 {
                     return false;
                 }

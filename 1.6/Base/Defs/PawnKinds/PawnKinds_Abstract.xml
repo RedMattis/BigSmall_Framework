@@ -65,7 +65,7 @@
     <maxGenerationAge>100</maxGenerationAge>
 
     <combatPower>40</combatPower>
-    <apparelMoney>50~150</apparelMoney>
+    <apparelMoney>200~400</apparelMoney>
     <weaponMoney>90~200</weaponMoney>
     <initialWillRange>1~3</initialWillRange>
     <techHediffsMoney>50~100</techHediffsMoney>
@@ -79,7 +79,7 @@
     <defaultFactionType>PlayerColony</defaultFactionType>
 
     <combatPower>40</combatPower>
-    <apparelMoney>50~150</apparelMoney>
+    <apparelMoney>200~400</apparelMoney>
     <weaponMoney>60~150</weaponMoney>
     <initialWillRange>1~3</initialWillRange>
     <techHediffsMoney>50~100</techHediffsMoney>
@@ -92,7 +92,7 @@
     <minGenerationAge>13</minGenerationAge>
     <defaultFactionType>PlayerColony</defaultFactionType>
     <combatPower>40</combatPower>
-    <apparelMoney>50~150</apparelMoney>
+    <apparelMoney>200~400</apparelMoney>
     <weaponMoney>90~200</weaponMoney>
     <initialWillRange>1~4</initialWillRange>
     <techHediffsMoney>50~100</techHediffsMoney>

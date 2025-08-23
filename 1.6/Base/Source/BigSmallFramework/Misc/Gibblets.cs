@@ -57,7 +57,7 @@ namespace BigAndSmall
                     }
                 }
             }
-            if (spawnRandomOrgans)
+            if (pawn?.RaceProps?.Humanlike == true && spawnRandomOrgans)
             {
                 List<ThingDef> whiteList =
                 [

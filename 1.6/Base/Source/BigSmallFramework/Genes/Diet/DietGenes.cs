@@ -229,7 +229,6 @@ namespace BigAndSmall
     [HarmonyPatch]
     public static class DietPatch
     {
-
         // Iirc. WillEat ThingDef has troubles with caravans and stuff. Rimworld assumes humans are hardcoded so they can eat anything there.
         [HarmonyPatch(typeof(FoodUtility), nameof(FoodUtility.WillEat), new Type[]
         {
@@ -243,6 +242,7 @@ namespace BigAndSmall
         [HarmonyPriority(Priority.VeryHigh)]
         public static bool WillEatDef_Prefix(ref bool __result, Pawn p, ThingDef food, Pawn getter, bool careIfNotAcceptableForTitle, bool allowVenerated)
         {
+            if (p.IsWildMan()) return true;
             if (p.IsBloodfeeder() && food == ThingDefOf.HemogenPack) { return true; }
             if (p.IsMutant) { return true; }
             if (p.GetCachePrepatched() is BSCache cache)
@@ -292,6 +292,7 @@ namespace BigAndSmall
         [HarmonyPriority(Priority.VeryHigh)]
         public static bool WillDietPermitEatingThing(ref bool __result, Pawn p, Thing food, Pawn getter, bool careIfNotAcceptableForTitle, bool allowVenerated)
         {
+            if (p.IsWildMan()) return true;
             if (p.IsBloodfeeder() && food?.def == ThingDefOf.HemogenPack) { return true; }
             if (p.IsMutant) { return true; }
             if (p?.DevelopmentalStage == DevelopmentalStage.Baby) { return true; }

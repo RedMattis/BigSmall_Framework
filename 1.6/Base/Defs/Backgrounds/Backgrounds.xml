@@ -10,7 +10,10 @@
     </skillGains>
     <spawnCategories>
       <li>BS_AnimalBaby</li>
+      <!-- Needs Testing! -->
+      <!-- <li>ChildTribal</li> -->
     </spawnCategories>
+    <!-- <shuffleable>false</shuffleable> -->
   </BackstoryDef>
 
   <BackstoryDef>
