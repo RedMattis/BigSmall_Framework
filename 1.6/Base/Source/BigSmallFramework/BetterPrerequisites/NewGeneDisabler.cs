@@ -29,10 +29,11 @@ namespace BigAndSmall
 
             if (hediffPawnExts.Count != 0)
             {
-				IEnumerable<FilterResult> legalExtensions = hediffPawnExts.Select(ext => ext.IsGeneLegal(gene.def, removalCheck: false));
-				if (legalExtensions.Any() && legalExtensions.Max().Denied())
+				for (int i = hediffPawnExts.Count - 1; i >= 0; i--)
 				{
-					return "BS_DisabledByHediff".Translate().CapitalizeFirst();
+					PawnExtension ext = hediffPawnExts[i];
+					if (ext.IsGeneLegal(gene.def, removalCheck: false).Denied())
+						return "BS_DisabledByHediff".Translate().CapitalizeFirst();
 				}
             }
 
@@ -43,9 +44,12 @@ namespace BigAndSmall
 
             if (allPawnExts.Count != 0)
             {
-				IEnumerable<FilterResult> legalExtensions = allPawnExts.Select(ext => ext.IsGeneLegal(gene.def, removalCheck: false));
-				if (legalExtensions.Any() && legalExtensions.Max().Denied())
-					return "BS_DisabledByFilter".Translate().CapitalizeFirst();
+				for (int i = allPawnExts.Count - 1; i >= 0; i--)
+				{
+					PawnExtension ext = allPawnExts[i];
+					if (ext.IsGeneLegal(gene.def, removalCheck: false).Denied())
+						return "BS_DisabledByFilter".Translate().CapitalizeFirst();
+				}
             }
 
             return "";

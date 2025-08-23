@@ -170,18 +170,19 @@ namespace BigAndSmall
 
 			// Remove any entries from frequentUpdateGenes where the key or its pawn is null or discarded
 			var toRemove = new List<Gene>();
-			foreach (var fug in frequentUpdateGenes)
+			Gene[] genes = frequentUpdateGenes.Keys.ToArray();
+			foreach (Gene gene in genes)
 			{
-				Gene gene = fug.Key;
 				Pawn pawn = gene?.pawn;
 				if (pawn == null || pawn.Discarded)
 				{
-					toRemove.Add(fug.Key);
+					toRemove.Add(gene);
 					continue;
 				}
 
 				if (pawn.Spawned || pawn.IsColonist)
 				{
+					var fug = frequentUpdateGenes[gene];
 					bool? oldState = fug.Value;
 
 					LockedNeed.UpdateLockedNeeds(gene);
