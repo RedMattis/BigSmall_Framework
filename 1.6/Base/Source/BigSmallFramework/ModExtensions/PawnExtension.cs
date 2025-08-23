@@ -543,8 +543,14 @@ namespace BigAndSmall
         /// <returns></returns>
         public FilterResult IsGeneLegal(GeneDef gene, bool removalCheck)
         {
-            if (gene == null) return FilterResult.ForceAllow;
-            if (AllForcedGenes.Contains(gene)) return FilterResult.ForceAllow;
+            if (gene == null) 
+				return FilterResult.ForceAllow;
+
+			if (_blocked.TryGetValue(gene, out FilterResult cachedResult))
+				return cachedResult;
+
+			if (AllForcedGenes.Contains(gene)) 
+				return FilterResult.ForceAllow;
             
             if (immutableEndogenes != null && !AllForcedGenes.Contains(gene))
             {
@@ -554,6 +560,7 @@ namespace BigAndSmall
                     return FilterResult.Banned;
                 }
             }
+
             List<FilterResult> results = [FilterResult.Neutral];
             results.Add(geneFilters?.GetFilterResult(gene) ?? FilterResult.Neutral);
             if (gene.displayCategory != null) results.Add(geneCategoryFilters?.GetFilterResult(gene.displayCategory) ?? FilterResult.Neutral);
@@ -569,8 +576,13 @@ namespace BigAndSmall
                 if (gene.descriptionHyperlinks != null) results.Add(activeGeneTagFilters?.GetFilterResultFromItemList(gene.descriptionHyperlinks
                     .Where(x => x.def is DefTag).Select(x => x.def.defName).ToList()) ?? FilterResult.Neutral);
             }
-            return results.FuseNoNullCheck();
+
+			FilterResult result = results.Max();
+			_blocked[gene] = result;
+			return result;
         }
+
+		private Dictionary<GeneDef, FilterResult> _blocked = new Dictionary<GeneDef, FilterResult>();
 
         public List<GeneDef> ForcedEndogenes => [.. (forcedEndogenes ?? []), .. (immutableEndogenes ?? [])];
         public List<GeneDef> ForcedXenogenes => forcedXenogenes ?? [];

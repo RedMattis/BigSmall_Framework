@@ -9,7 +9,7 @@ namespace BigAndSmall
 {
     namespace FilteredLists
     {
-        public enum FilterResult // Needs to be outside of the FilterList class, otherwise we'll get one for each <T>.
+        public enum FilterResult : byte // Needs to be outside of the FilterList class, otherwise we'll get one for each <T>.
         {
             None,       // No result yet. Can be used to determine if there was a filter hit.
             Neutral,     // Accepts the result, but is a fail-state if explicit permission is required.
@@ -18,6 +18,7 @@ namespace BigAndSmall
             ForceAllow, // Accepts the result. Priority over anything but ForceDeny.
             Banned,  // If this is present, the result is always ForceDeny.
         }
+
         public enum FType
         {
             Acceptlist,
