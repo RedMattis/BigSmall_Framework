@@ -19,14 +19,6 @@ namespace BigAndSmall
             settings ??= GetSettings<BSSettings>();
 			DebugLog.Message("Initialising...");
 
-			NewFoodCategory.SetupFoodCategories();
-			DefAltNamer.Initialize();
-			HARCompat.SetupHARThingsIfHARIsActive();
-			//BSCore.RunPostGenerateDefs();
-
-			
-
-
 			BSCacheExtensions.prepatched = ModsConfig.IsActive("zetrith.prepatcher");
 			DebugLog.Message("Initialisation finished.");
 		}

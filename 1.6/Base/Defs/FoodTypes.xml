@@ -12,7 +12,8 @@
   <BigAndSmall.NewFoodCategory>
     <defName>BS_ChemfuelLike</defName>
     <foodDefs>
-      <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_AndroidFuel</li>
+      <!-- Patched in from AndroidFuelPatches. This is how it will look when patched. -->
+      <!-- <li>BS_AndroidFuel</li> -->
     </foodDefs>
     <allowByDefault>false</allowByDefault>
     <filterListFor>
@@ -38,7 +39,7 @@
 
     <foodFilters>
       <whitelist>
-        <li MayRequire="RedMattis.BigSmall.SimpleAndroids">BS_AndroidFuel</li>
+        <!-- <li>BS_AndroidFuel</li> -->
       </whitelist>
     </foodFilters>
     <newFoodCategoryFilters>

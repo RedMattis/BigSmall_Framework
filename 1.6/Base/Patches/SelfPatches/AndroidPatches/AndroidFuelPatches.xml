@@ -1,0 +1,19 @@
+<Patch>
+  <Operation Class="BigAndSmall.PatchOp_RobotsEnabled">
+    <match Class="PatchOperationAdd">
+      <xpath>Defs/BigAndSmall.NewFoodCategory[defName="BS_ChemfuelLike"]/foodDefs</xpath>
+      <value>
+        <li>BS_AndroidFuel</li>
+      </value>
+    </match>
+  </Operation>
+
+  <Operation Class="BigAndSmall.PatchOp_RobotsEnabled">
+    <match Class="PatchOperationAdd">
+      <xpath>Defs/BigAndSmall.PawnDiet[defName="BS_ChemRobotDiet"]/foodFilters/whitelist</xpath>
+      <value>
+        <li>BS_AndroidFuel</li>
+      </value>
+    </match>
+  </Operation>
+</Patch>

@@ -30,7 +30,15 @@ namespace BigAndSmall
                 if (cache.bodyDessicatedGraphicPath != null)
                 {
                     var dessicatedBodyPath = cache.bodyDessicatedGraphicPath;
-                    __result = GraphicsHelper.TryGetCustomGraphics(__instance, dessicatedBodyPath, __result.color, __result.colorTwo, __result.drawSize, cache.bodyMaterial);
+                    var res = GraphicsHelper.TryGetCustomGraphics(__instance, dessicatedBodyPath, __result.color, __result.colorTwo, __result.drawSize, cache.bodyMaterial);
+                    if (res != null)
+                    {
+                        __result = res;
+                    }
+                    else
+                    {
+                        Log.ErrorOnce($"Failed to get dessicated body graphic for {pawn?.Name} at {dessicatedBodyPath}. Keeping previous graphic instead", 93484);
+                    }
                     return;
                 }
                 if (cache.bodyMaterial?.overrideDesiccated != true)
@@ -41,7 +49,15 @@ namespace BigAndSmall
             }
             if (cache.bodyGraphicPath is string bodyGraphicPath)
             {
-                __result = GraphicsHelper.TryGetCustomGraphics(__instance, bodyGraphicPath, __result.color, __result.colorTwo, __result.drawSize, cache.bodyMaterial);
+                var res = GraphicsHelper.TryGetCustomGraphics(__instance, bodyGraphicPath, __result.color, __result.colorTwo, __result.drawSize, cache.bodyMaterial);
+                if (res != null)
+                {
+                    __result = res;
+                }
+                else
+                {
+                    Log.ErrorOnce($"Failed to get body graphic for {pawn?.Name} at {bodyGraphicPath}. Keeping previous graphic instead.", 99333);
+                }
                 return;
             }
 
@@ -55,7 +71,7 @@ namespace BigAndSmall
         public static bool ShowStandardBody(Pawn pawn, Graphic __result)
         {
             bool mutantBody = pawn?.IsMutant != true && pawn?.mutant?.Def?.bodyTypeGraphicPaths.NullOrEmpty() == false;
-            bool creepBody = !pawn?.IsCreepJoiner == true && pawn.story.bodyType != null && pawn?.creepjoiner?.form?.bodyTypeGraphicPaths.NullOrEmpty() == false;
+            bool creepBody = !pawn?.IsCreepJoiner == true && pawn?.story?.bodyType != null && pawn?.creepjoiner?.form?.bodyTypeGraphicPaths.NullOrEmpty() == false;
             bool doRun = !mutantBody && !creepBody && pawn.story?.bodyType?.bodyNakedGraphicPath != null && !__result.path.Contains("EmptyImage");
             return doRun;
         }

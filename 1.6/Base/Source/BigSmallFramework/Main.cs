@@ -45,6 +45,9 @@ namespace BigAndSmall
             {
                 GlobalSettings.Initialize();
             }
+            DefAltNamer.Initialize();
+            HARCompat.SetupHARThingsIfHARIsActive();
+            NewFoodCategory.SetupFoodCategories();
             HumanPatcher.MechanicalSetup();
             RaceFuser.PreHotreload();
             RaceFuser.CreateMergedBodyTypes(hotReload);

@@ -99,7 +99,7 @@ namespace BigAndSmall
             {
                 result = result.Fuse(fleshWhiteListed);
             }
-            if (filterListFor?.geneDefs?.Items.GetFilterResultFromItemList(activeGenes.ToList()) is FilterResult geneWhiteListed && geneWhiteListed != FilterResult.None)
+            if (filterListFor?.geneDefs?.Items.GetFilterResultFromItemList([.. activeGenes]) is FilterResult geneWhiteListed && geneWhiteListed != FilterResult.None)
             {
                 result = result.Fuse(geneWhiteListed);
             }
@@ -242,9 +242,14 @@ namespace BigAndSmall
         [HarmonyPriority(Priority.VeryHigh)]
         public static bool WillEatDef_Prefix(ref bool __result, Pawn p, ThingDef food, Pawn getter, bool careIfNotAcceptableForTitle, bool allowVenerated)
         {
+            if (p == null || food == null)
+            {
+                return true;
+            }
             if (p.IsWildMan()) return true;
             if (p.IsBloodfeeder() && food == ThingDefOf.HemogenPack) { return true; }
             if (p.IsMutant) { return true; }
+            if (p.DevelopmentalStage == DevelopmentalStage.Baby) { return true; }
             if (p.GetCachePrepatched() is BSCache cache)
             {
                 if (cache.willEatDef.TryGetValue(food, out bool cachedResult))
@@ -256,11 +261,7 @@ namespace BigAndSmall
                     }
                     return true;
                 }
-
-                if (p?.DevelopmentalStage == DevelopmentalStage.Baby)  // Yum yum babies can eat chemfuel-based food for simplicity's sake.
-                {
-                    return true;
-                }
+                
                 FilterResult result = food.GetFilterForFoodThingDef(cache);
 
                 if (result.Denied())
@@ -269,7 +270,7 @@ namespace BigAndSmall
                     __result = false;
                     return false;
                 }
-                else if (result.NotExplicitlyAllowed())
+                else
                 {
                     cache.willEatDef[food] = true;
                 }
@@ -289,16 +290,20 @@ namespace BigAndSmall
             typeof(bool)
         })]
         [HarmonyPrefix]
-        [HarmonyPriority(Priority.VeryHigh)]
+        [HarmonyPriority(10000)]
         public static bool WillDietPermitEatingThing(ref bool __result, Pawn p, Thing food, Pawn getter, bool careIfNotAcceptableForTitle, bool allowVenerated)
         {
+            if (p == null || food == null)
+            {
+                return true;
+            }
             if (p.IsWildMan()) return true;
             if (p.IsBloodfeeder() && food?.def == ThingDefOf.HemogenPack) { return true; }
             if (p.IsMutant) { return true; }
-            if (p?.DevelopmentalStage == DevelopmentalStage.Baby) { return true; }
+            if (p.DevelopmentalStage == DevelopmentalStage.Baby) { return true; }
 
             // Ignore unspawned pawns, it just gets messy because of Ludeon hardcoding.
-            if (p?.Spawned == true && p.GetCachePrepatched() is BSCache cache && cache.isHumanlike)
+            if (p.Spawned == true && p.GetCachePrepatched() is BSCache cache && cache.isHumanlike)
             {
                 FilterResult result = food.FilterForFoodThing(cache);
                 if (result.Denied())
@@ -315,11 +320,10 @@ namespace BigAndSmall
                     }
                     return true;
                 }
-
-                if (result.Denied())
+                else
                 {
-                    __result = false;
-                    return false;
+                    WillEatDef_Prefix(ref __result, p, food.def, getter, careIfNotAcceptableForTitle, allowVenerated);
+                    return __result;
                 }
             }
             return true;
