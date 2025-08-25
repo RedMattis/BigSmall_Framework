@@ -250,8 +250,9 @@ namespace BigAndSmall
     {
         public static void Postfix(Pawn __result, IncidentWorker_WandererJoin __instance)
         {
-            var incidentDef = __instance.def;
-            bool isWomanInBlue = incidentDef == DefDatabase<IncidentDef>.GetNamed("BS_WomanInBlueJoin");
+            var incidentDef = __instance?.def;
+            if (incidentDef == null) return;
+            bool isWomanInBlue = incidentDef == DefDatabase<IncidentDef>.GetNamedSilentFail("BS_WomanInBlueJoin");
 
             if (isWomanInBlue)
             {

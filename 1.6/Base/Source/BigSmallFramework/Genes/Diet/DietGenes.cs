@@ -145,6 +145,7 @@ namespace BigAndSmall
             return foodCategory.allowByDefault ? FilterResult.Allow : FilterResult.Neutral;
         }
 
+        // Method unused. Look into if this has a purpose later.
         public FilterResult FilterForFoodWithoutThing(ThingDef foodDef)
         {
             if (willAcceptCacheThingless.TryGetValue(foodDef, out FilterResult cachedResult)) return cachedResult;
@@ -229,6 +230,16 @@ namespace BigAndSmall
     [HarmonyPatch]
     public static class DietPatch
     {
+        public static bool ShouldSkipDietChecks(Pawn p)
+        {
+            if (p == null) return true;
+            if (p.IsWildMan()) return true;
+            if (p.IsBloodfeeder()) { return true; }
+            if (p.IsMutant) { return true; }
+            if (p.DevelopmentalStage == DevelopmentalStage.Baby) { return true; }
+            return false;
+        }
+
         // Iirc. WillEat ThingDef has troubles with caravans and stuff. Rimworld assumes humans are hardcoded so they can eat anything there.
         [HarmonyPatch(typeof(FoodUtility), nameof(FoodUtility.WillEat), new Type[]
         {
@@ -242,14 +253,14 @@ namespace BigAndSmall
         [HarmonyPriority(Priority.VeryHigh)]
         public static bool WillEatDef_Prefix(ref bool __result, Pawn p, ThingDef food, Pawn getter, bool careIfNotAcceptableForTitle, bool allowVenerated)
         {
-            if (p == null || food == null)
+            if (food == null)
             {
                 return true;
             }
-            if (p.IsWildMan()) return true;
-            if (p.IsBloodfeeder() && food == ThingDefOf.HemogenPack) { return true; }
-            if (p.IsMutant) { return true; }
-            if (p.DevelopmentalStage == DevelopmentalStage.Baby) { return true; }
+            if (ShouldSkipDietChecks(p))
+            {
+                return true;
+            }
             if (p.GetCachePrepatched() is BSCache cache)
             {
                 if (cache.willEatDef.TryGetValue(food, out bool cachedResult))
@@ -293,14 +304,14 @@ namespace BigAndSmall
         [HarmonyPriority(10000)]
         public static bool WillDietPermitEatingThing(ref bool __result, Pawn p, Thing food, Pawn getter, bool careIfNotAcceptableForTitle, bool allowVenerated)
         {
-            if (p == null || food == null)
+            if (food == null)
             {
                 return true;
             }
-            if (p.IsWildMan()) return true;
-            if (p.IsBloodfeeder() && food?.def == ThingDefOf.HemogenPack) { return true; }
-            if (p.IsMutant) { return true; }
-            if (p.DevelopmentalStage == DevelopmentalStage.Baby) { return true; }
+            if (ShouldSkipDietChecks(p))
+            {
+                return true;
+            }
 
             // Ignore unspawned pawns, it just gets messy because of Ludeon hardcoding.
             if (p.Spawned == true && p.GetCachePrepatched() is BSCache cache && cache.isHumanlike)
@@ -322,8 +333,19 @@ namespace BigAndSmall
                 }
                 else
                 {
-                    WillEatDef_Prefix(ref __result, p, food.def, getter, careIfNotAcceptableForTitle, allowVenerated);
-                    return __result;
+                    var foodDef = food.def;
+                    FilterResult filterResult = foodDef.GetFilterForFoodThingDef(cache);
+
+                    if (filterResult.Denied())
+                    {
+                        cache.willEatDef[foodDef] = false;
+                        __result = false;
+                        return false;
+                    }
+                    else
+                    {
+                        cache.willEatDef[foodDef] = true;
+                    }
                 }
             }
             return true;
