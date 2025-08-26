@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace BigAndSmall
@@ -6,6 +7,12 @@ namespace BigAndSmall
     [DefOf]
     public static class BSDefs
     {
+        public static bool IsThreeColorShader(Shader shader) =>
+            shader == BS_CutoutThreeColor.Shader || shader == BS_TransparentThreeColor.Shader;
+
+        public static ShaderTypeDef BS_CutoutThreeColor;
+        public static ShaderTypeDef BS_TransparentThreeColor;
+
         public static StatDef ButcheryFleshEfficiency;
         public static StatDef ButcheryMechanoidEfficiency;
 

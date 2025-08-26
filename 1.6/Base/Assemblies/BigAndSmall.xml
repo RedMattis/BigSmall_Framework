@@ -563,6 +563,11 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:BigAndSmall.MultiColorUtils">
+            <summary>
+            From Rimdark40K collab on 3-color shaders.
+            </summary>
+        </member>
         <member name="F:BigAndSmall.PawnComplexRenderingProps.isFurskin">
             <summary>
             Hacky but this avoid us making a seperate class for what is basically just changing the texture path.

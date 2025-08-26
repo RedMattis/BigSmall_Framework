@@ -10,6 +10,7 @@ namespace BigAndSmall
         public ShaderTypeDef shader = null;
         public ColorSetting colorA = new();
         public ColorSetting colorB = new();
+        public ColorSetting colorC = new();
         public Vector4 colorMultiplier = new(1, 1, 1, 1);
 
         /// <summary>
@@ -51,9 +52,10 @@ namespace BigAndSmall
             }
             Color colorOne = props.colorA.GetColor(this, Color.white, ColorSetting.clrOneKey);
             Color colorTwo = props.colorB.GetColor(this, Color.white, ColorSetting.clrTwoKey);
+            Color colorThree = props.colorC.GetColor(this, Color.white, ColorSetting.clrThreeKey);
             Shader shader = props.shader?.Shader ?? ShaderTypeDefOf.CutoutComplex.Shader;
 
-            var result = GetCachableGraphics(text, Vector2.one, shader, colorOne, colorTwo);
+            var result = GetCachableGraphics(text, Vector2.one, shader, colorOne, colorTwo, colorThree);
             return result;
         }
     }

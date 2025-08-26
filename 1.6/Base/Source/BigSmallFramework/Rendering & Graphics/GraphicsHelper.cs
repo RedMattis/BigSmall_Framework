@@ -46,15 +46,15 @@ namespace BigAndSmall
             return color1 * (1 - interp) + color2 * interp;
         }
 
-        public static Graphic TryGetCustomGraphics(PawnRenderNode renderNode, string path, Color colorOne, Color colorTwo, Vector2 drawSize, CustomMaterial data)
+        public static Graphic TryGetCustomGraphics(PawnRenderNode renderNode, string path, Color colorOne, Color colorTwo, Color colorThree, Vector2 drawSize, CustomMaterial data)
         {
             if (data != null)
             {
-                return data.GetGraphic(renderNode, path, colorOne, colorTwo, drawSize, data);
+                return data.GetGraphic(renderNode, path, colorOne, colorTwo, colorThree, drawSize, data);
             }
             else
             {
-                return GetCachableGraphics(path, drawSize, ShaderTypeDefOf.Cutout.Shader, colorOne, colorTwo);
+                return GetCachableGraphics(path, drawSize, ShaderTypeDefOf.Cutout.Shader, colorOne, colorTwo, colorThree);
             }
         }
 
@@ -83,10 +83,11 @@ namespace BigAndSmall
     public static class RenderingLib
     {
         [Unsaved(false)]
-        private readonly static List<KeyValuePair<(Color, Color), Graphic>> graphics = [];
-        public static Graphic GetCachableGraphics(string path, Vector2 drawSize, Shader shader, Color colorOne, Color colorTwo, string maskPath=null, Type graphicClass =null)
+        private readonly static List<KeyValuePair<(Color, Color, Color), Graphic>> graphics = [];
+        public static Graphic GetCachableGraphics(string path, Vector2 drawSize, Shader shader, Color colorOne, Color colorTwo, Color colorThree, string maskPath=null, Type graphicClass =null)
         {
-            shader ??= ShaderTypeDefOf.CutoutComplex.Shader;
+            //shader ??= ShaderTypeDefOf.CutoutComplex.Shader;
+            shader ??= BSDefs.BS_CutoutThreeColor.Shader;
 
             for (int i = 0; i < graphics.Count; i++)
             {
@@ -100,14 +101,28 @@ namespace BigAndSmall
             Graphic graphic;
             if (graphicClass == typeof(Graphic_Single))
             {
-                graphic = GraphicDatabase.Get<Graphic_Single>(path, shader, drawSize, colorOne, colorTwo, data: null, maskPath: maskPath);
+                if (BSDefs.IsThreeColorShader(shader))
+                {
+                    graphic = MultiColorUtils.GetGraphic<Graphic_Multi>(path, shader, drawSize, colorOne, colorTwo, colorThree, data: null, maskPath: maskPath);
+                }
+                else
+                {
+                    graphic = GraphicDatabase.Get<Graphic_Single>(path, shader, drawSize, colorOne, colorTwo, data: null, maskPath: maskPath);
+                }
             }
             else
             {
-                graphic = GraphicDatabase.Get<Graphic_Multi>(path, shader, drawSize, colorOne, colorTwo, data: null, maskPath: maskPath);
+                if (BSDefs.IsThreeColorShader(shader))
+                {
+                    graphic = MultiColorUtils.GetGraphic<Graphic_Multi>(path, shader, drawSize, colorOne, colorTwo, colorThree, data: null, maskPath: maskPath);
+                }
+                else
+                {
+                    graphic = GraphicDatabase.Get<Graphic_Multi>(path, shader, drawSize, colorOne, colorTwo, data: null, maskPath: maskPath);
+                }
             }
 
-            graphics.Add(new KeyValuePair<(Color, Color), Graphic>((colorOne, colorTwo), graphic));
+            graphics.Add(new KeyValuePair<(Color, Color, Color), Graphic>((colorOne, colorTwo, colorThree), graphic));
             return graphic;
         }
     }

@@ -44,7 +44,7 @@
         <parentTagDef>Body</parentTagDef>
         <rotDrawMode>Fresh, Rotting</rotDrawMode>
         <colorType>Skin</colorType>
-        <shader>CutoutComplex</shader>
+        <shader>BS_CutoutThreeColor</shader>
         <conditionalGraphics>
           <!-- Instead of returning this, send in the properties from the linked def. -->
           <replacementDef>BS_SnekGraphicSet</replacementDef>

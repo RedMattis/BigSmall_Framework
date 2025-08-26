@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Verse;
+using UnityEngine;
 
 namespace BigAndSmall
 {
@@ -30,7 +31,7 @@ namespace BigAndSmall
                 if (cache.bodyDessicatedGraphicPath != null)
                 {
                     var dessicatedBodyPath = cache.bodyDessicatedGraphicPath;
-                    var res = GraphicsHelper.TryGetCustomGraphics(__instance, dessicatedBodyPath, __result.color, __result.colorTwo, __result.drawSize, cache.bodyMaterial);
+                    var res = GraphicsHelper.TryGetCustomGraphics(__instance, dessicatedBodyPath, __result.color, __result.colorTwo, Color.white, __result.drawSize, cache.bodyMaterial);
                     if (res != null)
                     {
                         __result = res;
@@ -49,7 +50,7 @@ namespace BigAndSmall
             }
             if (cache.bodyGraphicPath is string bodyGraphicPath)
             {
-                var res = GraphicsHelper.TryGetCustomGraphics(__instance, bodyGraphicPath, __result.color, __result.colorTwo, __result.drawSize, cache.bodyMaterial);
+                var res = GraphicsHelper.TryGetCustomGraphics(__instance, bodyGraphicPath, __result.color, __result.colorTwo, Color.white, __result.drawSize, cache.bodyMaterial);
                 if (res != null)
                 {
                     __result = res;
@@ -70,6 +71,7 @@ namespace BigAndSmall
 
         public static bool ShowStandardBody(Pawn pawn, Graphic __result)
         {
+            if (__result.path == null) return false;
             bool mutantBody = pawn?.IsMutant != true && pawn?.mutant?.Def?.bodyTypeGraphicPaths.NullOrEmpty() == false;
             bool creepBody = !pawn?.IsCreepJoiner == true && pawn?.story?.bodyType != null && pawn?.creepjoiner?.form?.bodyTypeGraphicPaths.NullOrEmpty() == false;
             bool doRun = !mutantBody && !creepBody && pawn.story?.bodyType?.bodyNakedGraphicPath != null && !__result.path.Contains("EmptyImage");

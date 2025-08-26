@@ -16,21 +16,28 @@ namespace BigAndSmall
         public List<GraphicSetDef> altDefs = [];
         protected ColorSetting colorA = new();
         protected ColorSetting colorB = new();
+        protected ColorSetting colorC = new();
         protected ColorSettingDef colorADef = null;
         protected ColorSettingDef colorBDef = null;
+        protected ColorSettingDef colorCDef = null;
         public ConditionalGraphicProperties props = new();
         protected ConditionalTexture conditionalPaths = null;
         protected AdaptivePathPathList texturePaths = [];
         protected AdaptivePawnPathDef adaptivePawnPathDef = null;
         protected ConditionalTexture conditionalMaskPaths = null;
+        protected PathGetter pathGetter = null;
         public AdaptivePathPathList maskPaths = [];
         public List<ConditionalGraphicsSet> alts = [];
 
         public List<GraphicSetDef> AltDefs => replacementDef == null ? [.. altDefs] : [.. altDefs, replacementDef];
         public ColorSetting ColorA => colorADef?.color ?? colorA;
-        public ColorSetting ColorB => colorBDef?.color ?? colorB;
+        public ColorSetting ColorB => colorBDef?.color ?? colorB ?? ColorA;
+
+        public ColorSetting ColorC => colorCDef?.color ?? colorC ?? ColorB;
         public AdaptivePathPathList TexturePaths => adaptivePawnPathDef?.texturePaths ?? texturePaths;
-        public string GetPath(BSCache cache, string path) => conditionalPaths?.TryGetPath(cache, ref path) == true || TexturePaths.TryGetPath(cache, ref path) ? path : path;
+        public string GetPath(BSCache cache, string path) => pathGetter?.TryGetPath(cache, ref path) == true
+            || conditionalPaths?.TryGetPath(cache, ref path) == true
+            || TexturePaths.TryGetPath(cache, ref path) ? path : path;
 
         public string GetMaskPath(BSCache cache, string path) => conditionalMaskPaths?.TryGetPath(cache, ref path) == true || maskPaths.TryGetPath(cache, ref path) ? path : path;
 

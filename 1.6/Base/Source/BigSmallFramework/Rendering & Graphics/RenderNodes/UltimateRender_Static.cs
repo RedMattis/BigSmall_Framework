@@ -56,6 +56,7 @@ namespace BigAndSmall
 
                 Color colorOne = graphicSet.ColorA.GetColor(node, Color.white, ColorSetting.clrOneKey);
                 Color colorTwo = graphicSet.ColorB.GetColor(node, Color.white, ColorSetting.clrTwoKey);
+                Color colorThree = graphicSet.ColorC.GetColor(node, Color.white, ColorSetting.clrThreeKey);
                 Shader shader = props.shader?.Shader ?? ShaderTypeDefOf.CutoutComplex.Shader;
                 if (UProps.useSkinShader)
                 {
@@ -66,7 +67,7 @@ namespace BigAndSmall
                     }
                 }
                 
-                return GetCachableGraphics(texPath, Vector2.one, shader, colorOne, colorTwo, maskPath: maskPath);
+                return GetCachableGraphics(texPath, Vector2.one, shader, colorOne, colorTwo, colorThree, maskPath: maskPath);
             }
 
             Log.WarningOnce($"No cache found by {uNode} for {pawn}. Returning empty image.", node.GetHashCode());

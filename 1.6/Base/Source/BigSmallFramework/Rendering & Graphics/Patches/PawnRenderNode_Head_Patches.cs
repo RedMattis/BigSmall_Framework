@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Verse;
+using UnityEngine;
 using static HarmonyLib.Code;
 
 namespace BigAndSmall
@@ -31,7 +32,7 @@ namespace BigAndSmall
                     if (cache.headDessicatedGraphicPath != null)
                     {
                         var dessicatedHeadPath = cache.headDessicatedGraphicPath;
-                        __result = GraphicsHelper.TryGetCustomGraphics(headNode, dessicatedHeadPath, __result.color, __result.colorTwo, __result.drawSize, cache.headMaterial);
+                        __result = GraphicsHelper.TryGetCustomGraphics(headNode, dessicatedHeadPath, __result.color, __result.colorTwo, Color.white, __result.drawSize, cache.headMaterial);
                         return;
                     }
                     if (cache.headMaterial?.overrideDesiccated != true)
@@ -42,7 +43,7 @@ namespace BigAndSmall
 
                 if (cache.headGraphicPath is string headGraphicPath)
                 {
-                    __result = GraphicsHelper.TryGetCustomGraphics(headNode, headGraphicPath, __result.color, __result.colorTwo, __result.drawSize, cache.headMaterial);
+                    __result = GraphicsHelper.TryGetCustomGraphics(headNode, headGraphicPath, __result.color, __result.colorTwo, Color.white, __result.drawSize, cache.headMaterial);
                 }
             }
         }

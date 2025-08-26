@@ -1,0 +1,13 @@
+<Defs>
+
+  <ShaderTypeDef>
+    <defName>BS_CutoutThreeColor</defName>
+    <shaderPath>BS_CutoutThreeColor</shaderPath>
+  </ShaderTypeDef>
+
+  <ShaderTypeDef>
+    <defName>BS_TransparentThreeColor</defName>
+    <shaderPath>BS_TransparentThreeColor</shaderPath>
+  </ShaderTypeDef>
+
+</Defs>

@@ -17,6 +17,7 @@ namespace BigAndSmall
     {
         public const string clrOneKey = "someKeyStringClrOne";
         public const string clrTwoKey = "clrTwoKeyString";
+        public const string clrThreeKey = "zomgClrThree";
         public static Color playerClr = new(0.6f, 0.6f, 1f);
         public static Color enemyClr = new(1f, 0.2f, 0.2f);
         public static Color neutralClr = new(0.45f, 0.8f, 1f);
