@@ -40,6 +40,9 @@ namespace BigAndSmall
             BiotechDLC,
             IdeologyDLC,
             AnomalyDLC,
+            CustomColorAIsSet,
+            CustomColorBIsSet,
+            CustomColorCIsSet,
         }
         public List<PartRecord> triggerBodyPart = [];
 
@@ -154,6 +157,7 @@ namespace BigAndSmall
             return true;
         }
 
+
         /// <summary>
         /// "True" means use this graphic (if not chlidren are valid),
         /// "False" means skip and keep looking.
@@ -204,6 +208,8 @@ namespace BigAndSmall
 
 
             if (Triggers.Count == 0) return true;
+            var apparel = node?.GetApparelFromNode();
+            Thing customTarget = apparel ?? (Thing)pawn;
             return Triggers.All(x => x switch
             {
                 AltTrigger.Colonist => pawn.Faction == Faction.OfPlayer,
@@ -223,6 +229,9 @@ namespace BigAndSmall
                 AltTrigger.BiotechDLC => ModsConfig.BiotechActive,
                 AltTrigger.IdeologyDLC => ModsConfig.IdeologyActive,
                 AltTrigger.AnomalyDLC => ModsConfig.AnomalyActive,
+                AltTrigger.CustomColorAIsSet => CustomizableGraphic.Get(customTarget)?.colorA != null,
+                AltTrigger.CustomColorBIsSet => CustomizableGraphic.Get(customTarget)?.colorB != null,
+                AltTrigger.CustomColorCIsSet => CustomizableGraphic.Get(customTarget)?.colorC != null,
                 _ => false,
             });
         }

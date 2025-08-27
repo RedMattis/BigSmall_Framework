@@ -36,6 +36,7 @@ namespace BigAndSmall
         public static readonly Texture2D AutoCastTex = ContentFinder<Texture2D>.Get("BS_UI/Auto_Tiny");
         public static readonly Texture2D HuntIcon = ContentFinder<Texture2D>.Get("BS_UI/Hunt");
         public static readonly Texture2D TakeCoverIcon = ContentFinder<Texture2D>.Get("BS_UI/TakeCover");
+        public static readonly Texture2D MeleeCharge = ContentFinder<Texture2D>.Get("BS_UI/MeleeCharge");
         private static bool? autoCombatModEnabled = null;
         public static bool AutoCombatEnabled
         {
@@ -93,22 +94,45 @@ namespace BigAndSmall
                     groupKey = 6173613,
                     hotKey = KeyBindingDefOf.Misc3
                 };
-                var takeCover = new Command_ToggleWithRClick
+                if (DraftedActionHolder.GetData(pawn).hunt)
                 {
-                    defaultLabel = "BS_TakeCoverLabel".Translate(),
-                    defaultDesc = "BS_TakeCoverDescription".Translate(),
-                    icon = TakeCoverIcon,
-                    isActive = () => DraftedActionHolder.GetData(pawn).takeCover,
-                    toggleAction = () => DraftedActionHolder.GetData(pawn).ToggleCoverMode(),
-                    rightClickAction = () =>
+                    var takeCover = new Command_ToggleWithRClick
                     {
-                    },
-                    activateSound = SoundDefOf.Click,
-                    groupKey = 6173614,
-                    hotKey = KeyBindingDefOf.Misc4
-                };
+                        defaultLabel = "BS_TakeCoverLabel".Translate(),
+                        defaultDesc = "BS_TakeCoverDescription".Translate(),
+                        icon = TakeCoverIcon,
+                        isActive = () => DraftedActionHolder.GetData(pawn).takeCover,
+                        toggleAction = () => DraftedActionHolder.GetData(pawn).ToggleCoverMode(),
+                        rightClickAction = () =>
+                        {
+                        },
+                        activateSound = SoundDefOf.Click,
+                        groupKey = 6173614,
+                        hotKey = KeyBindingDefOf.Misc4
+                    };
+                    var meleeCharge = new Command_ToggleWithRClick
+                    {
+                        defaultLabel = "BS_MeleeChargeLabel".Translate(),
+                        defaultDesc = "BS_MeleeChargeDescription".Translate(),
+                        icon = MeleeCharge,
+                        isActive = () => DraftedActionHolder.GetData(pawn).meleeCharge,
+                        toggleAction = () => DraftedActionHolder.GetData(pawn).ToggleMeleeCharge(),
+                        rightClickAction = () =>
+                        {
+                        },
+                        activateSound = SoundDefOf.Click,
+                        groupKey = 6173615,
+                        hotKey = KeyBindingDefOf.Misc5
+                    };
+                    return UpdateEnumerable(__result, [huntCommand, takeCover, meleeCharge]);
+                }
+                else
+                {
+                    return UpdateEnumerable(__result, [huntCommand]);
+                }
 
-                return UpdateEnumerable(__result, [huntCommand, takeCover]);
+
+                
             }
             return __result;
         }
@@ -192,6 +216,7 @@ namespace BigAndSmall
         public string pawnID;
         public bool hunt = false;
         public bool takeCover = false;
+        public bool meleeCharge = true;
         public List<AbilityDef> autocastAbilities = new();
 
         public Pawn Pawn  // Always use this to get the pawn, not the field since it might be null.
@@ -235,6 +260,12 @@ namespace BigAndSmall
             takeCover = !takeCover;
             Pawn.jobs.EndCurrentJob(JobCondition.InterruptForced);
             return takeCover;
+        }
+        public bool ToggleMeleeCharge()
+        {
+            meleeCharge = !meleeCharge;
+            RefreshDraft();
+            return meleeCharge;
         }
         public bool ToggleHuntMode()
         {
@@ -282,6 +313,7 @@ namespace BigAndSmall
             Scribe_Values.Look(ref pawnID, "pawnID");
             Scribe_Values.Look(ref hunt, "huntMode", false);
             Scribe_Values.Look(ref takeCover, "takeCoverMode", false);
+            Scribe_Values.Look(ref meleeCharge, "meleeChargeMode", true);
             Scribe_Collections.Look(ref autocastAbilities, "autocastAbilities", LookMode.Def);
         }
     }

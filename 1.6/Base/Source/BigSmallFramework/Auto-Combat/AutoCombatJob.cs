@@ -219,6 +219,15 @@ namespace BigAndSmall
 
             if (verb.verbProps.IsMeleeAttack)
             {
+                if (!actionData.meleeCharge)
+                {
+                    // Check distance to foe, if we'd need to move more than 2 tiles, don't melee charge.
+                    const int maxDist = 3 * 3;
+                    if ((pawn.Position - enemyTarget.Position).LengthHorizontalSquared > maxDist) 
+                    {
+                        return JobMaker.MakeJob(JobDefOf.Wait_Combat, 100, checkOverrideOnExpiry: true);
+                    }
+                }
                 var meleeJob = MeleeAttackJob(pawn, enemyTarget);  // Make sure they still re-check for abilities, and etc.
                 meleeJob.checkOverrideOnExpire = true;
                 meleeJob.expiryInterval = 100;
@@ -232,7 +241,6 @@ namespace BigAndSmall
             bool canHitTarget = verb.CanHitTarget(enemyTarget);
             float verbRange = verb.verbProps.range;
             bool closeEnough = (pawn.Position - enemyTarget.Position).LengthHorizontalSquared < verbRange * verbRange;
-            //bool closeEnough = (pawn.Position - enemyTarget.Position).LengthHorizontalSquared < 25;
 
            if (coverOkay && standable && canHitTarget && closeEnough)
             {

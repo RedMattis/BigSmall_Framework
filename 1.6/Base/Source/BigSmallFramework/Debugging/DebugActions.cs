@@ -2,6 +2,7 @@
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Verse;
 using Verse.Noise;
 
@@ -285,6 +286,23 @@ namespace BigAndSmall.Debugging
                 }
             }));
 
+            list.Add(new DebugActionNode("Remove Custom Graphics", DebugActionType.ToolMap, delegate
+            {
+                RemoveCustomGraphics();
+            }));
+            list.Add(new DebugActionNode("Set Custom Color A", DebugActionType.ToolMap, delegate
+            {
+                SetCustomColor(0);
+            }));
+            list.Add(new DebugActionNode("Set Custom Color B", DebugActionType.ToolMap, delegate
+            {
+                SetCustomColor(1);
+            }));
+            list.Add(new DebugActionNode("Set Custom Color C", DebugActionType.ToolMap, delegate
+            {
+                SetCustomColor(2);
+            }));
+
             list.Add(new DebugActionNode("Randomise Faction", DebugActionType.ToolMap, delegate
             {
                 DebugToolsGeneral.GenericRectTool("Randomize Faction", delegate (CellRect rect)
@@ -325,6 +343,90 @@ namespace BigAndSmall.Debugging
             //}));
 
             return list;
+        }
+
+        public static void RemoveCustomGraphics()
+        {
+            IntVec3 cell = UI.MouseCell();
+            foreach (Thing item in Find.CurrentMap.thingGrid.ThingsAt(cell).ToList())
+            {
+                if (item is Pawn pawn && pawn.apparel != null)
+                {
+                    foreach (Apparel appItem in pawn.apparel.WornApparel)
+                    {
+                        CustomizableGraphic.Replace(appItem, null);
+                    }
+                }
+                else
+                {
+                    CustomizableGraphic.Replace(item, null);
+                }
+            }
+            foreach (Pawn pawn in Find.CurrentMap.thingGrid.ThingsAt(cell).OfType<Pawn>())
+            {
+                pawn.Drawer.renderer.SetAllGraphicsDirty();
+            }
+        }
+        public static void SetCustomColor(int slot)
+        {
+            List<FloatMenuOption> list = new List<FloatMenuOption>();
+            IntVec3 cell = UI.MouseCell();
+            list.Add(new FloatMenuOption("Random", delegate
+            {
+                SetColor_All(GenColor.RandomColorOpaque());
+            }));
+            foreach (Ideo i in Find.IdeoManager.IdeosListForReading)
+            {
+                if (!i.classicMode && i.Icon != BaseContent.BadTex)
+                {
+                    list.Add(new FloatMenuOption(i.name, delegate
+                    {
+                        SetColor_All(i.Color);
+                    }, i.Icon, i.Color));
+                }
+            }
+            foreach (ColorDef c in DefDatabase<ColorDef>.AllDefs)
+            {
+                list.Add(new FloatMenuOption(c.defName, delegate
+                {
+                    SetColor_All(c.color);
+                }, BaseContent.WhiteTex, c.color));
+            }
+            foreach (Pawn pawn in Find.CurrentMap.thingGrid.ThingsAt(cell).OfType<Pawn>())
+            {
+                pawn.Drawer.renderer.SetAllGraphicsDirty();
+            }
+            Find.WindowStack.Add(new FloatMenu(list));
+            void SetColor_All(Color color)
+            {
+                List<Thing> thingsToSet = [];
+                foreach (Thing item in Find.CurrentMap.thingGrid.ThingsAt(cell))
+                {
+                    if (item is Pawn pawn && pawn.apparel != null)
+                    {
+                        foreach (Apparel appItem in pawn.apparel.WornApparel)
+                        {
+                            thingsToSet.Add(appItem);
+                        }
+                    }
+                    else
+                    {
+                        thingsToSet.Add(item);
+                    }
+                }
+                foreach (var thing in thingsToSet)
+                {
+                    var graphic = CustomizableGraphic.Get(thing, createIfMissing: true);
+                    if (slot == 0) graphic.colorA = color;
+                    else if (slot == 1) graphic.colorB = color;
+                    else if (slot == 2) graphic.colorC = color;
+                    Log.Message($"Debug-Set {thing.LabelCap}'s color slot {slot} to {color}.\nResult: {thing} - {graphic}");
+                }
+                foreach (Pawn pawn in Find.CurrentMap.thingGrid.ThingsAt(cell).OfType<Pawn>())
+                {
+                    pawn.Drawer.renderer.renderTree.SetDirty();
+                }
+            }
         }
 
         public static void ClearAreaOfJunk(CellRect r, Map map)

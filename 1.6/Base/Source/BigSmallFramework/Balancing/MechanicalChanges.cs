@@ -67,7 +67,7 @@ namespace BigAndSmall
                         if (!injury.CanHealNaturally() && (cache.creationTick == null || cache.creationTick == BS.Tick))
                         {
                             // Scars should not be scaled at the point of creation, because of how they are created,
-                            // this can result int them getting made much worse.
+                            // this can result in them getting made much worse.
                             injuryScaleThis = Math.Min(1, injuryScaleThis);
                         }
                         injury.severityInt = injury.Severity * injuryScale;

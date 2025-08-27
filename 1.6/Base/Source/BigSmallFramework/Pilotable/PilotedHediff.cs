@@ -10,72 +10,20 @@ using Verse.AI;
 
 namespace BigAndSmall
 {
-    public class CompProperties_RemovePilot : CompProperties_AbilityEffect
-    {
-        public CompProperties_RemovePilot()
-        {
-            compClass = typeof(RemovePilotComp);
-        }
-    }
-
-    public class RemovePilotComp : CompAbilityEffect
-    {
-
-        // When the ability is activated remove the piloted Hediff.
-        public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
-        {
-            RemovePilotedHediff(parent.pawn);
-        }
-
-        // Remove the piloted Hediff.
-        public void RemovePilotedHediff(Pawn pawn)
-        {
-            // Get first hediff matching name BS_Piloted
-            var pilotedHediffs = pawn.health.hediffSet.hediffs.Where(x => x is Piloted);
-            foreach (var pilotedHediff in pilotedHediffs.ToArray())
-            {
-                // Removed the pilot from the hediff.
-                if (pilotedHediff is Piloted piloted)
-                {
-                    piloted.RemovePilots();
-                    return;
-                }
-            }
-        }
-
-        public override bool CanApplyOn(LocalTargetInfo target, LocalTargetInfo dest)
-        {
-            return true;
-        }
-    }
-
-    public class CompProperties_Piloted : HediffCompProperties
-    {
-        public bool pilotRequired = true;
-        public int pilotCapacity = 1;
-        public float baseCapacity = 0.51f;
-        public float pilotConsciousnessOffset = 0.25f;
-        public bool inheritPilotSkills = false;
-        public bool inheritPilotMentalTraits = false;
-        public float flatBonusIfPiloted = 0f;
-        public bool inheritRelationShips = false;
-
-        public CompProperties_Piloted()
-        {
-            compClass = typeof(PilotedCompProps);
-        }
-    }
-    public class PilotedCompProps : HediffComp
-    {
-        public CompProperties_Piloted Props => (CompProperties_Piloted)props;
-    }
 
     [HarmonyPatch]
     public class Piloted : HediffWithComps, IThingHolder
     {
-        public CompProperties_Piloted Props => GetProperties();
-        private CompProperties_Piloted props = null;
+        private static bool forcePilotableUpdate = false;
 
+        public bool removeIfNoPilot = false;
+        public bool defaultEnterable = true;
+
+        private CompProperties_Piloted props = null;
+        private ThingOwner innerContainer = null;
+
+
+        public CompProperties_Piloted Props => GetProperties();
         public float BaseCapacity => Props.baseCapacity;
         public IThingHolder ParentHolder => pawn;
 
@@ -92,18 +40,11 @@ namespace BigAndSmall
         {
             get
             {
-                if (innerContainer == null)
-                {
-                    innerContainer = new ThingOwner<Thing>(this, oneStackOnly: false);
-                }
+                innerContainer ??= new ThingOwner<Thing>(this, oneStackOnly: false);
                 return innerContainer;
             }
             set => innerContainer = value;
         }
-
-        private ThingOwner innerContainer = null;
-
-        private static bool forcePilotableUpdate = false;
 
         public CompProperties_Piloted GetProperties()
         {
@@ -198,30 +139,31 @@ namespace BigAndSmall
             return;
         }
 
-        public static readonly List<string> PhysicalTraitWhitelist =
+        public static readonly List<string> PhysicalTraitList =
         [
             "speedoffset", "beauty", "gigantism", "large", "small", "dwarfism", "bs_giant", "tough"
         ];
 
-        public void InheritRelationships(Pawn source, Pawn target)
+        public void InheritRelationships(Pawn pilot, Pawn target)
         {
+            if (pilot == null || target == null) return;
             // Transfer faction
-            if (source.Faction != null && source.Faction != target.Faction)
+            if (pilot.Faction != null && pilot.Faction != target.Faction)
             {
-                target.SetFaction(source.Faction);
+                target.SetFaction(pilot.Faction);
             }
 
             // Transfer ideology
-            if (source.Ideo != null)
+            if (pilot.Ideo != null)
             {
-                target.ideo.SetIdeo(source.Ideo);
+                target.ideo.SetIdeo(pilot.Ideo);
             }
 
             // Transfer resistance values
-            target.guest.resistance = source.guest.resistance;
+            target.guest.resistance = pilot.guest.resistance;
 
             // Transfer Will
-            target.guest.will = source.guest.will;
+            target.guest.will = pilot.guest.will;
 
             if (Props.inheritRelationShips == false)
             {
@@ -229,10 +171,10 @@ namespace BigAndSmall
             }
 
             // Get the pilot's relations
-            List<DirectPawnRelation> pilotRelations = source.relations?.DirectRelations.ToList();
+            List<DirectPawnRelation> pilotRelations = pilot.relations?.DirectRelations.ToList();
 
             // Get the pilot's thoughts
-            List<Thought_Memory> pilotThoughts = source.needs?.mood?.thoughts?.memories?.Memories?.ToList();
+            List<Thought_Memory> pilotThoughts = pilot.needs?.mood?.thoughts?.memories?.Memories?.ToList();
 
             // Clear the target's relations and thoughts
             target.relations?.ClearAllRelations();
@@ -240,6 +182,7 @@ namespace BigAndSmall
             target.needs?.mood?.thoughts?.situational?.Notify_SituationalThoughtsDirty();
 
             var literallyAllPawns = Find.WorldPawns.AllPawnsAliveOrDead.ToList();
+            literallyAllPawns = [.. literallyAllPawns.Concat(Find.Maps.SelectMany(x => x.mapPawns.AllPawns)).Distinct()];
 
             // Add all other relations-pawns that show up in the pilot's thoughts to "literallyAllPawns".
             if (pilotThoughts != null)
@@ -257,23 +200,29 @@ namespace BigAndSmall
             // Fetch all relations to the pilot.
             foreach (var somePawn in literallyAllPawns)
             {
-                if (somePawn == source)
+                if (somePawn == pilot)
                 {
                     continue;
                 }
                 var relations = somePawn.relations?.DirectRelations?.ToList();
                 if (relations != null)
                 {
-                    foreach (var relation in relations)
+                    try
                     {
-                        if (relation.otherPawn == source)
+                        foreach (var relation in relations)
                         {
-                            directPawnRelationsToSource.Add(relation, somePawn);
+                            if (relation?.otherPawn != null && relation.otherPawn == pilot)
+                            {
+                                directPawnRelationsToSource.Add(relation, somePawn);
+                            }
                         }
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error($"Failed to fetch relations to pilot {pilot.Name} from {somePawn.Name} with error: \n{e.Message}\n{e.StackTrace}");
                     }
                 }
             }
-
 
             // Add all direct relations of the pilot to the piloted.
             for (int idx = pilotRelations.Count - 1; idx >= 0; idx--)
@@ -288,7 +237,7 @@ namespace BigAndSmall
                 }
                 catch (Exception e)
                 {
-                    Log.Error($"Failed to add relation {relation.def.defName} to {target.Name} from {source.Name} with error: \n{e.Message}\n{e.StackTrace}");
+                    Log.Error($"Failed to add relation {relation.def.defName} to {target.Name} from {pilot.Name} with error: \n{e.Message}\n{e.StackTrace}");
                 }
             }
 
@@ -320,20 +269,20 @@ namespace BigAndSmall
                 }
                 catch (Exception e)
                 {
-                    Log.Error($"Failed to add thought {thought.def.defName} to {target.Name} from {source.Name} with error: \n{e.Message}\n{e.StackTrace}");
+                    Log.Error($"Failed to add thought {thought.def.defName} to {target.Name} from {pilot.Name} with error: \n{e.Message}\n{e.StackTrace}");
                 }
             }
 
             if (pawn.needs?.mood?.thoughts != null)
             {
-                pawn.needs.mood.thoughts.situational?.Notify_SituationalThoughtsDirty();
+                pawn?.needs?.mood?.thoughts?.situational?.Notify_SituationalThoughtsDirty();
             }
 
             if (ModsConfig.RoyaltyActive)
             {
                 target.royalty = new Pawn_RoyaltyTracker(pawn);
                 // Transfer titles
-                var titles = source.royalty?.AllTitlesForReading;
+                var titles = pilot.royalty?.AllTitlesForReading;
                 if (titles != null)
                 {
                     foreach (var title in titles)
@@ -348,9 +297,9 @@ namespace BigAndSmall
             }
 
             //// Remove all relations and thoughts of the source.
-            source.relations?.ClearAllRelations();
-            source.needs?.mood?.thoughts?.memories?.Memories?.Clear();
-            source.needs?.mood?.thoughts?.situational?.Notify_SituationalThoughtsDirty();
+            pilot.relations?.ClearAllRelations();
+            pilot.needs?.mood?.thoughts?.memories?.Memories?.Clear();
+            pilot.needs?.mood?.thoughts?.situational?.Notify_SituationalThoughtsDirty();
             target.needs?.mood?.thoughts?.situational?.Notify_SituationalThoughtsDirty();
 
         }
@@ -383,15 +332,15 @@ namespace BigAndSmall
             {
                 return;
             }
-            // Remove all traits which do not contain or start with a string in the whitelist.
-            var traitsToRemove = pawn.story.traits.allTraits.Where(x => !PhysicalTraitWhitelist.Any(y => x.def.defName.ToLower().StartsWith(y))).ToList();
+            // Remove all traits from the pilotable which are not physical.
+            var traitsToRemove = pawn.story.traits.allTraits.Where(x => !PhysicalTraitList.Any(y => x.def.defName.ToLower().StartsWith(y))).ToList();
             foreach (Trait trait in traitsToRemove)
             {
                 pawn.story.traits.allTraits.Remove(trait);
             }
 
-            // Add all traits from the pilot that are NOT on the whitelist.
-            var traitsToAdd = pilot.story.traits.allTraits.Where(x => !PhysicalTraitWhitelist.Any(y => x.def.defName.ToLower().StartsWith(y))).ToList();
+            // Add all traits from the pilot (that are not physical).
+            var traitsToAdd = pilot.story.traits.allTraits.Where(x => !PhysicalTraitList.Any(y => x.def.defName.ToLower().StartsWith(y))).ToList();
             foreach (Trait trait in traitsToAdd)
             {
                 pawn.story.traits.GainTrait(trait);
@@ -410,10 +359,17 @@ namespace BigAndSmall
             foreach (Thing thing in content.Where(x => x is Pawn))
             {
                 // Push skills improvements back from the pilotable entity to the pilot.
-                try { InheritPilotSkills(pawn, thing as Pawn); } catch (Exception e) { Log.Error($"Failed to inherit skills from {pawn.Name} with error:\n{e.Message}\n{e.StackTrace}"); }
+                try { InheritPilotSkills(pawn, thing as Pawn); } catch (Exception e)
+                {
+                    Log.Error($"Failed to inherit skills from {pawn.Name} with error:\n{e.Message}\n{e.StackTrace}");
+                }
 
                 // Restore relationships from the pilotable entity to the pilot.
-                try { InheritRelationships(pawn, thing as Pawn); } catch (Exception e) { Log.Error($"Failed to inherit relationships from {pawn.Name} with error:\n{e.Message}\n{e.StackTrace}"); }
+                try { InheritRelationships(pawn, thing as Pawn); }
+                catch (Exception e)
+                {
+                    Log.Error($"Failed to inherit relationships from {pawn.Name} with error:\n{e.Message}\n{e.StackTrace}");
+                }
                 break; // Never add skills from more than one pilot, or we might overwrite some other pawn's skills.
             }
 
@@ -428,6 +384,11 @@ namespace BigAndSmall
             pilotEjectCountdown = -1; // Reset the eject countdown.
             pawn.health.Notify_HediffChanged(this);
             forcePilotableUpdate = true;
+
+            if (removeIfNoPilot)
+            {
+                pawn.health.RemoveHediff(this);
+            }
         }
         public override void PostRemoved()
         {
@@ -505,10 +466,6 @@ namespace BigAndSmall
         {
             if (__instance is Piloted piloted)
             {
-                //PawnCapacityModifier oldConsciousness = __result.FirstOrDefault(x => x.capacity == PawnCapacityDefOf.Consciousness);
-                //if (oldConsciousness != null)
-                //    __result.Remove(oldConsciousness);
-
                 var otherCapacityMods = __result.Where(x => x.capacity != PawnCapacityDefOf.Consciousness);
 
                 if (!forcePilotableUpdate)
@@ -590,170 +547,12 @@ namespace BigAndSmall
             base.ExposeData();
             forcePilotableUpdate = true;
             Scribe_Deep.Look(ref innerContainer, "innerContainer", this);
-            //Scribe_Collections.Look(ref cachedCapMods, "cachedCapMods", lookMode: LookMode.Value);
-        }
-        //public override string GetTooltip(Pawn pawn, bool showHediffsDebugInfo)
-        //{
-        //    var baseTooltip = base.GetTooltip(pawn, showHediffsDebugInfo);
-        //    var stringBuilder = new StringBuilder();
-        //    stringBuilder.Append(baseTooltip);
-        //    stringBuilder.AppendLine();
-        //    stringBuilder.AppendLine();
-        //    stringBuilder.Append("BS_ConsciousnessFromPilot".Translate());
-        //    return stringBuilder.ToString().TrimEndNewlines();
-        //}
-    }
-
-    [HarmonyPatch(typeof(FloatMenuMakerMap),
-        nameof(FloatMenuMakerMap.GetOptions),
-        [
-            typeof(List<Pawn>),
-            typeof(Vector3),
-            typeof(FloatMenuContext),
-        ],
-        [
-            ArgumentType.Normal,
-            ArgumentType.Normal,
-            ArgumentType.Out
-        ]
-        )]
-    public static class FloatMenuMakerMap_AddHumanlikeOrders_Patch
-    {
-        public static void Postfix(List<Pawn> selectedPawns, Vector3 clickPos, ref FloatMenuContext context, ref List<FloatMenuOption> __result)
-        {
-            // Quickfix for 1.6. Needs a proper rewrite to use the real system.
-            if (selectedPawns.Count != 1) return;
-            Pawn pawn = selectedPawns[0];
-
-            List<Thing> thingList = IntVec3.FromVector3(clickPos).GetThingList(pawn.Map);
-            var pawnList = thingList.Where(x => x is Pawn).Select(x => (Pawn)x);
-            foreach (var pilotable in pawnList)
-            {
-                // Check if pawn has a piloted hediff
-                var pilotedHediff = pilotable?.health?.hediffSet?.hediffs?.Where(x => x is Piloted)?.FirstOrDefault();
-                if (pilotedHediff != null && pilotedHediff is Piloted piloted)
-                {
-                    string errorMsg = "";
-                    if (piloted.pawn.Faction != pawn.Faction && !piloted.Props.pilotRequired)
-                    {
-                        errorMsg = $"{pawn.Label} {"BS_CannotEnterEnemyAsOperator".Translate()}";
-                    }
-                    else if (piloted.pawn.Faction != pawn.Faction && !piloted.pawn.Downed && piloted.InnerContainer.Count > 0)
-                    {
-                        errorMsg = $"{pawn.Label} {"BS_CannotPilotNonDownedEnemy".Translate()}";
-                    }
-                    else if (piloted.PilotCount + 1 > piloted.PilotCapacity)
-                    {
-                        errorMsg = $"{pawn.Label} {"BS_PilotCapReached".Translate()}";
-                    }
-                    else if (piloted.MaxCapacity < pawn.BodySize)
-                    {
-                        errorMsg = $"{pawn.Label} {"BS_TooLargeToPilot".Translate()}";
-                    }
-                    else if (piloted.TotalMass + pawn.BodySize > piloted.MaxCapacity)
-                    {
-                        errorMsg = $"{pawn.Label} {"BS_NotEnoughRoomForPilot".Translate()}";
-                    }
-
-                    var pilotJobDef = DefDatabase<JobDef>.AllDefsListForReading.Where(x => x.defName == "BS_EnteringPilotablePawn").FirstOrDefault();
-                    if (pilotJobDef != null)
-                    {
-                        var action = new FloatMenuOption("BS_EnterPilotable".Translate(), delegate
-                        {
-                            Job job = JobMaker.MakeJob(pilotJobDef, pilotable);
-                            //job.count = 1;
-                            pawn.jobs.TryTakeOrderedJob(job, JobTag.DraftedOrder);
-                        });
-                        if (errorMsg != "")
-                        {
-                            action.Disabled = true;
-                            action.Label = errorMsg;
-                        }
-
-                        __result.Add(action);
-                    }
-
-                    //string errorMsg2 = "";
-                    if (piloted.pawn.Downed && piloted.PilotCount > 0)
-                    {
-                        var ejectJobDef = DefDatabase<JobDef>.AllDefsListForReading.Where(x => x.defName == "BS_EjectPilotablePawn").FirstOrDefault();
-                        if (ejectJobDef != null)
-                        {
-                            var action = new FloatMenuOption("BS_EjectPilots".Translate(), delegate
-                            {
-                                Job job = JobMaker.MakeJob(ejectJobDef, pilotable);
-                                //job.count = 1;
-                                pawn.jobs.TryTakeOrderedJob(job, JobTag.DraftedOrder);
-                            });
-
-                            __result.Add(action);
-                        }
-                    }
-                }
-            }
+            Scribe_Values.Look(ref removeIfNoPilot, "removeIfNoPilot", defaultValue: false);
+            Scribe_Values.Look(ref defaultEnterable, "defaultEnterable", defaultValue: true);
         }
     }
 
-    public class JobDriver_EnterPilotable : JobDriver
-    {
-        public override bool TryMakePreToilReservations(bool errorOnFailed)
-        {
-            return pawn.Reserve(job.GetTarget(TargetIndex.A), job, 1, -1, null, errorOnFailed);
-        }
+    
 
-        protected override IEnumerable<Toil> MakeNewToils()
-        {
-            this.FailOnDestroyedNullOrForbidden(TargetIndex.A);
-            yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
-            yield return Toils_General.Wait(150).WithProgressBarToilDelay(TargetIndex.A);
-            yield return new Toil
-            {
-                initAction = delegate
-                {
-                    // Get the Target as a Pawn
-                    Pawn pilotable = TargetA.Thing as Pawn;
-                    if (pilotable != null)
-                    {
-                        var pilotedHediff = pilotable?.health?.hediffSet?.hediffs?.Where(x => x is Piloted).FirstOrDefault();
-                        if (pilotedHediff != null && pilotedHediff is Piloted piloted)
-                        {
-                            piloted.AddPilot(pawn);
-                        }
-                    }
-                }
-            };
-        }
-    }
-
-    public class JobDriver_EjectPilotable : JobDriver
-    {
-        public override bool TryMakePreToilReservations(bool errorOnFailed)
-        {
-            return pawn.Reserve(job.GetTarget(TargetIndex.A), job, 1, -1, null, errorOnFailed);
-        }
-
-        protected override IEnumerable<Toil> MakeNewToils()
-        {
-            this.FailOnDestroyedNullOrForbidden(TargetIndex.A);
-            yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
-            yield return Toils_General.Wait(150).WithProgressBarToilDelay(TargetIndex.A);
-            yield return new Toil
-            {
-                initAction = delegate
-                {
-                    // Get the Target as a Pawn
-                    Pawn pilotable = TargetA.Thing as Pawn;
-                    if (pilotable != null)
-                    {
-                        var pilotedHediff = pilotable?.health?.hediffSet?.hediffs?.Where(x => x is Piloted).FirstOrDefault();
-                        if (pilotedHediff != null && pilotedHediff is Piloted piloted)
-                        {
-                            piloted.RemovePilots();
-                        }
-                    }
-                }
-            };
-        }
-    }
 
 }

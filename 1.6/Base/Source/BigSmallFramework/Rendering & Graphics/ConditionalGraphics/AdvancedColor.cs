@@ -43,6 +43,11 @@ namespace BigAndSmall
         public bool apparelStuff = false; 
         public bool randomLeatherColor = false;
 
+        // Customizable. These can be changed after the game has started.
+        public Color? customColorA = null;  // Value will be the default if no other setting exists.
+        public Color? customColorB = null;
+        public Color? customColorC = null;
+
         // Color transformation.
         public float? saturation = null;
         public float? hue = null;
@@ -254,6 +259,25 @@ namespace BigAndSmall
             if (color != null)
             {
                 colorsAdded.Add(color.Value);
+                didSet = true;
+            }
+            Thing customTarget = apparel ?? (Thing)pawn;
+            if (customColorA != null)
+            {
+                var clr = CustomizableGraphic.Get(customTarget)?.colorA ?? customColorA.Value;
+                colorsAdded.Add(clr);
+                didSet = true;
+            }
+            if (customColorB != null)
+            {
+                var clr = CustomizableGraphic.Get(customTarget)?.colorB ?? customColorB.Value;
+                colorsAdded.Add(clr);
+                didSet = true;
+            }
+            if (customColorC != null)
+            {
+                var clr = CustomizableGraphic.Get(customTarget)?.colorC ?? customColorC.Value;
+                colorsAdded.Add(clr);
                 didSet = true;
             }
             if (hostilityStatus) GetHostilityStatus(pawn, ref didSet, ref colorsAdded);
