@@ -15,8 +15,12 @@ namespace BigAndSmall
         public Color? colorB;
         public Color? colorC;
 
+        // Not yet implemented.
+        //public string texturePath = null;
+        //public string maskPath = null;
+
         // Used only by pawnkinds.
-        public ColorGenerator colorAGenerator = null;
+        public ColorGenerator colorAGenerator = null;  // Not yet implemented.
         public ColorGenerator colorBGenerator = null;
         public ColorGenerator colorCGenerator = null;
 

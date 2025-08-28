@@ -70,7 +70,10 @@ namespace BigAndSmall
         {
             var overrides = ModExtHelper.GetAllExtensions<GraphicsOverride>(pawn);
             var overridesInactive = ModExtHelper.GetAllExtensionsPlusInactive<GraphicsOverride>(pawn);
-            HashSet<GraphicsOverride> allOverrides = [.. overrides, .. overridesInactive];
+            var fOverrides = pawn.Faction.def.ExtensionsOnDef<GraphicsOverride, FactionDef>();
+            var pkOverrides = pawn.kindDef.ExtensionsOnDef<GraphicsOverride, PawnKindDef>();
+            var storyOverrides = ModExtHelper.GetAllExtensionsOnBackStories<GraphicsOverride>(pawn);
+            HashSet<GraphicsOverride> allOverrides = [..overrides, ..overridesInactive, .. fOverrides, ..pkOverrides, ..storyOverrides];
 
             List<FlagString> allFlags = [.. replaceFlags, .. replaceFlagsAndInactive];
             if (allOverrides.Any())

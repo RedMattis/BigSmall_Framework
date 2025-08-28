@@ -48,6 +48,19 @@ namespace BigAndSmall
                     .. GetAllATraitExtensions<T>(pawn, parentWhitelist, parentBlacklist, doSort)];
         }
 
+        public static List<T> GetAllExtensionsOnBackStories<T>(this Pawn pawn, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) where T : DefModExtension
+        {
+            List<BackstoryDef> backstories = [pawn.story?.Childhood, pawn.story?.Adulthood];
+            List<T> extensions = [];
+            foreach (var backstory in backstories)
+            {
+                if (backstory == null) continue;
+                extensions.AddRange(ExtensionsOnDef<T, BackstoryDef>(backstory, parentWhitelist, parentBlacklist, doSort));
+            }
+            return extensions;
+        }
+
+
         public static List<T> GetHediffExtensions<T>(this Pawn pawn, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) where T : DefModExtension
         {
             List<ModExtWrapper<T>> matches = GetAllMatchingExtensionsFromHediffSetWithSource<T>(pawn);

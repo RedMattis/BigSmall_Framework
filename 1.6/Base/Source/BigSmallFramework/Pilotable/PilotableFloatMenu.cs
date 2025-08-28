@@ -12,18 +12,18 @@ namespace BigAndSmall
 {
 
     [HarmonyPatch(typeof(FloatMenuMakerMap),
-        nameof(FloatMenuMakerMap.GetOptions),
-        [
-            typeof(List<Pawn>),
-            typeof(Vector3),
-            typeof(FloatMenuContext),
-        ],
-        [
-            ArgumentType.Normal,
-            ArgumentType.Normal,
-            ArgumentType.Out
-        ]
-        )]
+    nameof(FloatMenuMakerMap.GetOptions),
+    [
+        typeof(List<Pawn>),
+        typeof(Vector3),
+        typeof(FloatMenuContext),
+    ],
+    [
+        ArgumentType.Normal,
+        ArgumentType.Normal,
+        ArgumentType.Out
+    ]
+    )]
     public static class FloatMenuMakerMap_AddHumanlikeOrders_Patch
     {
         public static void Postfix(List<Pawn> selectedPawns, Vector3 clickPos, ref FloatMenuContext context, ref List<FloatMenuOption> __result)
@@ -38,7 +38,7 @@ namespace BigAndSmall
             {
                 // Check if pawn has a piloted hediff
                 var pilotedHediff = pilotable?.health?.hediffSet?.hediffs?.OfType<Piloted>()?.FirstOrDefault();
-                if (!pilotedHediff.defaultEnterable)
+                if (!pilotedHediff?.defaultEnterable == true)
                 {
                     continue;
                 }
