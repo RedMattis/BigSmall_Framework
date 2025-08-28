@@ -36,6 +36,11 @@
       <li MayRequire="pathfinding.framework" Class="PathfindingFramework.MovementExtension">
         <movementDef>PF_Movement_Flying</movementDef>
       </li>
+      <li Class="BigAndSmall.HasCustomizableGraphics">
+        <tag><BS_SnekCustomGraphics/></tag>
+        <colorA>true</colorA>
+        <colorB>true</colorB>
+      </li>
     </modExtensions>
     <renderNodeProperties>
       <li Class="BigAndSmall.PawnRenderingProps_Ultimate">

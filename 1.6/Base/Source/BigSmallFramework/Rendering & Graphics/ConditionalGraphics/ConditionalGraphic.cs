@@ -6,6 +6,7 @@ using System.Linq;
 using System.Xml;
 using UnityEngine;
 using Verse;
+using static HarmonyLib.Code;
 
 namespace BigAndSmall
 {
@@ -20,6 +21,13 @@ namespace BigAndSmall
             public bool implant = false;
             public bool mustBeBetterThanNatural = false;
             public HediffDef hasHediff = null;
+        }
+        public class HasTagGraphicOverride
+        {
+            public FlagString tag;
+            public bool colorA = false;
+            public bool colorB = false;
+            public bool colorC = false;
         }
         public enum AltTrigger
         {
@@ -43,6 +51,9 @@ namespace BigAndSmall
             CustomColorAIsSet,
             CustomColorBIsSet,
             CustomColorCIsSet,
+            CustomSubColorAIsSet,
+            CustomSubColorBIsSet,
+            CustomSubColorCIsSet,
         }
         public List<PartRecord> triggerBodyPart = [];
 
@@ -54,13 +65,16 @@ namespace BigAndSmall
         
 
         private List<AltTrigger> triggers = [];
+        public HasTagGraphicOverride customTagGraphicIsSet = null;
+
+        [Obsolete]
         private List<AltTrigger> triggerConditions = [];
         public float? chanceTrigger = null;
         public SimpleCurve chanceByAge = null; // 1.0 means 100% chance at age 100.
         public ChanceByStat chanceByStat = null;
 
-        public List<FlagString> replaceFlags = [];
-        public List<FlagString> replaceFlagsAndInactive = [];
+        public FlagStringList replaceFlags = [];
+        public FlagStringList replaceFlagsAndInactive = [];  // Means that even inactive genes/traits will be checked.
 
         public bool HasGeneTriggers => triggerGeneTag.AnyItems() || triggerGene.AnyItems();
 
@@ -70,17 +84,18 @@ namespace BigAndSmall
         {
             var overrides = ModExtHelper.GetAllExtensions<GraphicsOverride>(pawn);
             var overridesInactive = ModExtHelper.GetAllExtensionsPlusInactive<GraphicsOverride>(pawn);
-            var fOverrides = pawn.Faction.def.ExtensionsOnDef<GraphicsOverride, FactionDef>();
-            var pkOverrides = pawn.kindDef.ExtensionsOnDef<GraphicsOverride, PawnKindDef>();
+            var facOverrides = pawn.Faction.def.ExtensionsOnDef<GraphicsOverride, FactionDef>();
+            var kindOverrides = pawn.kindDef.ExtensionsOnDef<GraphicsOverride, PawnKindDef>();
             var storyOverrides = ModExtHelper.GetAllExtensionsOnBackStories<GraphicsOverride>(pawn);
-            HashSet<GraphicsOverride> allOverrides = [..overrides, ..overridesInactive, .. fOverrides, ..pkOverrides, ..storyOverrides];
+            HashSet<GraphicsOverride> activeOverrides = [.. overrides, .. facOverrides, .. kindOverrides, .. storyOverrides];
+            HashSet<GraphicsOverride> allOverrides = [.. activeOverrides, ..overridesInactive];
 
             List<FlagString> allFlags = [.. replaceFlags, .. replaceFlagsAndInactive];
             if (allOverrides.Any())
             {
-                List<GraphicsOverride> sortedListOne = [.. overrides.SelectMany(x => x.Overrides).Where(x => x.replaceFlags.Any(t => replaceFlags.Contains(t))).OrderByDescending(x => x.priority)];
-                List<GraphicsOverride> sortedListTwo = [.. overridesInactive.SelectMany(x => x.Overrides).Where(x => x.replaceFlags.Any(t => allFlags.Contains(t))).OrderByDescending(x => x.priority)];
-                return [.. sortedListOne, .. sortedListTwo];
+                List<GraphicsOverride> resultsActiveOnly = [.. activeOverrides.SelectMany(x => x.Overrides).Where(x => x.replaceFlags.Any(t => replaceFlags.Contains(t))).OrderByDescending(x => x.priority)];
+                List<GraphicsOverride> resultsAll = [.. overridesInactive.SelectMany(x => x.Overrides).Where(x => x.replaceFlags.Any(t => allFlags.Contains(t))).OrderByDescending(x => x.priority)];
+                return [.. resultsActiveOnly, .. resultsAll];
             }
             return [];
         }
@@ -160,6 +175,27 @@ namespace BigAndSmall
             return true;
         }
 
+        private bool CustomTagGraphicIsSetIsValid(Pawn pawn)
+        {
+            if (customTagGraphicIsSet != null)
+            {
+                var tagOverride = customTagGraphicIsSet;
+                if (tagOverride.colorA && pawn.GetTagColor(tagOverride.tag, 0) == null)
+                {
+                    return false;
+                }
+                if (tagOverride.colorB && pawn.GetTagColor(tagOverride.tag, 1) == null)
+                {
+                    return false;
+                }
+                if (tagOverride.colorC && pawn.GetTagColor(tagOverride.tag, 2) == null)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
 
         /// <summary>
         /// "True" means use this graphic (if not chlidren are valid),
@@ -209,6 +245,10 @@ namespace BigAndSmall
                 return false;
             }
 
+            if (!CustomTagGraphicIsSetIsValid(pawn))
+            {
+                return false;
+            }
 
             if (Triggers.Count == 0) return true;
             var apparel = node?.GetApparelFromNode();

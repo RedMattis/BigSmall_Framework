@@ -10,7 +10,7 @@ namespace BigAndSmall
 {
     public class GraphicsOverride : DefModExtension
     {
-        public List<FlagString> replaceFlags = [];
+        public FlagStringList replaceFlags = [];
 
         public List<GraphicsOverride> overrideList = [];
         public float priority = 0;

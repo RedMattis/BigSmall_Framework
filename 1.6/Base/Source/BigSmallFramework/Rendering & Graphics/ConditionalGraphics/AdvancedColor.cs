@@ -48,6 +48,11 @@ namespace BigAndSmall
         public Color? customColorB = null;
         public Color? customColorC = null;
 
+        // Similar to the above but tied to a pawn's specific genes/hediff (since they aren't Things).
+        public FlagString customClrTagA = null;
+        public FlagString customClrTagB = null;
+        public FlagString customClrTagC = null;
+
         // Color transformation.
         public float? saturation = null;
         public float? hue = null;
@@ -127,6 +132,7 @@ namespace BigAndSmall
                 gfxOverride.graphics.OfType<ColorSetting>().Where(x => x != null).Do(x =>
                 {
                     subDefResult = x.GetColor(renderNode, oldClr, hashOffset, useOldColor);
+                    if (subDefResult != null) oldClr = subDefResult.Value;  // Carry over values in case we have many.
                 });
             }
             if (subDefResult != null)
@@ -280,6 +286,22 @@ namespace BigAndSmall
                 colorsAdded.Add(clr);
                 didSet = true;
             }
+            if (customClrTagA != null && CustomizableGraphic.GetTagItemGraphic(pawn, customClrTagA)?.colorA is Color clrA)
+            {
+                colorsAdded.Add(clrA);
+                didSet = true;
+            }
+            if (customClrTagB != null && CustomizableGraphic.GetTagItemGraphic(pawn, customClrTagB)?.colorB is Color clrB)
+            {
+                colorsAdded.Add(clrB);
+                didSet = true;
+            }
+            if (customClrTagC != null && CustomizableGraphic.GetTagItemGraphic(pawn, customClrTagC)?.colorC is Color clrC)
+            {
+                colorsAdded.Add(clrC);
+                didSet = true;
+            }
+
             if (hostilityStatus) GetHostilityStatus(pawn, ref didSet, ref colorsAdded);
             if (colourRange != null)
             {

@@ -264,6 +264,17 @@ namespace BigAndSmall.Debugging
             });
         }
 
+        [DebugAction("Big & Small", "Edit Graphics", actionType = DebugActionType.ToolMap, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        public static void DebugEditCustomizableGraphic()
+        {
+            foreach (Pawn pawn in Find.CurrentMap.thingGrid.ThingsAt(UI.MouseCell()).OfType<Pawn>())
+            {
+                var window = new EditPawnWindow(pawn);
+                Find.WindowStack.Add(window);
+                return;
+            }
+        }
+
 
         [DebugAction("Big & Small", "Misc...",actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         public static List<DebugActionNode> MiscDebug()

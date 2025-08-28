@@ -161,7 +161,7 @@ namespace BigAndSmall
             return result;
         }
 
-        public static HashSet<Gene> GetAllActiveGenes(Pawn pawn)
+        public static HashSet<Gene> GetAllActiveGenes(this Pawn pawn)
         {
             HashSet<Gene> result = [];
             var genes = pawn?.genes?.GenesListForReading;

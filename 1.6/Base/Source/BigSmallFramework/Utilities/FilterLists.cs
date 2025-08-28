@@ -78,7 +78,7 @@ namespace BigAndSmall
                     if (typeof(T) == typeof(FlagString))
                     {
                         var fs = new FlagString();
-                        fs.LoadDataFromXmlCustom(cNode);
+                        fs.LoadDataFromXML(cNode);
                         Add((T)(object)fs);
                     }
                     else if (typeof(T) == typeof(string))

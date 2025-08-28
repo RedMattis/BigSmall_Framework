@@ -1,0 +1,14 @@
+<LanguageData>
+  <BS_EditThing_Title>Editing: {0}</BS_EditThing_Title>
+
+  <BS_Tab_Thing>Target</BS_Tab_Thing>
+  <BS_Tab_Apparel>Apparel</BS_Tab_Apparel>
+  <BS_Tab_Gene>Genes</BS_Tab_Gene>
+  <BS_Tab_Hediff>Other</BS_Tab_Hediff>
+  
+  <BS_Skin>Skin Color</BS_Skin>
+  <BS_Hair>Hair Color</BS_Hair>
+  <BS_Custom>Custom Character Colors</BS_Custom>
+
+  <BS_OverrideCustomizableColor>Customize Color</BS_OverrideCustomizableColor>
+</LanguageData>

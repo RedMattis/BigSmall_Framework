@@ -1,21 +1,27 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using Verse;
+using Verse.AI;
 
 namespace BigAndSmall
 {
     public class Flagger : DefModExtension
     {
         public float priority = 0;
-        public List<FlagString> flags = [];
+        public FlagStringList flags = [];
 
         public static List<FlagString> GetTagStrings(Pawn pawn, bool includeInactive)
         {
             var flagList = includeInactive ? ModExtHelper.GetAllExtensionsPlusInactive<Flagger>(pawn) : ModExtHelper.GetAllExtensions<Flagger>(pawn);
+            var fOverrides = pawn.Faction.def.ExtensionsOnDef<Flagger, FactionDef>();
+            var pkOverrides = pawn.kindDef.ExtensionsOnDef<Flagger, PawnKindDef>();
+            var storyOverrides = ModExtHelper.GetAllExtensionsOnBackStories<Flagger>(pawn);
+            flagList = [.. flagList, .. fOverrides, .. pkOverrides, .. storyOverrides];
             if (flagList.Any())
             {
                 return [.. flagList.OrderByDescending(x => x.priority).SelectMany(x => x.flags)];
@@ -24,7 +30,7 @@ namespace BigAndSmall
         }
     }
 
-    public class FlagString : IEquatable<FlagString>
+    public class FlagString
     {
         private const string DEFAULT = "default";
 
@@ -32,7 +38,8 @@ namespace BigAndSmall
         public string subTag = DEFAULT;
         public List<string> extraTags = [];
 
-        public bool Equals(FlagString other) => mainTag == other.mainTag && subTag == other.subTag && extraTags.SequenceEqual(other.extraTags);
+        public bool Equals(FlagString other) => this?.mainTag != null && other?.mainTag != null
+            && mainTag == other.mainTag && subTag == other.subTag && extraTags.SequenceEqual(other.extraTags);
         public override bool Equals(object obj)
         {
             if (obj is FlagString other)
@@ -41,6 +48,10 @@ namespace BigAndSmall
             }
             return false;
         }
+
+        public static bool operator ==(FlagString left, FlagString right) => left?.Equals(right) ?? right is null;
+        public static bool operator !=(FlagString left, FlagString right) => !(left == right);
+
         public override int GetHashCode()
         {
             unchecked
@@ -53,14 +64,31 @@ namespace BigAndSmall
         }
         public override string ToString() => $"{mainTag}/{subTag}" + (extraTags.Any() ? $"[{string.Join(",", extraTags)}]" : "");
 
+        public void LoadDataFromXML(XmlNode node)
+        {
+            mainTag = node.Name;
+            if (node.InnerText != "")
+            {
+                subTag = node.InnerText;
+            }
+            extraTags = node.Attributes?.OfType<XmlAttribute>().Select(x => x.Value).ToList() ?? [];
+        }
         public void LoadDataFromXmlCustom(XmlNode xmlRoot)
         {
-            mainTag = xmlRoot.Name;
-            if (xmlRoot.InnerText != "")
+            var node = xmlRoot.FirstChild;
+            LoadDataFromXML(node);
+        }
+    }
+    public class FlagStringList : List<FlagString>
+    {
+        public void LoadDataFromXmlCustom(XmlNode xmlRoot)
+        {
+            foreach (XmlNode cNode in xmlRoot.ChildNodes)
             {
-                subTag = xmlRoot.InnerText;
+                var fs = new FlagString();
+                fs.LoadDataFromXML(cNode);
+                Add(fs);
             }
-            extraTags = xmlRoot.Attributes?.OfType<XmlAttribute>().Select(x => x.Value).ToList() ?? [];
         }
     }
 }
