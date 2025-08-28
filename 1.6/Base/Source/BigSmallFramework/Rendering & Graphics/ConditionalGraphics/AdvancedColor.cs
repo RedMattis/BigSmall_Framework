@@ -127,13 +127,20 @@ namespace BigAndSmall
             }
 
             Color? subDefResult = null;
-            foreach (var gfxOverride in GetGraphicOverrides(pawn))
+            try
             {
-                gfxOverride.graphics.OfType<ColorSetting>().Where(x => x != null).Do(x =>
+                foreach (var gfxOverride in GetGraphicOverrides(pawn))
                 {
-                    subDefResult = x.GetColor(renderNode, oldClr, hashOffset, useOldColor);
-                    if (subDefResult != null) oldClr = subDefResult.Value;  // Carry over values in case we have many.
-                });
+                    gfxOverride.graphics.OfType<ColorSetting>().Where(x => x != null).Do(x =>
+                    {
+                        subDefResult = x.GetColor(renderNode, oldClr, hashOffset, useOldColor);
+                        if (subDefResult != null) oldClr = subDefResult.Value;  // Carry over values in case we have many.
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error($"[BigAndSmall] Exception getting GetGraphicOverrides for {pawn.LabelCap} - {e}. Skipping step.");
             }
             if (subDefResult != null)
             {
