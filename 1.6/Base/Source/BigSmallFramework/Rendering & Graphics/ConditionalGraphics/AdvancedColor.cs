@@ -94,6 +94,7 @@ namespace BigAndSmall
         public bool averageColors = true;
 
         public List<ColorSetting> alts = [];
+        public List<ColorSetting> altsLate = [];  // Exactly the same as above but applied after AltDefs.
 
         [Unsaved(false)]
         private readonly static Dictionary<string, Color> randomClrPerId = [];
@@ -121,6 +122,13 @@ namespace BigAndSmall
             foreach (var altDef in AltDefs.Where(x => x.color.GetState(pawn, node: renderNode)))
             {
                 if (altDef.color.GetColor(renderNode, oldClr, hashOffset, useOldColor) is Color altClr)
+                {
+                    return altClr;
+                }
+            }
+            foreach (var alt in altsLate.Where(x => x.GetState(pawn, node: renderNode)))
+            {
+                if (alt.GetColor(renderNode, oldClr, hashOffset, useOldColor) is Color altClr)
                 {
                     return altClr;
                 }

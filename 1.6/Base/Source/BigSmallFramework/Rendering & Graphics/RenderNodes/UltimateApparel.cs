@@ -15,6 +15,7 @@ namespace BigAndSmall
         public PawnRenderNode Base => this;
         public bool ScaleSet { get; set; } = false;
         public Vector2 CachedScale { get; set; } = Vector2.one;
+        public ShaderTypeDef ShaderOverride { get; set; } = null;
         PawnRenderingProps_Ultimate UProps => (PawnRenderingProps_Ultimate)props;
         public PawnRenderNode_UltimateApparel(Pawn pawn, PawnRenderingProps_Ultimate props, PawnRenderTree tree)
             : base(pawn, props, tree, null)

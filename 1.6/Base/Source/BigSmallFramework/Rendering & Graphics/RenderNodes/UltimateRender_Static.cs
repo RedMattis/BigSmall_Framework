@@ -13,6 +13,7 @@ namespace BigAndSmall
         public PawnRenderNode Base { get; }
         public bool ScaleSet { get; set; }
         public Vector2 CachedScale { get; set; }
+        public ShaderTypeDef ShaderOverride { get; set; }
     }
 
     public static class PRN_Ultimate
@@ -33,6 +34,7 @@ namespace BigAndSmall
                 {
                     uNode.ScaleSet = true;
                     uNode.CachedScale = conditionalProps.drawSize;
+                    uNode.ShaderOverride = conditionalProps.shader;
                 }
 
                 if (texPath.NullOrEmpty())
@@ -57,15 +59,25 @@ namespace BigAndSmall
                 Color colorOne = graphicSet.ColorA.GetColor(node, Color.white, ColorSetting.clrOneKey);
                 Color colorTwo = graphicSet.ColorB.GetColor(node, Color.white, ColorSetting.clrTwoKey);
                 Color colorThree = graphicSet.ColorC.GetColor(node, Color.white, ColorSetting.clrThreeKey);
-                Shader shader = props.shader?.Shader ?? ShaderTypeDefOf.CutoutComplex.Shader;
-                if (UProps.useSkinShader)
+                Shader shader;
+                if (uNode.ShaderOverride != null)
                 {
-                    Shader skinShader = ShaderUtility.GetSkinShader(pawn);
-                    if (skinShader != null)
+                    shader = uNode.ShaderOverride.Shader;
+                }
+                else
+                {
+                    shader = props.shader?.Shader ?? ShaderTypeDefOf.CutoutComplex.Shader;
+                    if (UProps.useSkinShader)
                     {
-                        shader = skinShader;
+                        Shader skinShader = ShaderUtility.GetSkinShader(pawn);
+                        if (skinShader != null)
+                        {
+                            shader = skinShader;
+                        }
                     }
                 }
+                    
+                
                 
                 return GetCachableGraphics(texPath, Vector2.one, shader, colorOne, colorTwo, colorThree, maskPath: maskPath);
             }

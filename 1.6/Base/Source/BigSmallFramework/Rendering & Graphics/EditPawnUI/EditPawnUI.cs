@@ -29,8 +29,8 @@ namespace BigAndSmall
         {
             Thing,
             Apparel,
-            Gene,
-            Hediff,
+            //Gene,
+            CustomTag,
         }
         private readonly ILoadReferenceable target;
         private static readonly Vector2 ButtonSize = new(200f, 40f);
@@ -166,8 +166,8 @@ namespace BigAndSmall
                     {
                         foreach (var cg in gene.def.ExtensionsOnDef<HasCustomizableGraphics, GeneDef>())
                         {
-                            EditableThings.Add(new ThingGData(pawn, EditMode.Gene, cg, def: gene.def));
-                            tabsWithContent.Add(EditMode.Gene);
+                            EditableThings.Add(new ThingGData(pawn, EditMode.CustomTag, cg, def: gene.def));
+                            tabsWithContent.Add(EditMode.CustomTag);
                         }
                     }
                 }
@@ -175,8 +175,8 @@ namespace BigAndSmall
                 {
                     foreach(var cg in hediff.def.ExtensionsOnDef<HasCustomizableGraphics, HediffDef>())
                     {
-                        EditableThings.Add(new ThingGData(pawn, EditMode.Hediff, cg, def: hediff.def));
-                        tabsWithContent.Add(EditMode.Hediff);
+                        EditableThings.Add(new ThingGData(pawn, EditMode.CustomTag, cg, def: hediff.def));
+                        tabsWithContent.Add(EditMode.CustomTag);
                     }
                 }
             }
@@ -243,7 +243,13 @@ namespace BigAndSmall
                 var thing = graphicData.thing;
                 var hasCustomDef = graphicData.cgExt;
                 var cdTag = graphicData.cgExt?.tag;
-
+                if (thing is Apparel apparel)
+                {
+                    if (gMode == EditMode.Apparel)
+                    {
+                        curY = DrawApparelSettings(rect, curY, apparel, hasCustomDef);
+                    }
+                }
                 if (thing is Pawn pawn)
                 {
                     switch (gMode)
@@ -251,13 +257,8 @@ namespace BigAndSmall
                         case EditMode.Thing:
                             curY = DrawThingSettings(rect, curY, pawn);
                             break;
-                        case EditMode.Apparel:
-                            curY = DrawApparelSettings(rect, curY, thing, hasCustomDef, pawn);
-                            break;
-                        case EditMode.Gene:
+                        case EditMode.CustomTag:
                             curY = DrawGeneSettings(rect, curY, graphicData, thing, hasCustomDef, cdTag, pawn);
-                            break;
-                        case EditMode.Hediff:
                             curY = DrawHediffSettings(rect, curY, graphicData, thing, hasCustomDef, cdTag, pawn);
                             break;
                     }
@@ -280,32 +281,31 @@ namespace BigAndSmall
                 DrawTitle("BS_Hair".Translate(), rect, ref curY);
                 DrawColorPicker(pawn, pawn.story.HairColor, rect, ref curY, (Color col) => pawn.story.HairColor = col);
                 DrawTitle("BS_Custom".Translate(), rect, ref curY);
-                DrawColorPicker(pawn, pawn.DrawColor, rect, ref curY, (Color col) => pawn.SetCustomColorA(col));
-                DrawColorPicker(pawn, pawn.DrawColor, rect, ref curY, (Color col) => pawn.SetCustomColorB(col));
-                DrawColorPicker(pawn, pawn.DrawColor, rect, ref curY, (Color col) => pawn.SetCustomColorC(col));
+                DrawColorPicker(pawn, pawn.GetCustomColorA(), rect, ref curY, (Color col) => pawn.SetCustomColorA(col));
+                DrawColorPicker(pawn, pawn.GetCustomColorB(), rect, ref curY, (Color col) => pawn.SetCustomColorB(col));
+                DrawColorPicker(pawn, pawn.GetCustomColorC(), rect, ref curY, (Color col) => pawn.SetCustomColorC(col));
                 return curY;
             }
 
-            float DrawApparelSettings(Rect rect, float curY, Thing thing, HasCustomizableGraphics hasCustomDef, Pawn pawn)
+            float DrawApparelSettings(Rect rect, float curY, Apparel apparel, HasCustomizableGraphics hasCustomDef)
             {
-                var apparel = thing as Apparel;
                 DrawTitle(apparel.def.LabelCap, rect, ref curY);
                 DrawApparelIcon(apparel, rect, ref curY);
-                if (hasCustomDef.colorA)
+                if (hasCustomDef?.colorA == true)
                 {
-                    DrawColorPicker(pawn, apparel.GetCustomColorA(), rect, ref curY, (Color col) => thing.SetCustomColorA(apparel.DrawColor = col));
+                    DrawColorPicker(pawn, apparel.GetCustomColorA(), rect, ref curY, (Color col) => apparel.SetCustomColorA(apparel.DrawColor = col));
                 }
                 else
                 {
                     DrawColorPicker(pawn, apparel.DrawColor, rect, ref curY, (Color col) => apparel.DrawColor = col);
                 }
-                if (hasCustomDef.colorB)
+                if (hasCustomDef?.colorB == true)
                 {
-                    DrawColorPicker(pawn, apparel.GetCustomColorB(), rect, ref curY, (Color col) => thing.SetCustomColorB(col));
+                    DrawColorPicker(pawn, apparel.GetCustomColorB(), rect, ref curY, (Color col) => apparel.SetCustomColorB(col));
                 }
-                if (hasCustomDef.colorC)
+                if (hasCustomDef?.colorC == true)
                 {
-                    DrawColorPicker(pawn, apparel.GetCustomColorC(), rect, ref curY, (Color col) => thing.SetCustomColorC(col));
+                    DrawColorPicker(pawn, apparel.GetCustomColorC(), rect, ref curY, (Color col) => apparel.SetCustomColorC(col));
                 }
 
                 return curY;
@@ -372,7 +372,7 @@ namespace BigAndSmall
 
         private void DrawApparelIcon(Apparel apparel, Rect rect, ref float curY)
         {
-            GUI.color = Color.white;
+            //GUI.color = Color.white;
             var iconRect = new Rect(rect.x, curY, 64, 64);
             Widgets.DrawTextureFitted(iconRect, apparel.Graphic.MatSouth.mainTexture, 1f);
             curY += iconRect.height + 12;
@@ -382,7 +382,7 @@ namespace BigAndSmall
         {
             if (geneDef.Icon != null)
             {
-                GUI.color = Color.white;
+                //GUI.color = Color.white;
                 var iconRect = new Rect(rect.x, curY, 64, 64);
                 Widgets.DrawTextureFitted(iconRect, geneDef.Icon, 1f);
                 curY += rect.height + 24;
@@ -426,6 +426,7 @@ namespace BigAndSmall
                 if (!color.IndistinguishableFrom(currClr))
                 {
                     setColor(color);
+                    pawn?.Drawer.renderer.renderTree.SetDirty(); //  In case tree is busy.
                     pawn?.Drawer.renderer.SetAllGraphicsDirty();
                 }
                 curY += 32f;

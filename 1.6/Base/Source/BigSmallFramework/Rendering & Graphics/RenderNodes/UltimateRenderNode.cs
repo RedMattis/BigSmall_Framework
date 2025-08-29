@@ -28,6 +28,7 @@ namespace BigAndSmall
         public PawnRenderNode Base => this;
         public bool ScaleSet { get; set; } = false;
         public Vector2 CachedScale { get; set; } = Vector2.one;
+        public ShaderTypeDef ShaderOverride { get; set; } = null;
         private readonly bool useHeadMesh;
 
         

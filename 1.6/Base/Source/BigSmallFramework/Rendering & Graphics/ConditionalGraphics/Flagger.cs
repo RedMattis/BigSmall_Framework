@@ -47,21 +47,47 @@ namespace BigAndSmall
 
         public string mainTag;
         public string subTag = DEFAULT;
-        public List<string> extraTags = [];
+        public Dictionary<string, string> extraData = [];
+        public string Label => extraData.TryGetValue("Label", out var label) ? label : mainTag;
 
         public bool Equals(FlagString other) => this?.mainTag != null && other?.mainTag != null
-            && mainTag == other.mainTag && subTag == other.subTag && extraTags.SequenceEqual(other.extraTags);
+            && mainTag == other.mainTag && subTag == other.subTag;
         public override bool Equals(object obj)
         {
             if (obj is FlagString other)
             {
-                return mainTag == other.mainTag && subTag == other.subTag && extraTags.SequenceEqual(other.extraTags);
+                return mainTag == other.mainTag && subTag == other.subTag;
             }
             return false;
         }
 
         public static bool operator ==(FlagString left, FlagString right) => left?.Equals(right) ?? right is null;
         public static bool operator !=(FlagString left, FlagString right) => !(left == right);
+
+        public bool MainTagEquals(FlagString other) => this?.mainTag != null && other?.mainTag != null
+            && mainTag == other.mainTag;
+
+        /// <summary>
+        /// If the mainTag and subTag are identical, merges the extraData dictionaries, preferring this.extraData on key conflicts.
+        /// </summary>
+        public FlagString TryFuseIdentical(FlagString other)
+        {
+            if (other != this) return null;
+            var combinedExtra = new Dictionary<string, string>(extraData);
+            foreach (var kvp in other.extraData)
+            {
+                if (!combinedExtra.ContainsKey(kvp.Key))
+                {
+                    combinedExtra[kvp.Key] = kvp.Value;
+                }
+            }
+            return new FlagString()
+            {
+                mainTag = mainTag,
+                subTag = subTag,
+                extraData = combinedExtra
+            };
+        }
 
         public override int GetHashCode()
         {
@@ -73,7 +99,7 @@ namespace BigAndSmall
                 return hash;
             }
         }
-        public override string ToString() => $"{mainTag}/{subTag}" + (extraTags.Any() ? $"[{string.Join(",", extraTags)}]" : "");
+        public override string ToString() => $"{mainTag}/{subTag}" + (extraData.Any() ? $"[{string.Join(",", extraData)}]" : "");
 
         public void LoadDataFromXML(XmlNode node)
         {
@@ -82,7 +108,9 @@ namespace BigAndSmall
             {
                 subTag = node.InnerText;
             }
-            extraTags = node.Attributes?.OfType<XmlAttribute>().Select(x => x.Value).ToList() ?? [];
+            extraData = node.Attributes?
+                .OfType<XmlAttribute>()
+                .ToDictionary(attr => attr.Name, attr => attr.Value) ?? [];
         }
         public void LoadDataFromXmlCustom(XmlNode xmlRoot)
         {

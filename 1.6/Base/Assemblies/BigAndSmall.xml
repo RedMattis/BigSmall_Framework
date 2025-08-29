@@ -563,6 +563,11 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:BigAndSmall.FlagString.TryFuseIdentical(BigAndSmall.FlagString)">
+            <summary>
+            If the mainTag and subTag are identical, merges the extraData dictionaries, preferring this.extraData on key conflicts.
+            </summary>
+        </member>
         <member name="T:BigAndSmall.MultiColorUtils">
             <summary>
             From Rimdark40K collab on 3-color shaders.

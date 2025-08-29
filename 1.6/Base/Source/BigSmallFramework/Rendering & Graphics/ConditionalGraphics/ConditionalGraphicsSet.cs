@@ -28,6 +28,7 @@ namespace BigAndSmall
         protected PathGetter pathGetter = null;
         public AdaptivePathPathList maskPaths = [];
         public List<ConditionalGraphicsSet> alts = [];
+        public List<ConditionalGraphicsSet> altsLate = [];  // Exactly the same as above but applied after AltDefs.
 
         public List<GraphicSetDef> AltDefs => replacementDef == null ? [.. altDefs] : [.. altDefs, replacementDef];
         public ColorSetting ColorA => colorADef?.color ?? colorA;
@@ -62,6 +63,14 @@ namespace BigAndSmall
             foreach (var altDef in AltDefs.Where(x => x.conditionalGraphics.GetState(cache.pawn)))
             {
                 if (altDef.conditionalGraphics.GetGraphicsSet(cache) is ConditionalGraphicsSet altSet)
+                {
+                    return altSet;
+                }
+            }
+            foreach (var alt in altsLate)
+            {
+                if (alt.GetState(cache.pawn) == false) { continue; }
+                if (alt.GetGraphicsSet(cache) is ConditionalGraphicsSet altSet)
                 {
                     return altSet;
                 }

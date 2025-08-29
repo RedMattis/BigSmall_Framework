@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Verse;
 
 namespace BigAndSmall
 {
     public class ConditionalGraphicProperties : ConditionalGraphic
     {
         public Vector2 drawSize = Vector2.one;
+        public ShaderTypeDef shader = null;
 
         public List<ConditionalGraphicProperties> alts = [];
 

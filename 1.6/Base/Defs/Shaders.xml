@@ -5,9 +5,16 @@
     <shaderPath>BS_CutoutThreeColor</shaderPath>
   </ShaderTypeDef>
 
+  <!-- Transparent Shaders are more expensive than cutout ones, so use them sparingly.-->
+
   <ShaderTypeDef>
     <defName>BS_TransparentThreeColor</defName>
     <shaderPath>BS_TransparentThreeColor</shaderPath>
+  </ShaderTypeDef>
+
+  <ShaderTypeDef>
+    <defName>BS_FlatTransparentOverlay</defName>
+    <shaderPath>BS_FlatTransparentOverlay</shaderPath>
   </ShaderTypeDef>
 
 </Defs>

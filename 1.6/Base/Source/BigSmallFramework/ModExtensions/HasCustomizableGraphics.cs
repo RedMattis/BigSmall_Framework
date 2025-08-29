@@ -17,5 +17,20 @@ namespace BigAndSmall
         public bool colorC = false;
 
         public override string ToString() => $"[{nameof(HasCustomizableGraphics)}] - Tag: {tag}, ColorA: {colorA}, ColorB: {colorB}, ColorC: {colorC}";
+
+        public HasCustomizableGraphics TryMerge(HasCustomizableGraphics other)
+        {
+            if (tag.TryFuseIdentical(other.tag) is FlagString newTag)
+            {
+                return new HasCustomizableGraphics()
+                {
+                    tag = newTag,
+                    colorA = colorA || other.colorA,
+                    colorB = colorB || other.colorB,
+                    colorC = colorC || other.colorC
+                };
+            }
+            return null;
+        }
     }
 }
