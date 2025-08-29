@@ -104,7 +104,7 @@ namespace BigAndSmall
             var paths = this.Where(x => (x.GetBodyType() == null || x.GetBodyType() == pawn.story?.bodyType) && (x.GetGender() == null || x.GetGender() == targetGender));
             if (!paths.Any()) return null;
 
-            var bestPriority = paths.Select(x => x.GetPriority()).DefaultIfEmpty(0).Max();
+            var bestPriority = paths.Select(x => x.GetPriority()).DefaultIfEmpty(-99).Max();
             var result = paths.Where(x => x.GetPriority() == bestPriority).Select(x => x.texturePath).ToList();
 
             return result.Any() ? result : null;

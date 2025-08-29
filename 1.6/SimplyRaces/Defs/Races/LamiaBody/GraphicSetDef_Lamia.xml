@@ -8,6 +8,8 @@
         <Body_Female>RaceDefaults/Snek/bp_female</Body_Female>
         <Body_Fat>RaceDefaults/Snek/bp_fat</Body_Fat>
         <Body_Thin>RaceDefaults/Snek/bp_default</Body_Thin>
+        <Body_Child MayRequire="Ludeon.RimWorld.Biotech">RaceDefaults/Snek/bp_default</Body_Child>
+        <Body_Baby MayRequire="Ludeon.RimWorld.Biotech">RaceDefaults/Snek/bp_child</Body_Baby>
       </texturePaths>
       <colorA>
         <replaceFlagsAndInactive><BS_LamiaColorA/></replaceFlagsAndInactive>
