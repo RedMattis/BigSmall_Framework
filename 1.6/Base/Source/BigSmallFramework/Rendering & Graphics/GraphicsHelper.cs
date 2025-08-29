@@ -101,7 +101,7 @@ namespace BigAndSmall
             Graphic graphic;
             if (graphicClass == typeof(Graphic_Single))
             {
-                if (BSDefs.IsThreeColorShader(shader))
+                if (BSDefs.IsBSShader(shader))
                 {
                     graphic = MultiColorUtils.GetGraphic<Graphic_Multi>(path, shader, drawSize, colorOne, colorTwo, colorThree, data: null, maskPath: maskPath);
                 }
@@ -112,7 +112,7 @@ namespace BigAndSmall
             }
             else
             {
-                if (BSDefs.IsThreeColorShader(shader))
+                if (BSDefs.IsBSShader(shader))
                 {
                     graphic = MultiColorUtils.GetGraphic<Graphic_Multi>(path, shader, drawSize, colorOne, colorTwo, colorThree, data: null, maskPath: maskPath);
                 }

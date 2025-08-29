@@ -41,7 +41,7 @@ namespace BigAndSmall
         }
     }
 
-    public class FlagString
+    public class FlagString : IExposable
     {
         private const string DEFAULT = "default";
 
@@ -116,6 +116,13 @@ namespace BigAndSmall
         {
             var node = xmlRoot.FirstChild;
             LoadDataFromXML(node);
+        }
+
+        public void ExposeData()
+        {
+            Scribe_Values.Look(ref mainTag, "mainTag");
+            Scribe_Values.Look(ref subTag, "subTag", DEFAULT);
+            Scribe_Collections.Look(ref extraData, "extraData", LookMode.Value, LookMode.Value);
         }
     }
     public class FlagStringList : List<FlagString>

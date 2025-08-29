@@ -34,6 +34,9 @@ namespace BigAndSmall
                 {
                     uNode.ScaleSet = true;
                     uNode.CachedScale = conditionalProps.drawSize;
+                }
+                if (conditionalProps.shader != null)
+                {
                     uNode.ShaderOverride = conditionalProps.shader;
                 }
 

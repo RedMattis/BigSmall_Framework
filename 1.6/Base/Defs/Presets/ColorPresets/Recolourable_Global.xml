@@ -1,0 +1,27 @@
+<Defs>
+  <BigAndSmall.ColorSettingDef>
+    <defName>BS_CustomGlobalA</defName>
+    <color>
+      <triggers><li>CustomColorAIsSet</li></triggers>
+      <customColorA>(1,1,1)</customColorA>
+    </color>
+  </BigAndSmall.ColorSettingDef>
+
+  <BigAndSmall.ColorSettingDef>
+    <defName>BS_CustomGlobalB</defName>
+    <color>
+      <triggers><li>CustomColorBIsSet</li></triggers>
+      <customColorB>(1,1,1)</customColorB>
+    </color>
+  </BigAndSmall.ColorSettingDef>
+
+  <BigAndSmall.ColorSettingDef>
+    <defName>BS_CustomGlobalC</defName>
+    <color>
+      <triggers><li>CustomColorCIsSet</li></triggers>
+      <customColorC>(1,1,1)</customColorC>
+    </color>
+  </BigAndSmall.ColorSettingDef>
+
+
+</Defs>

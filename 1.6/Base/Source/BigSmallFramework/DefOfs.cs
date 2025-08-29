@@ -7,11 +7,13 @@ namespace BigAndSmall
     [DefOf]
     public static class BSDefs
     {
-        public static bool IsThreeColorShader(Shader shader) =>
-            shader == BS_CutoutThreeColor.Shader || shader == BS_TransparentThreeColor.Shader;
+        public static bool IsBSShader(Shader shader) => shader == BS_CutoutThreeColor.Shader
+            || shader == BS_TransparentThreeColor.Shader
+            || shader == BS_FlatTransparentOverlay.Shader;
 
         public static ShaderTypeDef BS_CutoutThreeColor;
         public static ShaderTypeDef BS_TransparentThreeColor;
+        public static ShaderTypeDef BS_FlatTransparentOverlay;
 
         public static StatDef ButcheryFleshEfficiency;
         public static StatDef ButcheryMechanoidEfficiency;

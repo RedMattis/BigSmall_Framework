@@ -1,0 +1,25 @@
+<Defs>
+  <BigAndSmall.ColorSettingDef>
+    <defName>BS_ColorableHairB</defName>
+    <color>
+      <customTagGraphicIsSet>
+        <tag><BS_CustomHairB/></tag>
+        <colorB>true</colorB>
+      </customTagGraphicIsSet>
+      <customClrTagA><BS_CustomHairB/></customClrTagA>
+    </color>
+  </BigAndSmall.ColorSettingDef>
+
+  <BigAndSmall.ColorSettingDef>
+    <defName>BS_ColorableHairC</defName>
+    <color>
+      <customTagGraphicIsSet>
+        <tag><BS_CustomHairC/></tag>
+        <colorC>true</colorC>
+      </customTagGraphicIsSet>
+      <customClrTagA><BS_CustomHairC/></customClrTagA>
+    </color>
+  </BigAndSmall.ColorSettingDef>
+
+
+</Defs>

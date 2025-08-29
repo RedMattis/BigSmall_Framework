@@ -1,0 +1,23 @@
+<Defs>
+  <BigAndSmall.ColorSettingDef>
+    <defName>BS_ColorableSkinB</defName>
+    <color>
+      <customTagGraphicIsSet>
+        <tag><BS_CustomSkinB/></tag>
+        <colorB>true</colorB>
+      </customTagGraphicIsSet>
+      <customClrTagA><BS_CustomSkinB/></customClrTagA>
+    </color>
+  </BigAndSmall.ColorSettingDef>
+
+  <BigAndSmall.ColorSettingDef>
+    <defName>BS_ColorableSkinC</defName>
+    <color>
+      <customTagGraphicIsSet>
+        <tag><BS_CustomSkinC/></tag>
+        <colorC>true</colorC>
+      </customTagGraphicIsSet>
+      <customClrTagA><BS_CustomSkinC/></customClrTagA>
+    </color>
+  </BigAndSmall.ColorSettingDef>
+</Defs>
