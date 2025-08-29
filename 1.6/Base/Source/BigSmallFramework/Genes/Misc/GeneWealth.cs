@@ -34,7 +34,6 @@ namespace BigAndSmall
                 {
                     __result *= cache.raidWealthMultiplier;
                     __result += cache.raidWealthOffset;
-                    //Log.Warning($"Debug: {pawn.Name.ToStringShort} has a wealth of {__result}$ for the purpose of raid calculations");                    
                 }
             }
         }

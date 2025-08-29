@@ -301,6 +301,7 @@ namespace BigAndSmall.Debugging
             {
                 RemoveCustomGraphics();
             }));
+
             list.Add(new DebugActionNode("Set Custom Color A", DebugActionType.ToolMap, delegate
             {
                 SetCustomColor(0);
@@ -361,17 +362,18 @@ namespace BigAndSmall.Debugging
             IntVec3 cell = UI.MouseCell();
             foreach (Thing item in Find.CurrentMap.thingGrid.ThingsAt(cell).ToList())
             {
-                if (item is Pawn pawn && pawn.apparel != null)
+                if (item is Pawn pawn)
                 {
-                    foreach (Apparel appItem in pawn.apparel.WornApparel)
+                    if (pawn.apparel != null)
                     {
-                        CustomizableGraphic.Replace(appItem, null);
+                        foreach (Apparel appItem in pawn.apparel.WornApparel)
+                        {
+                            CustomizableGraphic.Replace(appItem, null);
+                        }
                     }
-                }
-                else
-                {
                     CustomizableGraphic.Replace(item, null);
                 }
+                
             }
             foreach (Pawn pawn in Find.CurrentMap.thingGrid.ThingsAt(cell).OfType<Pawn>())
             {

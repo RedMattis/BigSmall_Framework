@@ -3,7 +3,7 @@
     <defName>BS_CustomGlobalA</defName>
     <color>
       <triggers><li>CustomColorAIsSet</li></triggers>
-      <customColorA>(1,1,1)</customColorA>
+      <customColorA>(1,0,0)</customColorA>
     </color>
   </BigAndSmall.ColorSettingDef>
 
@@ -11,7 +11,7 @@
     <defName>BS_CustomGlobalB</defName>
     <color>
       <triggers><li>CustomColorBIsSet</li></triggers>
-      <customColorB>(1,1,1)</customColorB>
+      <customColorB>(0,1,0)</customColorB>
     </color>
   </BigAndSmall.ColorSettingDef>
 
@@ -19,7 +19,7 @@
     <defName>BS_CustomGlobalC</defName>
     <color>
       <triggers><li>CustomColorCIsSet</li></triggers>
-      <customColorC>(1,1,1)</customColorC>
+      <customColorC>(0,0,1)</customColorC>
     </color>
   </BigAndSmall.ColorSettingDef>
 

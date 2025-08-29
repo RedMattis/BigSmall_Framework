@@ -17,4 +17,9 @@
     <shaderPath>BS_FlatTransparentOverlay</shaderPath>
   </ShaderTypeDef>
 
+  <!-- <ShaderTypeDef>
+    <defName>BS_FlatSampleOverlay</defName>
+    <shaderPath>BS_FlatSampleOverlay</shaderPath>
+  </ShaderTypeDef> -->
+
 </Defs>

@@ -90,7 +90,6 @@ namespace BigAndSmall
             
             if (first?.romanceTags == null || second?.romanceTags == null)
             {
-                Log.Message($"Debug: One of the romance tags is null. First: {first?.romanceTags}, Second: {second?.romanceTags}");
                 return null;
             }
             if (first == second)

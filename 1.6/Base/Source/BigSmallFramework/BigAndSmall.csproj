@@ -78,5 +78,13 @@
     <Publicize Include="Assembly-CSharp:Verse.PawnRenderNode.props" />
     <Publicize Include="Assembly-CSharp:Verse.RaceProperties.fleshType" />
     <Publicize Include="Assembly-CSharp:Verse.PriorityWork.pawn" />
+    
+    <Publicize Include="Assembly-CSharp:Verse.ShaderParameter.name" />
+    <Publicize Include="Assembly-CSharp:Verse.ShaderParameter.value" />
+    <Publicize Include="Assembly-CSharp:Verse.ShaderParameter.type" />
+    <!-- <Publicize Include="Assembly-CSharp:Verse.ShaderParameter.Type" /> -->
+    <Publicize Include="Assembly-CSharp:Verse.MaterialAllocator" />
+    
+    <!-- <Publicize Include="Assembly-CSharp:Verse.GraphicDatabase.cachedGraphicGetters" /> -->
   </ItemGroup>
 </Project>

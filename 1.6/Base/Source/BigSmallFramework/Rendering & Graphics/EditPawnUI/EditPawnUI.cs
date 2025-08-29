@@ -82,7 +82,7 @@ namespace BigAndSmall
                     }
                     foreach (var ideo in Find.World.ideoManager.IdeosListForReading)
                     {
-                        if (!colorCache.Any((Color c) => ideo.ApparelColor.IndistinguishableFrom(c)))
+                        if (!colorCache.Any((Color c) => ideo.ApparelColor.IndistinguishableFromExact(c)))
                         {
                             colorCache.Add(ideo.ApparelColor);
                         }
@@ -90,20 +90,20 @@ namespace BigAndSmall
                 }
                 foreach (var color in Find.World.factionManager.AllFactions.Select(x => x.Color))
                 {
-                    if (!colorCache.Any((Color c) => color.IndistinguishableFrom(c)))
+                    if (!colorCache.Any((Color c) => color.IndistinguishableFromExact(c)))
                     {
                         colorCache.Add(color);
                     }
                 }
                 if (ModsConfig.IdeologyActive && pawn?.story != null && !pawn.DevelopmentalStage.Baby() && pawn.story.favoriteColor != null
-                    && !colorCache.Any((Color c) => pawn.story.favoriteColor.color.IndistinguishableFrom(c)))
+                    && !colorCache.Any((Color c) => pawn.story.favoriteColor.color.IndistinguishableFromExact(c)))
                 {
                     colorCache.Add(pawn.story.favoriteColor.color);
                 }
                 foreach (ColorDef colDef in DefDatabase<ColorDef>.AllDefs
                     .Where((ColorDef x) => x.colorType == ColorType.Ideo || x.colorType == ColorType.Misc))
                 {
-                    if (!colorCache.Any((Color x) => x.IndistinguishableFrom(colDef.color)))
+                    if (!colorCache.Any((Color x) => x.IndistinguishableFromExact(colDef.color)))
                     {
                         colorCache.Add(colDef.color);
                     }
@@ -423,7 +423,7 @@ namespace BigAndSmall
                     }
                     num2 += 110f;
                 }
-                if (!color.IndistinguishableFrom(currClr))
+                if (!color.IndistinguishableFromExact(currClr))
                 {
                     setColor(color);
                     pawn?.Drawer.renderer.renderTree.SetDirty(); //  In case tree is busy.

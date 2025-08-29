@@ -547,14 +547,14 @@ namespace BigAndSmall
             }
             headMaterial = null; bodyMaterial = null;
             headGraphicPath = null; bodyGraphicPath = null;
-            HashSet<PawnExtension> allPawnExt = [.. otherExts, .. raceExts];
+            //HashSet<PawnExtension> allPawnExt = [.. otherExts, .. raceExts];
 
             //apparentGender = allPawnExt.FirstOrDefault(x => x.ApparentGender != null)?.ApparentGender;
             CalculateGenderAndApparentGender([.. otherExts, .. raceExts]);
 
             int pawnRNGSeed = pawn.GetPawnRNGSeed();
 
-            SetPawnHeadAndBodyTextures(allPawnExt, pawnRNGSeed);
+            SetPawnHeadAndBodyTextures(otherExts.ToHashSet(), raceExts.ToHashSet(), pawnRNGSeed);
 
             // Set BodyTypes
             var btpg = new BodyTypesPerGender();
@@ -582,7 +582,7 @@ namespace BigAndSmall
             // Stay on if it was on before.
         }
 
-        private void SetPawnHeadAndBodyTextures(HashSet<PawnExtension> allPawnExt, int pawnRNGSeed)
+        private void SetPawnHeadAndBodyTextures(HashSet<PawnExtension> otherPawnExt, HashSet<PawnExtension> fromRace, int pawnRNGSeed)
         {
             List<(AdaptivePathPathList, PawnExtension)> GetValidPaths(HashSet<PawnExtension> allPawnExt, Func<PawnExtension, AdaptivePathPathList> pathSelector, BSCache cache)
             {
@@ -591,18 +591,26 @@ namespace BigAndSmall
                 int bestScore = validPaths.Max(x => x.p.priority);
                 return [.. validPaths.Where(x => x.p.priority == bestScore)];
             }
-            var bestHeadPaths = GetValidPaths(allPawnExt, x => x.headPaths, this);
-            var bestHeadDeadPaths = GetValidPaths(allPawnExt, x => x.headDessicatedPaths, this);
-            var bestBodyPaths = GetValidPaths(allPawnExt, x => x.bodyPaths, this);
-            var bestBodyDeadPaths = GetValidPaths(allPawnExt, x => x.bodyDessicatedPaths, this);
+            var bestHeadPaths = GetValidPaths(otherPawnExt, x => x.headPaths, this);
+            var bestHeadDeadPaths = GetValidPaths(otherPawnExt, x => x.headDessicatedPaths, this);
+            var bestBodyPaths = GetValidPaths(otherPawnExt, x => x.bodyPaths, this);
+            var bestBodyDeadPaths = GetValidPaths(otherPawnExt, x => x.bodyDessicatedPaths, this);
+
+            bestHeadPaths = bestHeadPaths.Count == 0 ? GetValidPaths(fromRace, x => x.headPaths, this) : bestHeadPaths;
+            bestHeadDeadPaths = bestHeadDeadPaths.Count == 0 ? GetValidPaths(fromRace, x => x.headDessicatedPaths, this) : bestHeadDeadPaths;
+            bestBodyPaths = bestBodyPaths.Count == 0 ? GetValidPaths(fromRace, x => x.bodyPaths, this) : bestBodyPaths;
+            bestBodyDeadPaths = bestBodyDeadPaths.Count == 0 ? GetValidPaths(fromRace, x => x.bodyDessicatedPaths, this) : bestBodyDeadPaths;
 
             headGraphicPath = null;
             bodyGraphicPath = null;
             headDessicatedGraphicPath = null;
             bodyDessicatedGraphicPath = null;
 
-            headMaterial = allPawnExt.FirstOrFallback(x => x.headMaterial != null, null)?.headMaterial;
-            bodyMaterial = allPawnExt.FirstOrFallback(x => x.bodyMaterial != null, null)?.bodyMaterial;
+            headMaterial = otherPawnExt.FirstOrFallback(x => x.headMaterial != null, null)?.headMaterial;
+            bodyMaterial = otherPawnExt.FirstOrFallback(x => x.bodyMaterial != null, null)?.bodyMaterial;
+
+            headMaterial ??= fromRace.FirstOrFallback(x => x.headMaterial != null, null)?.headMaterial;
+            bodyMaterial ??= fromRace.FirstOrFallback(x => x.bodyMaterial != null, null)?.bodyMaterial;
 
             // Prefer grabbing Head & Body from the same source
             PawnExtension bestHeadSrc = null;

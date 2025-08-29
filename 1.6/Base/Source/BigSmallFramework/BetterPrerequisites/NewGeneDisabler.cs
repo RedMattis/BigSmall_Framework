@@ -86,7 +86,6 @@ namespace BigAndSmall
                 string failReason = GeneShouldBeActive(gene, genePawnExts, hediffPawnExts, allPawnExts);
                 if (failReason != "")
                 {
-                    //Log.Message($"Debug: {gene.def.defName} failed to activate: {failReason}");
                     if (!geneCache.isOverriden) genesDeactivated.Add(gene);
                     geneCache.isOverriden = true;
                     if (gene.Active)
@@ -101,19 +100,11 @@ namespace BigAndSmall
                     
                     if (geneCache.isOverriden)
                     {
-                        //Log.Message($"Debug: Activated {gene.def.defName}");
                         geneCache.isOverriden = false;
                         genesActivated.Add(gene);
                         gene.OverrideBy(null);
                         change = true;
                     }
-                    //foreach (var supressor in gene.def.ExtensionsOnDef<GeneSuppressor_Gene, GeneDef>())
-                    //{
-                    //    foreach (string supressedGene in supressor.supressedGenes)
-                    //    {
-                    //        allGenes.Where(x => x.def.defName == supressedGene).ToList().ForEach(x => x.overriddenByGene = gene);
-                    //    }
-                    //}
                 }
             }
             return change;

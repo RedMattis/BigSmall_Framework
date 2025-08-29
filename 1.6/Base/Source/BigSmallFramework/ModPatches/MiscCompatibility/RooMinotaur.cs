@@ -57,18 +57,15 @@ namespace BigAndSmall
         {
             if (__result == false && cantReason.Contains("Herculean"))
             {
-                // Get pawn trait of name "BS_Giant"
                 var matchingTraits = pawn.story.traits.allTraits.Where(x => x.def.defName == "BS_Giant");
 
                 if (matchingTraits.Count() > 0)
                 {
-                    //Log.Warning($"DEBUG: {pawn.Name.ToStringShort} has {matchingTraits.Count()} traits named BS_Giant");
                     cantReason = "Probably a mod conflict :|";
                     __result = true;
                 }
                 else if (pawn?.BodySize >= 1.999f)
                 {
-                    //Log.Warning($"DEBUG: {pawn.Name.ToStringShort} has a body size of {pawn.BodySize}");
                     cantReason = "Probably a mod conflict :|";
                     __result = true;
                 }

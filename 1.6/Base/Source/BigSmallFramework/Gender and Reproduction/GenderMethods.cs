@@ -188,7 +188,7 @@ namespace BigAndSmall
                 return;
             }
 
-            bool headNeedsChange = pawn.story.headType.gender != 0 && pawn.story.headType.gender != apparentGender;
+            bool headNeedsChange = pawn.story?.headType?.gender != 0 && pawn.story?.headType?.gender != apparentGender;
 
             var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
             var activeGeneDefs = activeGenes.Select(x => x.def).ToList();
@@ -256,10 +256,7 @@ namespace BigAndSmall
                     }
                 }
             }
-            if (pawn.story.bodyType == null)
-            {
-                pawn.story.bodyType = PawnGenerator.GetBodyTypeFor(pawn);
-            }
+            pawn.story.bodyType ??= PawnGenerator.GetBodyTypeFor(pawn);
 
         Head:
             if (headNeedsChange)
@@ -291,7 +288,11 @@ namespace BigAndSmall
                     }
                     if (banNarrow)
                     {
-                        validHeads = validHeads.Where(x => !x.narrow).ToList();
+                        List<HeadTypeDef> withoutNarrow = [.. validHeads.Where(x => !x.narrow)];
+                        if (withoutNarrow.Count > 0)
+                        {
+                            validHeads = withoutNarrow;
+                        }
                     }
                     if (validHeads.Count > 0)
                     {
@@ -319,7 +320,7 @@ namespace BigAndSmall
 
         private static void TrySetMissingBodytype(Pawn pawn, Gender gender)
         {
-            if (pawn.story == null) return;
+            if (pawn?.story == null) return;
             if (pawn.story.Adulthood != null)
             {
                 pawn.story.bodyType = pawn.story.Adulthood.BodyTypeFor(gender);
@@ -401,9 +402,6 @@ namespace BigAndSmall
             {
                 Log.Warning($"Warning: Failed to update hair for {pawn}.\n{e.Message}\n{e.StackTrace}");
             }
-
-            // Get head whitelist
-            // TODO...
         }
 
     }

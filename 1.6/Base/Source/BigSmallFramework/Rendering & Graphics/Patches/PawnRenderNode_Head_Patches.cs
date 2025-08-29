@@ -13,7 +13,10 @@ namespace BigAndSmall
         [HarmonyPostfix]
         public static void PawnRenderNode_Head_GraphicFor_Patch(PawnRenderNode_Head __instance, Pawn pawn, ref Graphic __result)
         {
-            if (__result == null) return;
+            if (__result == null)
+            {
+                return;
+            }
             if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache && !cache.isDefaultCache && cache.isHumanlike)
             {
                 HeadGraphics.CalculateHeadGraphicsForPawn(__instance, ref __result, cache);
@@ -43,7 +46,16 @@ namespace BigAndSmall
 
                 if (cache.headGraphicPath is string headGraphicPath)
                 {
-                    __result = GraphicsHelper.TryGetCustomGraphics(headNode, headGraphicPath, __result.color, __result.colorTwo, Color.white, __result.drawSize, cache.headMaterial);
+                    var result = GraphicsHelper.TryGetCustomGraphics(headNode, headGraphicPath, __result.color, __result.colorTwo, Color.white, __result.drawSize, cache.headMaterial);
+                    if (result != null)
+                    {
+                        __result = result;
+                        return;
+                    }
+                    else
+                    {
+                        Log.Warning($"{headNode?.tree?.pawn}  requested headGraphicPath, but TryGetCustomGraphics returned null");
+                    }
                 }
             }
         }

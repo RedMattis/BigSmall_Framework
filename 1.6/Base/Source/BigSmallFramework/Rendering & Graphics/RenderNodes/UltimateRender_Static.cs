@@ -69,7 +69,7 @@ namespace BigAndSmall
                 }
                 else
                 {
-                    shader = props.shader?.Shader ?? ShaderTypeDefOf.CutoutComplex.Shader;
+                    shader = props.shader?.Shader ?? BSDefs.BS_CutoutThreeColor.Shader;
                     if (UProps.useSkinShader)
                     {
                         Shader skinShader = ShaderUtility.GetSkinShader(pawn);

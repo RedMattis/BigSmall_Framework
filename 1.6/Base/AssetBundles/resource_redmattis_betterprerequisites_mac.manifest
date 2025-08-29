@@ -1,15 +1,15 @@
 ManifestFileVersion: 0
-CRC: 4027328216
+CRC: 704582328
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 859d305fe5f7b59a8737ec5f7663bc5d
+    Hash: 738cf2bed633308f25cda5d2e90908fc
   TypeTreeHash:
     serializedVersion: 2
     Hash: 0df1dec30b5d061d422d3e6493d27647
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 859d305fe5f7b59a8737ec5f7663bc5d
+    Hash: 738cf2bed633308f25cda5d2e90908fc
 HashAppended: 0
 ClassTypes:
 - Class: 48
@@ -19,4 +19,5 @@ Assets:
 - Assets/Data/redmattis.betterprerequisites/Materials/BS_FlatTransparentOverlay.shader
 - Assets/Data/redmattis.betterprerequisites/Materials/BS_CutoutThreeColor.shader
 - Assets/Data/redmattis.betterprerequisites/Materials/BS_TransparentThreeColor.shader
+- Assets/Data/redmattis.betterprerequisites/Materials/BS_FlatSampleOverlay.shader
 Dependencies: []

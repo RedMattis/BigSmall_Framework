@@ -249,7 +249,7 @@ namespace BigAndSmall
                         var grouppedClrs = allApparenClrs.Aggregate(new Dictionary<Color, int>(), (dict, color) =>
                         {
                             // Find a key that is indistinguishable from the current color
-                            Color? match = dict.Keys.Any() ? dict.Keys.FirstOrDefault(existingColor => existingColor.IndistinguishableFrom(color)) : null;
+                            Color? match = dict.Keys.Any() ? dict.Keys.FirstOrDefault(existingColor => existingColor.IndistinguishableFromExact(color)) : null;
 
                             if (match != null)
                             {
@@ -355,7 +355,6 @@ namespace BigAndSmall
             //        }
             //    }
             //}
-
             Color finalClr = useOldColor ? oldClr : Color.white;
             if (colorsAdded.Count > 0) {
                 if (averageColors)
@@ -379,6 +378,7 @@ namespace BigAndSmall
                     didSet = true;
                 }
             }
+            float alpha = finalClr.a;
             if (temperatureComplementary != null || temperatureAnalogous != null)
             {
                 Color.RGBToHSV(finalClr, out float hue, out float sat, out float val);
@@ -485,6 +485,7 @@ namespace BigAndSmall
                 finalClr = Color.HSVToRGB(hue, sat, val);
                 didSet = true;
             }
+            finalClr.a = alpha;
 
             if (didSet)
             {

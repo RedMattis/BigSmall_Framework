@@ -23,13 +23,12 @@ namespace BigAndSmall
         //    return graphic_Multi;
         //}
 
-        public Graphic GetGraphic(PawnRenderNode pawnRenderNode, string path, Color colorOne, Color colorTwo, Color colorThree, Vector2 drawSize, CustomMaterial data)
+        public Graphic GetGraphic(PawnRenderNode pawnRenderNode, string path, Color colorOne, Color colorTwo, Color colorThree, Vector2 drawSize)
         {
-            colorOne = data.colorA.GetColor(pawnRenderNode, colorOne, ColorSetting.clrOneKey);
-            colorTwo = data.colorB.GetColor(pawnRenderNode, colorTwo, ColorSetting.clrTwoKey);
-            colorThree = data.colorC.GetColor(pawnRenderNode, colorThree, ColorSetting.clrThreeKey);
-
-            Graphic graphic = GetCachableGraphics(path, drawSize, data.shader.Shader, colorOne, colorTwo, colorThree);
+            colorOne = colorA.GetColor(pawnRenderNode, colorOne, ColorSetting.clrOneKey);
+            colorTwo = colorB.GetColor(pawnRenderNode, colorTwo, ColorSetting.clrTwoKey);
+            colorThree = colorC.GetColor(pawnRenderNode, colorThree, ColorSetting.clrThreeKey);
+            Graphic graphic = GetCachableGraphics(path, drawSize, shader.Shader, colorOne, colorTwo, colorThree);
             return graphic;
         }
     }

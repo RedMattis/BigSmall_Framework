@@ -51,15 +51,15 @@ Shader "BS_TransparentThreeColor"
 
 			float4 frag(v2f i) : SV_Target
 			{
-				float4 _MainTextureColor = tex2D(_MainTex, i.uv);
-				float4 col = _MainTextureColor;
+				float4 col = tex2D(_MainTex, i.uv);
+        clip (col.a - 0.0001);
         float col_lumen = dot(col.rgb, float3(0.299, 0.587, 0.114));
 
-				float4 _MaskTextureColor = tex2D(_MaskTex, i.uv);
-				float r = _MaskTextureColor.r;
-				float g = _MaskTextureColor.g;
-				float b = _MaskTextureColor.b;
-        float mask_alpha = _MaskTextureColor.a;
+				float4 mask = tex2D(_MaskTex, i.uv);
+				float r = mask.r;
+				float g = mask.g;
+				float b = mask.b;
+        float mask_alpha = mask.a;
 
         float total_clr = r + g + b;
         total_clr = max(total_clr, 1.0);
