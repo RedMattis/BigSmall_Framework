@@ -24,9 +24,9 @@ namespace BigAndSmall
 
 			result.AddRange(includeInactive ? ModExtHelper.GetAllExtensionsPlusInactive<Flagger>(pawn) : ModExtHelper.GetAllExtensions<Flagger>(pawn, doSort: false));
 
-			var factionDef = pawn.Faction?.def;
+			FactionDef factionDef = pawn.Faction?.def;
 			if (factionDef != null)
-				result.AddRange(pawn.Faction.def.ExtensionsOnDef<Flagger, FactionDef>(doSort: false));
+				result.AddRange(factionDef.ExtensionsOnDef<Flagger, FactionDef>(doSort: false));
 
 			if (pawn.kindDef != null)
 				result.AddRange(pawn.kindDef.ExtensionsOnDef<Flagger, PawnKindDef>(doSort: false));
