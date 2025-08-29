@@ -17,14 +17,25 @@ namespace BigAndSmall
 
         public static List<FlagString> GetTagStrings(Pawn pawn, bool includeInactive)
         {
-            var flagList = includeInactive ? ModExtHelper.GetAllExtensionsPlusInactive<Flagger>(pawn) : ModExtHelper.GetAllExtensions<Flagger>(pawn);
-            var fOverrides = pawn.Faction.def.ExtensionsOnDef<Flagger, FactionDef>();
-            var pkOverrides = pawn.kindDef.ExtensionsOnDef<Flagger, PawnKindDef>();
-            var storyOverrides = ModExtHelper.GetAllExtensionsOnBackStories<Flagger>(pawn);
-            flagList = [.. flagList, .. fOverrides, .. pkOverrides, .. storyOverrides];
-            if (flagList.Any())
+			if (pawn == null) 
+				return [];
+
+			List<Flagger> result = new List<Flagger>(20);
+
+			result.AddRange(includeInactive ? ModExtHelper.GetAllExtensionsPlusInactive<Flagger>(pawn) : ModExtHelper.GetAllExtensions<Flagger>(pawn, doSort: false));
+
+			var factionDef = pawn.Faction?.def;
+			if (factionDef != null)
+				result.AddRange(pawn.Faction.def.ExtensionsOnDef<Flagger, FactionDef>(doSort: false));
+
+			if (pawn.kindDef != null)
+				result.AddRange(pawn.kindDef.ExtensionsOnDef<Flagger, PawnKindDef>(doSort: false));
+
+			result.AddRange(ModExtHelper.GetAllExtensionsOnBackStories<Flagger>(pawn));
+
+            if (result.Count > 0)
             {
-                return [.. flagList.OrderByDescending(x => x.priority).SelectMany(x => x.flags)];
+                return result.OrderByDescending(x => x.priority).SelectMany(x => x.flags).ToList();
             }
             return [];
         }
