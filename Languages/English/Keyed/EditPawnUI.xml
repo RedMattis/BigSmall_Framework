@@ -7,7 +7,9 @@
   
   <BS_Skin>Skin Color</BS_Skin>
   <BS_Hair>Hair Color</BS_Hair>
-  <BS_Custom>Custom Character Colors</BS_Custom>
+  <BS_Custom>Custom</BS_Custom>
+  <BS_Custom_Str>Custom Color {0}</BS_Custom_Str>
 
-  <BS_OverrideCustomizableColor>Customize Color</BS_OverrideCustomizableColor>
+  <BS_Customize_Str>Color {0}</BS_Customize_Str>
+  <BS_CustomizableColor>Customize Color</BS_CustomizableColor>
 </LanguageData>

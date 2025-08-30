@@ -37,88 +37,20 @@ namespace BigAndSmall
 
         private int selectedTab = 0;
         private EditMode activeTab = EditMode.Thing;
-        private List<EditMode> tabsWithContent = [];
-        private List<ThingGData> EditableThings = [];
-        private Pawn pawn = null;
+        private readonly List<EditMode> tabsWithContent = [];
+        private readonly List<ThingGData> EditableThings = [];
+        private readonly Pawn pawn = null;
 
         private Vector2 scrollPosition = Vector2.zero;
         private float scrollViewHeight = 0f;
-
-        private List<Color> colorCache;
-        public List<Color> GetPickableColors(Pawn pawn, bool force=false)
-        {
-            if (force || colorCache == null)
-            {
-                colorCache =
-                [
-                    Color.white,
-                    new(0.08f, 0.08f, 0.08f),
-
-                    new(0.08f, 0.8f, 0.08f),
-                    new(0.15f, 0.15f, 0.15f),
-                    new(0.9f, 0.9f, 0.9f),
-
-                    new(0.5f, 0.5f, 0.25f),
-                    new(0.9f, 0.9f, 0.5f),
-                    new(0.9f, 0.8f, 0.5f),
-
-                    new(0.45f, 0.2f, 0.2f),
-                    new(0.5f, 0.25f, 0.25f),
-                    new(0.9f, 0.5f, 0.5f),
-
-                    new(0.15f, 0.28f, 0.43f),
-
-                    new(0.98f, 0.92f, 0.84f),
-                    new(0.87f, 0.96f, 0.91f),
-                    new(0.94f, 0.87f, 0.96f),
-                    new(0.96f, 0.87f, 0.87f),
-                    new(0.87f, 0.94f, 0.96f),
-                ];
-                if (ModsConfig.IdeologyActive)
-                {
-                    if (pawn?.Ideo != null && !Find.IdeoManager.classicMode)
-                    {
-                        colorCache.Add(pawn.Ideo.ApparelColor);
-                    }
-                    foreach (var ideo in Find.World.ideoManager.IdeosListForReading)
-                    {
-                        if (!colorCache.Any((Color c) => ideo.ApparelColor.IndistinguishableFromExact(c)))
-                        {
-                            colorCache.Add(ideo.ApparelColor);
-                        }
-                    }
-                }
-                foreach (var color in Find.World.factionManager.AllFactions.Select(x => x.Color))
-                {
-                    if (!colorCache.Any((Color c) => color.IndistinguishableFromExact(c)))
-                    {
-                        colorCache.Add(color);
-                    }
-                }
-                if (ModsConfig.IdeologyActive && pawn?.story != null && !pawn.DevelopmentalStage.Baby() && pawn.story.favoriteColor != null
-                    && !colorCache.Any((Color c) => pawn.story.favoriteColor.color.IndistinguishableFromExact(c)))
-                {
-                    colorCache.Add(pawn.story.favoriteColor.color);
-                }
-                foreach (ColorDef colDef in DefDatabase<ColorDef>.AllDefs
-                    .Where((ColorDef x) => x.colorType == ColorType.Ideo || x.colorType == ColorType.Misc))
-                {
-                    if (!colorCache.Any((Color x) => x.IndistinguishableFromExact(colDef.color)))
-                    {
-                        colorCache.Add(colDef.color);
-                    }
-                }
-                colorCache.SortByColor((Color x) => x);
-            }
-            return colorCache;
-            
-        }
 
         protected override void SetInitialSizeAndPosition()
         {
             base.SetInitialSizeAndPosition();
             windowRect.x = windowRect.x - InitialSize.x;
         }
+
+        public override Vector2 InitialSize => new(600f, 800f);
 
         public EditPawnWindow(ILoadReferenceable target)
         {
@@ -192,17 +124,12 @@ namespace BigAndSmall
             const float contentHeight = 30f;
             const float tabHeight = 35f;
 
-            Text.Font = GameFont.Medium;
-            Rect titleRect = new(inRect)
-            {
-                height = Text.LineHeight * 2
-            };
-            Widgets.Label(titleRect, "BS_EditThing_Title".Translate(target));
+            if (inRect.width < 400f) inRect.width = 400f;
 
-            Text.Font = GameFont.Small;
-            
-            Rect tabRect = new(inRect.x, titleRect.y + titleRect.height, inRect.width, tabHeight);
-            Rect contentRect = new(inRect.x, inRect.y + contentHeight, inRect.width, inRect.height - contentHeight);
+            Rect tabRect = new(inRect.x, inRect.y + tabHeight - 4, inRect.width, tabHeight);
+            Rect contentRect = new(inRect.x, inRect.y + contentHeight, inRect.width, inRect.height - contentHeight-40);
+
+            Widgets.DrawMenuSection(contentRect);
 
             // Tab stuff
             var tabKeys = GetTabKeys();
@@ -211,29 +138,35 @@ namespace BigAndSmall
             for (int i = 0; i < tabCount; i++)
             {
                 int tabIndex = i;
-                tabs.Add(new TabRecord(tabKeys[i].Translate(), () => selectedTab = tabIndex, selectedTab == tabIndex));
+                if (tabKeys[i] == $"BS_Tab_{nameof(EditMode.Thing)}")
+                {
+                    tabs.Add(new TabRecord(target.ToString(), () => selectedTab = tabIndex, selectedTab == tabIndex));
+                }
+                else
+                {
+                    tabs.Add(new TabRecord(tabKeys[i].Translate(), () => selectedTab = tabIndex, selectedTab == tabIndex));
+                }
             }
             TabDrawer.DrawTabs(tabRect, tabs);
 
             activeTab = tabsWithContent[selectedTab];
 
-            Rect innerRect = contentRect.ContractedBy(15f);
+            Rect innerRect = contentRect.ContractedBy(12);
             DrawMainUI(innerRect, activeTab);
             //Close();
         }
 
         private void DrawMainUI(Rect rect, EditMode tab)
         {
-            rect = rect.ContractedBy(10);
-
-            Rect scrollViewRect = new Rect(rect)
+            Rect scrollViewRect = new(rect)
             {
-                height = scrollViewHeight
+                height = scrollViewHeight,
+                width = rect.width - 50
             };
-            scrollViewRect.width -= 16f;
-
+            rect = rect.ContractedBy(2);
             Widgets.BeginScrollView(rect, ref scrollPosition, scrollViewRect);
-            float curY = rect.y + 10;
+            rect.width -= 48;
+            float curY = rect.y;
 
             foreach (var graphicData in EditableThings)
             {
@@ -265,7 +198,6 @@ namespace BigAndSmall
                 }
             }
 
-
             if (Event.current.type == EventType.Layout)
             {
                 scrollViewHeight = curY - rect.y;
@@ -280,10 +212,13 @@ namespace BigAndSmall
                 DrawColorPicker(pawn, pawn.story.SkinColor, rect, ref curY, (Color col) => pawn.story.skinColorOverride = col);
                 DrawTitle("BS_Hair".Translate(), rect, ref curY);
                 DrawColorPicker(pawn, pawn.story.HairColor, rect, ref curY, (Color col) => pawn.story.HairColor = col);
-                DrawTitle("BS_Custom".Translate(), rect, ref curY);
-                DrawColorPicker(pawn, pawn.GetCustomColorA(), rect, ref curY, (Color col) => pawn.SetCustomColorA(col));
-                DrawColorPicker(pawn, pawn.GetCustomColorB(), rect, ref curY, (Color col) => pawn.SetCustomColorB(col));
-                DrawColorPicker(pawn, pawn.GetCustomColorC(), rect, ref curY, (Color col) => pawn.SetCustomColorC(col));
+                //DrawTitle("BS_Custom".Translate(), rect, ref curY);
+                DrawColorPicker(pawn, pawn.GetCustomColorA(), rect, ref curY, (Color col) => pawn.SetCustomColorA(col),
+                            "BS_Customize_Str".Translate("A"));
+                DrawColorPicker(pawn, pawn.GetCustomColorB(), rect, ref curY, (Color col) => pawn.SetCustomColorB(col),
+                            "BS_Customize_Str".Translate("B"));
+                DrawColorPicker(pawn, pawn.GetCustomColorC(), rect, ref curY, (Color col) => pawn.SetCustomColorC(col),
+                            "BS_Customize_Str".Translate("C"));
                 return curY;
             }
 
@@ -293,7 +228,12 @@ namespace BigAndSmall
                 DrawApparelIcon(apparel, rect, ref curY);
                 if (hasCustomDef?.colorA == true)
                 {
-                    DrawColorPicker(pawn, apparel.GetCustomColorA(), rect, ref curY, (Color col) => apparel.SetCustomColorA(apparel.DrawColor = col));
+                    if (apparel.GetCustomColorA() == null)
+                    {
+                        DrawColorPicker(pawn, apparel.DrawColor, rect, ref curY, (Color col) => apparel.DrawColor = col);
+                    }
+                    DrawColorPicker(pawn, apparel.GetCustomColorA(), rect, ref curY, (Color col) => apparel.SetCustomColorA(apparel.DrawColor = col),
+                            "BS_Customize_Str".Translate("A"));
                 }
                 else
                 {
@@ -301,11 +241,13 @@ namespace BigAndSmall
                 }
                 if (hasCustomDef?.colorB == true)
                 {
-                    DrawColorPicker(pawn, apparel.GetCustomColorB(), rect, ref curY, (Color col) => apparel.SetCustomColorB(col));
+                    DrawColorPicker(pawn, apparel.GetCustomColorB(), rect, ref curY, (Color col) => apparel.SetCustomColorB(col),
+                            "BS_Customize_Str".Translate("B"));
                 }
                 if (hasCustomDef?.colorC == true)
                 {
-                    DrawColorPicker(pawn, apparel.GetCustomColorC(), rect, ref curY, (Color col) => apparel.SetCustomColorC(col));
+                    DrawColorPicker(pawn, apparel.GetCustomColorC(), rect, ref curY, (Color col) => apparel.SetCustomColorC(col),
+                            "BS_Customize_Str".Translate("C"));
                 }
 
                 return curY;
@@ -319,15 +261,18 @@ namespace BigAndSmall
                     DrawGeneIcon(geneDef, rect, ref curY);
                     if (hasCustomDef.colorA)
                     {
-                        DrawColorPicker(pawn, pawn.GetTagColor(cdTag, 0), rect, ref curY, (Color col) => thing.SetTagColor(cdTag, 0, col));
+                        DrawColorPicker(pawn, pawn.GetTagColor(cdTag, 0), rect, ref curY, (Color col) => thing.SetTagColor(cdTag, 0, col),
+                            "BS_Customize_Str".Translate("A"));
                     }
                     if (hasCustomDef.colorB)
                     {
-                        DrawColorPicker(pawn, pawn.GetTagColor(cdTag, 1), rect, ref curY, (Color col) => thing.SetTagColor(cdTag, 1, col));
+                        DrawColorPicker(pawn, pawn.GetTagColor(cdTag, 1), rect, ref curY, (Color col) => thing.SetTagColor(cdTag, 1, col),
+                            "BS_Customize_Str".Translate("B"));
                     }
                     if (hasCustomDef.colorC)
                     {
-                        DrawColorPicker(pawn, pawn.GetTagColor(cdTag, 2), rect, ref curY, (Color col) => thing.SetTagColor(cdTag, 2, col));
+                        DrawColorPicker(pawn, pawn.GetTagColor(cdTag, 2), rect, ref curY, (Color col) => thing.SetTagColor(cdTag, 2, col),
+                            "BS_Customize_Str".Translate("C"));
                     }
                 }
 
@@ -341,15 +286,18 @@ namespace BigAndSmall
                     DrawTitle(hediffDef.LabelCap, rect, ref curY);
                     if (hasCustomDef.colorA)
                     {
-                        DrawColorPicker(pawn, pawn.GetTagColor(cdTag, 0), rect, ref curY, (Color col) => thing.SetTagColor(cdTag, 0, col));
+                        DrawColorPicker(pawn, pawn.GetTagColor(cdTag, 0), rect, ref curY, (Color col) => thing.SetTagColor(cdTag, 0, col),
+                            "BS_Customize_Str".Translate("A"));
                     }
                     if (hasCustomDef.colorB)
                     {
-                        DrawColorPicker(pawn, pawn.GetTagColor(cdTag, 1), rect, ref curY, (Color col) => thing.SetTagColor(cdTag, 1, col));
+                        DrawColorPicker(pawn, pawn.GetTagColor(cdTag, 1), rect, ref curY, (Color col) => thing.SetTagColor(cdTag, 1, col),
+                            "BS_Customize_Str".Translate("B"));
                     }
                     if (hasCustomDef.colorC)
                     {
-                        DrawColorPicker(pawn, pawn.GetTagColor(cdTag, 2), rect, ref curY, (Color col) => thing.SetTagColor(cdTag, 2, col));
+                        DrawColorPicker(pawn, pawn.GetTagColor(cdTag, 2), rect, ref curY, (Color col) => thing.SetTagColor(cdTag, 2, col),
+                            "BS_Customize_Str".Translate("C"));
                     }
                 }
 
@@ -389,56 +337,47 @@ namespace BigAndSmall
             }
         }
 
-        private void DrawColorPicker(Pawn pawn, Color? currClrNullable, Rect rect, ref float curY, Action<Color> setColor)
+        public bool draggingSlider = false;
+        public bool draggingWheel = false;
+        private void DrawColorPicker(Pawn pawn, Color? currClrNullable, Rect rect, ref float curY, Action<Color> setColor,
+            string title = null,
+            string overrideClrStr=null)
         {
             if (currClrNullable == null)
             {
+                overrideClrStr ??= "BS_CustomizableColor".Translate();
                 var overrideRect = new Rect(rect.x, curY, ButtonSize.x, ButtonSize.y);
-                if (Widgets.ButtonText(overrideRect, "BS_OverrideCustomizableColor".Translate()))
+                if (Widgets.ButtonText(overrideRect, overrideClrStr))
                 {
                     SoundDefOf.Tick_Low.PlayOneShotOnCamera();
                     setColor(Color.cyan);
                     pawn?.Drawer.renderer.SetAllGraphicsDirty();
                 }
-                curY = overrideRect.y + overrideRect.yMax + 14f;
+                curY = overrideRect.yMax + 14f;
                 return;
             }
             else
             {
+                if (title != null)
+                {
+                    DrawTitle(title, rect, ref curY);
+                }
                 Color currClr = currClrNullable.Value;
                 Color color = currClr;
-
-                Rect colorRect = new(rect.x, curY, rect.width, 140);
-                curY += colorRect.height + 0f;
-
-                Widgets.ColorSelector(colorRect, ref color, GetPickableColors(pawn), out float height, null, 22, 2, ColorSelecterExtraOnGUI);
-                float num2 = rect.x;
-                if (pawn?.Ideo is Ideo pawnIdeo && !Find.IdeoManager.classicMode)
+                const float height = 180;
+                if (SmartColorWidgets.MakeColorPicker(new Rect(rect.x, curY, rect.width, height), color, ref draggingSlider, ref draggingWheel) is Color newColor)
                 {
-                    colorRect = new Rect(num2, curY, 160f, 24f);
-                    if (Widgets.ButtonText(colorRect, "SetIdeoColor".Translate()))
-                    {
-                        color = pawnIdeo.ApparelColor;
-                        SoundDefOf.Tick_Low.PlayOneShotOnCamera();
-                    }
-                    num2 += 110f;
-                }
-                if (!color.IndistinguishableFromExact(currClr))
-                {
-                    setColor(color);
-                    pawn?.Drawer.renderer.renderTree.SetDirty(); //  In case tree is busy.
+                    setColor(newColor);
                     pawn?.Drawer.renderer.SetAllGraphicsDirty();
                 }
-                curY += 32f;
+                curY += height + 12;
             }
-            
         }
 
         private void ColorSelecterExtraOnGUI(Color color, Rect boxRect)
         {
             Texture2D texture2D = null;
             TaggedString taggedString = null;
-            bool flag = Mouse.IsOver(boxRect);
             if (texture2D != null)
             {
                 Rect position = boxRect.ContractedBy(4f);

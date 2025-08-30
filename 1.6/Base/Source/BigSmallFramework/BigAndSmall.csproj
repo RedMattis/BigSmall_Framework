@@ -85,6 +85,9 @@
     <!-- <Publicize Include="Assembly-CSharp:Verse.ShaderParameter.Type" /> -->
     <Publicize Include="Assembly-CSharp:Verse.MaterialAllocator" />
     
+    <Publicize Include="Assembly-CSharp:Verse.Widgets.DrawColorSelectionCircle" />
+    <Publicize Include="Assembly-CSharp:Verse.Widgets.ClickedInsideRect" />
+    
     <!-- <Publicize Include="Assembly-CSharp:Verse.GraphicDatabase.cachedGraphicGetters" /> -->
   </ItemGroup>
 </Project>
