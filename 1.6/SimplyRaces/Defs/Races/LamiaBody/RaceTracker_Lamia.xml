@@ -22,26 +22,6 @@
       </li>
       <li MayRequire="OskarPotocki.VanillaFactionsExpanded.Core" Class="VEF.AnimalBehaviours.HediffCompProperties_Floating"/>
     </comps>
-    <modExtensions>
-      <li Class="BigAndSmall.PawnExtension">
-        <traitIcon>BS_Traits/snek</traitIcon>
-        <romanceTags>
-          <Snake>1.0</Snake>
-          <Humanlike>0.65</Humanlike>
-        </romanceTags>
-        <internalDamageDivisor>0.4</internalDamageDivisor>
-        <bodyPosOffset>0.6</bodyPosOffset>
-        <renderCacheOff>true</renderCacheOff>
-      </li> 
-      <li MayRequire="pathfinding.framework" Class="PathfindingFramework.MovementExtension">
-        <movementDef>PF_Movement_Flying</movementDef>
-      </li>
-      <li Class="BigAndSmall.HasCustomizableGraphics">
-        <tag><BS_SnekCustomGraphics/></tag>
-        <colorA>true</colorA>
-        <colorB>true</colorB>
-      </li>
-    </modExtensions>
     <renderNodeProperties>
       <li Class="BigAndSmall.PawnRenderingProps_Ultimate">
         <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
@@ -74,5 +54,26 @@
         </drawData>
       </li>
     </renderNodeProperties>
+
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <traitIcon>BS_Traits/snek</traitIcon>
+        <romanceTags>
+          <Snake>1.0</Snake>
+          <Humanlike>0.65</Humanlike>
+        </romanceTags>
+        <internalDamageDivisor>0.4</internalDamageDivisor>
+        <bodyPosOffset>0.6</bodyPosOffset>
+        <renderCacheOff>true</renderCacheOff>
+      </li> 
+      <li MayRequire="pathfinding.framework" Class="PathfindingFramework.MovementExtension">
+        <movementDef>PF_Movement_Flying</movementDef>
+      </li>
+      <li Class="BigAndSmall.HasCustomizableGraphics">
+        <tag><BS_TailGraphics/></tag>
+        <colorA>true</colorA>
+        <colorB>true</colorB>
+      </li>
+    </modExtensions>
   </HediffDef>
 </Defs>

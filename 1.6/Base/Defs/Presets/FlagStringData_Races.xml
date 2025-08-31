@@ -1,0 +1,9 @@
+<Defs>
+  <BigAndSmall.FlagStringData>
+    <defName>BS_TailGraphics</defName>
+    <label>tail</label>
+    <flags>
+      <BS_TailGraphics/>
+    </flags>
+  </BigAndSmall.FlagStringData>
+</Defs>

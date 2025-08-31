@@ -148,103 +148,120 @@ namespace BigAndSmall
     {
         public static void Postfix(ref string __result, GeneDef __instance)
         {
-            if (__instance.HasModExtension<ProductionGeneSettings>())
+            try
             {
-                var geneExtension = __instance.GetModExtension<ProductionGeneSettings>();
-                StringBuilder stringBuilder = new();
-
-                stringBuilder.AppendLine(__result);
-                stringBuilder.AppendLine();
-                stringBuilder.AppendLine("BS_ProductionTooltip".Translate(geneExtension.baseAmount, geneExtension.product.LabelCap.AsTipTitle(), geneExtension.frequencyInDays));
-
-                __result = stringBuilder.ToString();
-            }
-
-            if (__instance.HasModExtension<GenePrerequisites>())
-            {
-                var geneExtension = __instance.GetModExtension<GenePrerequisites>();
-                if (geneExtension.prerequisiteSets != null)
+                if (__instance.HasModExtension<ProductionGeneSettings>())
                 {
-                    StringBuilder stringBuilder = new StringBuilder();
+                    var geneExtension = __instance.GetModExtension<ProductionGeneSettings>();
+                    StringBuilder stringBuilder = new();
+
                     stringBuilder.AppendLine(__result);
                     stringBuilder.AppendLine();
-                    stringBuilder.AppendLine(("BP_GenePrerequisites".Translate() + ":").Colorize(ColoredText.TipSectionTitleColor));
-                    foreach (var prerequisiteSet in geneExtension.prerequisiteSets)
-                    {
-                        if (prerequisiteSet.prerequisites != null)
-                        {
-                            stringBuilder.AppendLine();
-                            string typeStr = "";
-                            if (prerequisiteSet.type == PrerequisiteSet.PrerequisiteType.AnyOf)
-                            {
-                                typeStr = ($"BP_{prerequisiteSet.type}".Translate() + ":").Colorize(GeneUtility.GCXColor);
-                            }
-                            else if (prerequisiteSet.type == PrerequisiteSet.PrerequisiteType.AllOf)
-                            {
-                                if (prerequisiteSet.allOfPerecntage < 1)
-                                {
-                                    typeStr = ($"BP_{prerequisiteSet.type}Percent".Translate(prerequisiteSet.allOfPerecntage) + ":").Colorize(GeneUtility.GCXColor);
-                                }
-                                else
-                                {
-                                    typeStr = ($"BP_{prerequisiteSet.type}".Translate() + ":").Colorize(GeneUtility.GCXColor);
-                                }
-                            }
-                            else if (prerequisiteSet.type == PrerequisiteSet.PrerequisiteType.NoneOf)
-                            {
-                                if (prerequisiteSet.noneOfPercentage > 0)
-                                {
-                                    typeStr = ($"BP_{prerequisiteSet.type}Percent".Translate(prerequisiteSet.noneOfPercentage) + ":").Colorize(GeneUtility.GCXColor);
-                                }
-                                else
-                                {
-                                    typeStr = ($"BP_{prerequisiteSet.type}".Translate() + ":").Colorize(GeneUtility.GCXColor);
-                                }
-                            }
-                            else
-                            {
-                                typeStr = ("BP_GenePrerequisitesUnknownType".Translate() + ":").Colorize(GeneUtility.GCXColor);
-                            }
-                        
-                            stringBuilder.AppendLine(typeStr);
-                            foreach (var prerequisite in prerequisiteSet.prerequisites)
-                            {
-                                var gene = DefDatabase<GeneDef>.GetNamedSilentFail(prerequisite);
-                                if (gene != null)
-                                {
-                                    stringBuilder.AppendLine(" - " + gene.LabelCap);
-                                }
-                                else
-                                {
-                                    stringBuilder.AppendLine($" - {prerequisite} ({"BP_GeneNotFoundInGame".Translate()})");
-                                }
-                            }
-                        }
-                    }
+                    stringBuilder.AppendLine("BS_ProductionTooltip".Translate(geneExtension.baseAmount, geneExtension.product.LabelCap.AsTipTitle(), geneExtension.frequencyInDays));
+
                     __result = stringBuilder.ToString();
                 }
             }
-
-            if (__instance.HasModExtension<PawnExtension>())
+            catch (Exception e)
             {
-                var pawnExt = __instance.GetModExtension<PawnExtension>();
+                Log.ErrorOnce($"Caught Exception making tooltip for ProductionGeneSettings: {e.Message}\n{e.StackTrace}", 92743671);
+            }
 
-                StringBuilder stringBuilder = new();
-                stringBuilder.AppendLine(__result);
-
-                if (PawnExtensionExtension.TryGetDescription([pawnExt], out string description))
+            try
+            {
+                if (__instance.HasModExtension<GenePrerequisites>())
                 {
-                    stringBuilder.AppendLine();
-                    stringBuilder.AppendLine(description);
+                    var geneExtension = __instance.GetModExtension<GenePrerequisites>();
+                    if (geneExtension.prerequisiteSets != null)
+                    {
+                        StringBuilder stringBuilder = new StringBuilder();
+                        stringBuilder.AppendLine(__result);
+                        stringBuilder.AppendLine();
+                        stringBuilder.AppendLine(("BP_GenePrerequisites".Translate() + ":").Colorize(ColoredText.TipSectionTitleColor));
+                        foreach (var prerequisiteSet in geneExtension.prerequisiteSets)
+                        {
+                            if (prerequisiteSet.prerequisites != null)
+                            {
+                                stringBuilder.AppendLine();
+                                string typeStr = "";
+                                if (prerequisiteSet.type == PrerequisiteSet.PrerequisiteType.AnyOf)
+                                {
+                                    typeStr = ($"BP_{prerequisiteSet.type}".Translate() + ":").Colorize(GeneUtility.GCXColor);
+                                }
+                                else if (prerequisiteSet.type == PrerequisiteSet.PrerequisiteType.AllOf)
+                                {
+                                    if (prerequisiteSet.allOfPerecntage < 1)
+                                    {
+                                        typeStr = ($"BP_{prerequisiteSet.type}Percent".Translate(prerequisiteSet.allOfPerecntage) + ":").Colorize(GeneUtility.GCXColor);
+                                    }
+                                    else
+                                    {
+                                        typeStr = ($"BP_{prerequisiteSet.type}".Translate() + ":").Colorize(GeneUtility.GCXColor);
+                                    }
+                                }
+                                else if (prerequisiteSet.type == PrerequisiteSet.PrerequisiteType.NoneOf)
+                                {
+                                    if (prerequisiteSet.noneOfPercentage > 0)
+                                    {
+                                        typeStr = ($"BP_{prerequisiteSet.type}Percent".Translate(prerequisiteSet.noneOfPercentage) + ":").Colorize(GeneUtility.GCXColor);
+                                    }
+                                    else
+                                    {
+                                        typeStr = ($"BP_{prerequisiteSet.type}".Translate() + ":").Colorize(GeneUtility.GCXColor);
+                                    }
+                                }
+                                else
+                                {
+                                    typeStr = ("BP_GenePrerequisitesUnknownType".Translate() + ":").Colorize(GeneUtility.GCXColor);
+                                }
+
+                                stringBuilder.AppendLine(typeStr);
+                                foreach (var prerequisite in prerequisiteSet.prerequisites)
+                                {
+                                    var gene = DefDatabase<GeneDef>.GetNamedSilentFail(prerequisite);
+                                    if (gene != null)
+                                    {
+                                        stringBuilder.AppendLine(" - " + gene.LabelCap);
+                                    }
+                                    else
+                                    {
+                                        stringBuilder.AppendLine($" - {prerequisite} ({"BP_GeneNotFoundInGame".Translate()})");
+                                    }
+                                }
+                            }
+                        }
+                        __result = stringBuilder.ToString();
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Log.ErrorOnce($"Caught Exception making tooltip for GenePrerequisites: {e.Message}\n{e.StackTrace}", 92743672);
+            }
 
+            try
+            {
+                if (__instance.HasModExtension<PawnExtension>())
+                {
+                    var pawnExt = __instance.GetModExtension<PawnExtension>();
 
-                __result = stringBuilder.ToString();
+                    StringBuilder stringBuilder = new();
+                    stringBuilder.AppendLine(__result);
+
+                    if (PawnExtensionExtension.TryGetDescription([pawnExt], out string description))
+                    {
+                        stringBuilder.AppendLine();
+                        stringBuilder.AppendLine(description);
+                    }
+
+                    __result = stringBuilder.ToString();
+                }
+            }
+            catch (Exception e)
+            {
+                Log.ErrorOnce($"Caught Exception making tooltip for PawnExtension: {e.Message}\n{e.StackTrace}", 92743673);
             }
         }
     }
 
-
-
-    
 }

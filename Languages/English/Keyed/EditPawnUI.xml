@@ -5,11 +5,25 @@
   <BS_Tab_Apparel>Apparel</BS_Tab_Apparel>
   <BS_Tab_CustomTag>Tagged</BS_Tab_CustomTag>
   
-  <BS_Skin>Skin Color</BS_Skin>
-  <BS_Hair>Hair Color</BS_Hair>
-  <BS_Custom>Custom</BS_Custom>
-  <BS_Custom_Str>Custom Color {0}</BS_Custom_Str>
+  <BS_Skin>skin color</BS_Skin>
+  <BS_Hair>hair color</BS_Hair>
+  <BS_Custom>custom</BS_Custom>
+  <BS_Custom_Str>custom color {0}</BS_Custom_Str>
 
-  <BS_Customize_Str>Color {0}</BS_Customize_Str>
-  <BS_CustomizableColor>Customize Color</BS_CustomizableColor>
+  <BS_GlobalColors>shared colors</BS_GlobalColors>
+  <BS_Color>color</BS_Color>
+  <BS_CustomizableColor>customize color</BS_CustomizableColor>
+
+  <BS_BaseColor>base color</BS_BaseColor>
+  <BS_Primary>primary</BS_Primary>
+  <BS_Secondary>secondary</BS_Secondary>
+  <BS_Tertiary>tertiary</BS_Tertiary>
+
+  <BS_PrimaryColor>primary color</BS_PrimaryColor>
+  <BS_SecondaryColor>secondary color</BS_SecondaryColor>
+  <BS_TertiaryColor>tertiary color</BS_TertiaryColor>
+  <BS_Enable>enable</BS_Enable>
+
+  <BS_ShowPawnRaceTooltip>Display race info for {0} ({1})</BS_ShowPawnRaceTooltip>
+  <BS_EditPawnTooltip>Edit pawn appearance</BS_EditPawnTooltip>
 </LanguageData>

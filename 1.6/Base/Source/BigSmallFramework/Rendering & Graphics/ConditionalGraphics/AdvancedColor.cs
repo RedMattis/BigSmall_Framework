@@ -301,17 +301,17 @@ namespace BigAndSmall
                 colorsAdded.Add(clr);
                 didSet = true;
             }
-            if (customClrTagA != null && CustomizableGraphic.GetTagItemGraphic(pawn, customClrTagA)?.colorA is Color clrA)
+            if (customClrTagA != null && CustomizableGraphic.GetFlagGraphic(pawn, customClrTagA)?.colorA is Color clrA)
             {
                 colorsAdded.Add(clrA);
                 didSet = true;
             }
-            if (customClrTagB != null && CustomizableGraphic.GetTagItemGraphic(pawn, customClrTagB)?.colorB is Color clrB)
+            if (customClrTagB != null && CustomizableGraphic.GetFlagGraphic(pawn, customClrTagB)?.colorB is Color clrB)
             {
                 colorsAdded.Add(clrB);
                 didSet = true;
             }
-            if (customClrTagC != null && CustomizableGraphic.GetTagItemGraphic(pawn, customClrTagC)?.colorC is Color clrC)
+            if (customClrTagC != null && CustomizableGraphic.GetFlagGraphic(pawn, customClrTagC)?.colorC is Color clrC)
             {
                 colorsAdded.Add(clrC);
                 didSet = true;

@@ -78,52 +78,11 @@ namespace BigAndSmall
             if (AutoCombatEnabled && IsDraftedPlayerPawn(pawn))
             {
                 // Add Hunt Toggle Gizmo
-                var huntCommand = new Command_ToggleWithRClick
-                {
-                    defaultLabel = "BS_DraftHuntLabel".Translate(),
-                    defaultDesc = "BS_HuntDescription".Translate(),
-                    icon = HuntIcon,
-                    isActive = () => DraftedActionHolder.GetData(pawn).hunt,
-                    toggleAction = () => DraftedActionHolder.GetData(pawn).ToggleHuntMode(),
-                    rightClickAction = () =>
-                    {
-                        DraftedActionData data = DraftedActionHolder.GetData(pawn);
-                        data.ToggleAutoForAll();
-                    },
-                    activateSound = SoundDefOf.Click,
-                    groupKey = 6173613,
-                    hotKey = KeyBindingDefOf.Misc3
-                };
+                Command_ToggleWithRClick huntCommand = AddHuntGizmo(pawn);
                 if (DraftedActionHolder.GetData(pawn).hunt)
                 {
-                    var takeCover = new Command_ToggleWithRClick
-                    {
-                        defaultLabel = "BS_TakeCoverLabel".Translate(),
-                        defaultDesc = "BS_TakeCoverDescription".Translate(),
-                        icon = TakeCoverIcon,
-                        isActive = () => DraftedActionHolder.GetData(pawn).takeCover,
-                        toggleAction = () => DraftedActionHolder.GetData(pawn).ToggleCoverMode(),
-                        rightClickAction = () =>
-                        {
-                        },
-                        activateSound = SoundDefOf.Click,
-                        groupKey = 6173614,
-                        hotKey = KeyBindingDefOf.Misc4
-                    };
-                    var meleeCharge = new Command_ToggleWithRClick
-                    {
-                        defaultLabel = "BS_MeleeChargeLabel".Translate(),
-                        defaultDesc = "BS_MeleeChargeDescription".Translate(),
-                        icon = MeleeCharge,
-                        isActive = () => DraftedActionHolder.GetData(pawn).meleeCharge,
-                        toggleAction = () => DraftedActionHolder.GetData(pawn).ToggleMeleeCharge(),
-                        rightClickAction = () =>
-                        {
-                        },
-                        activateSound = SoundDefOf.Click,
-                        groupKey = 6173615,
-                        hotKey = KeyBindingDefOf.Misc5
-                    };
+                    Command_ToggleWithRClick takeCover = AddCoerGizmo(pawn);
+                    Command_ToggleWithRClick meleeCharge = AddChargeGizmo(pawn);
                     return UpdateEnumerable(__result, [huntCommand, takeCover, meleeCharge]);
                 }
                 else
@@ -132,9 +91,65 @@ namespace BigAndSmall
                 }
 
 
-                
+
             }
             return __result;
+        }
+
+        private static Command_ToggleWithRClick AddChargeGizmo(Pawn pawn)
+        {
+            return new Command_ToggleWithRClick
+            {
+                defaultLabel = "BS_MeleeChargeLabel".Translate(),
+                defaultDesc = "BS_MeleeChargeDescription".Translate(),
+                icon = MeleeCharge,
+                isActive = () => DraftedActionHolder.GetData(pawn).meleeCharge,
+                toggleAction = () => DraftedActionHolder.GetData(pawn).ToggleMeleeCharge(),
+                rightClickAction = () =>
+                {
+                },
+                activateSound = SoundDefOf.Click,
+                groupKey = 6173615,
+                hotKey = KeyBindingDefOf.Misc5
+            };
+        }
+
+        private static Command_ToggleWithRClick AddCoerGizmo(Pawn pawn)
+        {
+            return new Command_ToggleWithRClick
+            {
+                defaultLabel = "BS_TakeCoverLabel".Translate(),
+                defaultDesc = "BS_TakeCoverDescription".Translate(),
+                icon = TakeCoverIcon,
+                isActive = () => DraftedActionHolder.GetData(pawn).takeCover,
+                toggleAction = () => DraftedActionHolder.GetData(pawn).ToggleCoverMode(),
+                rightClickAction = () =>
+                {
+                },
+                activateSound = SoundDefOf.Click,
+                groupKey = 6173614,
+                hotKey = KeyBindingDefOf.Misc4
+            };
+        }
+
+        private static Command_ToggleWithRClick AddHuntGizmo(Pawn pawn)
+        {
+            return new Command_ToggleWithRClick
+            {
+                defaultLabel = "BS_DraftHuntLabel".Translate(),
+                defaultDesc = "BS_HuntDescription".Translate(),
+                icon = HuntIcon,
+                isActive = () => DraftedActionHolder.GetData(pawn).hunt,
+                toggleAction = () => DraftedActionHolder.GetData(pawn).ToggleHuntMode(),
+                rightClickAction = () =>
+                {
+                    DraftedActionData data = DraftedActionHolder.GetData(pawn);
+                    data.ToggleAutoForAll();
+                },
+                activateSound = SoundDefOf.Click,
+                groupKey = 6173613,
+                hotKey = KeyBindingDefOf.Misc3
+            };
         }
 
         [HarmonyPatch(typeof(Command), "GizmoOnGUIInt")]

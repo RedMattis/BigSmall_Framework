@@ -9,6 +9,7 @@ using Verse;
 using static Verse.Widgets;
 using RimWorld;
 using Verse.Noise;
+using Mono.Security.X509.Extensions;
 
 namespace BigAndSmall
 {
@@ -114,15 +115,24 @@ namespace BigAndSmall
             Rect rect = new(inRect);
 
             // We're making a layout with a wheel on the left and a brightness slider on the right and palette boxes right below the slider.
-            const float wheelPct = 0.33f;
+            const float wheelPct = 0.30f;
             float wheelWidth = rect.width * wheelPct;
-            float wheelHeight = rect.height;
+            float wheelHeight = rect.height-8;
             float wheelSize = Mathf.Min(wheelWidth, wheelHeight);
-            float sliderHeight = 16;
+            float sliderHeight = 18;
             float padding = 16;
+
             Rect wheelRect = new(rect.x, rect.y, wheelSize, wheelSize);
+            Rect copyPasteRect = new(wheelRect.x, wheelRect.yMax, wheelRect.width, 30);
             Rect sliderRect = new(rect.x + wheelRect.xMax + padding, rect.y, rect.width - wheelSize - padding, sliderHeight);
             Rect paletteRect = new(sliderRect.x, sliderRect.yMax + 10, sliderRect.width, rect.height - sliderRect.height - 10);
+
+            Color pasteColor = color;
+            CopyPasteUI.DoCopyPasteButtons(copyPasteRect, () => AddColorToClipboard(color), () => PasteToColor(ref pasteColor));
+            if (!pasteColor.IndistinguishableFromExact(color))
+            {
+                return pasteColor;
+            }
 
             if (Event.current.type == EventType.MouseUp)
             {
@@ -157,12 +167,38 @@ namespace BigAndSmall
             return null;
         }
 
+        private static void PasteToColor(ref Color color)
+        {
+            string clipboard = GUIUtility.systemCopyBuffer;
+            string[] parts = clipboard.Split(',');
+            if (parts.Length >= 3
+                && float.TryParse(parts[0], out float r)
+                && float.TryParse(parts[1], out float g)
+                && float.TryParse(parts[2], out float b))
+            {
+                float a = 1f;
+                if (parts.Length >= 4)
+                {
+                    float.TryParse(parts[3], out a);
+                }
+                color = new Color(r, g, b, a);
+                SoundDefOf.Tick_High.PlayOneShotOnCamera();
+            }
+        }
+
+        private static void AddColorToClipboard(Color color)
+        {
+            string colorString = $"{color.r},{color.g},{color.b},{color.a}";
+            GUIUtility.systemCopyBuffer = colorString;
+            SoundDefOf.Tick_High.PlayOneShotOnCamera();
+        }
+
         private static float? MakeBrightnessSlider(Rect inRect, float brightness, ref bool dragging)
         {
             float newBrightness = brightness;
             GUI.DrawTexture(inRect, BrightnessTexture, ScaleMode.StretchToFill, alphaBlend: true);
 
-            float handleSize = 24;
+            float handleSize = 22;
             float handleX = Mathf.Lerp(inRect.x - handleSize / 2, inRect.xMax - handleSize/2, brightness);
             float handleY = inRect.center.y - handleSize / 2f;
             GUI.DrawTexture(new Rect(handleX, handleY, handleSize, handleSize), Widgets.ColorSelectionCircle);

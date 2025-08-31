@@ -10,45 +10,17 @@ using Verse.AI;
 
 namespace BigAndSmall
 {
-    public class Flagger : DefModExtension
-    {
-        public float priority = 0;
-        public FlagStringList flags = [];
-
-        public static List<FlagString> GetTagStrings(Pawn pawn, bool includeInactive)
-        {
-			if (pawn == null) 
-				return [];
-
-			List<Flagger> result = new List<Flagger>(20);
-
-			result.AddRange(includeInactive ? ModExtHelper.GetAllExtensionsPlusInactive<Flagger>(pawn) : ModExtHelper.GetAllExtensions<Flagger>(pawn, doSort: false));
-
-			FactionDef factionDef = pawn.Faction?.def;
-			if (factionDef != null)
-				result.AddRange(factionDef.ExtensionsOnDef<Flagger, FactionDef>(doSort: false));
-
-			if (pawn.kindDef != null)
-				result.AddRange(pawn.kindDef.ExtensionsOnDef<Flagger, PawnKindDef>(doSort: false));
-
-			result.AddRange(ModExtHelper.GetAllExtensionsOnBackStories<Flagger>(pawn));
-
-            if (result.Count > 0)
-            {
-                return result.OrderByDescending(x => x.priority).SelectMany(x => x.flags).ToList();
-            }
-            return [];
-        }
-    }
-
-    public class FlagString : IExposable
+    public class FlagString : IExposable, IEquatable<FlagString>
     {
         private const string DEFAULT = "default";
 
         public string mainTag;
         public string subTag = DEFAULT;
         public Dictionary<string, string> extraData = [];
-        public string Label => extraData.TryGetValue("Label", out var label) ? label : mainTag;
+        public FlagStringStateData? Data { get { return field ??= FlagStringData.DataFor(this); } }
+        public string Label { get { return field ??= GetCustomLabel() ?? Data?.label ?? ToStringShort(); } }
+        public EditPawnWindow.WindowTab? DisplayTab { get { return field ??= Data?.displayTab; } }
+        public string CustomCategory { get { return field ??= Data?.customCategory; } }
 
         public bool Equals(FlagString other) => this?.mainTag != null && other?.mainTag != null
             && mainTag == other.mainTag && subTag == other.subTag;
@@ -66,6 +38,7 @@ namespace BigAndSmall
 
         public bool MainTagEquals(FlagString other) => this?.mainTag != null && other?.mainTag != null
             && mainTag == other.mainTag;
+
 
         /// <summary>
         /// If the mainTag and subTag are identical, merges the extraData dictionaries, preferring this.extraData on key conflicts.
@@ -99,7 +72,9 @@ namespace BigAndSmall
                 return hash;
             }
         }
+        public string GetCustomLabel() => extraData.TryGetValue("Label", out var label) ? label : null;
         public override string ToString() => $"{mainTag}/{subTag}" + (extraData.Any() ? $"[{string.Join(",", extraData)}]" : "");
+        public string ToStringShort() => subTag == DEFAULT ? mainTag : $"{mainTag}, {subTag}";
 
         public void LoadDataFromXML(XmlNode node)
         {
@@ -125,6 +100,7 @@ namespace BigAndSmall
             Scribe_Collections.Look(ref extraData, "extraData", LookMode.Value, LookMode.Value);
         }
     }
+
     public class FlagStringList : List<FlagString>
     {
         public void LoadDataFromXmlCustom(XmlNode xmlRoot)

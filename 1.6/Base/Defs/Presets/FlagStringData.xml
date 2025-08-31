@@ -1,0 +1,41 @@
+<Defs>
+  <BigAndSmall.FlagStringData>
+    <defName>BS_CustomHairB</defName>
+    <label>Hair Color, Secondary</label>
+    <displayTab>Thing</displayTab>
+    <customCategory>Hair</customCategory>
+    <flags>
+      <BS_CustomSkinB/>
+    </flags>
+  </BigAndSmall.FlagStringData>
+
+  <BigAndSmall.FlagStringData>
+    <defName>BS_CustomHairC</defName>
+    <label>Hair Color, Tertiary</label>
+    <displayTab>Thing</displayTab>
+    <customCategory>Hair</customCategory>
+    <flags>
+      <BS_CustomSkinC/>
+    </flags>
+  </BigAndSmall.FlagStringData>
+
+  <BigAndSmall.FlagStringData>
+    <defName>BS_CustomSkinB</defName>
+    <label>Skin Color, Secondary</label>
+    <displayTab>Thing</displayTab>
+    <customCategory>Skin</customCategory>
+    <flags>
+      <BS_CustomSkinB/>
+    </flags>
+  </BigAndSmall.FlagStringData>
+
+  <BigAndSmall.FlagStringData>
+    <defName>BS_CustomSkinC</defName>
+    <label>Skin Color, Tertiary</label>
+    <displayTab>Thing</displayTab>
+    <customCategory>Skin</customCategory>
+    <flags>
+      <BS_CustomSkinC/>
+    </flags>
+  </BigAndSmall.FlagStringData>
+</Defs>

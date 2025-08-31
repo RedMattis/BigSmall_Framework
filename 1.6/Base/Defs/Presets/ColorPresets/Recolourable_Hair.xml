@@ -3,7 +3,7 @@
     <defName>BS_ColorableHairB</defName>
     <color>
       <customTagGraphicIsSet>
-        <tag><BS_CustomHairB/></tag>
+        <tag><BS_CustomHairB Label="Hair Color B"/></tag>
         <colorB>true</colorB>
       </customTagGraphicIsSet>
       <customClrTagA><BS_CustomHairB/></customClrTagA>
@@ -14,7 +14,7 @@
     <defName>BS_ColorableHairC</defName>
     <color>
       <customTagGraphicIsSet>
-        <tag><BS_CustomHairC/></tag>
+        <tag><BS_CustomHairC Label="Hair Color C"/></tag>
         <colorC>true</colorC>
       </customTagGraphicIsSet>
       <customClrTagA><BS_CustomHairC/></customClrTagA>

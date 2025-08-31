@@ -87,6 +87,9 @@
     
     <Publicize Include="Assembly-CSharp:Verse.Widgets.DrawColorSelectionCircle" />
     <Publicize Include="Assembly-CSharp:Verse.Widgets.ClickedInsideRect" />
+    <Publicize Include="Assembly-CSharp:RimWorld.CharacterCardUtility.tmpStackElements" />
+    <Publicize Include="Assembly-CSharp:RimWorld.CharacterCardUtility.pawn" />
+    
     
     <!-- <Publicize Include="Assembly-CSharp:Verse.GraphicDatabase.cachedGraphicGetters" /> -->
   </ItemGroup>

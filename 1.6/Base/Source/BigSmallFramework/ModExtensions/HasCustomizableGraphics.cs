@@ -10,21 +10,23 @@ namespace BigAndSmall
     public class HasCustomizableGraphics : DefModExtension
     {
         // Required if put on nonDefs. Otherwise not needed.
-        public FlagString tag = null;
+        private FlagString tag = null;
 
         public bool colorA = false;
         public bool colorB = false;
         public bool colorC = false;
 
-        public override string ToString() => $"[{nameof(HasCustomizableGraphics)}] - Tag: {tag}, ColorA: {colorA}, ColorB: {colorB}, ColorC: {colorC}";
+        public FlagString Flag { get => tag; set => tag = value; }
+
+        public override string ToString() => $"[{nameof(HasCustomizableGraphics)}] - Tag: {Flag}, ColorA: {colorA}, ColorB: {colorB}, ColorC: {colorC}";
 
         public HasCustomizableGraphics TryMerge(HasCustomizableGraphics other)
         {
-            if (tag.TryFuseIdentical(other.tag) is FlagString newTag)
+            if (Flag.TryFuseIdentical(other.Flag) is FlagString newTag)
             {
                 return new HasCustomizableGraphics()
                 {
-                    tag = newTag,
+                    Flag = newTag,
                     colorA = colorA || other.colorA,
                     colorB = colorB || other.colorB,
                     colorC = colorC || other.colorC

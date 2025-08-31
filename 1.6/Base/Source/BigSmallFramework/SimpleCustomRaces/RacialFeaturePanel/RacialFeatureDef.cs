@@ -59,9 +59,13 @@ namespace BigAndSmall
             {
                 stringBuilder.AppendLine(description);
             }
-            else
+            else if (hediffDescriptionSource?.Description.NullOrEmpty() == false)
             {
                 stringBuilder.AppendLine(hediffDescriptionSource.Description);
+            }
+            else
+            {
+                //stringBuilder.AppendLine("No description available.");
             }
             stringBuilder.AppendLine();
             

@@ -180,15 +180,15 @@ namespace BigAndSmall
             if (customTagGraphicIsSet != null)
             {
                 var tagOverride = customTagGraphicIsSet;
-                if (tagOverride.colorA && pawn.GetTagColor(tagOverride.tag, 0) == null)
+                if (tagOverride.colorA && pawn.GetFlagColor(tagOverride.tag, 0) == null)
                 {
                     return false;
                 }
-                if (tagOverride.colorB && pawn.GetTagColor(tagOverride.tag, 1) == null)
+                if (tagOverride.colorB && pawn.GetFlagColor(tagOverride.tag, 1) == null)
                 {
                     return false;
                 }
-                if (tagOverride.colorC && pawn.GetTagColor(tagOverride.tag, 2) == null)
+                if (tagOverride.colorC && pawn.GetFlagColor(tagOverride.tag, 2) == null)
                 {
                     return false;
                 }

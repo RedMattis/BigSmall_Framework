@@ -32,7 +32,7 @@ namespace BigAndSmall
         public Color? colorB;
         public Color? colorC;
 
-        public List<SubItemGraphic> tagItems = [];
+        public List<SubItemGraphic> flagItems = [];
 
         // Not yet implemented.
         //public string texturePath = null;
@@ -76,16 +76,16 @@ namespace BigAndSmall
             return null;
         }
 
-        public static SubItemGraphic GetTagItemGraphic(Thing t, FlagString fStr, bool createIfMissing = false)
+        public static SubItemGraphic GetFlagGraphic(Thing t, FlagString fStr, bool createIfMissing = false)
         {
             var graphic = Get(t, createIfMissing);
             if (graphic == null) { return null; }
-            var subItem = graphic.tagItems?.FirstOrDefault(x => x.flagString == fStr);
+            var subItem = graphic.flagItems?.FirstOrDefault(x => x.flagString == fStr);
             if (subItem == null && createIfMissing)
             {
-                graphic.tagItems ??= [];
+                graphic.flagItems ??= [];
                 subItem = new SubItemGraphic() { flagString = fStr };
-                graphic.tagItems.Add(subItem);
+                graphic.flagItems.Add(subItem);
             }
             return subItem;
         }
@@ -95,7 +95,7 @@ namespace BigAndSmall
             Scribe_Values.Look(ref colorA, "colorA");
             Scribe_Values.Look(ref colorB, "colorB");
             Scribe_Values.Look(ref colorC, "colorC");
-            Scribe_Collections.Look(ref tagItems, "tagItems", LookMode.Deep);
+            Scribe_Collections.Look(ref flagItems, "tagItems", LookMode.Deep);
         }
 
         public override string ToString()
@@ -119,10 +119,10 @@ namespace BigAndSmall
         public static Color? GetCustomColorB(this Thing t) => CustomizableGraphic.Get(t)?.colorB;
         public static Color? GetCustomColorC(this Thing t) => CustomizableGraphic.Get(t)?.colorC;
 
-        public static Color? GetTagColor(this Thing t, FlagString fString, int colorIndex)
+        public static Color? GetFlagColor(this Thing t, FlagString fString, int colorIndex)
         {
             if (fString == null || t == null) return null;
-            var tagItem = CustomizableGraphic.GetTagItemGraphic(t, fString);
+            var tagItem = CustomizableGraphic.GetFlagGraphic(t, fString);
             if (tagItem == null) { return null; }
             return colorIndex switch
             {
@@ -133,14 +133,14 @@ namespace BigAndSmall
             };
         }
 
-        public static Color SetTagColor(this Thing t, FlagString fString, int colorIndex, Color color)
+        public static Color SetFlagColor(this Thing t, FlagString fString, int colorIndex, Color color)
         {
             if (fString == null || t == null)
             {
                 Log.ErrorOnce($"Tried to set subitem color with null def or thing. (Thing: {t}, Def: {fString})", 945612);
                 return Color.magenta;
             }
-            var subItem = CustomizableGraphic.GetTagItemGraphic(t, fString, true);
+            var subItem = CustomizableGraphic.GetFlagGraphic(t, fString, true);
             return colorIndex switch
             {
                 0 => (subItem.colorA = color).Value,
