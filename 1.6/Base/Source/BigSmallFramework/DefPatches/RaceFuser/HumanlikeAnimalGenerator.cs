@@ -200,8 +200,6 @@ namespace BigAndSmall
             // From Human
 
             newThing.thingCategories = humThing.thingCategories != null ? [.. humThing.thingCategories] : [];
-            newThing.inspectorTabs = humThing.inspectorTabs != null ? [.. humThing.inspectorTabs] : null;
-            newThing.inspectorTabsResolved = humThing.inspectorTabsResolved != null ? [.. humThing.inspectorTabsResolved] : null;
             newThing.stuffCategories = humThing.stuffCategories != null ? [.. humThing.stuffCategories] : null;
             newThing.thingSetMakerTags = humThing.thingSetMakerTags != null ? [.. humThing.thingSetMakerTags] : null;
             newThing.virtualDefs = humThing.virtualDefs != null ? [.. humThing.virtualDefs] : null;
@@ -220,9 +218,15 @@ namespace BigAndSmall
             newThing.smeltProducts = ([.. (humThing.smeltProducts ?? []), .. (aniThing.smeltProducts ?? [])]);
             if (newThing.smeltProducts.Empty()) newThing.smeltProducts = null;
 
-            // From Both.
-            newThing.recipes = [.. (humThing.recipes ?? []), .. aniThing?.recipes ?? []];
-            newThing.recipes = newThing.recipes.Distinct().ToList();
+			// From Both.
+			List<RecipeDef> recipes = new();
+			if (humThing.recipes != null)
+				recipes.AddRange(humThing.recipes);
+
+			if (aniThing.recipes != null)
+				recipes.AddRange(aniThing.recipes);
+
+			newThing.recipes = recipes.Distinct().ToList();
             newThing.tradeTags = ([.. (humThing.tradeTags ?? []), .. (aniThing.tradeTags ?? [])]);
 
             foreach (var tab in aniThing.inspectorTabs ?? [])
@@ -243,10 +247,6 @@ namespace BigAndSmall
             if (newThing.inspectorTabs != null)
             {
                 newThing.inspectorTabs = newThing.inspectorTabs.Distinct().ToList();
-            }
-            if (newThing.inspectorTabsResolved != null)
-            {
-                newThing.inspectorTabsResolved = newThing.inspectorTabsResolved.Distinct().ToList();
             }
 
             RaceFuser.CopyRaceProperties(aniRace, newRace);
@@ -317,15 +317,15 @@ namespace BigAndSmall
             SetupBodyTags(newThing, newRace);
 
             string raceHediffName = $"HL_{aniThing.defName}_RaceHediff";    // This can be used to override the hediff of the race.
-            var raceHediff = raceHediffName.TryGetExistingDef<HediffDef>();
-            bool hasHands = false;
-            var racePawnExtension = raceHediff?.GetAllPawnExtensionsOnHediff().FirstOrDefault();
-            float? fineManipulation = racePawnExtension?.animalFineManipulation;
-            fineManipulation = hasHands ? 1.0f : 0f;
 
+			var raceHediff = raceHediffName.TryGetExistingDef<HediffDef>();
+			PawnExtension racePawnExtension = raceHediff?.GetAllPawnExtensionsOnHediff().FirstOrDefault();
+            float fineManipulation = racePawnExtension?.animalFineManipulation ?? 0f;
             if (raceHediff == null)
             {
-                List<string> manipulatorBlackList = ["Mouth", "Jaw", "Beak", "Leg"];
+				bool hasHands = false;
+
+				List<string> manipulatorBlackList = ["Mouth", "Jaw", "Beak", "Leg"];
                 var allParts = newRace.body.corePart.GetAllBodyPartsRecursive();
 
                 if (HumanlikeAnimalSettings.AllHASettings.Any(x => x.hasHandsWildcards.Any(wc => aniThing.defName.Contains(wc, StringComparison.OrdinalIgnoreCase))))
@@ -382,7 +382,7 @@ namespace BigAndSmall
                 if (targetAnimalBase.pawnExtension.animalFineManipulation != null)
                 {
                     // Normally this will be null, but if a modder has set values then we use those instead for any values calculated based of it.
-                    fineManipulation = targetAnimalBase.pawnExtension.animalFineManipulation;
+                    fineManipulation = targetAnimalBase.pawnExtension.animalFineManipulation.Value;
                     if (fineManipulation > 0.45f)
                     {
                         hasHands = true;
@@ -433,31 +433,33 @@ namespace BigAndSmall
                 {
                     pawnExt.traitIcon = GetTraitIcon(aniPawnKind);
                 }
-                pawnExt.animalFineManipulation = fineManipulation ?? 1.0f;
+                pawnExt.animalFineManipulation = fineManipulation;
                 pawnExt.romanceTags = romanceOverride;
                 raceHediff.modExtensions = [pawnExt];
-            }
-            racePawnExtension = raceHediff?.GetAllPawnExtensionsOnHediff().FirstOrDefault();
-            if (racePawnExtension != null)
-            {
-                if ((racePawnExtension.traitIcon == null || racePawnExtension.traitIcon == "BS_Traits/robot") &&
-                    aniPawnKind.lifeStages?.Any() == true)
-                {
-                    racePawnExtension.traitIcon = GetTraitIcon(aniPawnKind);
-                }
-                if (racePawnExtension.animalFineManipulation < 0.45)
-                {
-                    racePawnExtension.canWieldThings = false;
-                }
+				racePawnExtension = pawnExt;
+			}
 
-                racePawnExtension.nullsThoughts ??= [];
-                var allUncoveredThoughts = DefDatabase<ThoughtDef>.AllDefs.Where(x => x.defName.Contains("uncovered", StringComparison.OrdinalIgnoreCase));
-                var allSweatThoughts = DefDatabase<ThoughtDef>.AllDefs.Where(x => x.defName.Contains("sweat", StringComparison.OrdinalIgnoreCase));
-                var tableThoughts = DefDatabase<ThoughtDef>.AllDefs.Where(x => x.defName.Contains("table", StringComparison.OrdinalIgnoreCase));
-                racePawnExtension.nullsThoughts.AddRange(allUncoveredThoughts);
-                racePawnExtension.nullsThoughts.AddRange(allSweatThoughts);
-                racePawnExtension.nullsThoughts.AddRange(tableThoughts);
+			// At this point if racePawnExtension didn't exist then we have now created it.
+			// Same goes for raceHediff.
+			fineManipulation = racePawnExtension.animalFineManipulation ?? fineManipulation;
+			if ((racePawnExtension.traitIcon == null || racePawnExtension.traitIcon == "BS_Traits/robot") &&
+                aniPawnKind.lifeStages?.Any() == true)
+            {
+                racePawnExtension.traitIcon = GetTraitIcon(aniPawnKind);
             }
+            if (racePawnExtension.animalFineManipulation < 0.45)
+            {
+                racePawnExtension.canWieldThings = false;
+            }
+
+            racePawnExtension.nullsThoughts ??= [];
+            var allUncoveredThoughts = DefDatabase<ThoughtDef>.AllDefs.Where(x => x.defName.Contains("uncovered", StringComparison.OrdinalIgnoreCase));
+            var allSweatThoughts = DefDatabase<ThoughtDef>.AllDefs.Where(x => x.defName.Contains("sweat", StringComparison.OrdinalIgnoreCase));
+            var tableThoughts = DefDatabase<ThoughtDef>.AllDefs.Where(x => x.defName.Contains("table", StringComparison.OrdinalIgnoreCase));
+            racePawnExtension.nullsThoughts.AddRange(allUncoveredThoughts);
+            racePawnExtension.nullsThoughts.AddRange(allSweatThoughts);
+            racePawnExtension.nullsThoughts.AddRange(tableThoughts);
+
             if (aniPawnKind.abilities != null)
             {
                 raceHediff.abilities ??= [];
@@ -468,14 +470,13 @@ namespace BigAndSmall
             raceExt.SetHediff(raceHediff);
 
             newThing.generated = true;
-            newThing.defName = thingDefName;
             newThing.label = aniThing.label;
             newThing.description = aniThing.description;
             newThing.race = newRace;
 
             newThing.modExtensions.Add(raceExt);
 
-            SetAnimalStatDefValues(humThing, aniThing, newThing, fineManipulation.Value, racePawnExtension);
+            SetAnimalStatDefValues(humThing, aniThing, newThing, fineManipulation, racePawnExtension);
             if (newRace.gestationPeriodDays == -1)
             {
                 newRace.gestationPeriodDays = humRace.gestationPeriodDays;
@@ -485,16 +486,9 @@ namespace BigAndSmall
                 }
             }
 
-            //if (newThing.comps.Any())
-            //{
-            //    Log.Message($"{newThing.defName} has {string.Join("\n", newThing.comps.Select(x => x.GetType().ToString() + " " + x.compClass.ToString()))} as comps.");
-            //}
-
             DefGenerator.AddImpliedDef(newThing, hotReload: true);
             DefGenerator.AddImpliedDef(newRace.body, hotReload: true);
             DefGenerator.AddImpliedDef(raceHediff, hotReload: true);
-
-
 
             newThing.ResolveReferences();
             raceHediff.ResolveReferences();
