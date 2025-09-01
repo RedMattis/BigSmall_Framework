@@ -14,10 +14,8 @@ namespace BigAndSmall
     [HarmonyPatch]
     public static class CharacterCardUtilityUIPatch
     {
-        public static Texture2D ColorPawn_Icon { get { return field ??= ContentFinder<Texture2D>.Get("BS_UI/ColorPawn"); } }
-        public static Texture2D Mechanical_Icon { get { return field ??= ContentFinder<Texture2D>.Get("BS_Traits/BS_Mechanical"); } }
-        public static Texture2D AlienIcon_Icon { get { return field ??= ContentFinder<Texture2D>.Get("BS_Traits/Alien"); } }
-        public static readonly Color StackElementBackground = new Color(1f, 1f, 1f, 0.1f);
+		public static readonly Color StackElementBackground = new Color(1f, 1f, 1f, 0.1f);
+
         //public static string BSShowPawnRaceTooltip {get { return field ??= "BS_ShowPawnRaceTooltip".Translate(); } }
         public static string BSEditPawnTooltip { get { return field ??= "BS_EditPawnTooltip".Translate(); } }
 
@@ -58,7 +56,7 @@ namespace BigAndSmall
                     GUI.color = Color.white;
                     //Widgets.DrawRectFast(inRect, backColor);
 
-                    Widgets.DrawTextureFitted(inRect, ColorPawn_Icon, 1);
+                    Widgets.DrawTextureFitted(inRect, Textures.ColorPawn_Icon, 1);
                     if (Widgets.ButtonInvisible(inRect))
                     {
                         Find.WindowStack.Add(new EditPawnWindow(pawn));
@@ -90,7 +88,7 @@ namespace BigAndSmall
                     GUI.color = Color.white;
                     //Widgets.DrawRectFast(inRect, backColor);
 
-                    Widgets.DrawTextureFitted(inRect, Mechanical_Icon, 1);
+                    Widgets.DrawTextureFitted(inRect, Textures.Mechanical_Icon, 1);
                     if (Widgets.ButtonInvisible(inRect))
                     {
                         Find.WindowStack.Add(new Dialog_ViewMutations(pawn));

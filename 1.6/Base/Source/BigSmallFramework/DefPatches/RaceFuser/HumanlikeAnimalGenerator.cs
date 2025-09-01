@@ -129,14 +129,15 @@ namespace BigAndSmall
             humanlikeAnimals[animalLikePK.race] = hla;
         }
 
-        /// <summary>
-        /// Generate a humanlike animal from an AnimalThing and HumanThing.
-        /// 
-        /// Generally we want to grab most stuff from the human, and transfer mostly the body and some traits from the animal.
-        /// </summary>
-        /// <param name="aniThing">ThingDef of an Animal.</param>
-        /// <param name="humThing">ThingDef of a Humanlike (likely always the defautl "Human")</param>
-        public static void GenerateAndRegisterHumanlikeAnimal(PawnKindDef aniPawnKind, ThingDef humThing, bool hotReload)
+		/// <summary>
+		/// Generate a humanlike animal from an AnimalThing and HumanThing.
+		/// 
+		/// Generally we want to grab most stuff from the human, and transfer mostly the body and some traits from the animal.
+		/// </summary>
+		/// <param name="aniPawnKind">ThingKindDef of an Animal.</param>
+		/// <param name="humThing">ThingDef of a Humanlike (likely always the defautl "Human")</param>
+		/// <param name="hotReload">Whether or not this is in context of a hotreload.</param>
+		public static void GenerateAndRegisterHumanlikeAnimal(PawnKindDef aniPawnKind, ThingDef humThing, bool hotReload)
         {
             var aniThing = aniPawnKind.race;
 

@@ -78,9 +78,11 @@ namespace BigAndSmall
 
         public bool HasGeneTriggers => triggerGeneTag.AnyItems() || triggerGene.AnyItems();
 
-        public HashSet<AltTrigger> Triggers { get => [.. triggerConditions, .. triggers]; }
+#pragma warning disable CS0612 // Type or member is obsolete
+		public HashSet<AltTrigger> Triggers { get => [.. triggerConditions, .. triggers]; }
+#pragma warning restore CS0612 // Type or member is obsolete
 
-        public List<GraphicsOverride> GetGraphicOverrides(Pawn pawn)
+		public List<GraphicsOverride> GetGraphicOverrides(Pawn pawn)
         {
             var overrides = ModExtHelper.GetAllExtensions<GraphicsOverride>(pawn);
             var overridesInactive = ModExtHelper.GetAllExtensionsPlusInactive<GraphicsOverride>(pawn);

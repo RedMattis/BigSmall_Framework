@@ -386,7 +386,7 @@ namespace BigAndSmall
             static ShortHashWrapper()
             {
                 giveHashDelegate = MethodDelegate<Action<Def, Type, HashSet<ushort>>>(Method(typeof(ShortHashGiver), "GiveShortHash",
-                [typeof(Def), typeof(Type), typeof(HashSet<ushort>)], null), null, true);
+                [typeof(Def), typeof(Type), typeof(HashSet<ushort>)], null));
                 takenHashesFieldRef = StaticFieldRefAccess<Dictionary<Type, HashSet<ushort>>>(Field(typeof(ShortHashGiver), "takenHashesPerDeftype"));
             }
             internal static void GiveShortHash<T>(T def) where T : Def

@@ -121,8 +121,9 @@
             
             Generally we want to grab most stuff from the human, and transfer mostly the body and some traits from the animal.
             </summary>
-            <param name="aniThing">ThingDef of an Animal.</param>
+            <param name="aniPawnKind">ThingKindDef of an Animal.</param>
             <param name="humThing">ThingDef of a Humanlike (likely always the defautl "Human")</param>
+            <param name="hotReload">Whether or not this is in context of a hotreload.</param>
         </member>
         <member name="M:BigAndSmall.RaceFuser.CreateMergedBodyTypes(System.Boolean)">
             <summary>

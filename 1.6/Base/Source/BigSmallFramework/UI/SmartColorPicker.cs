@@ -13,11 +13,9 @@ using Mono.Security.X509.Extensions;
 
 namespace BigAndSmall
 {
+	[StaticConstructorOnStartup]
     public static class SmartColorWidgets
     {
-        public static Texture2D BrightnessTexture { get => field; set; } = ContentFinder<Texture2D>.Get("BS_UI/BrightnessGradient", true);
-        public static Texture2D SliderHandle { get => field; set; } = ContentFinder<Texture2D>.Get("UI/Buttons/SliderHandle");
-
         public static List<Color> GreyScale5Palette { get => field; set; } =
         [
             new Color(.05f,.05f, .05f), // near-black
@@ -196,7 +194,7 @@ namespace BigAndSmall
         private static float? MakeBrightnessSlider(Rect inRect, float brightness, ref bool dragging)
         {
             float newBrightness = brightness;
-            GUI.DrawTexture(inRect, BrightnessTexture, ScaleMode.StretchToFill, alphaBlend: true);
+            GUI.DrawTexture(inRect, Textures.BrightnessTexture, ScaleMode.StretchToFill, alphaBlend: true);
 
             float handleSize = 22;
             float handleX = Mathf.Lerp(inRect.x - handleSize / 2, inRect.xMax - handleSize/2, brightness);

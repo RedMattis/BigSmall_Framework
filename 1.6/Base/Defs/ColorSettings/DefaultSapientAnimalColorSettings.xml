@@ -5,6 +5,12 @@
 			<alts>
 				<li>
 					<triggers>
+						<li>CustomColorAIsSet</li>
+					</triggers>
+					<customColorA />
+				</li>
+				<li>
+					<triggers>
 						<li>HasForcedHairColorGene</li>
 					</triggers>
 					<hairColor>true</hairColor>
@@ -22,6 +28,12 @@
 		<defName>BS_DefaultSapientAnimalColorB</defName>
 		<color>
 			<alts>
+				<li>
+					<triggers>
+						<li>CustomColorBIsSet</li>
+					</triggers>
+					<customColorB />
+				</li>
 				<li>
 					<triggers>
 						<li>IdeologyDLC</li>

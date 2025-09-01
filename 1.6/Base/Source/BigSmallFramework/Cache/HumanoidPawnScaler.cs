@@ -433,10 +433,12 @@ namespace BigAndSmall
                 
                 deathlike = animalUndead || allPawnExt.Any(x => x.isDeathlike);
 
-                unarmedOnly = allPawnExt.Any(x => x.unarmedOnly || x.forceUnarmed) ||
+#pragma warning disable CS0618 // Type or member is obsolete
+				unarmedOnly = allPawnExt.Any(x => x.unarmedOnly || x.forceUnarmed) ||
                                 activeGenes.Any(x => new List<string> { "BS_UnarmedOnly", "BS_NoEquip", "BS_UnarmedOnly_Android" }.Contains(x.def.defName));
+#pragma warning restore CS0618 // Type or member is obsolete
 
-                this.succubusUnbonded = succubusUnbonded;
+				this.succubusUnbonded = succubusUnbonded;
                 romanceTags = allPawnExt.Select(x => x.romanceTags).Where(x => x != null)?.GetMerged();
                 if (
                     (romanceTags == null && HumanLikes.Humanlikes.Contains(pawn?.def)) ||
