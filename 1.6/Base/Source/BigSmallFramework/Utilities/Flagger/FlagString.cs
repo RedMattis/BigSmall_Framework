@@ -13,14 +13,13 @@ namespace BigAndSmall
     public class FlagString : IExposable, IEquatable<FlagString>
     {
         private const string DEFAULT = "default";
-
         public string mainTag;
         public string subTag = DEFAULT;
         public Dictionary<string, string> extraData = [];
-        public FlagStringStateData? Data { get { return field ??= FlagStringData.DataFor(this); } }
-        public string Label { get { return field ??= GetCustomLabel() ?? Data?.label ?? ToStringShort(); } }
-        public EditPawnWindow.WindowTab? DisplayTab { get { return field ??= Data?.displayTab; } }
-        public string CustomCategory { get { return field ??= Data?.customCategory; } }
+        public FlagStringStateData Data { get { return field ??= FlagStringData.DataFor(this); } set { field = value; } }
+        public string Label { get { return field ??= GetCustomLabel() ?? Data?.label ?? ToStringShort(); } set { field = value; } }
+        public EditPawnWindow.WindowTab? DisplayTab { get { return field ??= Data?.displayTab; } set { field = value; } }
+        public string CustomCategory { get { return field ??= Data?.customCategory; } set { field = value; } }
 
         public bool Equals(FlagString other) => this?.mainTag != null && other?.mainTag != null
             && mainTag == other.mainTag && subTag == other.subTag;
@@ -62,6 +61,14 @@ namespace BigAndSmall
             };
         }
 
+        public void ClearCache()
+        {
+            Label = null;
+            DisplayTab = null;
+            CustomCategory = null;
+            Data = null;
+        }
+
         public override int GetHashCode()
         {
             unchecked
@@ -78,6 +85,17 @@ namespace BigAndSmall
 
         public void LoadDataFromXML(XmlNode node)
         {
+            if (node.Name == "li")
+            {
+                SetupSimple(node);
+                return;
+            }
+            if (node.NodeType == XmlNodeType.Text)
+            {
+                SetupSimple(node);
+                return;
+            }
+
             mainTag = node.Name;
             if (node.InnerText != "")
             {
@@ -86,6 +104,13 @@ namespace BigAndSmall
             extraData = node.Attributes?
                 .OfType<XmlAttribute>()
                 .ToDictionary(attr => attr.Name, attr => attr.Value) ?? [];
+
+            void SetupSimple(XmlNode node)
+            {
+                mainTag = node.InnerText;
+                subTag = DEFAULT;
+                extraData = [];
+            }
         }
         public void LoadDataFromXmlCustom(XmlNode xmlRoot)
         {

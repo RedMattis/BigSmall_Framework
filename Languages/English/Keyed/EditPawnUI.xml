@@ -1,6 +1,8 @@
 <LanguageData>
   <BS_EditThing_Title>Editing: {0}</BS_EditThing_Title>
 
+  <BS_Reset>Reset Custom</BS_Reset>
+
   <BS_Tab_Thing>Target</BS_Tab_Thing>
   <BS_Tab_Apparel>Apparel</BS_Tab_Apparel>
   <BS_Tab_CustomTag>Tagged</BS_Tab_CustomTag>

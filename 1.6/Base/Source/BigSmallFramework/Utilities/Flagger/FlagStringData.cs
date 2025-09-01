@@ -34,9 +34,16 @@ namespace BigAndSmall
             return new FlagStringStateData(null, null, null);
         }
 
-        public static Dictionary<FlagString, FlagStringStateData> Setup()
+        public static Dictionary<FlagString, FlagStringStateData> Setup(bool force=false)
         {
-            if (allFlagStringData != null)
+            if (allFlagStringData != null && force)
+            {
+                foreach(var fString in allFlagStringData)
+                {
+                    fString.Key.ClearCache();
+                }
+            }
+            if (allFlagStringData != null && force == false)
             {
                 return allFlagStringData;
             }
@@ -58,7 +65,6 @@ namespace BigAndSmall
                     }
                 }
             }
-            Log.Message($"[FlagStringData] Loaded {allFlagStringData.Count}: {string.Join(", ", allFlagStringData.Keys.Select(f => $" {f?.Label} ({f?.ToStringShort()})"))}");
             return allFlagStringData;
         }
     }

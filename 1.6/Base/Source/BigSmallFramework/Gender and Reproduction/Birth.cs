@@ -104,29 +104,13 @@ namespace BigAndSmall
             return false;
         }
 
-        //[HarmonyPatch (typeof(AgeInjuryUtility), nameof(AgeInjuryUtility.GenerateRandomOldAgeInjuries),
-        //    new Type[] { typeof(Pawn), typeof(bool) })]
-        //[HarmonyPrefix]
-        //public static void GenerateRandomOldAgeInjuriesPrefix(Pawn pawn, bool tryNotToKillPawn)
-        //{
-        //    Log.Message($"GenerateRandomOldAgeInjuriesPrefix : {pawn} {pawn?.def}");
-
-        //    IEnumerable<BodyPartRecord> source = from x in pawn.health.hediffSet.GetNotMissingParts()
-        //                                        where x.depth == BodyPartDepth.Outside && (x.def.permanentInjuryChanceFactor != 0f || x.def.pawnGeneratorCanAmputate) && !pawn.health.hediffSet.PartOrAnyAncestorHasDirectlyAddedParts(x)
-        //                                        select x; ;
-        //    foreach (BodyPartRecord bodyPartRecord in source)
-        //    {
-        //        Log.Message($"{bodyPartRecord} {bodyPartRecord?.def} {bodyPartRecord?.coverage}");
-        //    }
-        //}
-
         [HarmonyPatch(
             typeof(PawnGenerator),
             nameof(PawnGenerator.GeneratePawn),
             [typeof(PawnGenerationRequest)])
             ]
         [HarmonyPostfix]
-        public static void GeneratePawnPostfix(Pawn __result, PawnGenerationRequest request)
+        public static void MaySetBabyGenesIfBabyBirth(Pawn __result, PawnGenerationRequest request)
         {
             if (parents.NullOrEmpty())
             {

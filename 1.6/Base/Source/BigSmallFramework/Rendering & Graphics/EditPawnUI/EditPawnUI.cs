@@ -12,106 +12,6 @@ using System.Security.Cryptography;
 
 namespace BigAndSmall
 {
-
-    [HarmonyPatch]
-    public static class CharacterCardUtilityUIPatch
-    {
-        public static Texture2D ColorPawn_Icon { get { return field ??= ContentFinder<Texture2D>.Get("BS_UI/ColorPawn"); } }
-        public static Texture2D Mechanical_Icon { get { return field ??= ContentFinder<Texture2D>.Get("BS_Traits/BS_Mechanical"); } }
-        public static Texture2D AlienIcon_Icon { get { return field ??= ContentFinder<Texture2D>.Get("BS_Traits/Alien"); } }
-        public static readonly Color StackElementBackground = new Color(1f, 1f, 1f, 0.1f);
-        //public static string BSShowPawnRaceTooltip {get { return field ??= "BS_ShowPawnRaceTooltip".Translate(); } }
-        public static string BSEditPawnTooltip { get { return field ??= "BS_EditPawnTooltip".Translate(); } }
-
-        [HarmonyPatch(typeof(CharacterCardUtility), "DoTopStack")]
-        [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> DoTopStack_Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            var codes = instructions.ToList();
-            var found = false;
-            for (int i = 0; i < codes.Count; i++)
-            {
-                if (!found && codes[i].opcode == OpCodes.Ldc_R4 && (float)codes[i].operand == 44f)
-                {
-                    found = true;
-                    yield return new CodeInstruction(OpCodes.Ldarg_0);
-                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(CharacterCardUtilityUIPatch), nameof(InsertPawnMutationWindow)));
-                    yield return new CodeInstruction(OpCodes.Ldarg_0);
-                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(CharacterCardUtilityUIPatch), nameof(InsertEditPawnApperanceWindow)));
-                }
-                yield return codes[i];
-            }
-            if (!found)
-            {
-                Log.Error("[BigAndSmall] Failed to apply CharacterCardUtilityUI transpiler.");
-            }
-        }
-
-        public static void InsertEditPawnApperanceWindow(Pawn pawn)
-        {
-            var tmpElms = CharacterCardUtility.tmpStackElements;
-            tmpElms.Add(new GenUI.AnonymousStackElement
-            {
-                drawer = delegate (Rect inRect)
-                {
-                    var backColor = StackElementBackground;
-                    GUI.color = backColor;
-                    Widgets.DrawBox(inRect);
-                    GUI.color = Color.white;
-                    //Widgets.DrawRectFast(inRect, backColor);
-
-                    Widgets.DrawTextureFitted(inRect, ColorPawn_Icon, 1);
-                    if (Widgets.ButtonInvisible(inRect))
-                    {
-                        Find.WindowStack.Add(new EditPawnWindow(pawn));
-                    }
-                    //GUI.color = Color(;
-                    //GUI.color = Color.white;
-                    TooltipHandler.TipRegion(inRect, BSEditPawnTooltip);
-                    //Widgets.DrawBox(inRect);
-                    if (Mouse.IsOver(inRect))
-                    {
-                        Widgets.DrawHighlight(inRect);
-                    }
-                },
-                width = 22f
-            });
-        }
-
-        public static void InsertPawnMutationWindow(Pawn pawn)
-        {
-            if (pawn.def == ThingDefOf.Human) return;
-            var tmpElms = CharacterCardUtility.tmpStackElements;
-            tmpElms.Add(new GenUI.AnonymousStackElement
-            {
-                drawer = delegate (Rect inRect)
-                {
-                    var backColor = StackElementBackground;
-                    GUI.color = backColor;
-                    Widgets.DrawBox(inRect);
-                    GUI.color = Color.white;
-                    //Widgets.DrawRectFast(inRect, backColor);
-
-                    Widgets.DrawTextureFitted(inRect, Mechanical_Icon, 1);
-                    if (Widgets.ButtonInvisible(inRect))
-                    {
-                        Find.WindowStack.Add(new Dialog_ViewMutations(pawn));
-                    }
-                    //GUI.color = Color(;
-                    //GUI.color = Color.white;
-                    TooltipHandler.TipRegion(inRect, () => "BS_ShowPawnRaceTooltip".Translate(pawn.LabelCap, pawn.def.LabelCap).Resolve(), 1289589431);
-                    //Widgets.DrawBox(inRect);
-                    if (Mouse.IsOver(inRect))
-                    {
-                        Widgets.DrawHighlight(inRect);
-                    }
-                },
-                width = 22f
-            });
-        }
-    }
-
-
     public class EditPawnWindow : Window
     {
         public class ThingGData(Thing thing, WindowTab editMode, Def def = null)
@@ -186,11 +86,11 @@ namespace BigAndSmall
             absorbInputAroundWindow = false;
             closeOnClickedOutside = false;
             closeOnAccept = false;
-            closeOnCancel = false;
+            closeOnCancel = true;
+            doCloseX = true;
             preventCameraMotion = false;
             resizeable = true;
             draggable = true;
-            doCloseButton = true;
 
             AddEditable(null, WindowTab.Thing);
             if (pawn != null)
@@ -255,7 +155,6 @@ namespace BigAndSmall
                 if (cg?.Flag is FlagString flag)
                 {
                     var catName = flag.CustomCategory ?? NONE;
-                    Log.Message($"[BigAndSmall] Adding custom graphics for {target} with flag {flag} (cat: {catName})");
                     if (!CSectionBuilder.TryGetValue((catName, flag), out var sData))
                     {
                         var tab = cg.Flag.DisplayTab ?? defaultMode;
@@ -336,7 +235,40 @@ namespace BigAndSmall
 
             Rect innerRect = contentRect.ContractedBy(12);
             DrawMainUI(innerRect, activeTab);
-            //Close();
+
+            float totalButtonWidth = 2 * ButtonSize.x + 10f;
+            float buttonsStartX = inRect.x + (inRect.width - totalButtonWidth) / 2f;
+
+            if (Widgets.ButtonText(new Rect(buttonsStartX, inRect.yMax - ButtonSize.y + 4, ButtonSize.x, ButtonSize.y), "Close".Translate()))
+            {
+                SoundDefOf.Tick_High.PlayOneShotOnCamera();
+                Close();
+            }
+            if (Widgets.ButtonText(new Rect(buttonsStartX + ButtonSize.x + 10f, inRect.yMax - ButtonSize.y + 4, ButtonSize.x, ButtonSize.y), "BS_Reset".Translate()))
+            {
+                SoundDefOf.Tick_High.PlayOneShotOnCamera();
+                ClearAll();
+            }
+        }
+
+        private void ClearAll()
+        {
+            if (thing is Pawn pawn)
+            {
+                if (pawn.apparel != null)
+                {
+                    foreach (Apparel appItem in pawn.apparel.WornApparel)
+                    {
+                        CustomizableGraphic.Replace(appItem, null);
+                    }
+                }
+                CustomizableGraphic.Replace(thing, null);
+                pawn.Drawer.renderer.SetAllGraphicsDirty();
+            }
+            else
+            {
+                CustomizableGraphic.Replace(thing, null);
+            }
         }
 
         public List<SectionData> TryFetchAllByCustomCat(string cat) => CustomSections.Any() && CustomSections.TryGetValue(cat, out var list) ? list : [];

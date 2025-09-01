@@ -1,9 +1,20 @@
 <Defs>
+
+  <BigAndSmall.FlagStringData>
+    <defName>BS_HornGraphics</defName>
+    <label>horn</label>
+    <flags>
+      <BS_HornGraphics/>
+      <HornGraphics/>
+    </flags>
+  </BigAndSmall.FlagStringData>
+
   <BigAndSmall.FlagStringData>
     <defName>BS_TailGraphics</defName>
     <label>tail</label>
     <flags>
       <BS_TailGraphics/>
+      <TailGraphics/>
     </flags>
   </BigAndSmall.FlagStringData>
 </Defs>

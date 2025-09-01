@@ -52,8 +52,8 @@ namespace BigAndSmall
             RaceFuser.PreHotreload();
             RaceFuser.CreateMergedBodyTypes(hotReload);
             HumanlikeAnimalGenerator.GenerateHumanlikeAnimals(hotReload);
-
-			DebugLog.Message("Generate defs complete.");
+            FlagStringData.Setup(force: true); // For hotreload.
+            DebugLog.Message("Generate defs complete.");
 		}
 
         public static void RunDuringGenerateImpliedDefs(bool hotReload)
@@ -98,7 +98,7 @@ namespace BigAndSmall
 					corpse.thingCategories.Add(BSDefs.BS_CorpsesHumanlikeHybrids);
 				}
 			}
-		}
+        }
     }
 
     public class DefAltNamer : Def
