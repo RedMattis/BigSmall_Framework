@@ -74,17 +74,23 @@ namespace BigAndSmall
                 babyStartAge = pawnExtensions.FirstOrDefault(x => x.babyStartAge != null)?.babyStartAge ?? null;
 
                 parents = new List<Pawn> { geneticMother, father }.Where(x => x != null).ToList();
-                for (int i = 0; i < babiesToSpawn; i++)
+                try
                 {
-                    if (ModsConfig.IsActive("RedMattis.BetterGeneInheritance") && i > 0)
+                    for (int i = 0; i < babiesToSpawn; i++)
                     {
-                        // Invoke the "BGInheritance.BGI_HarmonyPatches.GetChildGenes" method which gives us new genes.
-                        newBabyGenes = (List<GeneDef>)AccessTools.Method("BGInheritance.External:GetChildGenes").Invoke(null, [geneticMother, father]);
+                        if (ModsConfig.IsActive("RedMattis.BetterGeneInheritance") && i > 0)
+                        {
+                            // Invoke the "BGInheritance.BGI_HarmonyPatches.GetChildGenes" method which gives us new genes.
+                            newBabyGenes = (List<GeneDef>)AccessTools.Method("BGInheritance.External:GetChildGenes").Invoke(null, [geneticMother, father]);
+                        }
+                        PregnancyUtility.ApplyBirthOutcome(outcome, quality, ritual, genes, geneticMother, birtherThing, father, doctor, lordJobRitual, assignments, preventLetter);
+                        newBabyGenes = null;
                     }
-                    PregnancyUtility.ApplyBirthOutcome(outcome, quality, ritual, genes, geneticMother, birtherThing, father, doctor, lordJobRitual, assignments, preventLetter);
-                    newBabyGenes = null;
                 }
-                parents.Clear();
+                finally
+                {
+                    parents.Clear();
+                }
                 success = true;
             }
             finally
