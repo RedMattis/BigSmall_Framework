@@ -1,11 +1,33 @@
 <Defs>
+  <BigAndSmall.FlagStringData>
+    <defName>BS_MiscHeadGraphics</defName>
+    <label>misc head</label>
+    <flags>
+      <MiscHeadGraphics/>
+    </flags>
+  </BigAndSmall.FlagStringData>
 
   <BigAndSmall.FlagStringData>
     <defName>BS_HornGraphics</defName>
     <label>horn</label>
     <flags>
-      <BS_HornGraphics/>
       <HornGraphics/>
+    </flags>
+  </BigAndSmall.FlagStringData>
+
+  <BigAndSmall.FlagStringData>
+    <defName>BS_EarGraphics</defName>
+    <label>ear</label>
+    <flags>
+      <EarGraphics/>
+    </flags>
+  </BigAndSmall.FlagStringData>
+
+  <BigAndSmall.FlagStringData>
+    <defName>BS_MiscBodyGraphics</defName>
+    <label>misc body</label>
+    <flags>
+      <MiscBodyGraphics/>
     </flags>
   </BigAndSmall.FlagStringData>
 
@@ -13,8 +35,23 @@
     <defName>BS_TailGraphics</defName>
     <label>tail</label>
     <flags>
-      <BS_TailGraphics/>
       <TailGraphics/>
+    </flags>
+  </BigAndSmall.FlagStringData>
+
+  <BigAndSmall.FlagStringData>
+    <defName>BS_WingGraphics</defName>
+    <label>wing</label>
+    <flags>
+      <WingGraphics/>
+    </flags>
+  </BigAndSmall.FlagStringData>
+
+  <BigAndSmall.FlagStringData>
+    <defName>BS_HaloGraphics</defName>
+    <label>halo</label>
+    <flags>
+      <HaloGraphics/>
     </flags>
   </BigAndSmall.FlagStringData>
 </Defs>

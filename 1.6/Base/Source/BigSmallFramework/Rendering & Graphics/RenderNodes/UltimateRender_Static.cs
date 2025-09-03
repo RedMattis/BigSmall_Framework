@@ -14,6 +14,7 @@ namespace BigAndSmall
         public bool ScaleSet { get; set; }
         public Vector2 CachedScale { get; set; }
         public ShaderTypeDef ShaderOverride { get; set; }
+        public bool AllowTexPathFor => false;
     }
 
     public static class PRN_Ultimate
@@ -25,7 +26,8 @@ namespace BigAndSmall
             var node = uNode.Base;
             if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache)
             {
-                var graphicSet = props.GraphicSet.GetGraphicsSet(cache);
+                var cgs = UProps.generated ?? props.GraphicSet;
+                var graphicSet = cgs.GetGraphicsSet(cache);
                 var texPath = graphicSet.GetPath(cache, noImage);
                 var maskPath = graphicSet.GetMaskPath(cache, null);
                 var conditionalProps = graphicSet.props.GetGraphicProperties(cache);
@@ -40,6 +42,14 @@ namespace BigAndSmall
                     uNode.ShaderOverride = conditionalProps.shader;
                 }
 
+                if (uNode.AllowTexPathFor && (texPath.NullOrEmpty() || texPath == noImage))
+                {
+                    texPath = node.TexPathFor(pawn);
+                    if (!texPath.NullOrEmpty())
+                    {
+                        goto usingTexPathFor;
+                    }
+                }
                 if (texPath.NullOrEmpty())
                 {
                     Log.WarningOnce($"[BigAndSmall] No texture path for {pawn}. Returning empty image.", node.GetHashCode());
@@ -54,6 +64,7 @@ namespace BigAndSmall
                 {
                     texPath = GetBodyTypedPath(pawn.story.bodyType, texPath);
                 }
+            usingTexPathFor:
                 if (maskPath == texPath)  // Ensure that the default Ludeon logic for masks gets used. (e.g. `path + "_m"`)
                 {
                     maskPath = null;
@@ -62,6 +73,7 @@ namespace BigAndSmall
                 Color colorOne = graphicSet.ColorA.GetColor(node, Color.white, ColorSetting.clrOneKey);
                 Color colorTwo = graphicSet.ColorB.GetColor(node, Color.white, ColorSetting.clrTwoKey);
                 Color colorThree = graphicSet.ColorC.GetColor(node, Color.white, ColorSetting.clrThreeKey);
+
                 Shader shader;
                 if (uNode.ShaderOverride != null)
                 {
@@ -80,8 +92,6 @@ namespace BigAndSmall
                     }
                 }
                     
-                
-                
                 return GetCachableGraphics(texPath, Vector2.one, shader, colorOne, colorTwo, colorThree, maskPath: maskPath);
             }
 

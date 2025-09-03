@@ -193,7 +193,7 @@ namespace BigAndSmall
 		public static ColorSettingDef BS_DefaultSapientAnimalColorB;
 
 
-		static BSDefs()
+        static BSDefs()
         {
             DefOfHelper.EnsureInitializedInCtor(typeof(BSDefs));
         }

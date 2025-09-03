@@ -45,6 +45,7 @@ namespace BigAndSmall
 
         public static void InsertEditPawnApperanceWindow(Pawn pawn)
         {
+            if (!BigSmall.ShowPalette) return;
             var tmpElms = CharacterCardUtility.tmpStackElements;
             tmpElms.Add(new GenUI.AnonymousStackElement
             {
@@ -77,6 +78,7 @@ namespace BigAndSmall
         public static void InsertPawnMutationWindow(Pawn pawn)
         {
             if (pawn.def == ThingDefOf.Human) return;
+            if (!BigSmall.ShowRaceButton) return;
             var tmpElms = CharacterCardUtility.tmpStackElements;
             tmpElms.Add(new GenUI.AnonymousStackElement
             {
@@ -88,7 +90,7 @@ namespace BigAndSmall
                     GUI.color = Color.white;
                     //Widgets.DrawRectFast(inRect, backColor);
 
-                    Widgets.DrawTextureFitted(inRect, Textures.Mechanical_Icon, 1);
+                    Widgets.DrawTextureFitted(inRect, Textures.AlienIcon_Icon, 1);
                     if (Widgets.ButtonInvisible(inRect))
                     {
                         Find.WindowStack.Add(new Dialog_ViewMutations(pawn));

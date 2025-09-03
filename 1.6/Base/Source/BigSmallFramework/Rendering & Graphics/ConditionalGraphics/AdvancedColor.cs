@@ -30,6 +30,7 @@ namespace BigAndSmall
         public Color? color = null;
         public bool hairColor = false;
         public bool skinColor = false;
+        public bool useRottedColor = false;
         public bool factionColor = false;
         public bool ideologyColor = false;
         public bool primaryIdeologyColor = false;
@@ -182,7 +183,6 @@ namespace BigAndSmall
                 }
                 if (skinColor)
                 {
-                    //finalClr *= pawn.story.SkinColor;
                     colorsAdded.Add(pawn.story.SkinColor);
                     didSet = true;
                 }
@@ -356,6 +356,10 @@ namespace BigAndSmall
             //    }
             //}
             Color finalClr = useOldColor ? oldClr : Color.white;
+            if (useRottedColor && pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Rotting)
+            {
+                finalClr = PawnRenderUtility.GetRottenColor(pawn.story.HairColor);
+            }
             if (colorsAdded.Count > 0) {
                 if (averageColors)
                 {

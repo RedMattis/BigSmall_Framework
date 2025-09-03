@@ -36,7 +36,7 @@ namespace BigAndSmall
             meshSet = MeshSetFor(pawn);
         }
 
-        protected override string TexPathFor(Pawn pawn) =>
+        public override string TexPathFor(Pawn pawn) =>
             throw new NotImplementedException($"TexPath is not meant to be used with this RenderNode." +
                 $"Use {nameof(UProps.GraphicSet)} ({typeof(ConditionalGraphicsSet)}) instead.");
 

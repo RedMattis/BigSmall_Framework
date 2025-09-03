@@ -70,7 +70,7 @@
         <movementDef>PF_Movement_Flying</movementDef>
       </li>
       <li Class="BigAndSmall.HasCustomizableGraphics">
-        <tag><BS_TailGraphics/></tag>
+        <tag><TailGraphics/></tag>
         <colorA>true</colorA>
         <colorB>true</colorB>
       </li>

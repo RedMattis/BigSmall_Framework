@@ -586,6 +586,14 @@
             reason for this is to avoid hiding wings from mods like "Sarg's Alpha Genes" that render wings but don't actually add them to the pawn.
             </summary>
         </member>
+        <member name="T:BigAndSmall.PawnRenderingProps_Lite">
+            <summary>
+            Lightweight version of Ultimate rendering props for quicky setup.
+            
+            TECHNICALLY supports all the same features as Ultimate, but is intended to be able to be set up quickly,
+                and auto-generate many properties.
+            </summary>
+        </member>
         <member name="M:BigAndSmall.RaceMorpher.SwapThingDef(Verse.Pawn,Verse.ThingDef,System.Boolean,System.Int32,System.Boolean,System.Object,System.Boolean,System.Boolean)">
             <summary>
             

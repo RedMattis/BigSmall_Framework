@@ -39,6 +39,14 @@ namespace BigAndSmall
             && mainTag == other.mainTag;
 
 
+        public FlagString() { }
+        public FlagString(string simpleString)
+        {
+            mainTag = simpleString;
+            subTag = DEFAULT;
+            extraData = [];
+        }
+
         /// <summary>
         /// If the mainTag and subTag are identical, merges the extraData dictionaries, preferring this.extraData on key conflicts.
         /// </summary>

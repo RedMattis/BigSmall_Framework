@@ -168,7 +168,6 @@ namespace BigAndSmall
                 else
                 {
                     PopulateShared(cg, data);
-
                 }
             }
 
@@ -208,8 +207,23 @@ namespace BigAndSmall
 
             if (inRect.width < 400f) inRect.width = 400f;
 
+            if (Find.Selector.NumSelected == 1 && Find.Selector.SingleSelectedThing is Pawn somePawn)
+            {
+                if (somePawn != pawn)
+                {
+                    var newWindow = new EditPawnWindow(somePawn)
+                    {
+                        selectedTab = selectedTab
+                    };
+                    Find.WindowStack.Add(newWindow);
+                    newWindow.windowRect = windowRect;
+                    Close();
+                    return;
+                }
+            }
+
             Rect tabRect = new(inRect.x, inRect.y + tabHeight - 4, inRect.width, tabHeight);
-            Rect contentRect = new(inRect.x, inRect.y + contentHeight, inRect.width, inRect.height - contentHeight-40);
+            Rect contentRect = new(inRect.x, inRect.y + contentHeight, inRect.width, inRect.height - contentHeight - 40);
 
             Widgets.DrawMenuSection(contentRect);
 
@@ -231,23 +245,79 @@ namespace BigAndSmall
             }
             TabDrawer.DrawTabs(tabRect, tabs);
 
-            activeTab = tabsWithContent[selectedTab];
+            try
+            {
+                activeTab = tabsWithContent[selectedTab];
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                selectedTab = 0;
+                activeTab = tabsWithContent[selectedTab];
+            }
 
             Rect innerRect = contentRect.ContractedBy(12);
             DrawMainUI(innerRect, activeTab);
 
-            float totalButtonWidth = 2 * ButtonSize.x + 10f;
-            float buttonsStartX = inRect.x + (inRect.width - totalButtonWidth) / 2f;
-
-            if (Widgets.ButtonText(new Rect(buttonsStartX, inRect.yMax - ButtonSize.y + 4, ButtonSize.x, ButtonSize.y), "Close".Translate()))
+            List<(string, Action)> btmButtons =
+            [
+                ("BS_Reset".Translate(), () => { SoundDefOf.Tick_High.PlayOneShotOnCamera(); ClearAll(); }),
+                ("Close".Translate(), () => { SoundDefOf.Tick_High.PlayOneShotOnCamera(); Close(); }),
+            ];
+            if (!BigSmallMod.settings.makeDefsRecolorable)
             {
-                SoundDefOf.Tick_High.PlayOneShotOnCamera();
-                Close();
+                btmButtons.Insert(0, ("BS_RecolourAnything".Translate(), () =>
+                {
+                    BigSmallMod.settings.makeDefsRecolorable = true;
+                    BigSmallMod.settings.Write();
+                    RenderNodePatcher.TryPatchPawnRenderNodeDefs();
+                    SoundDefOf.Tick_High.PlayOneShotOnCamera();
+                }
+                ));
             }
-            if (Widgets.ButtonText(new Rect(buttonsStartX + ButtonSize.x + 10f, inRect.yMax - ButtonSize.y + 4, ButtonSize.x, ButtonSize.y), "BS_Reset".Translate()))
+            else
             {
-                SoundDefOf.Tick_High.PlayOneShotOnCamera();
-                ClearAll();
+                btmButtons.Insert(0, ("BS_RecolourAnythingDisable".Translate(), () =>
+                {
+                    BigSmallMod.settings.makeDefsRecolorable = false;
+                    BigSmallMod.settings.Write();
+                    SoundDefOf.Tick_High.PlayOneShotOnCamera();
+
+                    // Popup message saying restart is required.
+                    Find.WindowStack.Add(new Dialog_MessageBox("BS_RestartRequired".Translate(), "OK".Translate()));
+                }
+                ));
+            }
+            MakeBottomButtons(inRect, btmButtons);
+
+
+        }
+        private void MakeBottomButtons(Rect inRect, List<(string, Action)> buttons)
+        {
+            if (buttons == null || buttons.Count == 0) return;
+
+            float spacing = 10f;
+            float totalSpacing = spacing * (buttons.Count - 1);
+            float availableWidth = inRect.width - 2 * inRect.x;
+            float buttonWidth = ButtonSize.x * 1.3f;
+            float totalButtonWidth = buttons.Count * buttonWidth + totalSpacing;
+
+            // Scale down if buttons don't fit
+            if (totalButtonWidth > availableWidth)
+            {
+                buttonWidth = (availableWidth - totalSpacing) / buttons.Count;
+            }
+
+            float startX = inRect.x + (inRect.width - (buttons.Count * buttonWidth + totalSpacing)) / 2f;
+            float y = inRect.yMax - ButtonSize.y + 4;
+
+            for (int i = 0; i < buttons.Count; i++)
+            {
+                var btn = buttons[i];
+                var rect = new Rect(startX + i * (buttonWidth + spacing), y, buttonWidth, ButtonSize.y);
+                if (Widgets.ButtonText(rect, btn.Item1))
+                {
+                    btn.Item2?.Invoke();
+                }
             }
         }
 
@@ -539,25 +609,6 @@ namespace BigAndSmall
                     pawn?.Drawer.renderer.SetAllGraphicsDirty();
                 }
                 curY += height + 12;
-            }
-        }
-
-        private void ColorSelecterExtraOnGUI(Color color, Rect boxRect)
-        {
-            Texture2D texture2D = null;
-            TaggedString taggedString = null;
-            if (texture2D != null)
-            {
-                Rect position = boxRect.ContractedBy(4f);
-                GUI.color = Color.black.ToTransparent(0.2f);
-                GUI.DrawTexture(new Rect(position.x + 2f, position.y + 2f, position.width, position.height), texture2D);
-                GUI.color = Color.white.ToTransparent(0.8f);
-                GUI.DrawTexture(position, texture2D);
-                GUI.color = Color.white;
-            }
-            if (!taggedString.NullOrEmpty())
-            {
-                TooltipHandler.TipRegion(boxRect, taggedString);
             }
         }
     }

@@ -44,6 +44,12 @@ namespace BigAndSmall
         public static bool BSGenesActive =>
             _BSGenesActive ??= ModsConfig.ActiveModsInLoadOrder.Any(x => x.PackageIdPlayerFacing == "RedMattis.BigSmall.Core");
 
+        public static bool ShowPalette =>
+            BSGenesActive || BigSmallMod.settings.showClrPaletteBtn || GlobalSettings.IsFeatureEnabled("RecolorButton");
+
+        public static bool ShowRaceButton =>
+            BSGenesActive || BigSmallMod.settings.showRaceBtn || GlobalSettings.IsFeatureEnabled("RaceButton");
+
 
         static BigSmall()
         {
