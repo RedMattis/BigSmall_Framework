@@ -11,12 +11,13 @@ using Verse;
 
 namespace BigAndSmall
 {
+    [StaticConstructorOnStartup]
     [HarmonyPatch]
     public static class CharacterCardUtilityUIPatch
     {
         public static Texture2D ColorPawn_Icon { get { return field ??= ContentFinder<Texture2D>.Get("BS_UI/ColorPawn"); } }
-        public static Texture2D Mechanical_Icon { get { return field ??= ContentFinder<Texture2D>.Get("BS_Traits/BS_Mechanical"); } }
-        public static Texture2D AlienIcon_Icon { get { return field ??= ContentFinder<Texture2D>.Get("BS_Traits/Alien"); } }
+        public static Texture2D Mechanical_Icon { get { return field ??= ContentFinder<Texture2D>.Get("BS_UI/BS_Mechanical"); } }
+        public static Texture2D AlienIcon_Icon { get { return field ??= ContentFinder<Texture2D>.Get("BS_UI/Race"); } }
         public static readonly Color StackElementBackground = new Color(1f, 1f, 1f, 0.1f);
         //public static string BSShowPawnRaceTooltip {get { return field ??= "BS_ShowPawnRaceTooltip".Translate(); } }
         public static string BSEditPawnTooltip { get { return field ??= "BS_EditPawnTooltip".Translate(); } }
@@ -47,6 +48,7 @@ namespace BigAndSmall
 
         public static void InsertEditPawnApperanceWindow(Pawn pawn)
         {
+            if (!BigSmall.ShowPalette) return;
             var tmpElms = CharacterCardUtility.tmpStackElements;
             tmpElms.Add(new GenUI.AnonymousStackElement
             {
@@ -79,6 +81,7 @@ namespace BigAndSmall
         public static void InsertPawnMutationWindow(Pawn pawn)
         {
             if (pawn.def == ThingDefOf.Human) return;
+            if (!BigSmall.ShowRaceButton) return;
             var tmpElms = CharacterCardUtility.tmpStackElements;
             tmpElms.Add(new GenUI.AnonymousStackElement
             {
@@ -90,7 +93,7 @@ namespace BigAndSmall
                     GUI.color = Color.white;
                     //Widgets.DrawRectFast(inRect, backColor);
 
-                    Widgets.DrawTextureFitted(inRect, Mechanical_Icon, 1);
+                    Widgets.DrawTextureFitted(inRect, AlienIcon_Icon, 1);
                     if (Widgets.ButtonInvisible(inRect))
                     {
                         Find.WindowStack.Add(new Dialog_ViewMutations(pawn));

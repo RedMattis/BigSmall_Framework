@@ -28,4 +28,6 @@
 
   <BS_ShowPawnRaceTooltip>Display race info for {0} ({1})</BS_ShowPawnRaceTooltip>
   <BS_EditPawnTooltip>Edit pawn appearance</BS_EditPawnTooltip>
+
+  <BS_RestartRequired>Restart required for changes to take effect</BS_RestartRequired>
 </LanguageData>

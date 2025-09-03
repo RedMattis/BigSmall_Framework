@@ -98,6 +98,8 @@ namespace BigAndSmall
 					corpse.thingCategories.Add(BSDefs.BS_CorpsesHumanlikeHybrids);
 				}
 			}
+
+            RenderNodePatcher.TryPatchPawnRenderNodeDefs();
         }
     }
 

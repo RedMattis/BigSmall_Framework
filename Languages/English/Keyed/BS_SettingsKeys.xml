@@ -4,7 +4,7 @@
   <BS_Races>Races</BS_Races>
   <BS_Size>Size</BS_Size>
   <BS_AutoCombat>Auto-Combat</BS_AutoCombat>
-  <BS_GameMechanics>Mechanics</BS_GameMechanics>
+  <BS_GameMechanics_Tab>Mechanics</BS_GameMechanics_Tab>
   <BS_Extras>Extras</BS_Extras>
   <BS_Advanced>Advanced</BS_Advanced>
   <BS_Developer>Developer</BS_Developer>
@@ -14,7 +14,7 @@
   <BS_ResetCache>Clear and Regenerate Caches</BS_ResetCache>
   <BS_ResetSettings>Reset Settings to Default</BS_ResetSettings>
   <BS_ResetToRecommendedSettings>Reset to Recommended Settings</BS_ResetToRecommendedSettings>
-  <BS_ActivateExperimental>Experimental Features (Requires Restart)</BS_ActivateExperimental>
+
 
   <!-- Races -->
   <BS_ToggleFeatures>Toggle Content Features (Requires Restart)</BS_ToggleFeatures>
@@ -54,6 +54,11 @@
   <BS_ImmortalReturnFactor>Immortal return time factor (less means faster)</BS_ImmortalReturnFactor>
 
   <!-- Extras -->
+  <BS_ShowColorPaletteBtn>Show Color Palette button</BS_ShowColorPaletteBtn>
+  <BS_ShowColorPaletteBtn_Forced>Color Palette (Force-Enabled by Mods)</BS_ShowColorPaletteBtn_Forced>
+  <BS_ShowRaceBtn>Show race button</BS_ShowRaceBtn>
+  <BS_ShowRaceBtn_Forced>Race Button (Force-Enabled by Mods)</BS_ShowRaceBtn_Forced>
+
   <BS_SciFiNames>Use Sci-Fi Names (restart required)</BS_SciFiNames>
   <BS_FantasyNames>Fantasy naming auto-patcher (restart required)</BS_FantasyNames>
   <BS_PatchPlayerFactions>Patch Player Faction</BS_PatchPlayerFactions>
@@ -63,6 +68,10 @@
   <BS_AutCombatResets>Disable auto-combat when undrafting that pawn</BS_AutCombatResets>
 
   <!-- Advanced -->
+  <BS_RecolourAnything>Enable Experimental</BS_RecolourAnything>
+  <BS_RecolourAnythingDisable>Stop Experimental</BS_RecolourAnythingDisable>
+  <BS_MakeBionicsAndGenesRecolourable>Patch to permit recoloring of most bionics and genes</BS_MakeBionicsAndGenesRecolourable>
+  <BS_ActivateExperimental>Experimental Features (Requires Restart)</BS_ActivateExperimental>
   <BS_GenesSpecific>Big and Small Genes Settings</BS_GenesSpecific>
   <BS_DoDefGeneration>Generate Xenotype Morph Genes</BS_DoDefGeneration>
 

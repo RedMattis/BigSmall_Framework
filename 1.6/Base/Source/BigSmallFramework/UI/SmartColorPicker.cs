@@ -13,6 +13,7 @@ using Mono.Security.X509.Extensions;
 
 namespace BigAndSmall
 {
+    [StaticConstructorOnStartup]
     public static class SmartColorWidgets
     {
         public static Texture2D BrightnessTexture { get => field; set; } = ContentFinder<Texture2D>.Get("BS_UI/BrightnessGradient", true);

@@ -12,25 +12,32 @@ namespace BigAndSmall
     public class PawnRenderingProps_Ultimate : PawnRenderNodeProperties
     {
         public ShaderTypeDef shader = null;
-        protected ConditionalGraphicsSet conditionalGraphics = new();
+        protected ConditionalGraphicsSet conditionalGraphics = null;
         protected GraphicSetDef graphicSetDef = null;
         public Vector4 colorMultiplier = new(1, 1, 1, 1);
         public bool invertEastWest = false;
         public bool mirrorNorth = false;
         public bool autoBodyTypePaths = false;
         public bool autoBodyTypeMasks = false;
+        public bool useHeadMesh = false;
+
+        // Never set this from XML.
+        public ConditionalGraphicsSet generated = null;
 
         public ConditionalGraphicsSet GraphicSet => graphicSetDef != null ? graphicSetDef.conditionalGraphics : conditionalGraphics;
     }
     
     public class PawnRenderNode_Ultimate : PawnRenderNode, IUltimateRendering
     {
+        protected readonly bool useHeadMesh;
+        
+
+        public virtual bool AllowTexPathFor => false;
         public PawnRenderNode Base => this;
         public bool ScaleSet { get; set; } = false;
         public Vector2 CachedScale { get; set; } = Vector2.one;
         public ShaderTypeDef ShaderOverride { get; set; } = null;
-        private readonly bool useHeadMesh;
-
+        
         
         PawnRenderingProps_Ultimate UProps => (PawnRenderingProps_Ultimate)props;
         public PawnRenderNode_Ultimate(Pawn pawn, PawnRenderingProps_Ultimate props, PawnRenderTree tree)
@@ -50,7 +57,7 @@ namespace BigAndSmall
             meshSet = MeshSetFor(pawn);
         }
 
-        protected override string TexPathFor(Pawn pawn) =>
+        public override string TexPathFor(Pawn pawn) => AllowTexPathFor == true ? base.TexPathFor(pawn) :
             throw new NotImplementedException($"TexPath is not meant to be used with this RenderNode." +
                 $"Use {nameof(UProps.GraphicSet)} ({typeof(ConditionalGraphicsSet)}) instead.");
 
@@ -75,7 +82,7 @@ namespace BigAndSmall
             {
                 return MeshPool.GetMeshSetForSize(Props.overrideMeshSize.Value.x, Props.overrideMeshSize.Value.y);
             }
-            if (useHeadMesh)
+            if (useHeadMesh || UProps.useHeadMesh)
             {
                 return HumanlikeMeshPoolUtility.GetHumanlikeHeadSetForPawn(pawn);
             }

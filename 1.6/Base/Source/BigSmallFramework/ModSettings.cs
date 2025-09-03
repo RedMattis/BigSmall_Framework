@@ -213,8 +213,28 @@ namespace BigAndSmall
             BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 200f);
             listStd.Begin(viewRect);
 
+            
+            
+
+            if (BigSmall.BSGenesActive || GlobalSettings.IsFeatureEnabled("RecolorButton"))
+            {
+                CreateSettingCheckbox(listStd, "BS_ShowColorPaletteBtn_Forced".Translate(), ref settings.forcedOn, disabled: true);
+            }
+            else
+            {
+                CreateSettingCheckbox(listStd, "BS_ShowColorPaletteBtn".Translate(), ref settings.showClrPaletteBtn);
+            }
+            if (BigSmall.BSGenesActive || GlobalSettings.IsFeatureEnabled("RaceButton"))
+            {
+                CreateSettingCheckbox(listStd, "BS_ShowRaceBtn_Forced".Translate(), ref settings.forcedOn, disabled: true);
+            }
+            else
+            {
+                CreateSettingCheckbox(listStd, "BS_ShowRaceBtn".Translate(), ref settings.showRaceBtn);
+            }
+
             //CreateSettingCheckbox(listStd, "BS_PatchPlayerFactions".Translate(), ref settings.patchPlayerFactions);
-            //listStd.GapLine();
+            listStd.GapLine();
             CreateSettingCheckbox(listStd, "BS_SciFiNames".Translate(), ref settings.useSciFiNames);
             CreateSettingCheckbox(listStd, "BS_FantasyNames".Translate(), ref settings.useFantasyNames);
 
@@ -227,6 +247,10 @@ namespace BigAndSmall
             Listing_Standard listStd = new Listing_Standard();
             BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 200f);
             listStd.Begin(viewRect);
+
+            listStd.Label("BS_RecolourAnything".Translate().AsTipTitle());
+            CreateSettingCheckbox(listStd, "BS_MakeBionicsAndGenesRecolourable".Translate(), ref settings.makeDefsRecolorable);
+            listStd.GapLine();
 
             listStd.Label("BS_ActivateExperimental".Translate().AsTipTitle());
             CreateSettingCheckbox(listStd, "BS_ActivateExperimental".Translate(), ref settings.experimental);
@@ -280,6 +304,9 @@ namespace BigAndSmall
 
         private static readonly bool defaultPathRacesFromOtherMods = true;
         public bool pathRacesFromOtherMods = defaultPathRacesFromOtherMods;
+
+        private static readonly bool defaultMakeDefsRecolorable = false;
+        public bool makeDefsRecolorable = defaultMakeDefsRecolorable;
 
         private static readonly bool defaultExperimental = false;
         public bool experimental = defaultExperimental;
@@ -379,6 +406,13 @@ namespace BigAndSmall
         public static readonly bool defaultRecruitDevSpawned = true;
         public bool recruitDevSpawned = defaultRecruitDevSpawned;
 
+        // Add default values for showClrPaletteBtn and showRaceBtn
+        private static readonly bool defaultShowClrPaletteBtn = false;
+        public bool showClrPaletteBtn = defaultShowClrPaletteBtn;
+
+        private static readonly bool defaultShowRaceBtn = false;
+        public bool showRaceBtn = defaultShowRaceBtn;
+
         public bool GetAndroidsEnabled()
         {
             return sapientMechanoids || ModsConfig.IsActive("RedMattis.BigSmall.SimpleAndroids") || ModsConfig.IsActive("RedMattis.BigSmall.Core");
@@ -387,6 +421,7 @@ namespace BigAndSmall
         public override void ExposeData()
         {
             Scribe_Values.Look(ref experimental, "experimental", defaultExperimental);
+            Scribe_Values.Look(ref makeDefsRecolorable, "makeDefsRecolorable", defaultMakeDefsRecolorable);
             Scribe_Values.Look(ref pathRacesFromOtherMods, "pathRacesFromOtherMods", defaultPathRacesFromOtherMods);
             Scribe_Values.Look(ref generateDefs, "generateDefs", defaultGenerateDefs);
             Scribe_Values.Look(ref sapientAnimals, "sapientAnimals", defaultSapientAnimals);
@@ -418,16 +453,14 @@ namespace BigAndSmall
             Scribe_Values.Look(ref animalOnAnimal, "sapientAnimalsCanRomanceAnySapientAnimals", defaultAnimalOnAnimal);
             Scribe_Values.Look(ref animalsLowSkillPenalty, "animalsNoSkillPenalty", defaultAnimalsLowSkillPenalty);
 
-
             Scribe_Values.Look(ref enableDraftedJobs, "enableDraftedJobs", defaultEnableDraftedJobs);
             Scribe_Values.Look(ref autoCombatResets, "autoCombatResets", defaultAutoCombatResets);
-
-
+            Scribe_Values.Look(ref showClrPaletteBtn, "showClrPaletteBtn", defaultShowClrPaletteBtn);
+            Scribe_Values.Look(ref showRaceBtn, "showRaceBtn", defaultShowRaceBtn);
 
             // Scribe Dev Settings
             Scribe_Values.Look(ref jesusMode, "jesusMode", defaultJesusMode);
             Scribe_Values.Look(ref recruitDevSpawned, "recruitDevSpawned", defaultRecruitDevSpawned);
-
 
             base.ExposeData();
         }
@@ -467,7 +500,8 @@ namespace BigAndSmall
             jesusMode = defaultJesusMode;
             recruitDevSpawned = defaultRecruitDevSpawned;
             enableDraftedJobs = defaultEnableDraftedJobs;
-
+            showClrPaletteBtn = defaultShowClrPaletteBtn;
+            showRaceBtn = defaultShowRaceBtn;
         }
         public void ResetToRecommended()
         {

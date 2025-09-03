@@ -57,7 +57,7 @@ namespace BigAndSmall
         {
         }
 
-        protected override string TexPathFor(Pawn pawn)
+        public override string TexPathFor(Pawn pawn)
         {
             if (ComplexProps.ShouldDisable(pawn))
             {

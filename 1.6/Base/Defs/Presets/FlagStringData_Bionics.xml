@@ -1,0 +1,40 @@
+<Defs>
+  <BigAndSmall.FlagStringData>
+    <defName>BS_HeadBionicGraphics</defName>
+    <label>head bionics</label>
+    <flags>
+      <BS_HeadBionicGraphics/>
+      <HeadBionicGraphics/>
+    </flags>
+  </BigAndSmall.FlagStringData>
+
+
+  <BigAndSmall.FlagStringData>
+    <defName>BS_BodyBionicGraphics</defName>
+    <label>body bionics</label>
+    <flags>
+      <BS_BodyBionicGraphics/>
+      <BodyBionicGraphics/>
+    </flags>
+  </BigAndSmall.FlagStringData>
+
+  <BigAndSmall.FlagStringData>
+    <defName>BS_HeadFleshGraphics</defName>
+    <label>head flesh</label>
+    <flags>
+      <BS_HeadFleshGraphics/>
+      <HeadFleshGraphics/>
+    </flags>
+  </BigAndSmall.FlagStringData>
+
+
+  <BigAndSmall.FlagStringData>
+    <defName>BS_BodyFleshGraphics</defName>
+    <label>body flesh</label>
+    <flags>
+      <BS_BodyFleshGraphics/>
+      <BodyFleshGraphics/>
+    </flags>
+  </BigAndSmall.FlagStringData>
+
+</Defs>

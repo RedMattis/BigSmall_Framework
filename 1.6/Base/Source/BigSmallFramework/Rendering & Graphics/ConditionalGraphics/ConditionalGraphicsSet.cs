@@ -42,6 +42,15 @@ namespace BigAndSmall
 
         public string GetMaskPath(BSCache cache, string path) => conditionalMaskPaths?.TryGetPath(cache, ref path) == true || maskPaths.TryGetPath(cache, ref path) ? path : path;
 
+        public ConditionalGraphicsSet() { }
+
+        public ConditionalGraphicsSet(ColorSetting colorA, ColorSetting colorB = null, ColorSetting colorC = null)
+        {
+            this.colorA = colorA;
+            this.colorB = colorB;
+            this.colorC = colorC;
+        }
+
         public ConditionalGraphicsSet ReturnThis(BSCache cache)
         {
             if (replacementDef?.conditionalGraphics?.GetState(cache.pawn) == true)

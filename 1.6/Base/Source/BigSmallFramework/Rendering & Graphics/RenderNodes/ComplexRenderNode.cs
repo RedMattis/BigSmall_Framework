@@ -27,7 +27,7 @@ namespace BigAndSmall
         {
         }
 
-        protected override string TexPathFor(Pawn pawn)
+        public override string TexPathFor(Pawn pawn)
         {
             if (ComplexProps.isFurskin && pawn.story?.furDef.GetFurBodyGraphicPath(pawn) is string furPath)
             {
