@@ -233,19 +233,18 @@ namespace BigAndSmall
 
 			// Transfer filtered inspector tabs from both human and animal.
 			List<Type> bothInspectTabs = [];
-			if (aniThing.comps != null)
+			if (humThing.inspectorTabs != null)
+				bothInspectTabs.AddRange(humThing.inspectorTabs);
+
+			if (aniThing.inspectorTabs != null)
 				bothInspectTabs.AddRange(aniThing.inspectorTabs);
 
-			foreach (var tab in humThing.inspectorTabs)
-			{
-				// Check if the comp is already in the list, to avoid duplicates.
-				if (!bothInspectTabs.Any(x => x.GetType() == tab.GetType()))
-				{
-					bothInspectTabs.Add(tab);
-				}
-			}
+
+			Log.Message(string.Join(", ", tabWhiteList));
+			Log.Message(string.Join(", ", bothInspectTabs.Select(x => x.GetType().ToString())));
+
 			newThing.inspectorTabs = bothInspectTabs
-				.Where(x => tabWhiteList.Contains(x.GetType().ToString(), StringComparer.OrdinalIgnoreCase))
+				.Where(x => tabWhiteList.Contains(x.ToString(), StringComparer.OrdinalIgnoreCase))
 				.Distinct()
 				.ToList();
 
