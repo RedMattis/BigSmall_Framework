@@ -33,6 +33,7 @@
       <li>RimWorld.ITab_Pawn_FormingCaravan</li>
       <li>RimWorld.ITab_Pawn_Gear</li>
       <li>RimWorld.ITab_Pawn_Log</li>
+      <li>AwesomeInventory.UI.AwesomeInventoryTab</li>
     </tabWhitelist>
 
     <!-- Anything that can plausibly manipulate things if given specialized tools qualify.
