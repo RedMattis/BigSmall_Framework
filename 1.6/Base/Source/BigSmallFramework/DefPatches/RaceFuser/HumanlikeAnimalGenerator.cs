@@ -239,10 +239,6 @@ namespace BigAndSmall
 			if (aniThing.inspectorTabs != null)
 				bothInspectTabs.AddRange(aniThing.inspectorTabs);
 
-
-			Log.Message(string.Join(", ", tabWhiteList));
-			Log.Message(string.Join(", ", bothInspectTabs.Select(x => x.GetType().ToString())));
-
 			newThing.inspectorTabs = bothInspectTabs
 				.Where(x => tabWhiteList.Contains(x.ToString(), StringComparer.OrdinalIgnoreCase))
 				.Distinct()
