@@ -18,6 +18,21 @@
     </compWhitelist>
 
     <tabWhitelist>
+      <li>RimWorld.ITab_Pawn_Health</li>
+      <li>RimWorld.ITab_Pawn_Needs</li>
+      <li>RimWorld.ITab_Pawn_Character</li>
+      <li>RimWorld.ITab_Pawn_Training</li>
+      <li>RimWorld.ITab_Pawn_Social</li>
+      <li>RimWorld.ITab_Pawn_Guest</li>
+      <li>RimWorld.ITab_Pawn_Prisoner</li>
+      <li>RimWorld.ITab_Pawn_Slave</li>
+      <li>RimWorld.ITab_Pawn_Feeding</li>
+      <li>RimWorld.ITab_Genes</li>
+      <li>RimWorld.ITab_GenesPregnancy</li>
+      <li>RimWorld.ITab_Entity</li>
+      <li>RimWorld.ITab_Pawn_FormingCaravan</li>
+      <li>RimWorld.ITab_Pawn_Gear</li>
+      <li>RimWorld.ITab_Pawn_Log</li>
     </tabWhitelist>
 
     <!-- Anything that can plausibly manipulate things if given specialized tools qualify.
