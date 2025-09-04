@@ -230,25 +230,25 @@ namespace BigAndSmall
 			newThing.recipes = recipes.Distinct().ToList();
             newThing.tradeTags = ([.. (humThing.tradeTags ?? []), .. (aniThing.tradeTags ?? [])]);
 
-            foreach (var tab in aniThing.inspectorTabs ?? [])
-            {
-                if (tabWhiteList.Contains(tab.ToString(), StringComparer.OrdinalIgnoreCase))// ||
-                                                                                            //tabWhiteList.Contains(tab.Name, StringComparer.Ordinal))  // Eh... maybe not this. I think we want to keep the namespace to be safe.
-                {
-                    newThing.inspectorTabs ??= [];
-                    newThing.inspectorTabs.Add(tab);
-                }
-                //else
-                //{
-                //    Log.Message($"Skipping inspector tab ({tab} - {tab.Name} - {tab.GetType()}) for {aniThing.defName} because it is not whitelisted in the HumanlikeAnimalSettings.");
-                //}
-            }
 
-            // Deduplicate inspector tabs
-            if (newThing.inspectorTabs != null)
-            {
-                newThing.inspectorTabs = newThing.inspectorTabs.Distinct().ToList();
-            }
+			// Transfer filtered inspector tabs from both human and animal.
+			List<Type> bothInspectTabs = [];
+			if (aniThing.comps != null)
+				bothInspectTabs.AddRange(aniThing.inspectorTabs);
+
+			foreach (var tab in humThing.inspectorTabs)
+			{
+				// Check if the comp is already in the list, to avoid duplicates.
+				if (!bothInspectTabs.Any(x => x.GetType() == tab.GetType()))
+				{
+					bothInspectTabs.Add(tab);
+				}
+			}
+			newThing.inspectorTabs = bothInspectTabs
+				.Where(x => tabWhiteList.Contains(x.GetType().ToString(), StringComparer.OrdinalIgnoreCase))
+				.Distinct()
+				.ToList();
+
 
             RaceFuser.CopyRaceProperties(aniRace, newRace);
             if (aniRace.lifeExpectancy < humRace.lifeExpectancy)
