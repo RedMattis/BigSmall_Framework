@@ -26,6 +26,7 @@
         <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
         <workerClass>BigAndSmall.UltimateRenderNodeWorker</workerClass>
         <parentTagDef>Body</parentTagDef>
+        <shader>BS_TransparentThreeColor</shader>
         <conditionalGraphics>
           <props><replaceFlags><Wings/></replaceFlags></props>
           <conditionalPaths><altDefs><li>BS_FeatheredWingFront</li></altDefs></conditionalPaths>
@@ -56,6 +57,7 @@
         <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
         <workerClass>BigAndSmall.UltimateRenderNodeWorker</workerClass>
         <parentTagDef>Body</parentTagDef>
+        <shader>BS_TransparentThreeColor</shader>
         <conditionalGraphics>
           <props><replaceFlags><Wings/></replaceFlags></props>
           <conditionalPaths><altDefs><li>BS_FeatheredWingInner</li></altDefs></conditionalPaths>
@@ -89,6 +91,7 @@
         <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
         <workerClass>BigAndSmall.UltimateRenderNodeWorker</workerClass>
         <parentTagDef>Body</parentTagDef>
+        <shader>BS_TransparentThreeColor</shader>
         <conditionalGraphics>
           <props><replaceFlags><Wings/></replaceFlags></props>
           <conditionalPaths><altDefs><li>BS_FeatheredWingBack</li></altDefs></conditionalPaths>
@@ -119,6 +122,7 @@
         <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
         <workerClass>BigAndSmall.UltimateRenderNodeWorker</workerClass>
         <parentTagDef>Body</parentTagDef>
+        <shader>BS_TransparentThreeColor</shader>
         <conditionalGraphics>
           <props><replaceFlags><Wings/></replaceFlags></props>
           <conditionalPaths><altDefs><li>BS_FeatheredWingFront</li></altDefs></conditionalPaths>
@@ -148,6 +152,7 @@
         <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
         <workerClass>BigAndSmall.UltimateRenderNodeWorker</workerClass>
         <parentTagDef>Body</parentTagDef>
+        <shader>BS_TransparentThreeColor</shader>
         <conditionalGraphics>
           <props><replaceFlags><Wings/></replaceFlags></props>
           <conditionalPaths><altDefs><li>BS_FeatheredWingInner</li></altDefs></conditionalPaths>
@@ -181,6 +186,7 @@
         <nodeClass>BigAndSmall.PawnRenderNode_Ultimate</nodeClass>
         <workerClass>BigAndSmall.UltimateRenderNodeWorker</workerClass>
         <parentTagDef>Body</parentTagDef>
+        <shader>BS_TransparentThreeColor</shader>
         <conditionalGraphics>
           <props><replaceFlags><Wings/></replaceFlags></props>
           <conditionalPaths><altDefs><li>BS_FeatheredWingBack</li></altDefs></conditionalPaths>
