@@ -18,7 +18,7 @@ namespace BigAndSmall
                 {
                     thing = req.Thing.ParentHolder as PawnFlyer;
                 }
-                return thing.Map.skyManager.CurSkyGlow < 0.3f;
+                return thing.Map?.skyManager.CurSkyGlow < 0.3f;
             }
             return false;
         }
@@ -70,7 +70,7 @@ namespace BigAndSmall
 
         public override bool Applies(StatRequest req)
         {
-            if (req.Thing?.Spawned == true && req.Thing.Map.BiomeAt(req.Thing.Position)?.inVacuum == true)
+            if (req.Thing?.Spawned == true && req.Thing.Map?.BiomeAt(req.Thing.Position)?.inVacuum == true)
             {
                 return true;
             }

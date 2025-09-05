@@ -221,7 +221,7 @@
         </member>
         <member name="F:BigAndSmall.PawnExtension.conditionals">
             <summary>
-            Used by PGenes. If it evaluates to False the gene will disable itself.
+            Used by Genes. If it evaluates to False the gene will disable itself.
             Useful for werewolf-like beaviour, or genes that deactivate if not drunk or something.
             </summary>
         </member>
@@ -305,55 +305,6 @@
             Works about the same as Rimworld's aptitudes. Let's you add skill-offsets to genes/hediffs/races.
             </summary>
         </member>
-        <member name="F:BigAndSmall.PawnExtension.preventHeadScaling">
-            <summary>
-            Prevents head-scaling/offsets from sources other than the pawn's general size.
-            </summary>
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.bodyConstantHeadScale">
-            <summary>
-            Prevents auto-scaling the pawn's head from changing body-size sources other than explicit headscale.
-            This means large pawns won't get slightly smaller heads, and small ones won't get a chibi-head.
-            
-            Basically just a more specific version of the above.
-            </summary>
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.bodyConstantHeadScaleBigOnly">
-            <summary>
-            Exactly the same as the above, but permits big head if the body is small.
-            </summary>
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.preventHeadScalingFactor">
-            <summary>
-            If specified, instead of blocking scale it will be reduced by this factor.
-            </summary>
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.bodyMaterial">
-            <summary>
-            Sets a custom material for the body. Highly versatile.
-            </summary>
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.headMaterial">
-            <summary>
-            Sets a custom material for the head. Highly versatile.
-            </summary>
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.bodyPaths">
-            <summary>
-            Sets the path(s) of the body. Can be per body type, gender, etc.
-            You can for example set a list of paths to be used by male hulks only.
-            </summary>
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.headPaths">
-            <summary>
-            Same as above.
-            </summary>
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.hideHumanlikeRenderNodes">
-            <summary>
-            If set this lets you disabe a renderNode type on the pawn.
-            </summary>
-        </member>
         <member name="F:BigAndSmall.PawnExtension.forceGender">
             <summary>
             Makes the pawn consider the pawn female for rendering purposes.
@@ -369,6 +320,64 @@
             <summary>
             If true this will make the race's "PawnDiet" be ignored in favor of other diets.
             
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.soulFalloffStart">
+            Stats
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.consumeSoulOnHit">
+            <summary>
+            Trigger the soul-consume effect on hit.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.canWalkOnCreep">
+            <summary>
+            Lets the pawn walk on VFE's creep. Only works on genes.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.forceUnarmed">
+            <summary>
+            Can hold melee weapons, but will only use natural/bionic attacks.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.meatOverride">
+            <summary>
+            If set the pawn will be butchered for this meat instead of the default.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.butcherProducts">
+            <summary>
+            If set the following extra products will be created when the pawn is butchered.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.banAddictionsByDefault">
+            <summary>
+            If set to true the pawn will default to blocking additctions unless white/allowlisted.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.isUnliving">
+            <summary>
+            Pawn will be considered...
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.isDrone">
+            <summary>
+            Makes colonists care less about the pawn's death, and the pawn care less about death in general.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.lockedNeeds">
+            <summary>
+            Lock a Needbar at a certain level. Often more compatible than just removing them.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.geneFilters">
+            <summary>
+            Filters (removes) based on filtering settings
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.activeGeneFilters">
+            <summary>
+            These filters don't remove the gene, but simply block it from being activated.
             </summary>
         </member>
         <member name="F:BigAndSmall.PawnExtension.babyBirthCount">
@@ -388,64 +397,6 @@
         <member name="F:BigAndSmall.PawnExtension.pregnancySpeedMultiplier">
             <summary>
             How fast pregnancy progresses. 1 is normal, 0.5 is half speed, 2 is double speed.
-            </summary>
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.soulFalloffStart">
-            Stats
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.bodyPosOffset">
-            <summary>
-            Offsets the entire pawn's body up or down.
-            </summary>
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.headPosMultiplier">
-            <summary>
-            Offsets the head up or down relative to the body.
-            </summary>
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.bodyDrawData">
-            <summary>
-            Only the basic offsets will be respected at the moment. Supporting all is a performance hit.
-            </summary>
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.canWalkOnCreep">
-            <summary>
-            Lets the pawn walk on VFE's creep. Only works on genes.
-            </summary>
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.forceUnarmed">
-            <summary>
-            Can hold melee weapons, but will only use natural/bionic attacks.
-            </summary>
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.consumeSoulOnHit">
-            <summary>
-            Trigger the soul-consume effect on hit.
-            </summary>
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.meatOverride">
-            <summary>
-            If set the pawn will be butchered for this meat instead of the default.
-            </summary>
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.butcherProducts">
-            <summary>
-            If set the following extra products will be created when the pawn is butchered.
-            </summary>
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.isUnliving">
-            <summary>
-            Pawn will be considered...
-            </summary>
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.isDrone">
-            <summary>
-            Makes colonists care less about the pawn's death, and the pawn care less about death in general.
-            </summary>
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.banAddictionsByDefault">
-            <summary>
-            If set to true the pawn will default to blocking additctions unless white/allowlisted.
             </summary>
         </member>
         <member name="F:BigAndSmall.PawnExtension.metamorphTarget">
@@ -469,9 +420,68 @@
             Trigger Retromorph if less than this age.
             </summary>
         </member>
-        <member name="F:BigAndSmall.PawnExtension.lockedNeeds">
+        <member name="F:BigAndSmall.PawnExtension.bodyMaterial">
             <summary>
-            Lock a Needbar at a certain level. Often more compatible than just removing them.
+            Sets a custom material for the body. Highly versatile.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.headMaterial">
+            <summary>
+            Sets a custom material for the head. Highly versatile.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.bodyPaths">
+            <summary>
+            Sets the path(s) of the body. Can be per body type, gender, etc.
+            You can for example set a list of paths to be used by male hulks only.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.headPaths">
+            <summary>
+            Same as above.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.bodyPosOffset">
+            <summary>
+            Offsets the entire pawn's body up or down.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.headPosMultiplier">
+            <summary>
+            Offsets the head up or down relative to the body.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.preventHeadScaling">
+            <summary>
+            Prevents head-scaling/offsets from sources other than the pawn's general size.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.bodyConstantHeadScale">
+            <summary>
+            Prevents auto-scaling the pawn's head from changing body-size sources other than explicit headscale.
+            This means large pawns won't get slightly smaller heads, and small ones won't get a chibi-head.
+            
+            Basically just a more specific version of the above.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.bodyConstantHeadScaleBigOnly">
+            <summary>
+            Exactly the same as the above, but permits big head if the body is small.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.preventHeadScalingFactor">
+            <summary>
+            If specified, instead of blocking scale it will be reduced by this factor.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.hideHumanlikeRenderNodes">
+            <summary>
+            If set this lets you disabe a renderNode type on the pawn.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.bodyDrawData">
+            <summary>
+            Only the basic offsets will be respected at the moment. Supporting all is a performance hit.
             </summary>
         </member>
         <member name="F:BigAndSmall.PawnExtension.disableFacialAnimations">
@@ -509,20 +519,10 @@
             Adds xenogenes to the pawn. Ensures they are always present.
             </summary>
         </member>
-        <member name="F:BigAndSmall.PawnExtension.geneFilters">
-            <summary>
-            Filters (removes) based on filtering settings
-            </summary>
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.activeGeneFilters">
-            <summary>
-            These filters don't remove the gene, but simply block it from being activated.
-            </summary>
-        </member>
         <member name="F:BigAndSmall.PawnExtension.randomSkinGenes">
             <summary>
             These are just for generating pawns. They are most useful on custom races, not on genes/hediffs.
-            Don't forget that is also inherits the props from "CompProperties_ColorAndFur".
+            Don't forget that the RaceHediff also inherits the props from "CompProperties_ColorAndFur" which could be used instead.
             
             Should work even without biotech
             </summary>;

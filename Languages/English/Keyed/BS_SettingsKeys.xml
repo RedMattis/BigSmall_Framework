@@ -54,6 +54,9 @@
   <BS_ImmortalReturnFactor>Immortal return time factor (less means faster)</BS_ImmortalReturnFactor>
 
   <!-- Extras -->
+  <BS_ExtraUIForceDisabledWarning>Warning: extra UI elements are disabled. If relied on by mods this may cause issues.</BS_ExtraUIForceDisabledWarning>
+  <BS_ForceDisableExtraUIWidgets>Force-disable extra UI buttons and widgets</BS_ForceDisableExtraUIWidgets>
+
   <BS_ShowColorPaletteBtn>Show Color Palette button</BS_ShowColorPaletteBtn>
   <BS_ShowColorPaletteBtn_Forced>Color Palette (Force-Enabled by Mods)</BS_ShowColorPaletteBtn_Forced>
   <BS_ShowRaceBtn>Show race button</BS_ShowRaceBtn>

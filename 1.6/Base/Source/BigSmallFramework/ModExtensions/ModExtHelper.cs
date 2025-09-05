@@ -208,7 +208,8 @@ namespace BigAndSmall
                 if (extension is T t)
                 {
                     
-                    extensions.Add(new ModExtWrapper<T>(t, source, extension is PawnExtension p ? p.priority : defaultPriority));
+                    extensions.Add(new ModExtWrapper<T>(t, source,
+                        extension is PawnExtension p && p.priority != int.MinValue ? p.priority : defaultPriority));
                 }
             }
             return extensions;

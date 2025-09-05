@@ -35,10 +35,15 @@ namespace BigAndSmall
         /// The order in which this extension is applied.
         /// Higher numbers are applied later, which means they can in some cases overwrite earlier extensions.
         /// </summary>
-        public int priority = 0;
+        public int priority = int.MinValue;
+        public bool frequentUpdate = false;
 
+        public bool hideInGenePicker = false;
+        public bool hideInXenotypeUI = false;
+
+        #region Parent Active Control
         /// <summary>
-        /// Used by PGenes. If it evaluates to False the gene will disable itself.
+        /// Used by Genes. If it evaluates to False the gene will disable itself.
         /// Useful for werewolf-like beaviour, or genes that deactivate if not drunk or something.
         /// </summary>
         public List<ConditionalStatAffecter> conditionals = null;
@@ -51,6 +56,7 @@ namespace BigAndSmall
         /// Used by the above. Inverts the conditional
         /// </summary>
         public bool? invert;
+        #endregion
         /// <summary>
         /// Turns off the zoomed-out render cache for the pawn. Useful if your pawn graphics might otherwise get cut off.
         /// </summary>
@@ -85,8 +91,6 @@ namespace BigAndSmall
         /// </summary>
         public bool forceThingDefSwap = false;
 
-        public bool partsCanBeHarvested = true;
-
         /// <summary>
         /// Used by Genes. A bit of a miseleading name.
         /// The listed genes will be added to the pawn when this gene is added.
@@ -94,6 +98,7 @@ namespace BigAndSmall
         /// 
         /// It was originally used to make genes with multiple sets of graphics, but it can be used nowadays to "bundle" genes.
         /// </summary>
+        [Obsolete("Will be renamed in 1.7")]
         public List<GeneDef> hiddenGenes = [];
         /// <summary>
         /// All the listed thoughts will be nulled.
@@ -139,11 +144,208 @@ namespace BigAndSmall
         public List<Aptitude> aptitudes = null;
         public List<string> AptitudeDescription => aptitudes?.Select((Aptitude x) => x.skill.LabelCap.ToString() + " " + x.level.ToStringWithSign()).ToList();
 
-        public float? bleedRate = null;
+        /// <summary>
+        /// Makes the pawn consider the pawn female for rendering purposes.
+        /// Useful for compatibility. Despite the name, it also affects the head.
+        /// </summary>
+        public Gender? forceGender = null;
+        protected bool forceFemaleBody = false;
 
+        public bool ignoreForceGender = false;
+
+        /// <summary>
+        /// Set what the pawn can eat. By default assumes human diet.
+        /// </summary>
+        public PawnDiet pawnDiet = null;
+        public string PawnDietDescription => pawnDiet?.LabelCap;
+        /// <summary>
+        /// If true this will make the race's "PawnDiet" be ignored in favor of other diets.
+        /// 
+        /// </summary>
+        public bool pawnDietRacialOverride = false;
+        public float? internalDamageDivisor = 1;
+
+        /// Stats
+        public float soulFalloffStart = 0;
+        public string SoulPowerFalloffStartDescription => soulFalloffStart == 0 ? null : "BS_SoulPowerFalloffDesc".Translate(soulFalloffStart.ToStringPercentSigned());
+        /// <summary>
+        /// Trigger the soul-consume effect on hit.
+        /// </summary>
+        public ConsumeSoul consumeSoulOnHit = null;
+        public string ConsumeSoulOnHitDescription => consumeSoulOnHit == null ? null : "BS_ConsumeSoulOnHitDesc".Translate($"{100 * consumeSoulOnHit.gainMultiplier:f0}%");
+
+        public List<string> StatChangeDescriptions => [.. new List<string>
+        {
+            SoulPowerFalloffStartDescription,
+            // TODO: Add other stats here later.
+        }.Where(x => x != null)];
+
+        public RomanceTags romanceTags = null;
+        public List<string> RomanceTagsDescription => romanceTags?.GetDescriptions();
+
+        public bool disableLookChangeDesired = false;
+
+
+        public bool partsCanBeHarvested = true;
+        public float? bleedRate = null;
         public string BleedRateDescription => bleedRate == null ? null : "BS_BleedRateDesc".Translate(bleedRate.Value.ToStringPercent());
-        //         public string ForceUnarmedDescription => forceUnarmed ? "BS_ForceUnarmedDesc".Translate() : null;
+        public bool preventDisfigurement = false;
+        public string PreventDisfigurementDescription => preventDisfigurement ? "BS_PreventDisfigurementDesc".Translate() : null;
+
+        /// <summary>
+        /// Lets the pawn walk on VFE's creep. Only works on genes.
+        /// </summary>
+        public bool canWalkOnCreep = false;
+        public string CanWalkOnCreepDescription => canWalkOnCreep ? "BS_CanWalkOnCreepDesc".Translate() : null;
+        /// <summary>
+        /// Can hold melee weapons, but will only use natural/bionic attacks.
+        /// </summary>
+        public bool forceUnarmed = false;
+        public string ForceUnarmedDescription => forceUnarmed ? "BS_ForceUnarmedDesc".Translate() : null;
+
+        [Obsolete("Use forceUnarmed instead.")]
+        public bool unarmedOnly = false;    // Still plugged in, but the name was kind of bad. Use forceUnarmed instead.
+
+        /// <summary>
+        /// If set the pawn will be butchered for this meat instead of the default.
+        /// </summary>
+        public ThingDef meatOverride;
+
+        /// <summary>
+        /// If set the following extra products will be created when the pawn is butchered.
+        /// </summary>
+        public List<CustomButcherProduct> butcherProducts = null;
+
+        /// <summary>
+        /// If set to true the pawn will default to blocking additctions unless white/allowlisted.
+        /// </summary>
+        public bool banAddictionsByDefault = false;
+
+        /// <summary>
+        /// Pawn will be considered...
+        /// </summary>
+        public bool isUnliving = false;
+        public bool isDeathlike = false;
+        public bool isMechanical = false;
+        public bool isBloodfeeder = false;
+        /// <summary>
+        /// Makes colonists care less about the pawn's death, and the pawn care less about death in general.
+        /// </summary>
+        public bool isDrone = false;
+        public bool noFamilyRelations = false;
+        
+
+        // Locked Needs.
+        /// <summary>
+        /// Lock a Needbar at a certain level. Often more compatible than just removing them.
+        /// </summary>
+        public List<LockedNeedClass> lockedNeeds;
+        public string LockedNeedsDescription => lockedNeeds?.Where(x => x != null && x.GetLabel() != "").Select(x => x.GetLabel())?.ToLineList("  - ", capitalizeItems: true);
+
+        /// <summary>
+        /// Filters (removes) based on filtering settings
+        /// </summary>
+        #region White, Black, and Allow-lists.
+        public FilterListSet<GeneDef> geneFilters = null;
+        public FilterListSet<GeneCategoryDef> geneCategoryFilters = null;
+        public FilterListSet<string> geneTagFilters = null;
+
+        /// <summary>
+        /// These filters don't remove the gene, but simply block it from being activated.
+        /// </summary>
+        public FilterListSet<GeneDef> activeGeneFilters = null;
+        public FilterListSet<GeneCategoryDef> activeGeneCategoryFilters = null;
+        public FilterListSet<string> activeGeneTagFilters = null;
+
+        public FilterListSet<TraitDef> traitFilters = null;
+
+        public FilterListSet<HediffDef> hediffFilters = null;
+        public FilterListSet<HairDef> hairFilters = null;
+        public FilterListSet<RecipeDef> surgeryRecipes = null;
+        #endregion
+
+        #region Birth
+        /// <summary>
+        /// How many babies the pawn will give birth to. If null, it will use normal counts.
+        /// Note that this is better than the vanilla options since it will re-randomize the gene list for each additional
+        /// baby instead of making them clones.
+        /// </summary>
+        public List<int> babyBirthCount = null;
+        /// <summary>
+        /// What "practical" age the baby born at. Creatures that give birth to less helpless offspring may want to start at 3.
+        /// Insects that are born fully formed could start at 10, 13, or even 20.
+        /// Consider combining with sizeByAgeMult to make the babies a plausible size.
+        /// </summary>
+        public int? babyStartAge = null;
+        /// <summary>
+        /// How fast pregnancy progresses. 1 is normal, 0.5 is half speed, 2 is double speed.
+        /// </summary>
+        public float pregnancySpeedMultiplier = 1;
+        #endregion
+
+        #region Metamorph
+        /// <summary>
+        /// Target to (possibly) morph to.
+        /// </summary>
+        public XenotypeDef metamorphTarget = null;
+        /// <summary>
+        /// Same as above, but for morphing "backwards". Currently only used for juvenlie forms based on age.
+        /// E.g. Queens giving birth to drones.
+        /// </summary>
+        public XenotypeDef retromorphTarget = null;
+        /// <summary>
+        /// Trigger Metamorph at this age.
+        /// </summary>
+        public int? metamorphAtAge = null;
+        /// <summary>
+        /// Trigger Retromorph if less than this age.
+        /// </summary>
+        public int? retromorphUnderAge = null;
+        public bool metamorphIfPregnant = false;
+        public bool metamorphIfNight = false;
+        public bool metamorphIfDay = false;
+
+        public bool MorphFrequent => metamorphIfDay || metamorphIfNight;
+        #endregion
+
         #region Rendering
+        /// <summary>
+        /// Sets a custom material for the body. Highly versatile.
+        /// </summary>
+        public CustomMaterial bodyMaterial = null;
+        /// <summary>
+        /// Sets a custom material for the head. Highly versatile.
+        /// </summary>
+        public CustomMaterial headMaterial = null;
+        /// <summary>
+        /// Sets the path(s) of the body. Can be per body type, gender, etc.
+        /// You can for example set a list of paths to be used by male hulks only.
+        /// </summary>
+        public AdaptivePathPathList bodyPaths = [];
+        public AdaptivePathPathList bodyDessicatedPaths = [];
+        public BodyTypesPerGender bodyTypes = [];
+        public bool removeTattoos = false;
+        // Gets based on index at the moment. This is a bit lazy. I'll rewrite it properly later.
+
+        public RotDrawMode? forcedRotDrawMode = null;
+        /// <summary>
+        /// Same as above.
+        /// </summary>
+        public AdaptivePathPathList headPaths = [];
+        public AdaptivePathPathList headDessicatedPaths = [];
+        /// <summary>
+        /// Offsets the entire pawn's body up or down.
+        /// </summary>
+        public float bodyPosOffset = 0f;
+
+        /// <summary>
+        /// Offsets the head up or down relative to the body.
+        /// </summary>
+        public float headPosMultiplier = 0f; // Actually an offset to the multiplier
+
+        public bool hideBody = false;
+        public bool hideHead = false;
+
         /// <summary>
         /// Prevents head-scaling/offsets from sources other than the pawn's general size.
         /// </summary>
@@ -170,205 +372,23 @@ namespace BigAndSmall
         public float? preventHeadOffsetFactor = null;
 
         /// <summary>
-        /// Sets a custom material for the body. Highly versatile.
-        /// </summary>
-        public CustomMaterial bodyMaterial = null;
-        /// <summary>
-        /// Sets a custom material for the head. Highly versatile.
-        /// </summary>
-        public CustomMaterial headMaterial = null;
-        /// <summary>
-        /// Sets the path(s) of the body. Can be per body type, gender, etc.
-        /// You can for example set a list of paths to be used by male hulks only.
-        /// </summary>
-        public AdaptivePathPathList bodyPaths = [];
-        public AdaptivePathPathList bodyDessicatedPaths = [];
-        public bool removeTattoos = false;
-        // Gets based on index at the moment. This is a bit lazy. I'll rewrite it properly later.
-
-        public RotDrawMode? forcedRotDrawMode = null;
-        /// <summary>
-        /// Same as above.
-        /// </summary>
-        public AdaptivePathPathList headPaths = [];
-        public AdaptivePathPathList headDessicatedPaths = [];
-
-        /// <summary>
         /// If set this lets you disabe a renderNode type on the pawn.
         /// </summary>
         public bool hideHumanlikeRenderNodes = false;
 
-        public bool hideBody = false;
-        public bool hideHead = false;
-        /// <summary>
-        /// Makes the pawn consider the pawn female for rendering purposes.
-        /// Useful for compatibility. Despite the name, it also affects the head.
-        /// </summary>
-        public Gender? forceGender = null;
-        protected bool forceFemaleBody = false;
-
-        public bool ignoreForceGender = false;
-
+        
+        
         protected Gender? apparentGender = null;
         public bool invertApparentGender = false;
         public Gender? ApparentGender => forceFemaleBody ? Gender.Female : apparentGender;
 
-        public BodyTypesPerGender bodyTypes = [];
-        #endregion
-
-        /// <summary>
-        /// Set what the pawn can eat. By default assumes human diet.
-        /// </summary>
-        public PawnDiet pawnDiet = null;
-        public string PawnDietDescription => pawnDiet?.LabelCap;
-        /// <summary>
-        /// If true this will make the race's "PawnDiet" be ignored in favor of other diets.
-        /// 
-        /// </summary>
-        public bool pawnDietRacialOverride = false;
-        public float? internalDamageDivisor = 1;
-
-        #region Birth
-        /// <summary>
-        /// How many babies the pawn will give birth to. If null, it will use normal counts.
-        /// Note that this is better than the vanilla options since it will re-randomize the gene list for each additional
-        /// baby instead of making them clones.
-        /// </summary>
-        public List<int> babyBirthCount = null;
-        /// <summary>
-        /// What "practical" age the baby born at. Creatures that give birth to less helpless offspring may want to start at 3.
-        /// Insects that are born fully formed could start at 10, 13, or even 20.
-        /// Consider combining with sizeByAgeMult to make the babies a plausible size.
-        /// </summary>
-        public int? babyStartAge = null;
-        /// <summary>
-        /// How fast pregnancy progresses. 1 is normal, 0.5 is half speed, 2 is double speed.
-        /// </summary>
-        public float pregnancySpeedMultiplier = 1;
-        #endregion
-
-        /// Stats
-        public float soulFalloffStart = 0;
-        public string SoulPowerFalloffStartDescription => soulFalloffStart == 0 ? null : "BS_SoulPowerFalloffDesc".Translate(soulFalloffStart.ToStringPercentSigned());
-
-        public List<string> StatChangeDescriptions => [.. new List<string>
-        {
-            SoulPowerFalloffStartDescription,
-            // TODO: Add other stats here later.
-        }.Where(x => x != null)];
-
-        /// <summary>
-        /// Offsets the entire pawn's body up or down.
-        /// </summary>
-        public float bodyPosOffset = 0f;
-
-        /// <summary>
-        /// Offsets the head up or down relative to the body.
-        /// </summary>
-        public float headPosMultiplier = 0f; // Actually an offset to the multiplier
+        
 
         /// <summary>
         /// Only the basic offsets will be respected at the moment. Supporting all is a performance hit.
         /// </summary>
         public BSDrawData bodyDrawData = null;
         public BSDrawData headDrawData = null;
-
-        public bool preventDisfigurement = false;
-        public string PreventDisfigurementDescription => preventDisfigurement ? "BS_PreventDisfigurementDesc".Translate() : null;
-        /// <summary>
-        /// Lets the pawn walk on VFE's creep. Only works on genes.
-        /// </summary>
-        public bool canWalkOnCreep = false;
-        public string CanWalkOnCreepDescription => canWalkOnCreep ? "BS_CanWalkOnCreepDesc".Translate() : null;
-
-        public RomanceTags romanceTags = null;
-        public List<string> RomanceTagsDescription => romanceTags?.GetDescriptions();
-
-        /// <summary>
-        /// Can hold melee weapons, but will only use natural/bionic attacks.
-        /// </summary>
-        public bool forceUnarmed = false;
-        public string ForceUnarmedDescription => forceUnarmed ? "BS_ForceUnarmedDesc".Translate() : null;
-
-        public bool disableLookChangeDesired = false;
-
-        public bool hideInGenePicker = false;
-        public bool hideInXenotypeUI = false;
-        /// <summary>
-        /// Trigger the soul-consume effect on hit.
-        /// </summary>
-        public ConsumeSoul consumeSoulOnHit = null;
-        public string ConsumeSoulOnHitDescription => consumeSoulOnHit == null ? null : "BS_ConsumeSoulOnHitDesc".Translate($"{100 * consumeSoulOnHit.gainMultiplier:f0}%");
-
-        /// <summary>
-        /// If set the pawn will be butchered for this meat instead of the default.
-        /// </summary>
-        public ThingDef meatOverride;
-
-        /// <summary>
-        /// If set the following extra products will be created when the pawn is butchered.
-        /// </summary>
-        public List<CustomButcherProduct> butcherProducts = null;
-
-        /// <summary>
-        /// Pawn will be considered...
-        /// </summary>
-        public bool isUnliving = false;
-        public bool isDeathlike = false;
-        public bool isMechanical = false;
-        public bool isBloodfeeder = false;
-        /// <summary>
-        /// Makes colonists care less about the pawn's death, and the pawn care less about death in general.
-        /// </summary>
-        public bool isDrone = false;
-        public bool noFamilyRelations = false;
-        public string NoFamilyRelationsDescription => noFamilyRelations ? "BS_NoFamilyRelationsDesc".Translate() : null;
-        public string DroneDescription => isDrone ? "BS_DroneDesc".Translate() : null;
-        private string UnlivingDescription => isUnliving ? "BS_UnlivingDesc".Translate() : null;
-        private string DeathlikeDescription => isDeathlike ? "BS_DeathlikeDesc".Translate() : null;
-        private string MechanicalDescription => isMechanical ? "BS_MechanicalDesc".Translate() : null;
-        private string BloodfeederDescription => isBloodfeeder ? "BS_BloodfeederDesc".Translate() : null;
-        public List<string> TagDescriptions => new List<string> { UnlivingDescription, DeathlikeDescription, MechanicalDescription, BloodfeederDescription, DroneDescription }
-                .Where(x => x != null).ToList();
-
-
-        /// <summary>
-        /// If set to true the pawn will default to blocking additctions unless white/allowlisted.
-        /// </summary>
-        public bool banAddictionsByDefault = false;
-
-        // Metamorph Stuff.
-
-        /// <summary>
-        /// Target to (possibly) morph to.
-        /// </summary>
-        public XenotypeDef metamorphTarget = null;
-        /// <summary>
-        /// Same as above, but for morphing "backwards". Currently only used for juvenlie forms based on age.
-        /// E.g. Queens giving birth to drones.
-        /// </summary>
-        public XenotypeDef retromorphTarget = null;
-        /// <summary>
-        /// Trigger Metamorph at this age.
-        /// </summary>
-        public int? metamorphAtAge = null;
-        /// <summary>
-        /// Trigger Retromorph if less than this age.
-        /// </summary>
-        public int? retromorphUnderAge = null;
-        public bool metamorphIfPregnant = false;
-        public bool metamorphIfNight = false;
-        public bool metamorphIfDay = false;
-
-        public bool MorphFrequent => metamorphIfDay || metamorphIfNight;
-
-        // Locked Needs.
-        /// <summary>
-        /// Lock a Needbar at a certain level. Often more compatible than just removing them.
-        /// </summary>
-        public List<LockedNeedClass> lockedNeeds;
-        public string LockedNeedsDescription => lockedNeeds?.Where(x => x != null && x.GetLabel() != "").Select(x => x.GetLabel())?.ToLineList("  - ", capitalizeItems: true);
-
 
         /// <summary>
         /// Disable Nal's facial animations on the pawn and restore their original head.
@@ -379,16 +399,11 @@ namespace BigAndSmall
         /// More granular version of the above. Currently not working after a Nal's update.
         /// </summary>
         public FacialAnimDisabler facialDisabler = null;
-
-        public bool frequentUpdate = false;
-
-
-        [Obsolete("Use forceUnarmed instead.")]
-        public bool unarmedOnly = false;    // Still plugged in, but the name was kind of bad. Use forceUnarmed instead.
+        #endregion
 
         // Some of these are RACE ONLY. Use elsewhere at your own risk.
 
-        #region
+        #region Race Only
         /// <summary>
         /// Force-adds these hediffs. Removes when race is removed.
         /// </summary>
@@ -419,36 +434,23 @@ namespace BigAndSmall
         #endregion
 
         /// <summary>
-        /// Filters (removes) based on filtering settings
-        /// </summary>
-        #region White, Black, and Allow-lists.
-        public FilterListSet<GeneDef> geneFilters = null;
-        public FilterListSet<GeneCategoryDef> geneCategoryFilters = null;
-        public FilterListSet<string> geneTagFilters = null;
-
-        /// <summary>
-        /// These filters don't remove the gene, but simply block it from being activated.
-        /// </summary>
-        public FilterListSet<GeneDef> activeGeneFilters = null;
-        public FilterListSet<GeneCategoryDef> activeGeneCategoryFilters = null;
-        public FilterListSet<string> activeGeneTagFilters = null;
-
-        public FilterListSet<TraitDef> traitFilters = null;
-
-        public FilterListSet<HediffDef> hediffFilters = null;
-        public FilterListSet<HairDef> hairFilters = null;
-        public FilterListSet<RecipeDef> surgeryRecipes = null;
-        //public AllowListHolder<ThingDef> allowedFood = null;  // Not yet implemented. Easy enough, just not needed yet.
-        #endregion
-
-        /// <summary>
         /// These are just for generating pawns. They are most useful on custom races, not on genes/hediffs.
-        /// Don't forget that is also inherits the props from "CompProperties_ColorAndFur".
+        /// Don't forget that the RaceHediff also inherits the props from "CompProperties_ColorAndFur" which could be used instead.
         /// 
         /// Should work even without biotech
         /// </summary>;
         public List<GeneDef> randomSkinGenes = null;
         public List<GeneDef> randomHairGenes = null;
+
+
+        public string NoFamilyRelationsDescription => noFamilyRelations ? "BS_NoFamilyRelationsDesc".Translate() : null;
+        public string DroneDescription => isDrone ? "BS_DroneDesc".Translate() : null;
+        private string UnlivingDescription => isUnliving ? "BS_UnlivingDesc".Translate() : null;
+        private string DeathlikeDescription => isDeathlike ? "BS_DeathlikeDesc".Translate() : null;
+        private string MechanicalDescription => isMechanical ? "BS_MechanicalDesc".Translate() : null;
+        private string BloodfeederDescription => isBloodfeeder ? "BS_BloodfeederDesc".Translate() : null;
+        public List<string> TagDescriptions => new List<string> { UnlivingDescription, DeathlikeDescription, MechanicalDescription, BloodfeederDescription, DroneDescription }
+                .Where(x => x != null).ToList();
         public bool FrequentUpdate => frequentUpdate
             || MorphFrequent 
             || HasActiveGeneFilters

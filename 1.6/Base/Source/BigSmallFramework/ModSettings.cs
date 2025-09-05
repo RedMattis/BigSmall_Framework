@@ -213,24 +213,32 @@ namespace BigAndSmall
             BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 200f);
             listStd.Begin(viewRect);
 
-            
-            
+            CreateSettingCheckbox(listStd, "BS_ForceDisableExtraUIWidgets".Translate(), ref settings.disableExtraWidgets);
 
-            if (BigSmall.BSGenesActive || GlobalSettings.IsFeatureEnabled("RecolorButton"))
+            if (settings.disableExtraWidgets)
             {
-                CreateSettingCheckbox(listStd, "BS_ShowColorPaletteBtn_Forced".Translate(), ref settings.forcedOn, disabled: true);
+                listStd.GapLine();
+                listStd.Label("BS_ExtraUIForceDisabledWarning".Translate().AsTipTitle());
             }
-            else
+
+            if (!settings.disableExtraWidgets)
             {
-                CreateSettingCheckbox(listStd, "BS_ShowColorPaletteBtn".Translate(), ref settings.showClrPaletteBtn);
-            }
-            if (BigSmall.BSGenesActive || GlobalSettings.IsFeatureEnabled("RaceButton"))
-            {
-                CreateSettingCheckbox(listStd, "BS_ShowRaceBtn_Forced".Translate(), ref settings.forcedOn, disabled: true);
-            }
-            else
-            {
-                CreateSettingCheckbox(listStd, "BS_ShowRaceBtn".Translate(), ref settings.showRaceBtn);
+                if (BigSmall.BSGenesActive || GlobalSettings.IsFeatureEnabled("RecolorButton"))
+                {
+                    CreateSettingCheckbox(listStd, "BS_ShowColorPaletteBtn_Forced".Translate(), ref settings.forcedOn, disabled: true);
+                }
+                else
+                {
+                    CreateSettingCheckbox(listStd, "BS_ShowColorPaletteBtn".Translate(), ref settings.showClrPaletteBtn);
+                }
+                if (BigSmall.BSGenesActive || GlobalSettings.IsFeatureEnabled("RaceButton"))
+                {
+                    CreateSettingCheckbox(listStd, "BS_ShowRaceBtn_Forced".Translate(), ref settings.forcedOn, disabled: true);
+                }
+                else
+                {
+                    CreateSettingCheckbox(listStd, "BS_ShowRaceBtn".Translate(), ref settings.showRaceBtn);
+                }
             }
 
             //CreateSettingCheckbox(listStd, "BS_PatchPlayerFactions".Translate(), ref settings.patchPlayerFactions);
@@ -398,6 +406,18 @@ namespace BigAndSmall
         public static readonly bool defaultAutoCombatResets = false;
         public bool autoCombatResets = defaultAutoCombatResets;
 
+        // Add default values for showClrPaletteBtn and showRaceBtn
+        private static readonly bool defaultShowClrPaletteBtn = false;
+        public bool showClrPaletteBtn = defaultShowClrPaletteBtn;
+
+        private static readonly bool defaultShowRaceBtn = false;
+        public bool showRaceBtn = defaultShowRaceBtn;
+
+
+        // Special
+        public static readonly bool defaultDisableExtraWidgets = false;
+        public bool disableExtraWidgets = defaultDisableExtraWidgets;
+
 
         // DEV Settings
         public static readonly bool defaultJesusMode = false;
@@ -405,13 +425,6 @@ namespace BigAndSmall
 
         public static readonly bool defaultRecruitDevSpawned = true;
         public bool recruitDevSpawned = defaultRecruitDevSpawned;
-
-        // Add default values for showClrPaletteBtn and showRaceBtn
-        private static readonly bool defaultShowClrPaletteBtn = false;
-        public bool showClrPaletteBtn = defaultShowClrPaletteBtn;
-
-        private static readonly bool defaultShowRaceBtn = false;
-        public bool showRaceBtn = defaultShowRaceBtn;
 
         public bool GetAndroidsEnabled()
         {
@@ -458,6 +471,9 @@ namespace BigAndSmall
             Scribe_Values.Look(ref showClrPaletteBtn, "showClrPaletteBtn", defaultShowClrPaletteBtn);
             Scribe_Values.Look(ref showRaceBtn, "showRaceBtn", defaultShowRaceBtn);
 
+            // Special
+            Scribe_Values.Look(ref disableExtraWidgets, "disableExtraWidgets", defaultDisableExtraWidgets);
+
             // Scribe Dev Settings
             Scribe_Values.Look(ref jesusMode, "jesusMode", defaultJesusMode);
             Scribe_Values.Look(ref recruitDevSpawned, "recruitDevSpawned", defaultRecruitDevSpawned);
@@ -502,6 +518,7 @@ namespace BigAndSmall
             enableDraftedJobs = defaultEnableDraftedJobs;
             showClrPaletteBtn = defaultShowClrPaletteBtn;
             showRaceBtn = defaultShowRaceBtn;
+            disableExtraWidgets = defaultDisableExtraWidgets;
         }
         public void ResetToRecommended()
         {
