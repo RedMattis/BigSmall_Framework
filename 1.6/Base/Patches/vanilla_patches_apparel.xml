@@ -12,4 +12,20 @@
       <li>BS_Jackets</li>
     </value>
   </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <success>Always</success>
+    <xpath>Defs/ThingDef[defName="Apparel_CrownStellic" or defName="Apparel_Crown" or defName="Apparel_Tailcap" or defName="Apparel_VisageMask"]/apparel[not(tags)]</xpath>
+    <value>
+      <tags/>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <success>Always</success>
+    <xpath>Defs/ThingDef[defName="Apparel_CrownStellic" or defName="Apparel_Crown" or defName="Apparel_Tailcap" or defName="Apparel_VisageMask"]/apparel/tags</xpath>
+    <value>
+      <li>BS_RoyalAndIdeologyHats</li>
+    </value>
+  </Operation>
 </Patch>

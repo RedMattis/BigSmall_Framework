@@ -11,9 +11,7 @@
       <disableFacialAnimations>true</disableFacialAnimations>
       <apparelRestrictions>
         <noArmor>true</noArmor>
-        <thingDefs>
-          <allowlist><li>Apparel_ShieldBelt</li></allowlist>
-        </thingDefs>
+        <tags> <allowlist><li>BeltDefense</li></allowlist> </tags>
         <apparelLayers>
           <blacklist>
             <li>Shell</li>
@@ -36,9 +34,9 @@
       <disableFacialAnimations>true</disableFacialAnimations>
       <apparelRestrictions>
         <noArmor>true</noArmor>
-        <thingDefs>
-          <allowlist><li>Apparel_ShieldBelt</li></allowlist>
-        </thingDefs>
+        <tags>
+          <allowlist><li>BeltDefense</li></allowlist>
+        </tags>
         <apparelLayers>
           <blacklist>
             <li>Shell</li>
@@ -62,9 +60,9 @@
       <canWieldThings>true</canWieldThings>
       <apparelRestrictions>
         <noArmor>true</noArmor>
-        <thingDefs>
-          <allowlist><li>Apparel_ShieldBelt</li></allowlist>
-        </thingDefs>
+        <tags>
+          <allowlist><li>BeltDefense</li></allowlist>
+        </tags>
         <apparelLayers>
           <blacklist>
             <li>Shell</li>

@@ -14,13 +14,9 @@
         <tags>
           <allowlist>
             <li>Warcasket</li>
+            <li>BeltDefense</li>
           </allowlist>
         </tags>
-        <thingDefs>
-          <allowlist>
-            <li>Apparel_ShieldBelt</li>
-          </allowlist>
-        </thingDefs>
         <apparelLayers>
           <blacklist>
             <li>Shell</li>

@@ -178,6 +178,11 @@
             Just apply a bunch of Vampirism.
             </summary>
         </member>
+        <member name="F:BigAndSmall.ApparelRestrictions.thingDefs">
+            <summary>
+            Obsoleted because it had issues with cases where ApparelProperties were used with no access to the thing.
+            </summary>
+        </member>
         <member name="F:BigAndSmall.ApparelRestrictions.apparelLayers">
             <summary>
             OnSkin, Shell, Middle, etc.

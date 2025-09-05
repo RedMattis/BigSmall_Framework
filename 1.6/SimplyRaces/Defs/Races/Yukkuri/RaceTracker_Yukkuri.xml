@@ -32,10 +32,10 @@
           </defaultData>
         </headDrawData>
         <apparelRestrictions>
-          <thingDefs>
-          <!--I guess it ... floats or something?-->
-            <allowlist><li>Apparel_ShieldBelt</li></allowlist>
-          </thingDefs>
+          <tags>
+            <!--I guess it ... floats or something?-->
+            <allowlist><li>BeltDefense</li></allowlist>
+          </tags>
           <bodyPartGroups>
             <whitelist>
               <li>UpperHead</li>

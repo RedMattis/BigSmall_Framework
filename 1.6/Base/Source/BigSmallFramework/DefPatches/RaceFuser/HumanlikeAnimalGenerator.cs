@@ -639,6 +639,7 @@ namespace BigAndSmall
                     value = statBase.value
                 });
             }
+            var animalThingSize = animalThing.race.baseBodySize;
 
             // Animal
             newThing.SetStatBaseValue(StatDefOf.PsychicSensitivity, animalThing.GetStatValueAbstract(StatDefOf.PsychicSensitivity));
@@ -646,7 +647,6 @@ namespace BigAndSmall
             newThing.SetStatBaseValue(StatDefOf.MoveSpeed, animalThing.GetStatValueAbstract(StatDefOf.MoveSpeed));
             newThing.SetStatBaseValue(StatDefOf.IncomingDamageFactor, animalThing.GetStatValueAbstract(StatDefOf.IncomingDamageFactor));
             newThing.SetStatBaseValue(StatDefOf.MarketValue, animalThing.GetStatValueAbstract(StatDefOf.MarketValue) * 1.5f);
-            newThing.SetStatBaseValue(StatDefOf.Nutrition, animalThing.GetStatValueAbstract(StatDefOf.Nutrition));
             newThing.SetStatBaseValue(StatDefOf.Mass, animalThing.GetStatValueAbstract(StatDefOf.Mass));
             newThing.SetStatBaseValue(StatDefOf.ToxicResistance, animalThing.GetStatValueAbstract(StatDefOf.ToxicResistance));
             newThing.SetStatBaseValue(StatDefOf.ToxicEnvironmentResistance, animalThing.GetStatValueAbstract(StatDefOf.ToxicEnvironmentResistance));
@@ -657,6 +657,18 @@ namespace BigAndSmall
             newThing.SetStatBaseValue(StatDefOf.MeatAmount, animalThing.GetStatValueAbstract(StatDefOf.MeatAmount));
             newThing.SetStatBaseValue(StatDefOf.FlightCooldown, animalThing.GetStatValueAbstract(StatDefOf.FlightCooldown));
             newThing.SetStatBaseValue(StatDefOf.MaxFlightTime, animalThing.GetStatValueAbstract(StatDefOf.MaxFlightTime));
+            newThing.SetStatBaseValue(StatDefOf.ArmorRating_Sharp, animalThing.GetStatValueAbstract(StatDefOf.ArmorRating_Sharp));
+            newThing.SetStatBaseValue(StatDefOf.ArmorRating_Blunt, animalThing.GetStatValueAbstract(StatDefOf.ArmorRating_Blunt));
+            newThing.SetStatBaseValue(StatDefOf.ArmorRating_Heat, animalThing.GetStatValueAbstract(StatDefOf.ArmorRating_Heat));
+
+
+            // Most animal eat far less than a human of equivalent size in RimWorld for game mechanical reasons.
+            // As a colonist a giant sapient Thumbo needs  eat more than a human or its gets rather silly (and OP).
+            //
+            // This is still very generous compared to sized-up humans.
+            var scaledHumanNutrition = humanThing.GetStatValueAbstract(StatDefOf.Nutrition) * animalThingSize;
+            var animalNutrition = animalThing.GetStatValueAbstract(StatDefOf.Nutrition);
+            newThing.SetStatBaseValue(StatDefOf.Nutrition, Math.Max(animalNutrition, scaledHumanNutrition));
 
             // Averaged
             newThing.SetStatBaseValue(StatDefOf.DeepDrillingSpeed, (animalThing.GetStatValueAbstract(StatDefOf.DeepDrillingSpeed) + humanThing.GetStatValueAbstract(StatDefOf.DeepDrillingSpeed)) / 2);
