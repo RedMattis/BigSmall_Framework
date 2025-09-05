@@ -60,7 +60,6 @@ namespace BigAndSmall
 
             if (NoApparel && !result.ForceAllowed())
             {
-                
                 if (exceptNudistFriendly && apparel.countsAsClothingForNudity == false) return null;
                 return "BS_CannotWearApparel".Translate();
             }

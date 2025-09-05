@@ -219,7 +219,7 @@ namespace BigAndSmall
             {
                 foreach (XmlNode xmlNode in xmlRoot.ChildNodes)
                 {
-                    switch (xmlNode.Name)
+                    switch (xmlNode.Name.ToLower())
                     {
                         case "allowlist":
                             allowlist = [];
