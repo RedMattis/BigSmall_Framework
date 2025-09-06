@@ -20,7 +20,10 @@ namespace BigAndSmall
         public bool defaultEnterable = true;
 
         private CompProperties_Piloted props = null;
-        private ThingOwner innerContainer = null;
+        protected ThingOwner innerContainer = null;
+
+        protected Ideo cachedIdeology = null;
+        protected Faction cachedFaction = null;
 
 
         public CompProperties_Piloted Props => GetProperties();
@@ -121,10 +124,26 @@ namespace BigAndSmall
             }
             try
             { 
+                if (Props.removeIfNoPilot)
+                {
+                    removeIfNoPilot = true;
+                }
+
                 // Check if the is a pilot there already:
                 var otherPilot = InnerContainer.Where(x => x is Pawn && x != thing).FirstOrDefault();
                 if (otherPilot == null && thing is Pawn pilot)
-                { 
+                {
+                    if (ModsConfig.IdeologyActive && Props.temporarilySwapIdeology && pilot.Ideo != null)
+                    {
+                        cachedIdeology = pawn.Ideo;
+                        pawn.ideo.SetIdeo(pilot.Ideo);
+                    }
+                    if (Props.temporarilySwapFaction && pilot.Faction != null)
+                    {
+                        cachedFaction = pawn.Faction;
+                        pawn.SetFaction(pilot.Faction);
+                    }
+
                     try { InheritPilotSkills(pilot, pawn); } catch (Exception e) { Log.Warning($"Failed to transfer pilot skills:\n{e.Message}\n{e.StackTrace}"); }
                     try { InheritPilotTraits(pilot); } catch (Exception e) { Log.Warning($"Failed to transfer pilot traits:\n{e.Message}\n{e.StackTrace}"); }
                     try { InheritRelationships(pilot, pawn); } catch (Exception e) { Log.Warning($"Failed to transfer pilot relationships:\n{e.Message}\n{e.StackTrace}"); }
@@ -159,16 +178,16 @@ namespace BigAndSmall
                 target.ideo.SetIdeo(pilot.Ideo);
             }
 
-            // Transfer resistance values
-            target.guest.resistance = pilot.guest.resistance;
-
-            // Transfer Will
-            target.guest.will = pilot.guest.will;
-
             if (Props.inheritRelationShips == false)
             {
                 return;
             }
+
+            // Transfer resistance values
+            target.guest.resistance = pilot.guest.resistance;
+
+            // Transfer Will
+            target.guest.will = pilot.guest.will;  
 
             // Get the pilot's relations
             List<DirectPawnRelation> pilotRelations = pilot.relations?.DirectRelations.ToList();
@@ -348,7 +367,7 @@ namespace BigAndSmall
         }
 
 
-        public void RemovePilots()
+        public void RemovePilots(bool mayRemoveHediff = true)
         {
             IList<Thing> content = InnerContainer;
 
@@ -381,12 +400,44 @@ namespace BigAndSmall
                 GenPlace.TryPlaceThing(thing, pawn.Position, pawn.MapHeld, ThingPlaceMode.Near);
             }
 
+            Log.Message($"checking for ideology/faction restore on {pawn.Name}");
+            if (!pawn.Dead && Props.temporarilySwapIdeology && cachedIdeology != null)
+            {
+                pawn.ideo.SetIdeo(cachedIdeology);
+                cachedIdeology = null;
+                Log.Message($"restored ideology for {pawn.Name}");
+            }
+            Log.Message($"checking for faction restore on {pawn.Name}");
+            if (!pawn.DestroyedOrNull() && Props.temporarilySwapFaction && cachedFaction != null)
+            {
+                pawn.SetFaction(cachedFaction);
+                cachedFaction = null;
+                Log.Message($"restored faction for {pawn.Name}");
+            }
+
             pilotEjectCountdown = -1; // Reset the eject countdown.
             pawn.health.Notify_HediffChanged(this);
             forcePilotableUpdate = true;
 
-            if (removeIfNoPilot)
+            // mayRemoveHediff is false when called from PostRemoved or Pawn.Kill to avoid recursion.
+            if (mayRemoveHediff && removeIfNoPilot && pawn?.health?.hediffSet?.HasHediff(def) == true)
             {
+                try
+                {
+                    if (!pawn.Dead && props.injuryOnRemoval is int injuryAmount && injuryAmount > 0)
+                    {
+                        var mainBodyPart = pawn.RaceProps.body.corePart;
+                        if (mainBodyPart != null)
+                        {
+                            var damageInfo = new DamageInfo(DamageDefOf.Cut, injuryAmount * pawn.BodySize, 0, -1, null, mainBodyPart);
+                            pawn.TakeDamage(damageInfo);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Error($"Failed to apply removal injury to {pawn.Name} with error:\n{e.Message}\n{e.StackTrace}");
+                }
                 pawn.health.RemoveHediff(this);
             }
         }
@@ -395,7 +446,7 @@ namespace BigAndSmall
             try
             {
                 base.PostRemoved();
-                RemovePilots();
+                RemovePilots(mayRemoveHediff:false);
             }
             catch (Exception e)
             {
@@ -405,16 +456,6 @@ namespace BigAndSmall
 
         public override void Notify_PawnDied(DamageInfo? dinfo, Hediff culprit = null)
         {
-            // Done via patch instead.
-            //try
-            //{
-            //    RemovePilot();
-            //    base.Notify_PawnDied();
-            //}
-            //catch (Exception e)
-            //{
-            //    Log.Error("Failed to remove pilot from " + pawn.Name + " with error: " + e.Message);
-            //}
         }
 
         public float CalculateConsciousnessOffset()
@@ -549,6 +590,8 @@ namespace BigAndSmall
             Scribe_Deep.Look(ref innerContainer, "innerContainer", this);
             Scribe_Values.Look(ref removeIfNoPilot, "removeIfNoPilot", defaultValue: false);
             Scribe_Values.Look(ref defaultEnterable, "defaultEnterable", defaultValue: true);
+            Scribe_References.Look(ref cachedFaction, "cachedFaction");
+            Scribe_References.Look(ref cachedIdeology, "cachedIdeology");
         }
     }
 

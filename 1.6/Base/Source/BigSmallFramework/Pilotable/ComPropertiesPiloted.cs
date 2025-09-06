@@ -23,6 +23,11 @@ namespace BigAndSmall
         public float flatBonusIfPiloted = 0f;
         public bool inheritRelationShips = false;
 
+        public bool removeIfNoPilot = false;
+        public bool temporarilySwapIdeology = false;
+        public bool temporarilySwapFaction = false;
+        public int? injuryOnRemoval = null;
+
         public CompProperties_Piloted()
         {
             compClass = typeof(PilotedCompProps);

@@ -70,7 +70,7 @@ namespace BigAndSmall
                 // Remove pilots from pawns if possible.
                 if(hediff is Piloted piloted)
                 {
-                    piloted.RemovePilots();
+                    piloted.RemovePilots(mayRemoveHediff: false);
                 }
             }
         }
