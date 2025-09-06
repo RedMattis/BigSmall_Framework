@@ -3,6 +3,7 @@ using System.Linq;
 using Verse;
 using HarmonyLib;
 using System.Threading;
+using BigAndSmall.Settings;
 
 namespace BigAndSmall
 {
@@ -36,19 +37,19 @@ namespace BigAndSmall
                 x.PackageIdPlayerFacing == "RedMattis.MadApril2025") || BSTestModActive;
 
         public static bool BSSapientAnimalsActive => _BSSapientAnimalsActive ??=
-            BSSapientAnimalsActive_ForcedByMods || GlobalSettings.IsFeatureEnabled("SapientAnimals") || BigSmallMod.settings.sapientAnimals;
+            BSSapientAnimalsActive_ForcedByMods || ModFeatures.IsFeatureEnabled("SapientAnimals") || BigSmallMod.settings.sapientAnimals;
 
-        public static bool BSSapientMechanoidsActive => _BSSapientMechanoidsActive ??= GlobalSettings.IsFeatureEnabled("SapientMechanoids")
+        public static bool BSSapientMechanoidsActive => _BSSapientMechanoidsActive ??= ModFeatures.IsFeatureEnabled("SapientMechanoids")
             || BigSmallMod.settings.sapientMechanoids;
 
         public static bool BSGenesActive =>
             _BSGenesActive ??= ModsConfig.ActiveModsInLoadOrder.Any(x => x.PackageIdPlayerFacing == "RedMattis.BigSmall.Core");
 
         public static bool ShowPalette =>
-            BSGenesActive || BigSmallMod.settings.showClrPaletteBtn || GlobalSettings.IsFeatureEnabled("RecolorButton");
+            BSGenesActive || BigSmallMod.settings.showClrPaletteBtn || ModFeatures.IsFeatureEnabled("RecolorButton");
 
         public static bool ShowRaceButton =>
-            BSGenesActive || BigSmallMod.settings.showRaceBtn || GlobalSettings.IsFeatureEnabled("RaceButton");
+            BSGenesActive || BigSmallMod.settings.showRaceBtn || ModFeatures.IsFeatureEnabled("RaceButton");
 
 
         static BigSmall()
