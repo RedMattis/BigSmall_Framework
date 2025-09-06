@@ -77,6 +77,14 @@ namespace BigAndSmall
                 }
                 return false;
             }
+            if (pawn.RaceProps.Humanlike == false || pawn.IsMutant)
+            {
+                if (throwMessages)
+                {
+                    Messages.Message("BS_ParasiteTargetNotHumanlike".Translate(pawn.Label, parent.pawn.Label), pawn, MessageTypeDefOf.RejectInput, historical: false);
+                }
+                return false;
+            }
             if (pawn.Downed
                 || pawn.stances?.stunner?.Stunned == true
                 ||

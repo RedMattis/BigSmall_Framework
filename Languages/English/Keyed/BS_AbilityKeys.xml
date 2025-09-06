@@ -2,6 +2,7 @@
 <LanguageData>
   <BS_ParasiteTargetNotImpaired>Target must be impaired, stunned, in great pain, or unaware.</BS_ParasiteTargetNotImpaired>
   <BS_ParasiteTargetTooSmall>Target is too small to parasite.</BS_ParasiteTargetTooSmall>
+  <BS_ParasiteTargetNotHumanlike>Target must be humanlike</BS_ParasiteTargetNotHumanlike>
   <BS_EngulfedContents>Contents:</BS_EngulfedContents>
   <BS_InTooMuchPain>In too much pain to use.</BS_InTooMuchPain>
   <DigestiveAbilityTooLow>Digestive ability is too low.</DigestiveAbilityTooLow>

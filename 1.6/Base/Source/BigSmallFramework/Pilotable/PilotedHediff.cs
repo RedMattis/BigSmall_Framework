@@ -133,6 +133,8 @@ namespace BigAndSmall
                 var otherPilot = InnerContainer.Where(x => x is Pawn && x != thing).FirstOrDefault();
                 if (otherPilot == null && thing is Pawn pilot)
                 {
+                    pawn.guest?.SetGuestStatus(null);
+
                     if (ModsConfig.IdeologyActive && Props.temporarilySwapIdeology && pilot.Ideo != null)
                     {
                         cachedIdeology = pawn.Ideo;
