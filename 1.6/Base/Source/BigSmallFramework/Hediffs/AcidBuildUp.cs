@@ -22,9 +22,9 @@ namespace BigAndSmall
             }
         }
 
-        const float totalDamageAtMaxSeverity = 50;
-        const float totalDurationAtOneSeverity = 5000; // In ticks
-        const int ticksBetweenDamage = 500;
+        const float totalDamageAtMaxSeverity = 40;
+        const float totalDurationAtOneSeverity = 2500; // In ticks
+        const int ticksBetweenDamage = 200;
 
         public override string LabelInBrackets
         {

@@ -9,6 +9,13 @@
         <brightness>0.95</brightness>
         <alts>
           <li>
+            <customTagGraphicIsSet>
+              <tag><AbdomenGraphics/></tag>
+              <colorA>true</colorA>
+            </customTagGraphicIsSet>
+            <customClrTagA><AbdomenGraphics/></customClrTagA>
+          </li>
+          <li>
             <triggers><li>Dead</li></triggers>
             <hairColor>true</hairColor>
             <skinColor>true</skinColor> 
@@ -20,6 +27,15 @@
         <replaceFlagsAndInactive><SpiderColorB/></replaceFlagsAndInactive>
         <favoriteColor>true</favoriteColor>
         <maxBrightness>0.75</maxBrightness>
+        <alts>
+          <li>
+            <customTagGraphicIsSet>
+              <tag><AbdomenGraphics/></tag>
+              <colorB>true</colorB>
+            </customTagGraphicIsSet>
+            <customClrTagB><AbdomenGraphics/></customClrTagB>
+          </li>
+        </alts>
       </colorB>
       <alts>
         <li>
@@ -46,6 +62,13 @@
         <brightness>0.95</brightness>
         <alts>
           <li>
+            <customTagGraphicIsSet>
+              <tag><AbdomenGraphics/></tag>
+              <colorA>true</colorA>
+            </customTagGraphicIsSet>
+            <customClrTagA><AbdomenGraphics/></customClrTagA>
+          </li>
+          <li>
             <triggers><li>Dead</li></triggers>
             <hairColor>true</hairColor>
             <skinColor>true</skinColor> 
@@ -56,6 +79,15 @@
       <colorB>
         <favoriteColor>true</favoriteColor>
         <maxBrightness>0.75</maxBrightness>
+        <alts>
+          <li>
+            <customTagGraphicIsSet>
+              <tag><AbdomenGraphics/></tag>
+              <colorB>true</colorB>
+            </customTagGraphicIsSet>
+            <customClrTagB><AbdomenGraphics/></customClrTagB>
+          </li>
+        </alts>
       </colorB>
       <alts>
         <li>

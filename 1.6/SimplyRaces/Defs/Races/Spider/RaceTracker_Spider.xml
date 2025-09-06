@@ -20,23 +20,6 @@
         </capMods>
       </li>
     </stages>
-    <modExtensions>
-      <li Class="BigAndSmall.PawnExtension">
-        <traitIcon>BS_Traits/spooder</traitIcon>
-        <romanceTags>
-          <Spider>1.0</Spider>
-          <Humanlike>0.35</Humanlike>
-        </romanceTags>
-        <canWalkOnCreep>true</canWalkOnCreep>
-        <renderCacheOff>true</renderCacheOff>
-        <applyBodyHediff MayRequire="OskarPotocki.VanillaFactionsExpanded.Core">
-          <li>
-            <hediff MayRequire="OskarPotocki.VanillaFactionsExpanded.Core">BS_Stride</hediff>
-          </li>
-        </applyBodyHediff>
-        <bodyPosOffset>0.6</bodyPosOffset>
-      </li> 
-    </modExtensions>
     <comps>
       <li Class="BigAndSmall.CompProperties_Race">
         <canSwapAwayFrom>true</canSwapAwayFrom>
@@ -106,6 +89,28 @@
         </drawData>
       </li>
     </renderNodeProperties>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <traitIcon>BS_Traits/spooder</traitIcon>
+        <romanceTags>
+          <Spider>1.0</Spider>
+          <Humanlike>0.35</Humanlike>
+        </romanceTags>
+        <canWalkOnCreep>true</canWalkOnCreep>
+        <renderCacheOff>true</renderCacheOff>
+        <applyBodyHediff MayRequire="OskarPotocki.VanillaFactionsExpanded.Core">
+          <li>
+            <hediff MayRequire="OskarPotocki.VanillaFactionsExpanded.Core">BS_Stride</hediff>
+          </li>
+        </applyBodyHediff>
+        <bodyPosOffset>0.6</bodyPosOffset>
+      </li> 
+      <li Class="BigAndSmall.HasCustomizableGraphics">
+        <tag><AbdomenGraphics/></tag>
+        <colorA>true</colorA>
+        <colorB>true</colorB>
+      </li>
+    </modExtensions>
   </HediffDef>
 
   

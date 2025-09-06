@@ -8,6 +8,14 @@
   </BigAndSmall.FlagStringData>
 
   <BigAndSmall.FlagStringData>
+    <defName>BS_Abdomen</defName>
+    <label>abdomen</label>
+    <flags>
+      <AbdomenGraphics/>
+    </flags>
+  </BigAndSmall.FlagStringData>
+
+  <BigAndSmall.FlagStringData>
     <defName>BS_TailGraphics</defName>
     <label>tail</label>
     <flags>
