@@ -1,4 +1,5 @@
-﻿using BigAndSmall.Utilities;
+﻿using BigAndSmall.Settings;
+using BigAndSmall.Utilities;
 using HarmonyLib;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -125,7 +126,7 @@ namespace BigAndSmall
             //listStd.Label("BS_GameMechanics".Translate().AsTipTitle());
             listStd.GapLine();
             listStd.Label("BS_SapientSettings".Translate().AsTipTitle());
-            if (BigSmall.BSSapientAnimalsActive_ForcedByMods)
+            if (BigSmall.BSSapientMechanoidsActive)
             {
                 CreateSettingCheckbox(listStd, "BS_SapientAnimals_Forced".Translate(), ref settings.forcedOn, disabled: true);
             }
@@ -213,25 +214,16 @@ namespace BigAndSmall
             BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 200f);
             listStd.Begin(viewRect);
 
-            
-            
-
-            if (BigSmall.BSGenesActive || GlobalSettings.IsFeatureEnabled("RecolorButton"))
+            if (BigSmall.BSGenesActive || ModFeatures.IsFeatureEnabled("RecolorButton"))
             {
                 CreateSettingCheckbox(listStd, "BS_ShowColorPaletteBtn_Forced".Translate(), ref settings.forcedOn, disabled: true);
-            }
+				CreateSettingCheckbox(listStd, "BS_ShowRaceBtn_Forced".Translate(), ref settings.forcedOn, disabled: true);
+			}
             else
             {
                 CreateSettingCheckbox(listStd, "BS_ShowColorPaletteBtn".Translate(), ref settings.showClrPaletteBtn);
-            }
-            if (BigSmall.BSGenesActive || GlobalSettings.IsFeatureEnabled("RaceButton"))
-            {
-                CreateSettingCheckbox(listStd, "BS_ShowRaceBtn_Forced".Translate(), ref settings.forcedOn, disabled: true);
-            }
-            else
-            {
-                CreateSettingCheckbox(listStd, "BS_ShowRaceBtn".Translate(), ref settings.showRaceBtn);
-            }
+				CreateSettingCheckbox(listStd, "BS_ShowRaceBtn".Translate(), ref settings.showRaceBtn);
+			}
 
             //CreateSettingCheckbox(listStd, "BS_PatchPlayerFactions".Translate(), ref settings.patchPlayerFactions);
             listStd.GapLine();

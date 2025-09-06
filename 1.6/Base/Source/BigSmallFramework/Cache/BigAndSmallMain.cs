@@ -24,6 +24,8 @@ namespace BigAndSmall
 		private static bool? _BSAndroidsActive = null;
 		private static bool? _BSGenesPatchesActive = null;
 		private static bool? _BSTransformGenesActive = null;
+		private static bool? _BSShowRaceButton = null;
+		private static bool? _BSShowPalette = null;
 
 		public static bool BSTestModActive =>
 			_BSTestModActive ??= ModsConfig.ActiveModsInLoadOrder.Any(x => x.PackageIdPlayerFacing == "RedMattis.TestMod");
@@ -36,10 +38,12 @@ namespace BigAndSmall
 			ModsConfig.ActiveModsInLoadOrder.Any(x => x.PackageIdPlayerFacing == "RedMattis.TransformGenes");
 
 		public static bool BSSapientAnimalsActive => _BSSapientAnimalsActive ??= ModFeatures.IsFeatureEnabled("SapientAnimals");
-		public static bool BSSapientMechanoidsActive => _BSSapientMechanoidsActive ??= ModFeatures.IsFeatureEnabled("SapientMechanoids") || BigSmallMod.settings.sapientMechanoids;
+		public static bool BSSapientMechanoidsActive => _BSSapientMechanoidsActive ??= ModFeatures.IsFeatureEnabled("SapientMechanoids");
 		public static bool AndroidsEnabled => _BSAndroidsActive ??= ModFeatures.IsFeatureEnabled("Androids");
 		public static bool BSGenesActive => _BSGenesPatchesActive ??= ModFeatures.IsFeatureEnabled("GenePatches");
 		public static bool BSTransformGenesActive => _BSTransformGenesActive ??= ModFeatures.IsFeatureEnabled("TransformGenes");
+		public static bool ShowRaceButton => _BSShowRaceButton ??= ModFeatures.IsFeatureEnabled("ShowRaceButton");
+		public static bool ShowPalette => _BSShowPalette ??= ModFeatures.IsFeatureEnabled("EditPawnAppearance");
 
 		static BigSmall()
         {

@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using BigAndSmall.Utilities;
+using RimWorld;
 using RimWorld.BaseGen;
 using System;
 using System.Collections.Generic;
@@ -14,16 +15,10 @@ namespace BigAndSmall.Settings
 		private static HashSet<string> _enabledFeatures = new();
 		private static List<Def> _buffer = new(100);
 
-		public static void Initialise()
-		{
-			ParseEnabledFeatures();
-			ProcessConditionalFeatureDefs();
-		}
-
-
-		private static void ProcessConditionalFeatureDefs()
+		public static void ProcessConditionalFeatureDefs()
 		{
 			RemoveDefsOfType<ThingDef>();
+			RemoveDefsOfType<WorkGiverDef>();
 			RemoveDefsOfType<RecipeDef>();
 			RemoveDefsOfType<ResearchTabDef>();
 			RemoveDefsOfType<ResearchProjectDef>();
@@ -42,12 +37,13 @@ namespace BigAndSmall.Settings
 					if (conditional.requiredFeatures.Any(IsFeatureEnabled) == false)
 					{
 						DefDatabase<T>.AllDefsListForReading.Remove(def);
+						DebugLog.Message($"Removed {typeof(T).Name} '{def.defName}' because none of the required features are enabled: {string.Join(", ", conditional.requiredFeatures)}");
 					}
 				}
 			}
 		}
 
-		private static void ParseEnabledFeatures()
+		public static void ParseEnabledFeatures()
 		{
 			foreach (KeyValuePair<string, GlobalSettings> item in GlobalSettings.globalSettings)
 			{
@@ -59,6 +55,11 @@ namespace BigAndSmall.Settings
 						enabledFeatures.Add(feature);
 				}
 			}
+
+			if (BigSmallMod.settings.sapientMechanoids)
+				_enabledFeatures.Add("sapientmechanoids");
+
+			DebugLog.Message($"Enabled features: {string.Join(", ", _enabledFeatures)}");
 		}
 
 		public static bool IsFeatureEnabled(string featureName)

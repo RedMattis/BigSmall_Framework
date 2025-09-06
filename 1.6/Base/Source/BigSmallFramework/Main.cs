@@ -10,6 +10,7 @@ using System.Reflection.Emit;
 using System.Reflection;
 using Verse;
 using BigAndSmall.Utilities;
+using BigAndSmall.Settings;
 //using VariedBodySizes;
 
 namespace BigAndSmall
@@ -40,6 +41,8 @@ namespace BigAndSmall
         public static void RunBeforeGenerateImpliedDefs(bool hotReload)
 		{
 			DebugLog.Message("Generate Defs.");
+
+			ModFeatures.ParseEnabledFeatures();
 
 			if (!hotReload)
             {
@@ -99,7 +102,8 @@ namespace BigAndSmall
 				}
 			}
 
-            RenderNodePatcher.TryPatchPawnRenderNodeDefs();
+			LongEventHandler.ExecuteWhenFinished(ModFeatures.ProcessConditionalFeatureDefs);
+			RenderNodePatcher.TryPatchPawnRenderNodeDefs();
         }
     }
 

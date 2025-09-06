@@ -1,0 +1,369 @@
+<Defs>
+  
+  <WorkGiverDef>
+    <defName>BS_MakeAndroidFuel</defName>
+    <label>refine android fuel</label>
+    <giverClass>WorkGiver_DoBill</giverClass>
+    <workType>Cooking</workType>
+    <priorityInType>100</priorityInType>
+    <fixedBillGiverDefs>
+      <li>BS_AndroidFuelRefinery</li>
+    </fixedBillGiverDefs>
+    <verb>refine at</verb>
+    <gerund>refining at</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+    <prioritizeSustains>true</prioritizeSustains>
+    <modExtensions>
+      <li Class="BigAndSmall.ConditionalDefExtension">
+        <requiredFeatures>
+          <li>Androids</li>
+          <li>SapientMechanoids</li>
+        </requiredFeatures>
+      </li>
+    </modExtensions>
+  </WorkGiverDef>
+
+  <ThingDef ParentName="BenchBase">
+    <defName>BS_AndroidFuelRefinery</defName>
+    <label>android fuel refinery</label>
+    <description>Very efficiently refines wood or chemfuel into android fuel for android consumption. For placement in a Kitchen.</description>
+    <thingClass>Building_WorkTable_HeatPush</thingClass>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <pathCost>50</pathCost>
+    <statBases>
+      <MaxHitPoints>200</MaxHitPoints>
+      <WorkToBuild>800</WorkToBuild>
+      <Flammability>0.0</Flammability>
+    </statBases>
+    <minifiedDef>MinifiedThing</minifiedDef>
+    <!-- <thingCategories Inherit="false" /> -->
+    <size>(2,1)</size>
+    <recipes>
+      <li>BS_MakeAndroidFuelFromChemfuel_Refinery</li>
+      <li>BS_MakeAndroidFuelFromWood_Refinery</li>
+    </recipes>
+    <costList>
+      <Steel>40</Steel>
+      <ComponentIndustrial>1</ComponentIndustrial>
+    </costList>
+    <comps>
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerTrader</compClass>
+        <basePowerConsumption>80</basePowerConsumption>
+        <shortCircuitInRain>true</shortCircuitInRain>
+      </li>
+      <li Class="CompProperties_Flickable"/>
+      <li Class="CompProperties_Breakdownable"/>
+      <li Class="CompProperties_HeatPusher">
+        <compClass>CompHeatPusherPowered</compClass>
+        <heatPerSecond>2</heatPerSecond>
+      </li>
+    </comps>
+    <castEdgeShadows>true</castEdgeShadows>
+    <staticSunShadowHeight>0.35</staticSunShadowHeight>
+    <graphicData>
+      <texPath>BS_Buildings/FuelBench</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <shaderType>CutoutComplex</shaderType>
+      <drawSize>(3.88,3)</drawSize>
+      <damageData>
+        <cornerTL>Damage/Corner</cornerTL>
+        <cornerTR>Damage/Corner</cornerTR>
+        <cornerBL>Damage/Corner</cornerBL>
+        <cornerBR>Damage/Corner</cornerBR>
+      </damageData>
+    </graphicData>
+    <inspectorTabs>
+      <li>ITab_Bills</li>
+    </inspectorTabs>
+    <building>
+      <isMealSource>true</isMealSource>
+      <spawnedConceptLearnOpportunity>BillsTab</spawnedConceptLearnOpportunity>
+      <workTableRoomRole>Kitchen</workTableRoomRole>
+      <workTableNotInRoomRoleFactor>0.95</workTableNotInRoomRoleFactor>
+      <destroySound>BuildingDestroyed_Metal_Small</destroySound>
+      <heatPerTickWhileWorking>0.2</heatPerTickWhileWorking>
+      <buildingTags>
+        <li>Production</li>
+      </buildingTags>
+    </building>
+    <fillPercent>0.5</fillPercent>
+    <interactionCellOffset>(1,0,-1)</interactionCellOffset>
+    <hasInteractionCell>true</hasInteractionCell>
+    <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+    <designationCategory>Production</designationCategory>
+    <surfaceType>Item</surfaceType>
+    <constructionSkillPrerequisite>4</constructionSkillPrerequisite>
+    <thingCategories>
+      <li>BuildingsMisc</li>
+    </thingCategories>
+    <placeWorkers>
+      <li>PlaceWorker_PreventInteractionSpotOverlap</li>
+    </placeWorkers>
+    <researchPrerequisites>
+      <li>BiofuelRefining</li>
+    </researchPrerequisites>
+    <modExtensions>
+      <li Class="BigAndSmall.ConditionalDefExtension">
+        <requiredFeatures>
+          <li>Androids</li>
+          <li>SapientMechanoids</li>
+        </requiredFeatures>
+      </li>
+    </modExtensions>
+  </ThingDef>
+
+  <ThingDef Name="BS_AndroidFuel">  <!--MealBase-->
+    <defName>BS_AndroidFuel</defName>
+    <label>android fuel</label>
+    <description>Processed energy-packed fuel safe for use by androids.</description>
+    <thingClass>ThingWithComps</thingClass>
+    <category>Item</category>
+    <drawerType>MapMeshOnly</drawerType>
+    <thingCategories>
+      <li>Foods</li>
+      <li>FoodMeals</li>
+    </thingCategories>
+    <graphicData>
+      <texPath>Items/BS_AndroidFuel</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <statBases>
+      <MaxHitPoints>50</MaxHitPoints>
+      <Flammability>2.0</Flammability>
+      <Beauty>0</Beauty>
+      <DeteriorationRate>0.1</DeteriorationRate>
+      <MarketValue>16</MarketValue>
+      <Mass>0.1</Mass>
+      <WorkToMake>450</WorkToMake>
+      <Nutrition>1.4</Nutrition>
+    </statBases>
+    <useHitPoints>true</useHitPoints>
+    <healthAffectsPrice>false</healthAffectsPrice>
+    <selectable>true</selectable>
+    <altitudeLayer>Item</altitudeLayer>
+    <stackLimit>75</stackLimit>
+    <tickerType>Normal</tickerType>
+    <socialPropernessMatters>true</socialPropernessMatters>
+    <pathCost>14</pathCost>
+    <allowedArchonexusCount>40</allowedArchonexusCount>
+    <resourceReadoutPriority>Last</resourceReadoutPriority>
+    <drawGUIOverlay>true</drawGUIOverlay>
+    <uiIconForStackCount>1</uiIconForStackCount>
+    <alwaysHaulable>true</alwaysHaulable>
+    <ingestible>
+      <foodType>Fluid</foodType>
+      <maxNumToIngestAtOnce>200</maxNumToIngestAtOnce>
+      <preferability>MealLavish</preferability>
+      <tasteThought>AteFineMeal</tasteThought>
+      <optimalityOffsetHumanlikes>16</optimalityOffsetHumanlikes>
+      <optimalityOffsetFeedingAnimals>-10</optimalityOffsetFeedingAnimals>
+      <ingestEffect>EatVegetarian</ingestEffect>
+      <ingestHoldUsesTable>false</ingestHoldUsesTable>
+      <useEatingSpeedStat>false</useEatingSpeedStat>
+      <chairSearchRadius>0</chairSearchRadius>
+      <!-- <ingestSound>Meal_Eat</ingestSound> -->
+      <ingestSound>Recipe_Cremate</ingestSound>
+    </ingestible>
+    <comps>
+      <li Class="CompProperties_Explosive">
+        <explosiveRadius>1.1</explosiveRadius>
+        <explosiveDamageType>Flame</explosiveDamageType>
+        <explosiveExpandPerStackcount>0.037</explosiveExpandPerStackcount>
+        <startWickOnDamageTaken>
+          <li>Flame</li>
+        </startWickOnDamageTaken>
+        <startWickHitPointsPercent>0.333</startWickHitPointsPercent>
+        <preExplosionSpawnThingDef>Filth_Fuel</preExplosionSpawnThingDef>
+        <preExplosionSpawnChance>1</preExplosionSpawnChance>
+        <wickTicks>70~150</wickTicks>
+      </li>
+      <li Class="CompProperties_Forbiddable" />
+    </comps>
+    <modExtensions>
+      <li Class="BigAndSmall.ConditionalDefExtension">
+        <requiredFeatures>
+          <li>Androids</li>
+          <li>SapientMechanoids</li>
+        </requiredFeatures>
+      </li>
+    </modExtensions>
+  </ThingDef>
+
+  <RecipeDef>
+    <defName>BS_MakeAndroidFuelFromChemfuel_CookingStation</defName>
+    <label>inefficiently make android fuel from chemfuel</label>
+    <description>Make processed fuel safe for androids to consume. Slower and less efficient than using a refinery.</description>
+    <jobString>Refining android fuel.</jobString>
+    <effectWorking>Cremate</effectWorking>
+    <soundWorking>Recipe_Cremate</soundWorking>
+    <workAmount>1000</workAmount>
+    <workSpeedStat>CookSpeed</workSpeedStat>
+    <workSkill>Cooking</workSkill>
+    <requiredGiverWorkType>Cooking</requiredGiverWorkType>
+    <recipeUsers>
+      <li>Campfire</li>
+      <li>ElectricStove</li>
+      <li>FueledStove</li>
+    </recipeUsers>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Chemfuel</li>
+          </thingDefs>
+        </filter>
+        <count>50</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>Chemfuel</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <products>
+      <BS_AndroidFuel>5</BS_AndroidFuel>
+    </products>
+    <modExtensions>
+      <li Class="BigAndSmall.ConditionalDefExtension">
+        <requiredFeatures>
+          <li>Androids</li>
+          <li>SapientMechanoids</li>
+        </requiredFeatures>
+      </li>
+    </modExtensions>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>BS_MakeAndroidFuelFromWood_CookingStation</defName>
+    <label>inefficiently make android fuel from wood</label>
+    <description>Make processed fuel safe for androids to consume.\n\nVery Slow and inefficient compared to using chemfuel or a refinery.</description>
+    <jobString>Refining android fuel.</jobString>
+    <effectWorking>Cremate</effectWorking>
+    <soundWorking>Recipe_Cremate</soundWorking>
+    <workAmount>3000</workAmount>
+    <workSpeedStat>CookSpeed</workSpeedStat>
+    <workSkill>Cooking</workSkill>
+    <requiredGiverWorkType>Cooking</requiredGiverWorkType>
+    <recipeUsers>
+      <li>Campfire</li>
+      <li>ElectricStove</li>
+      <li>FueledStove</li>
+    </recipeUsers>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>WoodLog</li>
+          </thingDefs>
+        </filter>
+        <count>100</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>WoodLog</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <products>
+      <BS_AndroidFuel>2</BS_AndroidFuel>
+    </products>
+    <modExtensions>
+      <li Class="BigAndSmall.ConditionalDefExtension">
+        <requiredFeatures>
+          <li>Androids</li>
+          <li>SapientMechanoids</li>
+        </requiredFeatures>
+      </li>
+    </modExtensions>
+  </RecipeDef>
+
+
+  <RecipeDef>
+    <defName>BS_MakeAndroidFuelFromChemfuel_Refinery</defName>
+    <label>make android fuel from chemfuel</label>
+    <description>Make processed fuel safe for androids to consume.</description>
+    <jobString>Refining android fuel.</jobString>
+    <effectWorking>Cremate</effectWorking>
+    <soundWorking>Recipe_Cremate</soundWorking>
+    <workAmount>250</workAmount>
+    <workSpeedStat>CookSpeed</workSpeedStat>
+    <workSkill>Cooking</workSkill>
+    <requiredGiverWorkType>Cooking</requiredGiverWorkType>
+    <!-- <recipeUsers>
+      <li>BS_AndroidFuelRefinery</li>
+    </recipeUsers> -->
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Chemfuel</li>
+          </thingDefs>
+        </filter>
+        <count>50</count>
+      </li>
+    </ingredients>
+    <!-- <fixedIngredientFilter>
+      <thingDefs>
+        <li>Chemfuel</li>
+      </thingDefs>
+    </fixedIngredientFilter> -->
+    <products>
+      <BS_AndroidFuel>8</BS_AndroidFuel>
+    </products>
+    <modExtensions>
+      <li Class="BigAndSmall.ConditionalDefExtension">
+        <requiredFeatures>
+          <li>Androids</li>
+          <li>SapientMechanoids</li>
+        </requiredFeatures>
+      </li>
+    </modExtensions>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>BS_MakeAndroidFuelFromWood_Refinery</defName>
+    <label>make android fuel from wood</label>
+    <description>Make processed fuel safe for androids to consume.</description>
+    <jobString>Refining android fuel.</jobString>
+    <effectWorking>Cremate</effectWorking>
+    <soundWorking>Recipe_Cremate</soundWorking>
+    <workAmount>750</workAmount>
+    <workSpeedStat>CookSpeed</workSpeedStat>
+    <workSkill>Cooking</workSkill>
+    <requiredGiverWorkType>Cooking</requiredGiverWorkType>
+    <!-- <recipeUsers>
+      <li>BS_AndroidFuelRefinery</li>
+    </recipeUsers> -->
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>WoodLog</li>
+          </thingDefs>
+        </filter>
+        <count>100</count>
+      </li>
+    </ingredients>
+    <!-- <fixedIngredientFilter>
+      <thingDefs>
+        <li>WoodLog</li>
+      </thingDefs>
+    </fixedIngredientFilter> -->
+    <products>
+      <BS_AndroidFuel>8</BS_AndroidFuel>
+    </products>
+    <modExtensions>
+      <li Class="BigAndSmall.ConditionalDefExtension">
+        <requiredFeatures>
+          <li>Androids</li>
+          <li>SapientMechanoids</li>
+        </requiredFeatures>
+      </li>
+    </modExtensions>
+  </RecipeDef>
+
+</Defs>
