@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace BigAndSmall.ModExtensions
+namespace BigAndSmall
 {
 	internal class ConditionalDefExtension : DefModExtension
 	{

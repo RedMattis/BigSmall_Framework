@@ -21,38 +21,27 @@ namespace BigAndSmall
         private static bool? _BSSapientAnimalsActive_ForcedByMods = null;
         private static bool? _BSSapientAnimalsActive = null;
         private static bool? _BSSapientMechanoidsActive = null;
+		private static bool? _BSAndroidsActive = null;
+		private static bool? _BSGenesPatchesActive = null;
+		private static bool? _BSTransformGenesActive = null;
 
-        public static bool BSTestModActive =>
-            _BSTestModActive ??= ModsConfig.ActiveModsInLoadOrder.Any(x => x.PackageIdPlayerFacing == "RedMattis.TestMod");
+		public static bool BSTestModActive =>
+			_BSTestModActive ??= ModsConfig.ActiveModsInLoadOrder.Any(x => x.PackageIdPlayerFacing == "RedMattis.TestMod");
 
-        public static bool BSOptionalActive =>
-            _BSOptionalActive ??= ModsConfig.ActiveModsInLoadOrder.Any(x => x.PackageIdPlayerFacing == "RedMattis.Optional");
+		public static bool BSOptionalActive =>
+			_BSOptionalActive ??= ModsConfig.ActiveModsInLoadOrder.Any(x => x.PackageIdPlayerFacing == "RedMattis.Optional");
 
-        public static bool BSTransformGenes =>
-            _BSTransformGenes ??= BSGenesActive || BSOptionalActive ||
-            ModsConfig.ActiveModsInLoadOrder.Any(x => x.PackageIdPlayerFacing == "RedMattis.TransformGenes");
+		public static bool BSTransformGenes =>
+			_BSTransformGenes ??= BSGenesActive || BSOptionalActive ||
+			ModsConfig.ActiveModsInLoadOrder.Any(x => x.PackageIdPlayerFacing == "RedMattis.TransformGenes");
 
-        public static bool BSSapientAnimalsActive_ForcedByMods => _BSSapientAnimalsActive_ForcedByMods ??= ModsConfig.ActiveModsInLoadOrder.Any(x =>
-                x.PackageIdPlayerFacing == "RedMattis.SapientAnimals" ||
-                x.PackageIdPlayerFacing == "RedMattis.MadApril2025") || BSTestModActive;
+		public static bool BSSapientAnimalsActive => _BSSapientAnimalsActive ??= ModFeatures.IsFeatureEnabled("SapientAnimals");
+		public static bool BSSapientMechanoidsActive => _BSSapientMechanoidsActive ??= ModFeatures.IsFeatureEnabled("SapientMechanoids") || BigSmallMod.settings.sapientMechanoids;
+		public static bool AndroidsEnabled => _BSAndroidsActive ??= ModFeatures.IsFeatureEnabled("Androids");
+		public static bool BSGenesActive => _BSGenesPatchesActive ??= ModFeatures.IsFeatureEnabled("GenePatches");
+		public static bool BSTransformGenesActive => _BSTransformGenesActive ??= ModFeatures.IsFeatureEnabled("TransformGenes");
 
-        public static bool BSSapientAnimalsActive => _BSSapientAnimalsActive ??=
-            BSSapientAnimalsActive_ForcedByMods || ModFeatures.IsFeatureEnabled("SapientAnimals") || BigSmallMod.settings.sapientAnimals;
-
-        public static bool BSSapientMechanoidsActive => _BSSapientMechanoidsActive ??= ModFeatures.IsFeatureEnabled("SapientMechanoids")
-            || BigSmallMod.settings.sapientMechanoids;
-
-        public static bool BSGenesActive =>
-            _BSGenesActive ??= ModsConfig.ActiveModsInLoadOrder.Any(x => x.PackageIdPlayerFacing == "RedMattis.BigSmall.Core");
-
-        public static bool ShowPalette =>
-            BSGenesActive || BigSmallMod.settings.showClrPaletteBtn || ModFeatures.IsFeatureEnabled("RecolorButton");
-
-        public static bool ShowRaceButton =>
-            BSGenesActive || BigSmallMod.settings.showRaceBtn || ModFeatures.IsFeatureEnabled("RaceButton");
-
-
-        static BigSmall()
+		static BigSmall()
         {
             mainThread = Thread.CurrentThread;
         }

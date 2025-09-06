@@ -5,13 +5,23 @@ using System.Linq;
 using static Verse.DamageWorker;
 using UnityEngine;
 using Verse;
+using System.Reflection;
 
 namespace BigAndSmall
 {
     [HarmonyPatch]
     public class DamageWorker_BiteDevourDmg
-    {
-        [HarmonyPatch(typeof(DamageWorker_AddInjury), "FinalizeAndAddInjury", new Type[] { typeof(Pawn), typeof(Hediff_Injury), typeof(DamageInfo), typeof(DamageResult) })]
+	{
+		[HarmonyPrepare]
+		static bool Prepare(MethodBase original)
+		{
+			if (!BigSmall.BSGenesActive)
+				return false;
+
+			return true;
+		}
+
+		[HarmonyPatch(typeof(DamageWorker_AddInjury), "FinalizeAndAddInjury", new Type[] { typeof(Pawn), typeof(Hediff_Injury), typeof(DamageInfo), typeof(DamageResult) })]
         [HarmonyPostfix]
         public static void FinalizeAndAddInjury_Postfix(Pawn pawn, Hediff_Injury injury, DamageInfo dinfo, DamageResult result, DamageWorker_AddInjury __instance)
         {
