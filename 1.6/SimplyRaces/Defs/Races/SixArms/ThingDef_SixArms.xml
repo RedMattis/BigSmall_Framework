@@ -2,7 +2,7 @@
   <ThingDef ParentName="Human" BS_Alt="ThingDef_AlienRace">
     <defName>BS_SixArmedHuman</defName>
     <label>Six Armed Human</label>
-    <description>A humanlike being with a an excessive number of arms.</description>
+    <description>A humanlike being with an excessively large number of arms.</description>
     <statBases>
     </statBases>
     <race>

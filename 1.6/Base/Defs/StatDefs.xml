@@ -7,19 +7,6 @@
         <displayAllByDefault>true</displayAllByDefault>
     </StatCategoryDef>
 
-    <!-- <StatDef>
-        <defName>BS_FinalSizeMultiplier</defName>
-        <workerClass>BigAndSmall.StatWorker_Size</workerClass>
-        <label>actual size change</label>
-        <description>Hidden value for pawn size change.</description>
-        <category>BasicsPawn</category>
-        <alwaysHide>true</alwaysHide>
-        <minValue>0.001</minValue>
-        <toStringStyle>FloatOne</toStringStyle>
-        <defaultBaseValue>1.0</defaultBaseValue>
-        <cacheable>true</cacheable>
-    </StatDef> -->
-
     <StatDef>
         <defName>BS_MaxNutritionFromSize</defName>
         <workerClass>BigAndSmall.StatWorker_MaxNutritionFromSize</workerClass>
@@ -245,17 +232,5 @@
         <defaultBaseValue>1.0</defaultBaseValue>
         <hideAtValue>1</hideAtValue>
     </StatDef>
-
-    <!-- <StatDef>
-        <defName>SM_RomanceChance</defName>
-        <label>romance chance</label>
-        <description>affects the chance that the character will respond to romantic advances. A value of zero .</description>
-        <alwaysHide>false</alwaysHide>
-        <category>BasicsPawn</category>
-        <minValue>0.0</minValue>
-        <toStringStyle>FloatOne</toStringStyle>
-        <defaultBaseValue>1.0</defaultBaseValue>
-        <hideAtValue>1</hideAtValue>
-    </StatDef> -->
 
 </Defs>

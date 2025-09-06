@@ -1,9 +1,9 @@
 <Defs>
-<BigAndSmall.DefTag>
-  <defName>BS_MechanicalDef</defName>
-  <label>mechanical</label>
-  <description>This tag dessignates the entity as mechanical, which can have a variety of effects.</description>
-</BigAndSmall.DefTag>
+  <BigAndSmall.DefTag>
+    <defName>BS_MechanicalDef</defName>
+    <label>mechanical</label>
+    <description>This tag dessignates the entity as mechanical, which can have a variety of effects.</description>
+  </BigAndSmall.DefTag>
   <BigAndSmall.DefTag>
     <defName>BS_MechanicalDescription</defName>
     <label>mechanical being</label>

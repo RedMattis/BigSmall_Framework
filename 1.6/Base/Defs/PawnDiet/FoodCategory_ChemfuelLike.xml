@@ -1,0 +1,33 @@
+<Defs>
+  <!--
+  Filterlist Mini-documentation:
+  acceptlist - Listed things will be approved.
+  whiteList - As above, but everything not listed will be denied.
+  blacklist - Listed things will be denied.
+  allowlist - As above, but will take priority over most things except...
+  banlist   - As above, but bans instead. Takes priority over everything.
+  -->
+
+  <!-- These are basically "new" food types. -->
+  <BigAndSmall.NewFoodCategory>
+    <defName>BS_ChemfuelLike</defName>
+    <foodDefs>
+      <!-- Patched in from AndroidFuelPatches. This is how it will look when patched. -->
+      <!-- <li>BS_AndroidFuel</li> -->
+    </foodDefs>
+    <allowByDefault>false</allowByDefault>
+    <filterListFor>
+      <fleshTypes>
+        <acceptlist><li>Mechanoid</li></acceptlist>
+      </fleshTypes>
+      <!-- The prefered way is to use a DietFilter targeting this, but this can instead be patched into for easy compatibility for other modders. -->
+      <pawnThingsDefs>
+        <acceptlist/>
+      </pawnThingsDefs>
+      <geneDefs>
+        <acceptlist/>
+      </geneDefs>
+    </filterListFor>
+  </BigAndSmall.NewFoodCategory>
+
+</Defs>

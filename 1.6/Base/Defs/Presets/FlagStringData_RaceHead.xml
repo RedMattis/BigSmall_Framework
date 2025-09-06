@@ -24,30 +24,6 @@
   </BigAndSmall.FlagStringData>
 
   <BigAndSmall.FlagStringData>
-    <defName>BS_MiscBodyGraphics</defName>
-    <label>misc body</label>
-    <flags>
-      <MiscBodyGraphics/>
-    </flags>
-  </BigAndSmall.FlagStringData>
-
-  <BigAndSmall.FlagStringData>
-    <defName>BS_TailGraphics</defName>
-    <label>tail</label>
-    <flags>
-      <TailGraphics/>
-    </flags>
-  </BigAndSmall.FlagStringData>
-
-  <BigAndSmall.FlagStringData>
-    <defName>BS_WingGraphics</defName>
-    <label>wing</label>
-    <flags>
-      <WingGraphics/>
-    </flags>
-  </BigAndSmall.FlagStringData>
-
-  <BigAndSmall.FlagStringData>
     <defName>BS_HaloGraphics</defName>
     <label>halo</label>
     <flags>

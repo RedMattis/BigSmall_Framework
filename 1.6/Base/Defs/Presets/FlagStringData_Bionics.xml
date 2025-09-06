@@ -8,7 +8,6 @@
     </flags>
   </BigAndSmall.FlagStringData>
 
-
   <BigAndSmall.FlagStringData>
     <defName>BS_BodyBionicGraphics</defName>
     <label>body bionics</label>
@@ -26,7 +25,6 @@
       <HeadFleshGraphics/>
     </flags>
   </BigAndSmall.FlagStringData>
-
 
   <BigAndSmall.FlagStringData>
     <defName>BS_BodyFleshGraphics</defName>
