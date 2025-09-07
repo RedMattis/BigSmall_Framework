@@ -8,7 +8,7 @@ using Verse;
 
 namespace BigAndSmall
 {
-    public class ApparelRestrictions// : IExposable
+    public class ApparelRestrictions
     {
         public bool absolutelyNothing = false;
         public bool noClothes = false;
@@ -52,10 +52,20 @@ namespace BigAndSmall
             }
 
             if (exceptNudistFriendly && apparel.countsAsClothingForNudity == false) { result = FilterResult.ForceAllow; return null; }
-            if (tags != null && apparel.tags is List<string> apparelTags)
+
+            if (apparel.tags is List<string> apparelTags)
             {
-                result = tags.GetFilterResultFromItemList(apparelTags).Fuse(result);
-                if (err == "" && result.Denied()) err = "BS_CannotWearTag".Translate();
+                if (!apparel.HasRequireApparelTags(tags.ExplicitlyAcceptedItems))
+                {
+                    err = "BS_CannotWearTag".Translate();
+                    return err;
+                }
+                var subResult = tags.GetFilterResultFromItemList(apparelTags);
+                if (tags != null)
+                {
+                    result = tags.GetFilterResultFromItemList(apparelTags).Fuse(result);
+                    if (err == "" && result.Denied()) err = "BS_CannotWearTag".Translate();
+                }
             }
 
             if (NoApparel && !result.ForceAllowed())
@@ -92,6 +102,16 @@ namespace BigAndSmall
         {
             
             FilterResult result = FilterResult.Neutral;
+
+            if (!thingDef.HasRequiredWeaponClassTags(tags.ExplicitlyAcceptedItems))
+            {
+                return "BS_LacksRequiredClassTag".Translate();
+            }
+            if (!thingDef.HasRequiredWeaponTags(tags.ExplicitlyAcceptedItems))
+            {
+                return "BS_LacksRequiredTag".Translate();
+            }
+
             if (!thingDef.IsApparel) return null;
 
             string resStr = CanWear(thingDef.apparel, out FilterResult apRes);

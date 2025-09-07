@@ -199,6 +199,16 @@ namespace BigAndSmall
 
             protected List<FilterList<T>> items = null;
             public List<FilterList<T>> Items => items ??= new List<FilterList<T>> { allowlist, whitelist, blacklist, banlist, acceptlist }.Where(x => x != null).ToList();
+
+            public List<T> ExplicitlyAcceptedItems
+            {
+                get
+                {
+                    if (field != null) return field;
+                    return field = Items.Where(x => x.FilterType == FType.Acceptlist || x.FilterType == FType.Allowlist || x.FilterType == FType.Whitelist).SelectMany(x => x).Distinct().ToList();
+                }
+            }
+
             public bool IsEmpty() => !Items.Any();
             public bool AnyItems() => Items.Any();
 

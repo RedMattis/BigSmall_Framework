@@ -13,18 +13,23 @@ namespace BigAndSmall
     {
         public static bool CanEquipThing(bool __result, ThingDef thing, Pawn pawn, ref string cantReason)
         {
-            if (__result == false || thing == null || pawn == null || pawn?.RaceProps?.Humanlike == false)
-            {
-                return __result;
-            }
-            Pawn_GeneTracker genes = pawn.genes;
-            if (genes == null)
+            if (__result == false || thing == null || pawn?.RaceProps?.Humanlike != true)
             {
                 return __result;
             }
 
             if (FastAcccess.GetCache(pawn) is BSCache cache)
             {
+                // Check if the thing is a weapon or equipment
+                if (thing.IsWeapon)
+                {
+                    if (!cache.canWield)
+                    {
+                        cantReason = "BS_GenePreventsEquipping".Translate();
+                        return false;
+                    }
+                }
+
                 if (cache.apparelRestrictions is ApparelRestrictions restrictions)
                 {
                     var result = restrictions.CanWear(thing);
@@ -34,71 +39,28 @@ namespace BigAndSmall
                         return false;
                     }
                 }
-
-
-                // Check if the thing is a weapon or equipment
-                if (thing.IsWeapon)
-                {
-                    if (!cache.canWield)
-                    {
-                        cantReason = "BS_GenePreventsEquipping".Translate();
-                        return false;
-                    }
-
-                    bool hasGenePreventingEquippingAnything = genes.GenesListForReading.Any(x => x.def.defName.Contains("BS_NoEquip"));
-                    if (hasGenePreventingEquippingAnything)
-                    {
-                        cantReason = "BS_GenePreventsEquipping".Translate();
-                        return false;
-                    }
-                }
-            }
-
-            
-            if (thing.IsApparel)
-            {
-                bool isGiant = pawn?.story?.traits?.allTraits?.Any(x => x.def.defName.ToLower().Contains("bs_giant")) == true || pawn.BodySize > 1.99;
-                if (thing.apparel.tags.Any(x => x.ToLower() == "giantonly") && !isGiant)
-                {
-                    cantReason = "BS_PawnIsNotAGiant".Translate();
-                    return false;
-                }
-            }
-
-            List<WeaponClassDef> weaponClasses = thing.weaponClasses;
-            if (weaponClasses == null || !weaponClasses.Any(x => x.defName == BSDefs.BS_GiantWeapon.defName))
-            {
-                return __result;
-            }
-            else if (pawn.genes != null)
-            {
-                bool hasValidGene = genes.GenesListForReading.Any(x => x.def.defName.ToLower().Contains("herculean"));
-
-                // Get all traits on pawn
-                bool hasValidTrait = pawn.story.traits.allTraits.Any(x =>
-                    x.def.defName.ToLower().Contains("bs_giant") ||
-                    x.def.defName.ToLower().Contains("warcasket"));
-
-                if (genes != null && hasValidGene || hasValidTrait)
-                {
-                    return true;
-                }
-
-                // Note that this won't help you wield e.g. warcasket weapons since those work based on a tag.
-                if (pawn?.BodySize >= 1.999f)
-                {
-                    return true;
-                }
+                // Handle cases where there is no apparel restriction setting.
                 else
                 {
-                    cantReason = "BS_PawnIsNotAGiant".Translate();
-                    return false;
+                    if (!thing.HasRequiredWeaponClassTags([]))
+                    {
+                        cantReason = "BS_LacksRequiredClassTag".Translate();
+                        return false;
+                    }
+                    if (!thing.HasRequiredWeaponTags([]))
+                    {
+                        cantReason = "BS_LacksRequiredTag".Translate();
+                        return false;
+                    }
+                    if (thing.apparel != null && !thing.apparel.HasRequireApparelTags([]))
+                    {
+                        cantReason = "BS_LacksRequiredTag".Translate();
+                        return false;
+                    }
                 }
             }
-            else
-            {
-                return __result;
-            }
+            
+            return __result;
         }
 
         [HarmonyPatch(typeof(EquipmentUtility), nameof(EquipmentUtility.CanEquip), new Type[]
@@ -139,14 +101,10 @@ namespace BigAndSmall
                 {
                     __result = false;
                 }
-                else
-                {
-                    bool isGiant = pawn.story?.traits?.HasTrait(BSDefs.BS_Giant) == true || pawn.BodySize > 1.99;
-                    if (__instance.tags.Any(x => x.ToLower() == "giantonly") && !isGiant)
-                    {
-                        __result = false;
-                    }
-                }
+            }
+            else if (ItemRestrictionDef.AllRestrictedTags.Any(__instance.tags.Contains))
+            {
+                __result = false;
             }
         }
 

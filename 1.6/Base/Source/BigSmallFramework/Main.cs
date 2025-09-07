@@ -99,7 +99,14 @@ namespace BigAndSmall
 				}
 			}
 
-            RenderNodePatcher.TryPatchPawnRenderNodeDefs();
+            try
+            {
+                RenderNodePatcher.TryPatchPawnRenderNodeDefs();
+            }
+            catch (Exception e)
+            {
+                Log.Error($"[Big and Small] Exception while patching RenderNodeDefs: {e} {e.StackTrace}");
+            }
         }
     }
 

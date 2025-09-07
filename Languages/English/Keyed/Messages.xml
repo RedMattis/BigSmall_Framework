@@ -11,6 +11,8 @@
 
   <BS_GenePreventsEquipping>Race cannot equip weapons</BS_GenePreventsEquipping>
   <BS_CanWieldThings>Can wield tools</BS_CanWieldThings>
+  <BS_LacksRequiredTag>Race cannot equip this</BS_LacksRequiredTag>
+  <BS_LacksRequiredClassTag>Race cannot equip this class of items</BS_LacksRequiredClassTag>
   
   <BS_CannotWearApparel>Race cannot wear apparel</BS_CannotWearApparel>
   <BS_CannotWearClothing>Race cannot wear clothing</BS_CannotWearClothing>

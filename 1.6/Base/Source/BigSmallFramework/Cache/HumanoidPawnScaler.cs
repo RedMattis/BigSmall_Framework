@@ -292,7 +292,16 @@ namespace BigAndSmall
                     newFoodCatDeny = [.. BSDefLibrary.FoodCategoryDefs.Where(x => x.DefaultAcceptPawn(pawn, activeGenedefs, pawnDiet).Fuse(pawnDiet.Select(y => y.AcceptFoodCategory(x))).NotExplicitlyAllowed())];
 
                     ApparelRestrictions appRestrict = new();
+                    bool canWieldGiant = pawn.story.traits.allTraits.Any(x =>
+                           x.def.defName.ToLower().Contains("bs_giant")
+                        || x.def.defName.ToLower().Contains("warcasket"))
+                        || this.totalSize > 1.99f;
+
                     var appRestrictList = allPawnExt.Where(x => x.apparelRestrictions != null).Select(x => x.apparelRestrictions).ToList();
+                    if (canWieldGiant)
+                    {
+                        appRestrictList.Add(new ApparelRestrictions() { tags = new() { acceptlist = ["BS_GiantWeapon"] } });
+                    }
                     if (appRestrictList.Count > 0)
                     {
                         appRestrict = appRestrictList.Aggregate(appRestrict, (acc, x) => acc.MakeFusionWith(x));

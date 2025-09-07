@@ -136,6 +136,7 @@ namespace BigAndSmall
                 }
                 foreach(var flag in flagsAdded.Distinct())
                 {
+                    gene.modExtensions ??= [];
                     gene.modExtensions.Add(new HasCustomizableGraphics() { Flag = flag, colorA=true, colorB=true });
                 }
             }
@@ -186,6 +187,7 @@ namespace BigAndSmall
                     }
                     foreach (var flag in flagsAdded.Distinct())
                     {
+                        hediff.modExtensions ??= [];
                         hediff.modExtensions.Add(new HasCustomizableGraphics() { Flag = flag, colorA = true, colorB = true });
                     }
                 }
