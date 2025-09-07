@@ -6,28 +6,24 @@
     <iconPath>BS_Traits/BS_Mechanical</iconPath>
   </BigAndSmall.RacialFeatureDef>
 
-  <!-- <BigAndSmall.RacialFeatureDef>
-    <defName>BS_CentaurRace</defName>
-    <label>centauroid</label>
-    <description>Individuals with this feature have four legs.</description>
-    <iconPath>BS_Traits/Centaur</iconPath>
-    <hediffDescriptionSource>BS_CentaurRace</hediffDescriptionSource>
+  <BigAndSmall.RacialFeatureDef>
+    <defName>BS_Unliving</defName>
+    <label>unliving</label>
+    <description>Individuals with this feature are not alive in the traditional sense.</description>
+    <iconPath>BS_Traits/Unliving</iconPath>
   </BigAndSmall.RacialFeatureDef>
 
   <BigAndSmall.RacialFeatureDef>
-    <defName>BS_CentaurRace</defName>
-    <label>centauroid</label>
-    <description>Individuals with this feature have four legs.</description>
-    <iconPath>BS_Traits/Centaur</iconPath>
-    <hediffDescriptionSource>BS_CentaurRace</hediffDescriptionSource>
+    <defName>BS_Drone</defName>
+    <label>drone</label>
+    <description>Individuals with this feature lack higher reasoning and true creativity. They might be highly advanced AI capable of feigning sapience, collecting and combine information, all without being a true AGI, Persona, or Archotech.\n\nAlternatively they might be like animals or insectoids of similar characteristics and limitations.\n\nThey will be less upset to see others die, and non-drones will care less about the death of a drone.</description>
+    <iconPath>BS_Traits/Drone</iconPath>
   </BigAndSmall.RacialFeatureDef>
 
   <BigAndSmall.RacialFeatureDef>
-    <defName>BS_UrbMech_Race</defName>
-    <label>centauroid</label>
-    <description>Individuals with this feature have four legs.</description>
-    <iconPath>BS_Traits/Centaur</iconPath>
-    <hediffDescriptionSource>BS_CentaurRace</hediffDescriptionSource>
-  </BigAndSmall.RacialFeatureDef> -->
-
+    <defName>BS_NoFamilyRelations</defName>
+    <label>no family concept</label>
+    <description>Individuals with this feature lack a concept of parents and siblings. They might be robots recognizing only a "creator", or they might be clones, insects or other strange beings.</description>
+    <iconPath>BS_Traits/Parentless</iconPath>
+  </BigAndSmall.RacialFeatureDef>
 </Defs>

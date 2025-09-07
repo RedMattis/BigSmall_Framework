@@ -55,7 +55,7 @@ namespace BigAndSmall
         protected string GetDescriptionFull()
         {
             StringBuilder stringBuilder = new();
-            if (description.NullOrEmpty())
+            if (description.NullOrEmpty() == false)
             {
                 stringBuilder.AppendLine(description);
             }
@@ -67,7 +67,6 @@ namespace BigAndSmall
             {
                 //stringBuilder.AppendLine("No description available.");
             }
-            stringBuilder.AppendLine();
             
             return stringBuilder.ToString();
         }
@@ -82,7 +81,6 @@ namespace BigAndSmall
         public Color? iconColor = Color.white;
         private string cachedDescription;
         private Texture2D cachedIcon;
-
 
         public string Label => label;
         public string DescriptionFull => cachedDescription ??= GetDescriptionFull();

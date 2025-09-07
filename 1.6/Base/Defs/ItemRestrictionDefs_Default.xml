@@ -2,10 +2,6 @@
   <BigAndSmall.ItemRestrictionDef>
     <defName>BS_ItemRestrictionDefaults</defName>
     <restrictedTags>
-      <!-- TESTING -->
-      <li>NeolithicRangedFlame</li>
-      <li>Western</li>
-
       <li>BS_GiantWeapon</li>
     </restrictedTags>
   </BigAndSmall.ItemRestrictionDef>

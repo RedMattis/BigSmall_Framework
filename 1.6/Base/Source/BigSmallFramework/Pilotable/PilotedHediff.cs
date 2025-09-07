@@ -7,6 +7,7 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 using Verse.AI;
+using static UnityEngine.GraphicsBuffer;
 
 namespace BigAndSmall
 {
@@ -22,6 +23,7 @@ namespace BigAndSmall
         private CompProperties_Piloted props = null;
         protected ThingOwner innerContainer = null;
 
+        private int startPilotTime = 0;
         protected Ideo cachedIdeology = null;
         protected Faction cachedFaction = null;
 
@@ -149,6 +151,7 @@ namespace BigAndSmall
                     try { InheritPilotSkills(pilot, pawn); } catch (Exception e) { Log.Warning($"Failed to transfer pilot skills:\n{e.Message}\n{e.StackTrace}"); }
                     try { InheritPilotTraits(pilot); } catch (Exception e) { Log.Warning($"Failed to transfer pilot traits:\n{e.Message}\n{e.StackTrace}"); }
                     try { InheritRelationships(pilot, pawn); } catch (Exception e) { Log.Warning($"Failed to transfer pilot relationships:\n{e.Message}\n{e.StackTrace}"); }
+                    startPilotTime = Find.TickManager.TicksGame;
                 }
             }
             catch (Exception e)
@@ -394,11 +397,13 @@ namespace BigAndSmall
                 break; // Never add skills from more than one pilot, or we might overwrite some other pawn's skills.
             }
 
-
+            
             // Remove everything in innerContainer
             for (int i = content.Count - 1; i >= 0; i--)
             {
                 Thing thing = content[i];
+                TryLearnSkill(thing);
+
                 GenPlace.TryPlaceThing(thing, pawn.Position, pawn.MapHeld, ThingPlaceMode.Near);
             }
 
@@ -421,6 +426,8 @@ namespace BigAndSmall
             pawn.health.Notify_HediffChanged(this);
             forcePilotableUpdate = true;
 
+            
+
             // mayRemoveHediff is false when called from PostRemoved or Pawn.Kill to avoid recursion.
             if (mayRemoveHediff && removeIfNoPilot && pawn?.health?.hediffSet?.HasHediff(def) == true)
             {
@@ -431,7 +438,7 @@ namespace BigAndSmall
                         var mainBodyPart = pawn.RaceProps.body.corePart;
                         if (mainBodyPart != null)
                         {
-                            var damageInfo = new DamageInfo(DamageDefOf.Cut, injuryAmount * pawn.BodySize, 0, -1, null, mainBodyPart);
+                            var damageInfo = new DamageInfo(DamageDefOf.Cut, injuryAmount * pawn.BodySize, 300, -1, null, mainBodyPart);
                             pawn.TakeDamage(damageInfo);
                         }
                     }
@@ -443,6 +450,71 @@ namespace BigAndSmall
                 pawn.health.RemoveHediff(this);
             }
         }
+
+        private void TryLearnSkill(Thing thing)
+        {
+            if (thing is Pawn pilot && Props.pilotLearnSkills is float skillLearnFactor)
+            {
+                if (pilot?.skills?.skills == null || pawn?.skills?.skills == null)
+                {
+                    return;
+                }
+
+                try
+                {
+                    int ticksPiloting = Find.TickManager.TicksGame - startPilotTime;
+                    float daysPiloting = ticksPiloting / 60000f;
+                    float skillGain = daysPiloting * skillLearnFactor / 40;
+                    float totalLearningFactor = pilot.GetStatValue(StatDefOf.GlobalLearningFactor);
+                    foreach (SkillRecord pilotSkill in pilot.skills.skills)
+                    {
+                        foreach (SkillRecord pawnSkill in pawn.skills.skills)
+                        {
+                            if (pawnSkill.def == pilotSkill.def)
+                            {
+                                var xpDifference = pawnSkill.XpTotalEarned - pilotSkill.XpTotalEarned;
+
+                                if (xpDifference > 0)
+                                {
+                                    float totalGain = xpDifference * skillGain;
+                                    if (xpDifference < 4000)
+                                    {
+                                        totalGain *= 0.2f;
+                                    }
+                                    else if (xpDifference < 6000)
+                                    {
+                                        totalGain *= 0.35f;
+                                    }
+                                    else if (xpDifference < 8000)
+                                    {
+                                        totalGain *= 0.5f;
+                                    }
+                                    else if (xpDifference < 12000)
+                                    {
+                                        totalGain *= 0.75f;
+                                    }
+
+                                    totalGain = Mathf.Min(totalGain, xpDifference / totalLearningFactor);
+                                    pilotSkill.Learn(totalGain);
+                                    if (totalGain > 4000)
+                                    {
+                                        Messages.Message("BS_GainedSkillFromPawnAmount".Translate(
+                                            pilot.Name.ToStringShort, $"{totalGain:f0}",
+                                            pawnSkill?.def?.label, pawn.Name?.ToStringShort), pawn, MessageTypeDefOf.PositiveEvent);
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Error($"Failed to transfer learned skills from {pawn.Name} to {pilot.Name} with error:\n{e.Message}\n{e.StackTrace}");
+                }
+            }
+        }
+
         public override void PostRemoved()
         {
             try
@@ -562,7 +634,7 @@ namespace BigAndSmall
                     pawn.health.Notify_HediffChanged(this);
                 }
 
-                if (PilotCount > 0 && pawn.Downed)
+                if (PilotCount > 0 && pawn.Downed && (Props.canAutoEjectIfColonist || !pawn.IsColonist))
                 {
                     if (pilotEjectCountdown == -1)
                     {
@@ -594,6 +666,7 @@ namespace BigAndSmall
             Scribe_Values.Look(ref defaultEnterable, "defaultEnterable", defaultValue: true);
             Scribe_References.Look(ref cachedFaction, "cachedFaction");
             Scribe_References.Look(ref cachedIdeology, "cachedIdeology");
+            Scribe_Values.Look(ref startPilotTime, "timeSpentPiloting", 0);
         }
     }
 

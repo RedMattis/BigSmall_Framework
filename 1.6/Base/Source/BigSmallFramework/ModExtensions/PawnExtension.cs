@@ -63,8 +63,26 @@ namespace BigAndSmall
         public bool renderCacheOff = false;
 
         public List<RacialFeatureDef> racialFeatures = null;
+        private bool checkedRacialFeatures = false;
+        public List<RacialFeatureDef> RacialFeaturesWithAuto
+        {
+            get
+            {
+                if (checkedRacialFeatures) return field;
+                List<RacialFeatureDef> result = [];
+                if (isMechanical) result.Add(BSDefs.BS_Mechanical);
+                if (isDrone) result.Add(DefDatabase<RacialFeatureDef>.GetNamedSilentFail("BS_Drone"));
+                if (isUnliving) result.Add(DefDatabase<RacialFeatureDef>.GetNamedSilentFail("BS_Unliving"));
+                if (noFamilyRelations) result.Add(DefDatabase<RacialFeatureDef>.GetNamedSilentFail("BS_NoFamilyRelations"));
+                if (racialFeatures != null) result.AddRange(racialFeatures);
+                result = [.. result.Where(x => x != null)];
+                if (result.Count == 0) result = null;
+                checkedRacialFeatures = true;
+                return field = result;
+            }
+        }
 
-        public List<TaggedString> RacialFeaturesDescription => racialFeatures?.Select(x => x.LabelCap).ToList();
+        public List<TaggedString> RacialFeaturesDescription => RacialFeaturesWithAuto?.Select(x => x.LabelCap).ToList();
 
         /// <summary>
         /// Used by Genes. When the gene is added/activated it will apply these hediffs to the pawn.

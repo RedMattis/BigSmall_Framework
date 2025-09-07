@@ -387,8 +387,8 @@ namespace BigAndSmall
                 isMechanical = allPawnExt.Any(x => x.isMechanical) || pawn.RaceProps.IsMechanoid;
 
                 racialFeatures = [.. allPawnExt
-                    .Where(x => x.racialFeatures != null)
-                    .SelectMany(x => x.racialFeatures ?? [])];
+                    .Where(x => x.RacialFeaturesWithAuto != null)
+                    .SelectMany(x => x.RacialFeaturesWithAuto ?? [])];
 
                 bool everFertile = activeGenes.Any(x => x.def.defName == "BS_EverFertile");
                 animalFriend = pawn.story?.traits?.allTraits.Any(x => !x.Suppressed && x.def.defName == "BS_AnimalFriend") == true || isMechanical;

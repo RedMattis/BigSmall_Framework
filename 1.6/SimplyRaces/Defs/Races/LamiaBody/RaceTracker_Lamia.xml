@@ -2,7 +2,7 @@
 
   <HediffDef ParentName="BS_DefaultRaceTracker">
     <defName>BS_Naga_Race</defName>
-    <description>Snakelike creature with a humanoid upper body</description>
+    <description>Snake-like creature with a humanoid upper body</description>
     <label>snake-person</label>
 
     <stages Inherit="False">

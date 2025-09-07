@@ -55,6 +55,7 @@
   <BS_ReturningSoul_Success>{0} has returned from the void.</BS_ReturningSoul_Success>
   <BS_ReturningSoulCorpse_Success>{0} has returned from the void by possessing the dead body of {1}</BS_ReturningSoulCorpse_Success>
   <BS_CannotUseOnSoulless>Cannot use on pawn without soul.</BS_CannotUseOnSoulless>
+  <BS_GainedSkillFromPawnAmount>{0}'s ability gained {1} xp in {2} from {3}</BS_GainedSkillFromPawnAmount>
   <BS_StoleSkillAmount>{0}'s ability stole {1} xp in {2} from {3}</BS_StoleSkillAmount>
   <BS_StoleSkillAmount_Attack>{0}'s attack stole {1} xp in {2} from {3}</BS_StoleSkillAmount_Attack>
 

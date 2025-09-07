@@ -27,6 +27,10 @@ namespace BigAndSmall
         public bool temporarilySwapIdeology = false;
         public bool temporarilySwapFaction = false;
         public int? injuryOnRemoval = null;
+        public bool canAutoEjectIfColonist = true;
+
+        // Only works for a single pilot.
+        public float? pilotLearnSkills = null;
 
         public CompProperties_Piloted()
         {

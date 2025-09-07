@@ -18,6 +18,25 @@ namespace BigAndSmall
             if (sizeCache == null)
                 return;
 
+            if (dinfo.Instigator is Pawn attacker && attacker.IsShambler)
+            {
+                if (__instance is Pawn victim && victim.GetCachePrepatched() is BSCache cache && cache.deathlike)
+                {
+                    if (Rand.Chance(0.3f) && victim.Faction != null)
+                    {
+                        attacker.SetFaction(victim.Faction);
+                    }
+                    if (Rand.Chance(0.25f))
+                    {
+                        dinfo.SetAmount(dinfo.Amount * 0.05f);
+                    }
+                    else if (Rand.Chance(0.80f))
+                    {
+                        dinfo.SetAmount(dinfo.Amount * 0.5f);
+                    }
+                }
+            }
+
             // Get damagedef by name
             var bombSuper = DefDatabase<DamageDef>.GetNamedSilentFail("BombSuper");
 

@@ -9,5 +9,8 @@
       <body>BS_FourArmedHuman</body>
       <useMeatFrom>Human</useMeatFrom>
     </race>
+    <modExtensions>
+      <li Class="BigAndSmall.RaceExtension"> <raceHediff>BS_HumanoidWithFourArms_Race</raceHediff> </li>
+    </modExtensions>
   </ThingDef>
 </Defs>

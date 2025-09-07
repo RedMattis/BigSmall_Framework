@@ -1,0 +1,17 @@
+<Defs>
+  <HediffDef ParentName="BS_DefaultRaceTracker">
+    <defName>BS_HumanoidWithFourArms_Race</defName>
+    <description>A humanlike being with a great forearms, no, wait FOUR great arms.</description>
+    <label>four-armed humanoid</label>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <traitIcon>BS_Traits/FourArms</traitIcon>
+      </li>
+    </modExtensions>
+    <comps>
+      <li Class="BigAndSmall.CompProperties_Race">
+        <canSwapAwayFrom>true</canSwapAwayFrom>
+      </li>
+    </comps>
+  </HediffDef>
+</Defs>

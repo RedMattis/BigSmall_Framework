@@ -103,9 +103,9 @@ namespace BigAndSmall
             }
 
             content = RemoveDuplicateLines(sb).ToString();
+            content = content.TrimEnd();
 
             bool hasContent = !string.IsNullOrWhiteSpace(content);
-            // Remove duplicate lines and return the final description
             return hasContent;
 
             // --- Helper Methods ---

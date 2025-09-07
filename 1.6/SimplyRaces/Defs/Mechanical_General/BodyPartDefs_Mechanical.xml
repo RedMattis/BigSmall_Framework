@@ -403,7 +403,7 @@
 
   <BodyPartDef>
     <defName>BS_MechanicalRibs</defName>
-    <label>proctective casing</label>
+    <label>protective casing</label>
     <hitPoints>40</hitPoints>
     <permanentInjuryChanceFactor>0</permanentInjuryChanceFactor>
     <skinCovered>false</skinCovered>

@@ -153,7 +153,7 @@ namespace BigAndSmall
         private static void RecacheEntries(Thing target, GeneSet genesOverride)
         {
             racialFeatures.Clear();
-            HashSet<string> featureKeysAdded = [];
+            //HashSet<string> featureKeysAdded = [];
             geneDefs.Clear();
             xenogenes.Clear();
             endogenes.Clear();
@@ -161,75 +161,85 @@ namespace BigAndSmall
             met = 0;
             arc = 0;
 
-            if (target is Pawn p && HumanoidPawnScaler.GetCache(p) is BSCache cache)
+            if (target is Pawn pawn && HumanoidPawnScaler.GetCache(pawn) is BSCache cache)
             {
-                if (cache.isMechanical)
-                {
-                    racialFeatures.AddDistinct(BSDefs.BS_Mechanical);
-                }
+                //if (cache.isMechanical)
+                //{
+                //    racialFeatures.AddDistinct(BSDefs.BS_Mechanical);
+                //}
                 racialFeatures.AddDistinctRange(cache.racialFeatures);
-            }
 
-            GeneSet geneSet = (target as GeneSetHolderBase)?.GeneSet ?? genesOverride;
-            if (target is Pawn pawn && pawn.genes != null)
-            {
-                foreach(var hediff in pawn.health.hediffSet.hediffs)
+                foreach (var hediff in pawn.health.hediffSet.hediffs)
                 {
-                    foreach(var feature in hediff.def.GetAllPawnExtensionsOnHediff().Where(x=>x.traitIcon != null))
+                    var pawnExtensionsOnHediff = hediff.def.GetAllPawnExtensionsOnHediff();
+                    var pawnExtensionsWithIcon = pawnExtensionsOnHediff.Where(x => x.traitIcon != null);
+                    if (!pawnExtensionsWithIcon.Any())
                     {
-                        if (!featureKeysAdded.Add(hediff.def + hediff.Description + feature.traitIcon))
+                        continue;
+                    }
+                    var featureDef = new RacialFeatureDef
+                    {
+                        label = hediff.Label.CapitalizeFirst(),
+                        description = hediff.Description,
+                        iconPath = pawnExtensionsWithIcon.First().traitIcon,
+                        hediffDescriptionSource = hediff.def,
+                    };
+
+                    try
+                    {
+                        pawnExtensionsOnHediff.TryGetDescription(out string extDescription);
+                        if (!string.IsNullOrEmpty(extDescription))
                         {
-                            // Already added an identical entry.
-                            continue;
+                            featureDef.description += "\n\n" + extDescription;
                         }
-                        var featureDef = new RacialFeatureDef
-                        {
-                            label = hediff.Label.CapitalizeFirst(),
-                            description = hediff.Description,
-                            iconPath = feature.traitIcon,
-                            hediffDescriptionSource = hediff.def,
-                        };
-
-                        racialFeatures.AddDistinct(featureDef);
+                        racialFeatures.Add(featureDef);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.ErrorOnce($"Failed to get PawnExt description{hediff.def.defName}: {ex} {ex.StackTrace}", 149782384);
                     }
                 }
 
-                foreach (Gene xenogene in pawn.genes.Xenogenes)
+                GeneSet geneSet = (target as GeneSetHolderBase)?.GeneSet ?? genesOverride;
+                if (pawn.genes != null)
                 {
-                    if (!xenogene.Overridden)
+                    foreach (Gene xenogene in pawn.genes.Xenogenes)
                     {
-                        AddBiostats(xenogene.def);
-                    }
-                    xenogenes.Add(xenogene);
-                }
-                foreach (Gene endogene in pawn.genes.Endogenes)
-                {
-                    if (endogene.def.endogeneCategory != EndogeneCategory.Melanin || !pawn.genes.Endogenes.Any((Gene x) => x.def.skinColorOverride.HasValue))
-                    {
-                        if (!endogene.Overridden)
+                        if (!xenogene.Overridden)
                         {
-                            AddBiostats(endogene.def);
+                            AddBiostats(xenogene.def);
                         }
-                        endogenes.Add(endogene);
+                        xenogenes.Add(xenogene);
                     }
+                    foreach (Gene endogene in pawn.genes.Endogenes)
+                    {
+                        if (endogene.def.endogeneCategory != EndogeneCategory.Melanin || !pawn.genes.Endogenes.Any((Gene x) => x.def.skinColorOverride.HasValue))
+                        {
+                            if (!endogene.Overridden)
+                            {
+                                AddBiostats(endogene.def);
+                            }
+                            endogenes.Add(endogene);
+                        }
+                    }
+                    xenogenes.SortGenes();
+                    endogenes.SortGenes();
                 }
-                xenogenes.SortGenes();
-                endogenes.SortGenes();
-            }
-            else
-            {
-                if (geneSet == null)
+                else
                 {
-                    return;
+                    if (geneSet == null)
+                    {
+                        return;
+                    }
+                    foreach (GeneDef item in geneSet.GenesListForReading)
+                    {
+                        geneDefs.Add(item);
+                    }
+                    gcx = geneSet.ComplexityTotal;
+                    met = geneSet.MetabolismTotal;
+                    arc = geneSet.ArchitesTotal;
+                    geneDefs.SortGeneDefs();
                 }
-                foreach (GeneDef item in geneSet.GenesListForReading)
-                {
-                    geneDefs.Add(item);
-                }
-                gcx = geneSet.ComplexityTotal;
-                met = geneSet.MetabolismTotal;
-                arc = geneSet.ArchitesTotal;
-                geneDefs.SortGeneDefs();
             }
             static void AddBiostats(GeneDef gene)
             {
@@ -303,14 +313,14 @@ namespace BigAndSmall
         /// <summary>
         /// Draw Race Feature
         /// </summary>
-        public static void DrawFeature(IRacialFeature iRF, BSCache cache, Rect geneRect, bool doBackground = true, bool clickable = true)
+        public static void DrawFeature(IRacialFeature iRF, BSCache cache, Rect featureRect, bool doBackground = true, bool clickable = true)
         {
-            DrawFeatureBasics(iRF, cache, geneRect, doBackground, clickable, false);
-            if (Mouse.IsOver(geneRect))
+            DrawFeatureBasics(iRF, cache, featureRect, doBackground, clickable, false);
+            if (Mouse.IsOver(featureRect))
             {
                 string text = iRF.Label.CapitalizeFirst().Colorize(ColoredText.TipSectionTitleColor) + "\n\n" + iRF.DescriptionFull;
-                text = text + "\n\n" + "ClickForMoreInfo".Translate().ToString().Colorize(ColoredText.SubtleGrayColor);
-                TooltipHandler.TipRegion(geneRect, text);
+                text = text + "\n" + "ClickForMoreInfo".Translate().ToString().Colorize(ColoredText.SubtleGrayColor);
+                TooltipHandler.TipRegion(featureRect, text);
             }
         }
 
@@ -320,10 +330,10 @@ namespace BigAndSmall
             Widgets.DrawTextureFitted(rect, iRF.Icon, scale, material);
             GUI.color = Color.white;
         }
-        private static void DrawFeatureBasics(IRacialFeature iRF, BSCache cache, Rect geneRect, bool doBackground, bool clickable, bool overridden)
+        private static void DrawFeatureBasics(IRacialFeature iRF, BSCache cache, Rect featureRect, bool doBackground, bool clickable, bool overridden)
         {
-            GUI.BeginGroup(geneRect);
-            Rect rect = geneRect.AtZero();
+            GUI.BeginGroup(featureRect);
+            Rect rect = featureRect.AtZero();
             if (doBackground)
             {
                 Widgets.DrawHighlight(rect);
@@ -332,7 +342,7 @@ namespace BigAndSmall
                 GUI.color = Color.white;
             }
             float num = rect.width - Text.LineHeight;
-            Rect rect2 = new(geneRect.width / 2f - num / 2f, 0f, num, num);
+            Rect rect2 = new(featureRect.width / 2f - num / 2f, 0f, num, num);
             Color iconColor = iRF.IconColor;
             if (overridden)
             {

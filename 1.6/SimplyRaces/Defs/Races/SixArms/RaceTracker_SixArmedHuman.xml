@@ -1,0 +1,17 @@
+<Defs>
+  <HediffDef ParentName="BS_DefaultRaceTracker">
+    <defName>BS_HumanoidWithSixArms_Race</defName>
+    <description>A humanoid with six arms.</description>
+    <label>six-armed humanoid</label>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <traitIcon>BS_Traits/SixArms</traitIcon>
+      </li>
+    </modExtensions>
+    <comps>
+      <li Class="BigAndSmall.CompProperties_Race">
+        <canSwapAwayFrom>true</canSwapAwayFrom>
+      </li>
+    </comps>
+  </HediffDef>
+</Defs>
