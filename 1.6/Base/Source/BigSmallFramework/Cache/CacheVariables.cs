@@ -161,6 +161,7 @@ namespace BigAndSmall
 
         public bool isDrone = false;
         public bool noFamilyRelations = false;
+        public bool isAmorphous = false;
         public List<Aptitude> aptitudes = [];
 
         public List<GeneDef> endogenesRemovedByRace = [];

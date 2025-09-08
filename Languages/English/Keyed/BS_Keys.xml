@@ -95,6 +95,7 @@
   <BS_DeathlikeDesc>death-affinity</BS_DeathlikeDesc>
   <BS_MechanicalDesc>considered mechanical</BS_MechanicalDesc>
   <BS_BloodfeederDesc>considered bloodfeeder</BS_BloodfeederDesc>
+  <BS_AmorphousDesc>considered amorphous</BS_AmorphousDesc>
   <BS_HasApparelRestrictions>alters apparel options</BS_HasApparelRestrictions>
   <BS_HasNullThoughts>disables thoughts</BS_HasNullThoughts>
   <BS_HasNullThoughtsCount>thoughts disabled: {0}</BS_HasNullThoughtsCount>

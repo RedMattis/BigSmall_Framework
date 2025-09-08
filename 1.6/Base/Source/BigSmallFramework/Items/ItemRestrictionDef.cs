@@ -34,7 +34,7 @@ namespace BigAndSmall
     {
         public static bool HasAllRequiredTags(List<string> requiredTags, List<string> pawnTags)
         {
-            if (requiredTags.NullOrEmpty()) return true;
+            if (requiredTags == null || requiredTags.Count == 0) return true;
             if (pawnTags.NullOrEmpty()) return false;
             return requiredTags.All(pawnTags.Contains);
         }

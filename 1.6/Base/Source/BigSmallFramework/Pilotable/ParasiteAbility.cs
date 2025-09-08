@@ -71,11 +71,18 @@ namespace BigAndSmall
             if (pawn == null) return false;
             if (pawn.BodySize * 0.8 < parent.pawn.BodySize)
             {
-                if (throwMessages)
+                if (pawn.GetCachePrepatched() is BSCache cache && cache.isAmorphous && pawn.BodySize * 0.99 < parent.pawn.BodySize)
                 {
-                    Messages.Message("BS_ParasiteTargetTooSmall".Translate(pawn.Label, parent.pawn.Label), pawn, MessageTypeDefOf.RejectInput, historical: false);
+
                 }
-                return false;
+                else
+                {
+                    if (throwMessages)
+                    {
+                        Messages.Message("BS_ParasiteTargetTooSmall".Translate(pawn.Label, parent.pawn.Label), pawn, MessageTypeDefOf.RejectInput, historical: false);
+                    }
+                    return false;
+                }
             }
             if (pawn.RaceProps.Humanlike == false || pawn.IsMutant)
             {

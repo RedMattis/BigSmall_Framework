@@ -26,4 +26,11 @@
     <description>Individuals with this feature lack a concept of parents and siblings. They might be robots recognizing only a "creator", or they might be clones, insects or other strange beings.</description>
     <iconPath>BS_Traits/Parentless</iconPath>
   </BigAndSmall.RacialFeatureDef>
+
+  <BigAndSmall.RacialFeatureDef>
+    <defName>BS_Amorphous</defName>
+    <label>amorphous</label>
+    <description>Individuals with this feature has a somewhat amorphous shape or form.\n\nParticularly affects abilities restricted by size requirements.</description>
+    <iconPath>BS_Traits/slime</iconPath>
+  </BigAndSmall.RacialFeatureDef>
 </Defs>

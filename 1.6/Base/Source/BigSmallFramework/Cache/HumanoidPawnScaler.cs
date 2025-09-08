@@ -425,6 +425,7 @@ namespace BigAndSmall
 
                 isDrone = allPawnExt.Any(x => x.isDrone);
                 noFamilyRelations = allPawnExt.Any(x => x.noFamilyRelations);
+                isAmorphous = allPawnExt.Any(x => x.isAmorphous);
 
                 this.disableLookChangeDesired = allPawnExt.Any(x => x.disableLookChangeDesired);
 

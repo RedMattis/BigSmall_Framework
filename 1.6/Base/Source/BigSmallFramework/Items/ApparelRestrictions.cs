@@ -40,6 +40,8 @@ namespace BigAndSmall
         {
             result = FilterResult.Neutral;
             string err = "";
+            if (apparel == null) return null;
+
             if (apparelLayers != null)
             {
                 result = apparelLayers.GetFilterResultFromItemList(apparel.layers).Fuse(result);
@@ -55,7 +57,7 @@ namespace BigAndSmall
 
             if (apparel.tags is List<string> apparelTags)
             {
-                if (!apparel.HasRequireApparelTags(tags.ExplicitlyAcceptedItems))
+                if (!apparel.HasRequireApparelTags(tags?.ExplicitlyAcceptedItems))
                 {
                     err = "BS_CannotWearTag".Translate();
                     return err;
@@ -100,14 +102,15 @@ namespace BigAndSmall
         /// </summary>
         public string CanWear(ThingDef thingDef)
         {
-            
+            if (thingDef == null) return null;
+
             FilterResult result = FilterResult.Neutral;
 
-            if (!thingDef.HasRequiredWeaponClassTags(tags.ExplicitlyAcceptedItems))
+            if (thingDef.HasRequiredWeaponClassTags(tags?.ExplicitlyAcceptedItems))
             {
                 return "BS_LacksRequiredClassTag".Translate();
             }
-            if (!thingDef.HasRequiredWeaponTags(tags.ExplicitlyAcceptedItems))
+            if (!thingDef.HasRequiredWeaponTags(tags?.ExplicitlyAcceptedItems))
             {
                 return "BS_LacksRequiredTag".Translate();
             }

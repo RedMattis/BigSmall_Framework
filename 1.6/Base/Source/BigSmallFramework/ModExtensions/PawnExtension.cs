@@ -74,6 +74,7 @@ namespace BigAndSmall
                 if (isDrone) result.Add(DefDatabase<RacialFeatureDef>.GetNamedSilentFail("BS_Drone"));
                 if (isUnliving) result.Add(DefDatabase<RacialFeatureDef>.GetNamedSilentFail("BS_Unliving"));
                 if (noFamilyRelations) result.Add(DefDatabase<RacialFeatureDef>.GetNamedSilentFail("BS_NoFamilyRelations"));
+                if (isAmorphous) result.Add(DefDatabase<RacialFeatureDef>.GetNamedSilentFail("BS_Amorphous"));
                 if (racialFeatures != null) result.AddRange(racialFeatures);
                 result = [.. result.Where(x => x != null)];
                 if (result.Count == 0) result = null;
@@ -246,6 +247,7 @@ namespace BigAndSmall
         public bool isDeathlike = false;
         public bool isMechanical = false;
         public bool isBloodfeeder = false;
+        public bool isAmorphous = false;
         /// <summary>
         /// Makes colonists care less about the pawn's death, and the pawn care less about death in general.
         /// </summary>
@@ -467,7 +469,8 @@ namespace BigAndSmall
         private string DeathlikeDescription => isDeathlike ? "BS_DeathlikeDesc".Translate() : null;
         private string MechanicalDescription => isMechanical ? "BS_MechanicalDesc".Translate() : null;
         private string BloodfeederDescription => isBloodfeeder ? "BS_BloodfeederDesc".Translate() : null;
-        public List<string> TagDescriptions => new List<string> { UnlivingDescription, DeathlikeDescription, MechanicalDescription, BloodfeederDescription, DroneDescription }
+        private string AmorphousDescription => isAmorphous ? "BS_AmorphousDesc".Translate() : null;
+        public List<string> TagDescriptions => new List<string> { UnlivingDescription, DeathlikeDescription, MechanicalDescription, BloodfeederDescription, AmorphousDescription, DroneDescription }
                 .Where(x => x != null).ToList();
         public bool FrequentUpdate => frequentUpdate
             || MorphFrequent 
