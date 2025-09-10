@@ -39,7 +39,7 @@ namespace BigAndSmall
             return requiredTags.All(pawnTags.Contains);
         }
 
-        public static bool HasRequireApparelTags(this ApparelProperties apparel, List<string> pawnTags)
+        public static bool HasRequiredApparelTags(this ApparelProperties apparel, List<string> pawnTags)
         {
             if (apparel.tags is List<string> apparelTags
                 && ItemRestrictionDef.RestrictedTags(apparelTags) is List<string> restrictedTags

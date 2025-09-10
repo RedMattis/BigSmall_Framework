@@ -55,14 +55,13 @@ namespace BigAndSmall
 
             if (exceptNudistFriendly && apparel.countsAsClothingForNudity == false) { result = FilterResult.ForceAllow; return null; }
 
-            if (apparel.tags is List<string> apparelTags)
+            if (apparel?.tags is List<string> apparelTags)
             {
-                if (!apparel.HasRequireApparelTags(tags?.ExplicitlyAcceptedItems))
+                if (apparel.HasRequiredApparelTags(tags?.ExplicitlyAcceptedItems) == false)
                 {
                     err = "BS_CannotWearTag".Translate();
                     return err;
                 }
-                var subResult = tags.GetFilterResultFromItemList(apparelTags);
                 if (tags != null)
                 {
                     result = tags.GetFilterResultFromItemList(apparelTags).Fuse(result);
@@ -106,11 +105,11 @@ namespace BigAndSmall
 
             FilterResult result = FilterResult.Neutral;
 
-            if (thingDef.HasRequiredWeaponClassTags(tags?.ExplicitlyAcceptedItems))
+            if (thingDef.HasRequiredWeaponClassTags(tags?.ExplicitlyAcceptedItems) == false)
             {
                 return "BS_LacksRequiredClassTag".Translate();
             }
-            if (!thingDef.HasRequiredWeaponTags(tags?.ExplicitlyAcceptedItems))
+            if (thingDef.HasRequiredWeaponTags(tags?.ExplicitlyAcceptedItems) == false)
             {
                 return "BS_LacksRequiredTag".Translate();
             }

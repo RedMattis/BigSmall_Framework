@@ -52,6 +52,8 @@
   <BS_InflitratorChance>Chance of infiltrators</BS_InflitratorChance>
   <BS_InflitratorRaidChance>Chance of infiltrator raid</BS_InflitratorRaidChance>
   <BS_ImmortalReturnFactor>Immortal return time factor (less means faster)</BS_ImmortalReturnFactor>
+  <BS_SoulPowerFalloffOffset>Soul power falloff offset</BS_SoulPowerFalloffOffset>
+  <BS_SoulPowerGainMultiplier>Soul power gain multiplier</BS_SoulPowerGainMultiplier>
 
   <!-- Extras -->
   <BS_ExtraUIForceDisabledWarning>Warning: extra UI elements are disabled. If relied on by mods this may cause issues.</BS_ExtraUIForceDisabledWarning>

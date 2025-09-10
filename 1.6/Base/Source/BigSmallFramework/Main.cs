@@ -23,7 +23,14 @@ namespace BigAndSmall
 		{
 			DebugLog.Message("Harmony patching.");
 
-			patchType = typeof(BSCore);
+            Type trainableType = Type.GetType("RimWorld.CompAbilityEffect_RequiresTrainable");
+            if (trainableType != null)
+            {
+                Log.Error("Did not find the Ludeon comp CompAbilityEffect_RequiresTrainable. " +
+                    "This likely means your rimworld version is outdated and will crash in a moment.");
+            }
+
+            patchType = typeof(BSCore);
 			harmony.PatchAll();
 
 			PregnancyPatches.ApplyPatches();

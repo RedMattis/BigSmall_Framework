@@ -108,6 +108,9 @@ namespace BigAndSmall
             CreateSettingsSlider(listStd, "BS_InflitratorRaidChance".Translate(), ref settings.inflitratorRaidChance, 0f, 1f, (f) => $"{f * 100:F1}%");
             listStd.GapLine();
             CreateSettingsSlider(listStd, "BS_ImmortalReturnFactor".Translate(), ref settings.immortalReturnTimeFactor, 0.01f, 5f, (f) => $"{f * 100:F1}%");
+            listStd.GapLine();
+            CreateSettingsSlider(listStd, "BS_SoulPowerFalloffOffset".Translate(), ref settings.soulPowerFalloffOffset, 0, 20f, (f) => $"{f:F1}");
+            CreateSettingsSlider(listStd, "BS_SoulPowerGainMultiplier".Translate(), ref settings.soulPowerGainMultiplier, 0.5f, 5f, (f) => $"{f * 100:F1}%");
 
             listStd.End();
             EndScrollArea();
@@ -391,6 +394,12 @@ namespace BigAndSmall
         public static readonly float immortalReturnTimeFactorDefault = 1f;
         public float immortalReturnTimeFactor = immortalReturnTimeFactorDefault;
 
+        public static readonly float soulPowerFalloffOffsetDefault = 0f;
+        public float soulPowerFalloffOffset = soulPowerFalloffOffsetDefault;
+
+        public static readonly float soulPowerGainMultiplierDefault = 1f;
+        public float soulPowerGainMultiplier = soulPowerGainMultiplierDefault;
+
         private static readonly bool defaultAllAnimalsHaveHands = false;
         public bool allAnimalsHaveHands = defaultAllAnimalsHaveHands;
 
@@ -462,6 +471,10 @@ namespace BigAndSmall
             Scribe_Values.Look(ref inflitratorChance, "inflitratorChance", inflitratorChanceDefault);
             Scribe_Values.Look(ref inflitratorRaidChance, "inflitratorRaidChance", inflitratorRaidChanceDefault);
             Scribe_Values.Look(ref immortalReturnTimeFactor, "immortalReturnTimeFactor", immortalReturnTimeFactorDefault);
+            Scribe_Values.Look(ref soulPowerFalloffOffset, "soulPowerFalloffOffset", soulPowerFalloffOffsetDefault);
+            Scribe_Values.Look(ref soulPowerGainMultiplier, "soulPowerGainMultiplier", soulPowerGainMultiplierDefault);
+
+
             Scribe_Values.Look(ref allAnimalsHaveHands, "allAnimalsHaveHands", defaultAllAnimalsHaveHands);
             Scribe_Values.Look(ref animalOnAnimal, "sapientAnimalsCanRomanceAnySapientAnimals", defaultAnimalOnAnimal);
             Scribe_Values.Look(ref animalsLowSkillPenalty, "animalsNoSkillPenalty", defaultAnimalsLowSkillPenalty);

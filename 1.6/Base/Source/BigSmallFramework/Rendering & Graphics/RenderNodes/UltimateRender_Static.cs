@@ -81,13 +81,20 @@ namespace BigAndSmall
                 }
                 else
                 {
-                    shader = props.shader?.Shader ?? BSDefs.BS_CutoutThreeColor.Shader;
-                    if (UProps.useSkinShader)
+                    shader = props.shader?.Shader;
+                    if (shader == null)
                     {
-                        Shader skinShader = ShaderUtility.GetSkinShader(pawn);
-                        if (skinShader != null)
+                        if (UProps.useSkinShader)
                         {
-                            shader = skinShader;
+                            Shader skinShader = ShaderUtility.GetSkinShader(pawn);
+                            if (skinShader != null)
+                            {
+                                shader = skinShader;
+                            }
+                        }
+                        else
+                        {
+                            shader ??= BSDefs.BS_CutoutThreeColor.Shader;
                         }
                     }
                 }

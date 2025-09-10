@@ -75,35 +75,6 @@ namespace BigAndSmall
 		{
 			BSCore.RunAfterGenerateImpliedDefs(hotReload: hotReload);
 		}
-		//[HarmonyPostfix]
-		//[HarmonyPatch(typeof(DefGenerator), nameof(DefGenerator.GenerateImpliedDefs_PreResolve))]
-		//public static void LoadAllActiveModsPostfix(bool hotReload)
-		//{
-		//    BSCore.RunDefPatchesWithHotReload(hotReload: hotReload);
-
-		//}
-
-		//[HarmonyPrefix]
-		//[HarmonyPatch(typeof(DefGenerator), nameof(DefGenerator.GenerateImpliedDefs_PreResolve))]
-		//public static void LoadAllActiveModsPrefix(bool hotReload)
-		//{
-		//    if (hotReload)
-		//    {
-		//        RaceFuser.PreHotreload();
-		//    }
-		//}
 	}
-
-
-    //[HarmonyPatch]
-    //public static class LoadReloadPatches
-    //{
-    //    [HarmonyPatch(typeof(DefGenerator), nameof(DefGenerator.GenerateImpliedDefs_PreResolve))]
-    //    [HarmonyPrefix]
-    //    public static void GenerateImpliedDefs_PreResolve(bool hotReload)
-    //    {
-    //        BSCore.RunDefPatchesWithHotReload(hotReload: hotReload);
-    //    }
-    //}
 
 }

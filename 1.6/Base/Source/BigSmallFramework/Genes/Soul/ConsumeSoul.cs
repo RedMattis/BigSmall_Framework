@@ -221,6 +221,7 @@ namespace BigAndSmall
             const int itrrCount = 10;
             float softCapMod = pawn.GetStatValue(BSDefs.BS_SoulPower) - Severity; // Soul power 
             softCapMod += pawn.GetAllPawnExtensions().Sum(x => x.soulFalloffStart);
+            softCapMod += BigSmallMod.settings.soulPowerFalloffOffset;
             float adjustedV = Severity - softCapMod;
             // This is really just and ugly-looking way to make sure the falloff gets applied reasonably if adding a huge amount at the same time.
             for (int i = 0; i < itrrCount; i++)
@@ -229,7 +230,7 @@ namespace BigAndSmall
                 if (adjustedV > 1) { itrrGain /= (Mathf.Pow(adjustedV + actualGain, exponentialFalloff)); }
                 actualGain += itrrGain;
             }
-            Severity += actualGain;
+            Severity += actualGain * BigSmallMod.settings.soulPowerGainMultiplier;
 
             
 

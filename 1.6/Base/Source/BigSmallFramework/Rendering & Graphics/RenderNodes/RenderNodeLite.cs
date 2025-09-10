@@ -199,8 +199,7 @@ namespace BigAndSmall
     {
         PawnRenderingProps_Lite LProps => (PawnRenderingProps_Lite)props;
         public override bool AllowTexPathFor => true;
-        public RenderNodeLite(Pawn pawn, PawnRenderingProps_Lite props, PawnRenderTree tree)
-           : base(pawn, props, tree)
+        public RenderNodeLite(Pawn pawn, PawnRenderingProps_Lite props, PawnRenderTree tree) : base(pawn, props, tree)
         {
             LProps.TrySetup();
         }

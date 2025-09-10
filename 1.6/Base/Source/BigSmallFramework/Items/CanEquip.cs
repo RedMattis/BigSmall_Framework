@@ -52,7 +52,7 @@ namespace BigAndSmall
                         cantReason = "BS_LacksRequiredTag".Translate();
                         return false;
                     }
-                    if (thing.apparel != null && !thing.apparel.HasRequireApparelTags([]))
+                    if (thing.apparel != null && !thing.apparel.HasRequiredApparelTags([]))
                     {
                         cantReason = "BS_LacksRequiredTag".Translate();
                         return false;

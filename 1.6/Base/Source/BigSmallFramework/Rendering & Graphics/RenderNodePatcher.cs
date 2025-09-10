@@ -245,15 +245,11 @@ namespace BigAndSmall
             {
                 newProps.shader = ShaderTypeDefOf.Cutout;
             }
-            //else if (original.shaderTypeDef == ShaderTypeDefOf.CutoutComplex)
-            //{
-            //    newProps.shader = BSDefs.BS_CutoutThreeColor;
-            //}
             else
             {
                 newProps.shader = original.shaderTypeDef;
             }
-             return newProps;
+            return newProps;
         }
     }
 }
