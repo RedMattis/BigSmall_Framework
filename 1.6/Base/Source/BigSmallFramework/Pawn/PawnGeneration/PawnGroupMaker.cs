@@ -23,6 +23,15 @@ namespace BigAndSmall
             ModifyGeneratedPawn(false, ref __result, singlePawn:true);
         }
 
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(PawnGenerator), nameof(PawnGenerator.GeneratePawn), [typeof(PawnGenerationRequest)])]
+        public static void GeneratePawnPostfix(ref Pawn __result, PawnGenerationRequest request)
+        {
+            if (__result == null || lastTouchedPawn == __result) return;
+            lastTouchedPawn = __result;
+            ModifyGeneratedPawn(false, ref __result, singlePawn: true);
+        }
+
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(PawnGroupMakerUtility), nameof(PawnGroupMakerUtility.GeneratePawns))]

@@ -65,10 +65,9 @@ namespace BigAndSmall
         public CompProperties_Race Props => (CompProperties_Race)props;
         public override void CompPostMake()
         {
-            //Props.ValidateLists(parent.pawn);
+            base.CompPostMake();
             HumanoidPawnScaler.GetCache(parent.pawn, forceRefresh: true);
             GenderMethods.UpdateBodyHeadAndBeardPostGenderChange(Pawn, banNarrow: true, force:true);
-            base.CompPostMake();
         }
     }
 

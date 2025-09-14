@@ -163,7 +163,11 @@ namespace BigAndSmall
         public bool noFamilyRelations = false;
         public bool isAmorphous = false;
         public List<Aptitude> aptitudes = [];
+        public List<WorkTypeDef> disabledWorkTypes = [];
+        //public List<SkillDef> disabledSkills = [];
 
+        //public WorkTags workTagsDisabledByMod = WorkTags.None;
+        public List<SkillDef> skillsDisabledByAptitudes = [];
         public List<GeneDef> endogenesRemovedByRace = [];
         public List<GeneDef> xenoenesRemovedByRace = [];
 
@@ -232,6 +236,7 @@ namespace BigAndSmall
             Scribe_Values.Look(ref savedFurSkin, "BS_SavedFurskinName");
             Scribe_Values.Look(ref savedBodyDef, "BS_SavedBodyDefName");
             Scribe_Values.Look(ref savedHeadDef, "BS_SavedHeadDefName");
+            //Scribe_Values.Look(ref workTagsDisabledByMod, "BS_WorkTagsDisabledByMod", WorkTags.None);
             Scribe_Collections.Look(ref endogenesRemovedByRace, "BS_EndogenesRemovedByRace", LookMode.Def);
             Scribe_Collections.Look(ref xenoenesRemovedByRace, "BS_XenoenesRemovedByRace", LookMode.Def);
 

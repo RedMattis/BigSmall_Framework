@@ -163,7 +163,11 @@ namespace BigAndSmall
                 Log.Warning($"Tried to update body, head and beard for {pawn} but pawn?.story?.headType?.gender was null.\n" +
                     $"{pawn},{pawn?.story},{pawn?.story?.headType}, {pawn?.story?.headType?.gender}\n" +
                     $"Traceback {Environment.StackTrace}");
-                return;
+                if (pawn?.story == null)
+                {
+                    Log.Warning($"Also pawn?.story was null. This may mean it is broken. Aborting attempts to fix.");
+                    return;
+                }
             }
             if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache)
             {

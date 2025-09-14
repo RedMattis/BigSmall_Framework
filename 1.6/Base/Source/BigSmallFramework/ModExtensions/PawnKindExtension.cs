@@ -11,6 +11,11 @@ namespace BigAndSmall
 {
     public class PawnKindExtension : DefModExtension
     {
+        public class SkillPassion
+        {
+            public SkillDef skill = null;
+            public Passion passion = Passion.None;
+        }
         public class ApparelAndEquipmentGraphics
         {
             public CustomizableGraphic graphic = null;
@@ -30,7 +35,14 @@ namespace BigAndSmall
         }
 
         public SimpleCurve ageCurve = null;
+        public SimpleCurve ageCurveChronological = null;
         public SimpleCurve psylinkLevels = null;
+
+        public List<SkillRange> clampedSkills = null;
+        public List<SkillRange> skillRange = null;
+        public bool skillRangeApplyToBabies = false;
+        public bool canHavePassions = true;
+        public List<SkillPassion> forcedPassions = null;
 
         public List<GeneDef> appendGenes = [];
         public bool appendAsXenogenes = false;
@@ -56,8 +68,71 @@ namespace BigAndSmall
             AppendGenes(pawn);
             ApplyPsylink(pawn);
             ApplyAgeCurve(pawn);
-            
+            ModifySkills(pawn);
+
             return pawn;
+        }
+
+        public void ModifySkills(Pawn pawn)
+        {
+            if (canHavePassions == false && pawn.skills != null)
+            {
+                foreach (var skill in pawn.skills.skills)
+                {
+                    skill.passion = Passion.None;
+                }
+            }
+            if (forcedPassions != null && pawn.skills != null)
+            {
+                foreach ((var skill, var passion) in forcedPassions.Select(x => (x.skill, x.passion)))
+                {
+                    foreach (var pawnSkill in pawn.skills.skills)
+                    {
+                        if (pawnSkill.def != skill) continue;
+                        pawnSkill.passion = passion;
+                    }
+                }
+            }
+
+            if (skillRange != null
+                && pawn.skills != null
+                && (skillRangeApplyToBabies || pawn.ageTracker?.CurLifeStage != LifeStageDefOf.HumanlikeBaby)
+                )
+            {
+                foreach ((var skill, var range) in skillRange.Select(x => (x.Skill, x.Range)))
+                {
+                    foreach (var pawnSkill in pawn.skills.skills)
+                    {
+                        if (pawnSkill.def != skill) continue;
+                        var randomLevel = Rand.RangeInclusive(range.min, range.max);
+                        pawnSkill.Level = randomLevel;
+                    }
+                }
+            }
+
+
+            if (clampedSkills != null
+                && pawn.skills != null
+                && (skillRangeApplyToBabies || pawn.ageTracker?.CurLifeStage != LifeStageDefOf.HumanlikeBaby)
+                )
+            {
+                foreach ((var skill, var range) in clampedSkills.Select(x => (x.Skill, x.Range)))
+                {
+                    foreach (var pawnSkill in pawn.skills.skills)
+                    {
+                        if (pawnSkill.def != skill) continue;
+                        var learnedLevel = pawnSkill.GetLevel(includeAptitudes: false);
+                        if (learnedLevel < range.min)
+                        {
+                            pawnSkill.Level = range.min;
+                        }
+                        else if (learnedLevel > range.max)
+                        {
+                            pawnSkill.Level = range.max;
+                        }
+                    }
+                }
+            }
         }
 
         public void SetModdableGraphics(Pawn pawn)
@@ -148,6 +223,14 @@ namespace BigAndSmall
             if (ageCurve != null)
             {
                 pawn.ageTracker.AgeBiologicalTicks = (long)ageCurve.Evaluate(Rand.Value) * 3600000;
+            }
+            if (ageCurveChronological != null)
+            {
+                var newAge = (long)ageCurveChronological.Evaluate(Rand.Value) * 3600000;
+                if (newAge > pawn.ageTracker.AgeBiologicalTicks)
+                {
+                    pawn.ageTracker.AgeChronologicalTicks = newAge;
+                }
             }
 
         }

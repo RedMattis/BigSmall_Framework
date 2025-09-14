@@ -63,6 +63,10 @@ namespace BigAndSmall
             [
                 // General/Important Attributes
                 CreateListSection("BS_Aptitudes".Translate(), extList, ext => ext.AptitudeDescription),
+                CreateListSection("BS_DisableSkillBelowAptitudeDescription".Translate(), extList, ext => ext.DisableSkillBelowAptitudeDescription),
+                //CreateListSection("DisabledWorkLabel".Translate(), extList, ext => ext.DisabledWorkTypeDescription),
+                CreateListSection("BS_LearnedSkillRange".Translate(), extList, ext => ext.LearnedSkillRangesDescription),
+
                 CreateListSection("BS_ConditionalDescription".Translate(), extList, ext => ext.ConditionalDescription),
                 CreateListSection("BS_SizeByAgeOffset".Translate(), extList, ext => ext.SizeByAgeDescription),
                 CreateListSection("BS_SizeByAgeOffset".Translate(), extList, ext => ext.SizeByAgeMultDescription),

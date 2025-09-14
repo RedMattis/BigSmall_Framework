@@ -103,6 +103,8 @@
 
   <BS_ConditionalDescription>required conditions to activate</BS_ConditionalDescription>
   <BS_Aptitudes>Aptitudes</BS_Aptitudes>
+  <BS_DisableSkillBelowAptitudeDescription>Disables skills below aptitude</BS_DisableSkillBelowAptitudeDescription>
+  <BS_LearnedSkillRange>Limited skill range</BS_LearnedSkillRange>
   <BS_CreatureTag>classification</BS_CreatureTag>
   <BS_RomanceTags>romance compatibility</BS_RomanceTags>
 

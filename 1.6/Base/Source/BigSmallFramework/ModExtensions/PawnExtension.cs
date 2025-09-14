@@ -36,6 +36,9 @@ namespace BigAndSmall
         /// Higher numbers are applied later, which means they can in some cases overwrite earlier extensions.
         /// </summary>
         public int priority = int.MinValue;
+
+        public List<string> exclusionTags = null;
+
         public bool frequentUpdate = false;
 
         public bool hideInGenePicker = false;
@@ -162,6 +165,24 @@ namespace BigAndSmall
         /// </summary>
         public List<Aptitude> aptitudes = null;
         public List<string> AptitudeDescription => aptitudes?.Select((Aptitude x) => x.skill.LabelCap.ToString() + " " + x.level.ToStringWithSign()).ToList();
+
+        // This is on by default if aptitudes are defined.
+        public bool disableSkillsWithMinus20Aptitude = false;
+        
+        public List<Aptitude> disableSkillBelowAptitude = null;
+
+        public List<string> DisableSkillBelowAptitudeDescription => disableSkillBelowAptitude?.Select((Aptitude x) => x.skill.LabelCap.ToString() + " " + x.level.ToStringWithSign()).ToList();
+
+        //public WorkTags disabledWorkTags = 0;
+
+        //public List<string> DisabledWorkTypeDescription => disabledWorkTags == 0 ? null :
+        //    [.. DefDatabase<WorkTypeDef>.AllDefs.Where(x => (disabledWorkTags & x.workTags) != 0).Select(x => x.gerundLabel.CapitalizeFirst())];
+
+        public List<SkillRange> clampedSkills = null;
+
+        public List<string> LearnedSkillRangesDescription => clampedSkills?.Select(x => $"{x.Skill.LabelCap} {x.Range}").ToList();
+
+        public bool canHavePassions = true;
 
         /// <summary>
         /// Makes the pawn consider the pawn female for rendering purposes.

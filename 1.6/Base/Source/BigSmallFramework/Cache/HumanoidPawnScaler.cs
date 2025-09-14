@@ -234,7 +234,7 @@ namespace BigAndSmall
                     dStage = pawn.DevelopmentalStage;
                     developmentalStage = dStage;
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Log.Warning($"[BigAndSmall] caught an exception when fetching Developmental Stage for {pawn.Name} Aborting generation of pawn cache.\n" +
                         $"This likely means the pawn lacks \"lifeStageAges\" or another requirement for fetching the age is missing.\n{e.Message}\n{e.StackTrace}");
@@ -319,7 +319,7 @@ namespace BigAndSmall
                     canWield = allPawnExt.Any(x => x.canWieldThings == true) || !allPawnExt.Any(x => x.canWieldThings == false);
                 }
 
-                aptitudes = [.. allPawnExt.Where(x => x.aptitudes != null).SelectMany(x => x.aptitudes)];
+                HandleSkillsAndAptitudes(allPawnExt);
 
                 float minimumLearning = pawn.GetStatValue(BSDefs.SM_Minimum_Learning_Speed);
 
@@ -418,6 +418,37 @@ namespace BigAndSmall
                     ? allPawnExt.Where(x => x.internalDamageDivisor != null)
                     .Aggregate(1f, (acc, x) => acc * x.internalDamageDivisor.Value) : 1;
 
+                if (allPawnExt.Any(x => x.clampedSkills != null))
+                {
+                    Dictionary<SkillDef, IntRange> skillRanges = allPawnExt.Where(x => x.clampedSkills != null)
+                        .SelectMany(x => x.clampedSkills)
+                        .GroupBy(x => x.Skill)
+                        .ToDictionary(g => g.Key, g => new IntRange(g.Min(x => x.Range.min), g.Max(x => x.Range.max)));
+                    foreach (var pawnSkill in pawn.skills.skills)
+                    {
+                        if (skillRanges.TryGetValue(pawnSkill.def, out IntRange range))
+                        {
+                            var learnedLevel = pawnSkill.GetLevel(includeAptitudes: false);
+                            if (learnedLevel < range.min)
+                            {
+                                pawnSkill.Level = range.min;
+                            }
+                            else if (learnedLevel > range.max)
+                            {
+                                pawnSkill.Level = range.max;
+                            }
+                        }
+                    }
+                }
+
+                if (allPawnExt.Any(x => x.canHavePassions))
+                {
+                    foreach (var pawnSkill in pawn.skills.skills)
+                    {
+                        pawnSkill.passion = Passion.None;
+                    }
+                }
+
                 isBloodFeeder = IsBloodfeederPatch.IsBloodfeeder(pawn) || allPawnExt.Any(x => x.isBloodfeeder);
                 this.hasSizeAffliction = hasSizeAffliction;
                 attackSpeedMultiplier = pawn.GetStatValue(BSDefs.SM_AttackSpeed);
@@ -440,15 +471,15 @@ namespace BigAndSmall
                 bleedRateFactor = allPawnExt.Any(x => x.bleedRate != null) ? allPawnExt.Where(x => x.bleedRate != null).Aggregate(1f, (acc, x) => acc * x.bleedRate.Value) : 1;
                 if (bleedRateFactor == 0) bleedState = BleedRateState.NoBleeding;
                 bleedRate = bleedState;
-                
+
                 deathlike = animalUndead || allPawnExt.Any(x => x.isDeathlike);
 
 #pragma warning disable CS0618 // Type or member is obsolete
-				unarmedOnly = allPawnExt.Any(x => x.unarmedOnly || x.forceUnarmed) ||
+                unarmedOnly = allPawnExt.Any(x => x.unarmedOnly || x.forceUnarmed) ||
                                 activeGenes.Any(x => new List<string> { "BS_UnarmedOnly", "BS_NoEquip", "BS_UnarmedOnly_Android" }.Contains(x.def.defName));
 #pragma warning restore CS0618 // Type or member is obsolete
 
-				this.succubusUnbonded = succubusUnbonded;
+                this.succubusUnbonded = succubusUnbonded;
                 romanceTags = allPawnExt.Select(x => x.romanceTags).Where(x => x != null)?.GetMerged();
                 if (
                     (romanceTags == null && HumanLikes.Humanlikes.Contains(pawn?.def)) ||
@@ -493,7 +524,7 @@ namespace BigAndSmall
                 approximatelyNoChange = bodyRenderSize.Approx(1) && headRenderSize.Approx(1) && bodyPosOffset.Approx(0) &&
                     headPosMultiplier.Approx(1) && headPositionMultiplier.Approx(1) && worldspaceOffset.Approx(0) &&
                     complexHeadOffsets == null && complexBodyOffsets == null && pawn.RaceProps.baseBodySize < 2;
-                
+
                 // Always disable for large pawns so Thrumbo etc. don't get cut off.
                 if (pawn.RaceProps.baseBodySize > 1.49) renderCacheOff = true;
 
@@ -526,6 +557,67 @@ namespace BigAndSmall
             }
 
             return true;
+        }
+
+        public void HandleSkillsAndAptitudes(List<PawnExtension> allPawnExt)
+        {
+            aptitudes = [.. allPawnExt.Where(x => x.aptitudes != null).SelectMany(x => x.aptitudes)];
+
+            if (pawn.skills?.skills != null && (
+                aptitudes.Any()
+                || allPawnExt.Any(x => x.disableSkillsWithMinus20Aptitude || x.disableSkillBelowAptitude != null)
+                || skillsDisabledByAptitudes.Any() == false))
+            {
+                if (pawn.cachedDisabledWorkTypes == null)
+                {
+                    pawn.GetDisabledWorkTypes(permanentOnly: false);
+                    pawn.GetDisabledWorkTypes(permanentOnly: true);
+                }
+
+                bool skillsChanged = false;
+                List<SkillDef> skillsDisabled = [];
+                HashSet<Aptitude> disabledByAptitude = [.. allPawnExt.SelectMany(x => x.disableSkillBelowAptitude ?? []).Distinct()];
+                foreach (var skill in pawn.skills.skills)
+                {
+                    skill.aptitudeCached = null;  // Force recalculation of aptitude.
+                    int limit = disabledByAptitude
+                        .Where(x => x.skill == skill.def)
+                        .Select(x => x.level)
+                        .DefaultIfEmpty(-19)
+                        .Min();
+                    if (skill.Aptitude < limit && skill.cachedPermanentlyDisabled != BoolUnknown.True)
+                    {
+                        skill.cachedPermanentlyDisabled = BoolUnknown.True;
+                        skillsDisabled.Add(skill.def);
+                        skillsChanged = true;
+                    }
+                }
+                if (skillsDisabledByAptitudes.NullOrEmpty() == false)
+                {
+                    foreach (var skillToEnable in skillsDisabledByAptitudes.Where(x => skillsDisabled.Contains(x) == false))
+                    {
+                        if (pawn.skills.GetSkill(skillToEnable) is SkillRecord skill && skill.cachedPermanentlyDisabled == BoolUnknown.True)
+                        {
+                            skill.cachedPermanentlyDisabled = BoolUnknown.Unknown;
+                            skillsChanged = true;
+                        }
+                    }
+                }
+                skillsDisabledByAptitudes = skillsDisabled;
+                if (skillsChanged)
+                {
+                    List<WorkTypeDef> affectedWorkTypes = [];
+                    foreach (var skillDef in skillsDisabled)
+                    {
+                        affectedWorkTypes.AddRange(DefDatabase<WorkTypeDef>.AllDefs.Where(wt => wt.relevantSkills.Contains(skillDef)));
+                    }
+                    affectedWorkTypes = [.. affectedWorkTypes.Distinct()];
+                    disabledWorkTypes.AddDistinctRange(affectedWorkTypes.Distinct());
+                    pawn.workSettings?.Notify_DisabledWorkTypesChanged();
+                    pawn.cachedDisabledWorkTypes?.AddDistinctRange(affectedWorkTypes);
+                    pawn.cachedDisabledWorkTypesPermanent?.AddDistinctRange(affectedWorkTypes);
+                }
+            }
         }
 
         private void CalculateGenderAndApparentGender(List<PawnExtension> allPawnExt)

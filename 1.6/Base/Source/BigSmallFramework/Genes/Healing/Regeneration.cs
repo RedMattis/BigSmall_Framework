@@ -75,7 +75,7 @@ namespace BigAndSmall
             float healingRate = pawn.GetStatValue(StatDefOf.InjuryHealingFactor, true, cacheStaleAfterTicks: 1000);
             if (healingRate > 1)
             {
-                healingRate = 1 + (healingRate - 1) * 0.2f;
+                healingRate = 1 + (healingRate - 1) * 0.5f;
             }
 
             return healingRate;
