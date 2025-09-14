@@ -170,16 +170,9 @@ namespace BigAndSmall
         public bool disableSkillsWithMinus20Aptitude = false;
         
         public List<Aptitude> disableSkillBelowAptitude = null;
-
         public List<string> DisableSkillBelowAptitudeDescription => disableSkillBelowAptitude?.Select((Aptitude x) => x.skill.LabelCap.ToString() + " " + x.level.ToStringWithSign()).ToList();
 
-        //public WorkTags disabledWorkTags = 0;
-
-        //public List<string> DisabledWorkTypeDescription => disabledWorkTags == 0 ? null :
-        //    [.. DefDatabase<WorkTypeDef>.AllDefs.Where(x => (disabledWorkTags & x.workTags) != 0).Select(x => x.gerundLabel.CapitalizeFirst())];
-
         public List<SkillRange> clampedSkills = null;
-
         public List<string> LearnedSkillRangesDescription => clampedSkills?.Select(x => $"{x.Skill.LabelCap} {x.Range}").ToList();
 
         public bool canHavePassions = true;

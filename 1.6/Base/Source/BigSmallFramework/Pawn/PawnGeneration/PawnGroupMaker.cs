@@ -13,12 +13,13 @@ namespace BigAndSmall
     [HarmonyPatch]
     public static class GeneratePawns_Patch
     {
+        private static bool runningGroupMaker = false;
         private static Pawn lastTouchedPawn = null;  // Make sure we're not editing the same pawn twice.
         [HarmonyPostfix]
         [HarmonyPatch(typeof(PawnGenerator), nameof(PawnGenerator.GeneratePawn), [typeof(PawnKindDef), typeof(Faction), typeof(PlanetTile)])]
         public static void GeneratePawnPostfix(ref Pawn __result, PawnKindDef kindDef, Faction faction)
         {
-            if (__result == null || lastTouchedPawn == __result) return;
+            if (__result == null || runningGroupMaker || lastTouchedPawn == __result) return;
             lastTouchedPawn = __result;
             ModifyGeneratedPawn(false, ref __result, singlePawn:true);
         }
@@ -27,7 +28,7 @@ namespace BigAndSmall
         [HarmonyPatch(typeof(PawnGenerator), nameof(PawnGenerator.GeneratePawn), [typeof(PawnGenerationRequest)])]
         public static void GeneratePawnPostfix(ref Pawn __result, PawnGenerationRequest request)
         {
-            if (__result == null || lastTouchedPawn == __result) return;
+            if (__result == null || runningGroupMaker || lastTouchedPawn == __result) return;
             lastTouchedPawn = __result;
             ModifyGeneratedPawn(false, ref __result, singlePawn: true);
         }
@@ -37,20 +38,28 @@ namespace BigAndSmall
         [HarmonyPatch(typeof(PawnGroupMakerUtility), nameof(PawnGroupMakerUtility.GeneratePawns))]
         public static void GeneratePawnsPatch(PawnGroupMakerParms parms, bool warnOnZeroResults, ref IEnumerable<Pawn> __result)
         {
-            bool changed = false;
-
-            var modifiedPawn = __result.ToList();
-            for (int idx = modifiedPawn.Count - 1; idx >= 0; idx--)
+            runningGroupMaker = true;
+            try
             {
-                Pawn member = modifiedPawn[idx];
-                if (member == null || lastTouchedPawn == member) continue;
-                lastTouchedPawn = member;
+                bool changed = false;
 
-                changed = ModifyGeneratedPawn(changed, ref member);
+                var modifiedPawn = __result.ToList();
+                for (int idx = modifiedPawn.Count - 1; idx >= 0; idx--)
+                {
+                    Pawn member = modifiedPawn[idx];
+                    if (member == null || lastTouchedPawn == member) continue;
+                    lastTouchedPawn = member;
+
+                    changed = ModifyGeneratedPawn(changed, ref member);
+                }
+                if (changed)
+                {
+                    __result = modifiedPawn;
+                }
             }
-            if (changed)
+            finally
             {
-                __result = modifiedPawn;
+                runningGroupMaker = false;
             }
         }
 
@@ -73,7 +82,6 @@ namespace BigAndSmall
             {
                 Log.Warning($"BigAndSmall (GeneratePawns): Failed to pregenerate pawn cache for {member.Name} ({member.Label}): {e.Message}\n{e.StackTrace}");
             }
-
             try
             {
                 changed = GeneratePilots(changed, member);

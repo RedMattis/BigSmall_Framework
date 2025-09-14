@@ -418,30 +418,9 @@ namespace BigAndSmall
                     ? allPawnExt.Where(x => x.internalDamageDivisor != null)
                     .Aggregate(1f, (acc, x) => acc * x.internalDamageDivisor.Value) : 1;
 
-                if (allPawnExt.Any(x => x.clampedSkills != null))
-                {
-                    Dictionary<SkillDef, IntRange> skillRanges = allPawnExt.Where(x => x.clampedSkills != null)
-                        .SelectMany(x => x.clampedSkills)
-                        .GroupBy(x => x.Skill)
-                        .ToDictionary(g => g.Key, g => new IntRange(g.Min(x => x.Range.min), g.Max(x => x.Range.max)));
-                    foreach (var pawnSkill in pawn.skills.skills)
-                    {
-                        if (skillRanges.TryGetValue(pawnSkill.def, out IntRange range))
-                        {
-                            var learnedLevel = pawnSkill.GetLevel(includeAptitudes: false);
-                            if (learnedLevel < range.min)
-                            {
-                                pawnSkill.Level = range.min;
-                            }
-                            else if (learnedLevel > range.max)
-                            {
-                                pawnSkill.Level = range.max;
-                            }
-                        }
-                    }
-                }
+                
 
-                if (allPawnExt.Any(x => x.canHavePassions))
+                if (allPawnExt.Count > 0 && allPawnExt.Any(x => x.canHavePassions == false))
                 {
                     foreach (var pawnSkill in pawn.skills.skills)
                     {
@@ -561,8 +540,30 @@ namespace BigAndSmall
 
         public void HandleSkillsAndAptitudes(List<PawnExtension> allPawnExt)
         {
+            
             aptitudes = [.. allPawnExt.Where(x => x.aptitudes != null).SelectMany(x => x.aptitudes)];
-
+            if (allPawnExt.Any(x => x.clampedSkills != null))
+            {
+                Dictionary<SkillDef, IntRange> skillRanges = allPawnExt.Where(x => x.clampedSkills != null)
+                    .SelectMany(x => x.clampedSkills)
+                    .GroupBy(x => x.Skill)
+                    .ToDictionary(g => g.Key, g => new IntRange(g.Min(x => x.Range.min), g.Max(x => x.Range.max)));
+                foreach (var pawnSkill in pawn.skills.skills)
+                {
+                    if (skillRanges.TryGetValue(pawnSkill.def, out IntRange range))
+                    {
+                        var learnedLevel = pawnSkill.GetLevel(includeAptitudes: false);
+                        if (learnedLevel < range.min)
+                        {
+                            pawnSkill.Level = range.min;
+                        }
+                        else if (learnedLevel > range.max)
+                        {
+                            pawnSkill.Level = range.max;
+                        }
+                    }
+                }
+            }
             if (pawn.skills?.skills != null && (
                 aptitudes.Any()
                 || allPawnExt.Any(x => x.disableSkillsWithMinus20Aptitude || x.disableSkillBelowAptitude != null)

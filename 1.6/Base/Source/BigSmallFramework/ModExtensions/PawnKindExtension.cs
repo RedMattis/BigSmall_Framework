@@ -14,7 +14,8 @@ namespace BigAndSmall
         public class SkillPassion
         {
             public SkillDef skill = null;
-            public Passion passion = Passion.None;
+            public Passion? passion = null;
+            public int incrementBy = 0;
         }
         public class ApparelAndEquipmentGraphics
         {
@@ -41,7 +42,7 @@ namespace BigAndSmall
         public List<SkillRange> clampedSkills = null;
         public List<SkillRange> skillRange = null;
         public bool skillRangeApplyToBabies = false;
-        public bool canHavePassions = true;
+        public bool? canHavePassions = null;
         public List<SkillPassion> forcedPassions = null;
 
         public List<GeneDef> appendGenes = [];
@@ -75,27 +76,58 @@ namespace BigAndSmall
 
         public void ModifySkills(Pawn pawn)
         {
-            if (canHavePassions == false && pawn.skills != null)
+            if (pawn.skills?.skills == null)
+            {
+                if (skillRange != null || clampedSkills != null || forcedPassions != null || canHavePassions != null)
+                {
+                    Log.Warning($"PawnKindExtension for {pawn} tried to modify skills but they have no skills.");
+                }
+            }
+            if (canHavePassions == false)
             {
                 foreach (var skill in pawn.skills.skills)
                 {
                     skill.passion = Passion.None;
                 }
             }
-            if (forcedPassions != null && pawn.skills != null)
+            if (forcedPassions != null)
             {
-                foreach ((var skill, var passion) in forcedPassions.Select(x => (x.skill, x.passion)))
+                foreach (var fPassion in forcedPassions)
                 {
-                    foreach (var pawnSkill in pawn.skills.skills)
+                    foreach (var pawnSkill in pawn.skills.skills.Where(x=>x.def == fPassion.skill))
                     {
-                        if (pawnSkill.def != skill) continue;
-                        pawnSkill.passion = passion;
+                        if (fPassion.passion is Passion newPassion)
+                        {
+                            pawnSkill.passion = newPassion;
+
+                            if (ModsConfig.BiotechActive)
+                            {
+                                foreach (var gene in GeneHelpers.GetAllActiveGenes(pawn))
+                                {
+                                    if (gene.def.passionMod is PassionMod passionMod && passionMod.skill == fPassion.skill)
+                                    {
+                                        gene.passionPreAdd = newPassion;
+                                    }
+                                }
+                            }
+                        }
+                        for (int i = 0; i < Math.Abs(fPassion.incrementBy); i++)
+                        {
+                            if (fPassion.incrementBy > 0)
+                            {
+                                pawnSkill.passion = pawnSkill.passion.IncrementPassion();
+                                //Log.Message($"Incremented passion of {pawn} for {pawnSkill.def} to {pawnSkill.passion}");
+                            }
+                            else if (fPassion.incrementBy < 0)
+                            {
+                                pawnSkill.passion = (Passion)Math.Max((int)Passion.None, (int)pawnSkill.passion - 1);
+                            }
+                        }
                     }
                 }
             }
 
             if (skillRange != null
-                && pawn.skills != null
                 && (skillRangeApplyToBabies || pawn.ageTracker?.CurLifeStage != LifeStageDefOf.HumanlikeBaby)
                 )
             {
@@ -112,7 +144,6 @@ namespace BigAndSmall
 
 
             if (clampedSkills != null
-                && pawn.skills != null
                 && (skillRangeApplyToBabies || pawn.ageTracker?.CurLifeStage != LifeStageDefOf.HumanlikeBaby)
                 )
             {
