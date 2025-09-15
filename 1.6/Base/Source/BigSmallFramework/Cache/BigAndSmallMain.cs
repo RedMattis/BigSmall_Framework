@@ -20,6 +20,7 @@ namespace BigAndSmall
         private static bool? _BSSapientAnimalsActive_ForcedByMods = null;
         private static bool? _BSSapientAnimalsActive = null;
         private static bool? _BSSapientMechanoidsActive = null;
+        private static bool? _BSAutoCombatFeatureCache = null;
 
         public static bool BSTestModActive =>
             _BSTestModActive ??= ModsConfig.ActiveModsInLoadOrder.Any(x => x.PackageIdPlayerFacing == "RedMattis.TestMod");
@@ -44,11 +45,17 @@ namespace BigAndSmall
         public static bool BSGenesActive =>
             _BSGenesActive ??= ModsConfig.ActiveModsInLoadOrder.Any(x => x.PackageIdPlayerFacing == "RedMattis.BigSmall.Core");
 
-        public static bool ShowPalette => !BigSmallMod.settings.disableExtraWidgets &&
+        public static bool DisableAllExtraWidgets => BigSmallMod.settings.disableExtraWidgets;
+
+        public static bool ShowPalette => !DisableAllExtraWidgets &&
             (BSGenesActive || BigSmallMod.settings.showClrPaletteBtn || GlobalSettings.IsFeatureEnabled("RecolorButton"));
 
-        public static bool ShowRaceButton => !BigSmallMod.settings.disableExtraWidgets &&
+        public static bool ShowRaceButton => !DisableAllExtraWidgets &&
             (BSGenesActive || BigSmallMod.settings.showRaceBtn || GlobalSettings.IsFeatureEnabled("RaceButton"));
+
+        private static bool IsAutoCombatEnabledCached => _BSAutoCombatFeatureCache ??= GlobalSettings.IsFeatureEnabled("AutoCombat");
+
+        public static bool IsAutoCombatEnabled => BigSmallMod.settings.enableDraftedJobs || (IsAutoCombatEnabledCached && !DisableAllExtraWidgets);
 
 
         static BigSmall()

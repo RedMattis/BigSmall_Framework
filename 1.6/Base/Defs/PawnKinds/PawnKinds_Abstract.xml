@@ -86,6 +86,11 @@
 
     <weaponTags> <li>NeolithicMeleeBasic</li> <li>MedievalMeleeDecent</li> </weaponTags>
     <apparelTags> <li>BS_MedievalBasicWeather</li> <li>MedievalBasic</li> <li>BS_MedievalBasic</li> </apparelTags>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnKindExtension">
+        <preventPantless>true</preventPantless>
+      </li>
+    </modExtensions>
   </PawnKindDef>
 
   <PawnKindDef ParentName="BS_GenericMedievalBase" Name="BS_MedievalMilitaryBase" Abstract="True">
@@ -99,6 +104,11 @@
 
     <weaponTags> <li>NeolithicMeleeBasic</li> <li>MedievalMeleeDecent</li> </weaponTags>
     <apparelTags> <li>MedievalBasic</li> <li>BS_MedievalBasic</li> <li>MedievalArmorBasic</li> </apparelTags>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnKindExtension">
+        <preventPantless>true</preventPantless>
+      </li>
+    </modExtensions>
   </PawnKindDef>
 
   <PawnKindDef ParentName="BS_GenericMedievalBase" Name="BS_MedievalMilitaryVeteranBase" Abstract="True">
@@ -132,5 +142,10 @@
 
     <weaponTags> <li>MedievalMeleeDecent</li> <li>MedievalMeleeAdvanced</li> </weaponTags>
     <apparelTags> <li>BS_MedievalBasic</li> <li>MedievalMilitary</li> <li>MedievalArmorDecent</li> <li>MedievalArmorElite</li> </apparelTags>
+    <modExtensions>
+      <li Class="BigAndSmall.PawnKindExtension">
+        <preventPantless>true</preventPantless>
+      </li>
+    </modExtensions>
   </PawnKindDef>
 </Defs>

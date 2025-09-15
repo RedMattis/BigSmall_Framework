@@ -126,7 +126,6 @@ namespace BigAndSmall
         public float raidWealthMultiplier = 1;
 
         public float bodyPosOffset = 0;
-        //public float headPosMultiplier = 1;
 
         public bool preventDisfigurement = false;
 

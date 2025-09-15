@@ -177,6 +177,10 @@ namespace BigAndSmall
 
         public bool canHavePassions = true;
 
+        public List<WorkTypeDef> disabledWorkTypes = [];
+
+        public List<string> DisabledWorkTypeDescription => disabledWorkTypes?.Select(x => x.gerundLabel.CapitalizeFirst()).ToList();
+
         /// <summary>
         /// Makes the pawn consider the pawn female for rendering purposes.
         /// Useful for compatibility. Despite the name, it also affects the head.

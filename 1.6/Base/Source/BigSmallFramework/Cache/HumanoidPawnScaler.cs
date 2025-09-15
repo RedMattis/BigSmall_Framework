@@ -439,12 +439,9 @@ namespace BigAndSmall
 
                 this.disableLookChangeDesired = allPawnExt.Any(x => x.disableLookChangeDesired);
 
-                // Check if they are a shambler
                 var isShambler = pawn?.mutant?.Def?.defName?.ToLower().Contains("shambler") == true;
-                // Check if it has the "ShamblerCorpse" hediff
                 isShambler = isShambler || pawn.health.hediffSet.HasHediff(HediffDefOf.ShamblerCorpse);
 
-                //isMechanical = geneExts.Any(x => x.isMechanical) || raceCompProps.isMechanical;
                 isUnliving = undeadGenes.Count > 0 || animalUndead || isShambler || allPawnExt.Any(x => x.isUnliving);
                 willBeUndead = willBecomeUndead;
                 bleedRateFactor = allPawnExt.Any(x => x.bleedRate != null) ? allPawnExt.Where(x => x.bleedRate != null).Aggregate(1f, (acc, x) => acc * x.bleedRate.Value) : 1;
@@ -453,10 +450,8 @@ namespace BigAndSmall
 
                 deathlike = animalUndead || allPawnExt.Any(x => x.isDeathlike);
 
-#pragma warning disable CS0618 // Type or member is obsolete
                 unarmedOnly = allPawnExt.Any(x => x.unarmedOnly || x.forceUnarmed) ||
                                 activeGenes.Any(x => new List<string> { "BS_UnarmedOnly", "BS_NoEquip", "BS_UnarmedOnly_Android" }.Contains(x.def.defName));
-#pragma warning restore CS0618 // Type or member is obsolete
 
                 this.succubusUnbonded = succubusUnbonded;
                 romanceTags = allPawnExt.Select(x => x.romanceTags).Where(x => x != null)?.GetMerged();
@@ -564,8 +559,10 @@ namespace BigAndSmall
                     }
                 }
             }
+            var workTypesDisabledSpecifically = allPawnExt.SelectMany(x => x.disabledWorkTypes ?? []).Distinct();
             if (pawn.skills?.skills != null && (
                 aptitudes.Any()
+                || workTypesDisabledSpecifically.Any()
                 || allPawnExt.Any(x => x.disableSkillsWithMinus20Aptitude || x.disableSkillBelowAptitude != null)
                 || skillsDisabledByAptitudes.Any() == false))
             {
@@ -605,9 +602,13 @@ namespace BigAndSmall
                     }
                 }
                 skillsDisabledByAptitudes = skillsDisabled;
+                if (!skillsChanged && disabledWorkTypes.Intersect(workTypesDisabledSpecifically).Count() == workTypesDisabledSpecifically.Count())
+                {
+                    skillsChanged = true;
+                }
                 if (skillsChanged)
                 {
-                    List<WorkTypeDef> affectedWorkTypes = [];
+                    List<WorkTypeDef> affectedWorkTypes = [.. workTypesDisabledSpecifically];
                     foreach (var skillDef in skillsDisabled)
                     {
                         affectedWorkTypes.AddRange(DefDatabase<WorkTypeDef>.AllDefs.Where(wt => wt.relevantSkills.Contains(skillDef)));

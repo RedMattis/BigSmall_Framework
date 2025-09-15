@@ -37,13 +37,15 @@ namespace BigAndSmall
         public static readonly Texture2D HuntIcon = ContentFinder<Texture2D>.Get("BS_UI/Hunt");
         public static readonly Texture2D TakeCoverIcon = ContentFinder<Texture2D>.Get("BS_UI/TakeCover");
         public static readonly Texture2D MeleeCharge = ContentFinder<Texture2D>.Get("BS_UI/MeleeCharge");
+        
+        // If the LITERAL sub-mod is active then NO setting will turn it off.
         private static bool? autoCombatModEnabled = null;
         public static bool AutoCombatEnabled
         {
             get
             {
                 autoCombatModEnabled ??= ModsConfig.IsActive("RedMattis.AutoCombat");
-                return autoCombatModEnabled == true || BigSmallMod.settings.enableDraftedJobs;
+                return autoCombatModEnabled == true || BigSmall.IsAutoCombatEnabled;
             }
         }
 
