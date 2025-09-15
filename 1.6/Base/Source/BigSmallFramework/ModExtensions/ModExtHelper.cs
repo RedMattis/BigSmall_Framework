@@ -226,7 +226,7 @@ namespace BigAndSmall
             int defaultPriority = 0;
             if (source == typeof(RaceTracker))
             {
-                defaultPriority = -1000; // Ensures that stuff grabbing "FirstOrDefault" will not get this if there are other options.
+                defaultPriority = -1000;
             }
             else if (def is PawnKindDef)
             {
