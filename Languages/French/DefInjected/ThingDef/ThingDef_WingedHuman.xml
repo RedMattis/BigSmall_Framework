@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: winged humanoid -->
+  <BS_HumanoidWithWings.label>humanoïde ailé</BS_HumanoidWithWings.label>
+  <!-- EN: Scientists think that humans should not be able to fly. -->
+  <BS_HumanoidWithWings.description>Les scientifiques pensent que les humains ne devraient pas pouvoir voler.</BS_HumanoidWithWings.description>
+  <!-- EN: left fist -->
+  <BS_HumanoidWithWings.tools.left_fist.label>Poing gauche</BS_HumanoidWithWings.tools.left_fist.label>
+  <!-- EN: fist -->
+  <BS_HumanoidWithWings.tools.left_fist.labelNoLocation>Poing</BS_HumanoidWithWings.tools.left_fist.labelNoLocation>
+  <!-- EN: right fist -->
+  <BS_HumanoidWithWings.tools.right_fist.label>Poing droit</BS_HumanoidWithWings.tools.right_fist.label>
+  <!-- EN: fist -->
+  <BS_HumanoidWithWings.tools.right_fist.labelNoLocation>Poing</BS_HumanoidWithWings.tools.right_fist.labelNoLocation>
+  <!-- EN: teeth -->
+  <BS_HumanoidWithWings.tools.teeth.label>Dents</BS_HumanoidWithWings.tools.teeth.label>
+  <!-- EN: head -->
+  <BS_HumanoidWithWings.tools.head.label>Tête</BS_HumanoidWithWings.tools.head.label>
+  
+</LanguageData>

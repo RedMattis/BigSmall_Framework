@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: neural rating -->
+  <RED_BrainHealth.label>notation neuronale</RED_BrainHealth.label>
+  <!-- EN: Neural health is a measure of how well the brain is functioning. -->
+  <RED_BrainHealth.description>La santé neuronale mesure le bon fonctionnement du cerveau.</RED_BrainHealth.description>
+  <!-- EN: brain health -->
+  <RED_BrainHealth.labelSimple>santé du cerveau</RED_BrainHealth.labelSimple>
+  <!-- EN: No notable issues -->
+  <RED_BrainHealth.thresholds.0.description>aucun problème notable</RED_BrainHealth.thresholds.0.description>
+  <!-- EN: Minor cognitive issues. -->
+  <RED_BrainHealth.thresholds.1.description>problèmes cognitifs mineurs</RED_BrainHealth.thresholds.1.description>
+  <!-- EN: Moderate cognitive issues. -->
+  <RED_BrainHealth.thresholds.2.description>problèmes cognitifs modérés</RED_BrainHealth.thresholds.2.description>
+  <!-- EN: Severe cognitive issues. -->
+  <RED_BrainHealth.thresholds.3.description>problèmes cognitifs sévères</RED_BrainHealth.thresholds.3.description>
+  <!-- EN: Extreme cognitive issues. -->
+  <RED_BrainHealth.thresholds.4.description>problèmes cognitifs extrêmes</RED_BrainHealth.thresholds.4.description>
+  <!-- EN: deadly cognitive issues. -->
+  <RED_BrainHealth.thresholds.5.description>problèmes cognitifs mortels</RED_BrainHealth.thresholds.5.description>
+  
+</LanguageData>

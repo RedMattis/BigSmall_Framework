@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  <!-- EN: Target is too large to feast on. -->
+  <MessagerTargetTooBigToFeastOn>Cible trop grande pour se nourrir dessus</MessagerTargetTooBigToFeastOn>
+  <!-- EN: Not hungry. -->
+  <MessageUserIsNotHungry>Pas faim</MessageUserIsNotHungry>
+  <!-- EN: At night -->
+  <StatsReport_AtNight>La nuit</StatsReport_AtNight>
+  <!-- EN: Target has no blood -->
+  <BS_TargetNoBlood>La cible n’a pas de sang</BS_TargetNoBlood>
+  
+  <!-- EN: Psychic Sensitivity above 160% -->
+  <PsychicSensitivity_High>Sensibilité psychique supérieure à 160 %</PsychicSensitivity_High>
+  <!-- EN: Psychic Sensitivity above 225% -->
+  <PsychicSensitivity_VeryHigh>Sensibilité psychique supérieure à 225 %</PsychicSensitivity_VeryHigh>
+  <!-- EN: Psychic Sensitivity above 90% -->
+  <PsychicSensitivity_Normal>Sensibilité psychique supérieure à 90 %</PsychicSensitivity_Normal>
+
+  <!-- EN: Race cannot equip weapons -->
+  <BS_GenePreventsEquipping>La race ne peut pas équiper d’armes</BS_GenePreventsEquipping>
+  <!-- EN: Can wield tools -->
+  <BS_CanWieldThings>Peut manier des outils</BS_CanWieldThings>
+  <!-- EN: Race cannot equip this -->
+  <BS_LacksRequiredTag>La race ne peut pas équiper cet objet</BS_LacksRequiredTag>
+  <!-- EN: Race cannot equip this class of items -->
+  <BS_LacksRequiredClassTag>La race ne peut pas équiper cette catégorie d’objets</BS_LacksRequiredClassTag>
+  
+  <!-- EN: Race cannot wear apparel -->
+  <BS_CannotWearApparel>La race ne peut pas porter de vêtements</BS_CannotWearApparel>
+  <!-- EN: Race cannot wear clothing -->
+  <BS_CannotWearClothing>La race ne peut pas porter de tenue</BS_CannotWearClothing>
+  <!-- EN: Race cannot wear dedicated armor -->
+  <BS_CannotWearArmor>La race ne peut pas porter d’armure</BS_CannotWearArmor>
+  <!-- EN: Race cannot wear this particular item -->
+  <BS_CannotWearThis>La race ne peut pas porter cet objet</BS_CannotWearThis>
+  <!-- EN: Race cannot wear pants -->
+  <BS_CannotWearPants>La race ne peut pas porter de pantalon</BS_CannotWearPants>
+  <!-- EN: Race cannot wear this particular item -->
+  <BS_CannotWearFoot>La race ne peut pas porter ces chaussures</BS_CannotWearFoot>
+  <!-- EN: Race cannot wear over the head apparel -->
+  <BS_CannotWearOverHead>La race ne peut pas porter de vêtements passant par la tête</BS_CannotWearOverHead>
+  <!-- EN: Race cannot wear outer layer apparel -->
+  <BS_CannotWearOuter>La race ne peut pas porter la couche externe</BS_CannotWearOuter>
+  <!-- EN: Race cannot wear middle layer apparel -->
+  <BS_CannotWearMiddle>La race ne peut pas porter la couche intermédiaire</BS_CannotWearMiddle>
+  <!-- EN: Race cannot wear inner layer apparel -->
+  <BS_CannotWearInner>La race ne peut pas porter la couche intérieure</BS_CannotWearInner>
+  <!-- EN: Race prevents wearing this exact thing. -->
+  <BS_CannotWearExact>La race empêche de porter cet objet exact</BS_CannotWearExact>
+  <!-- EN: Race cannot wear apparel on a layer required by the item. -->
+  <BS_CannotWearLayer>La race ne peut pas porter de vêtement sur une couche requise par l’objet</BS_CannotWearLayer>
+  <!-- EN: Race cannot wear apparel on a bodypart required by the item. -->
+  <BS_CannotWearBodyPart>La race ne peut pas porter de vêtement sur le membre requis par l’objet</BS_CannotWearBodyPart>
+  <!-- EN: Race cannot wear apparel of this type. -->
+  <BS_CannotWearTag>La race ne peut pas porter de vêtement de ce type</BS_CannotWearTag>
+  <!-- EN: Race cannot wear this apparel -->
+  <BS_CannotWearThisApparel>La race ne peut pas porter cet habit</BS_CannotWearThisApparel>
+
+  <!-- EN: Convert nutrition into slime until -->
+  <BS_AccumulateSlimeUntil>Convertir la nutrition en slime jusqu’à</BS_AccumulateSlimeUntil>
+  <!-- EN: Cost -->
+  <AbilityPoolCost>Coût</AbilityPoolCost>
+
+  <!--Petrified Statue Keys-->
+  <!-- EN: A life-size statue of -->
+  <BS_LifeSizeStatueOf>Statue grandeur nature de</BS_LifeSizeStatueOf>
+  <!-- EN:  in a state of surprise. -->
+  <BS_StatueSurprised> dans un état de surprise</BS_StatueSurprised>
+  <!-- EN:  with an expression of terror. -->
+  <BS_StatueFrightened> avec une expression de terreur</BS_StatueFrightened>
+  <!-- EN:  in a furious rage. -->
+  <BS_StatueAngry> dans une rage furieuse</BS_StatueAngry>
+  <!-- EN:  struggling with a pained expression. -->
+  <BS_StatuePain> se débattant avec une expression de douleur</BS_StatuePain>
+  <!-- EN:  looking incredibly confused. -->
+  <BS_StatueDisoriented> ayant l’air incroyablement confus</BS_StatueDisoriented>
+  <!-- EN:  in a state of utter despair. -->
+  <BS_StatueDespair> dans un état de désespoir total</BS_StatueDespair>
+  <!-- EN:  screaming at something. -->
+  <BS_StatueScreaming> criant après quelque chose</BS_StatueScreaming>
+  <!-- EN: appearing somehow oblivious. -->
+  <BS_StatueOblivious> paraissant d’une manière ou d’une autre indifférent</BS_StatueOblivious>
+  <!-- EN: ; hard as rock, baby. -->
+  <BS_StatueStone> ; dur comme la pierre !</BS_StatueStone>
+</LanguageData>

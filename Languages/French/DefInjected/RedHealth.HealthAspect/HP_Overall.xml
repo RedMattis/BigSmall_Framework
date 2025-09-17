@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Health State -->
+  <RED_OverallHealth.label>état de santé</RED_OverallHealth.label>
+  <!-- EN: Overall health is a measure of how well the body is functioning. It is a key indicator of longevity and quality of life. -->
+  <RED_OverallHealth.description>La santé globale mesure le bon fonctionnement du corps. C’est un indicateur clé de la longévité et de la qualité de vie.</RED_OverallHealth.description>
+  <!-- EN: overall health -->
+  <RED_OverallHealth.labelSimple>santé globale</RED_OverallHealth.labelSimple>
+  <!-- EN: No health risks. -->
+  <RED_OverallHealth.thresholds.0.description>aucun risque pour la santé.</RED_OverallHealth.thresholds.0.description>
+  <!-- EN: New health issues are unlikely. -->
+  <RED_OverallHealth.thresholds.1.description>il est peu probable que de nouveaux problèmes de santé apparaissent.</RED_OverallHealth.thresholds.1.description>
+  <!-- EN: Health issues can be expected to occur, though rarely -->
+  <RED_OverallHealth.thresholds.2.description>des problèmes de santé peuvent survenir, bien que rarement.</RED_OverallHealth.thresholds.2.description>
+  <!-- EN: Health issues can be expected to occur quite frequently. -->
+  <RED_OverallHealth.thresholds.3.description>des problèmes de santé sont susceptibles de se produire assez fréquemment.</RED_OverallHealth.thresholds.3.description>
+  <!-- EN: Significnat risk of health issues starting to pile up. -->
+  <RED_OverallHealth.thresholds.4.description>risque significatif que les problèmes de santé commencent à s’accumuler.</RED_OverallHealth.thresholds.4.description>
+  <!-- EN: Health issues and dangerous complicated can be expected to pile up rapidly. -->
+  <RED_OverallHealth.thresholds.5.description>les problèmes de santé et les complications dangereuses risquent de s’accumuler rapidement.</RED_OverallHealth.thresholds.5.description>
+  <!-- EN: Death is likely around the corner. -->
+  <RED_OverallHealth.thresholds.6.description>la mort est probablement imminente.</RED_OverallHealth.thresholds.6.description>
+  <!-- EN: Death is probably less around the corner, more sitting in the room sipping tea. -->
+  <RED_OverallHealth.thresholds.7.description>la mort est probablement moins imminente, plus tranquille, comme assise dans la pièce à siroter du thé.</RED_OverallHealth.thresholds.7.description>
+  
+</LanguageData>

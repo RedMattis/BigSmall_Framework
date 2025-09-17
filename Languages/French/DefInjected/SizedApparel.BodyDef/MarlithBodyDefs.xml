@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: multi-limted snake-person -->
+  <BS_Marlith.label>homme-serpent multi-membres</BS_Marlith.label>
+  <!-- EN: left lung -->
+  <BS_Marlith.corePart.parts.left_lung.customLabel>Poumon gauche</BS_Marlith.corePart.parts.left_lung.customLabel>
+  <!-- EN: right lung -->
+  <BS_Marlith.corePart.parts.right_lung.customLabel>Poumon droit</BS_Marlith.corePart.parts.right_lung.customLabel>
+  <!-- EN: left eye -->
+  <BS_Marlith.corePart.parts.Neck.parts.Head.parts.left_eye.customLabel>Œil gauche</BS_Marlith.corePart.parts.Neck.parts.Head.parts.left_eye.customLabel>
+  <!-- EN: right eye -->
+  <BS_Marlith.corePart.parts.Neck.parts.Head.parts.right_eye.customLabel>Œil droit</BS_Marlith.corePart.parts.Neck.parts.Head.parts.right_eye.customLabel>
+  <!-- EN: left ear -->
+  <BS_Marlith.corePart.parts.Neck.parts.Head.parts.left_ear.customLabel>Oreille gauche</BS_Marlith.corePart.parts.Neck.parts.Head.parts.left_ear.customLabel>
+  <!-- EN: right ear -->
+  <BS_Marlith.corePart.parts.Neck.parts.Head.parts.right_ear.customLabel>Oreille droite</BS_Marlith.corePart.parts.Neck.parts.Head.parts.right_ear.customLabel>
+  <!-- EN: upper left shoulder -->
+  <BS_Marlith.corePart.parts.upper_left_shoulder.customLabel>Épaule supérieure gauche</BS_Marlith.corePart.parts.upper_left_shoulder.customLabel>
+  <!-- EN: upper left clavicle -->
+  <BS_Marlith.corePart.parts.upper_left_shoulder.parts.upper_left_clavicle.customLabel>Clavicule supérieure gauche</BS_Marlith.corePart.parts.upper_left_shoulder.parts.upper_left_clavicle.customLabel>
+  <!-- EN: upper left arm -->
+  <BS_Marlith.corePart.parts.upper_left_shoulder.parts.upper_left_arm.customLabel>Bras supérieur gauche</BS_Marlith.corePart.parts.upper_left_shoulder.parts.upper_left_arm.customLabel>
+  <!-- EN: upper left humerus -->
+  <BS_Marlith.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_humerus.customLabel>Humérus supérieur gauche</BS_Marlith.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_humerus.customLabel>
+  <!-- EN: upper left radius -->
+  <BS_Marlith.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_radius.customLabel>Radius supérieur gauche</BS_Marlith.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_radius.customLabel>
+  <!-- EN: upper left hand -->
+  <BS_Marlith.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.customLabel>Main supérieure gauche</BS_Marlith.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.customLabel>
+  <!-- EN: upper left pinky -->
+  <BS_Marlith.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.parts.upper_left_pinky.customLabel>Petit doigt supérieur gauche</BS_Marlith.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.parts.upper_left_pinky.customLabel>
+  <!-- EN: upper left ring finger -->
+  <BS_Marlith.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.parts.upper_left_ring_finger.customLabel>Annulaire supérieur gauche</BS_Marlith.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.parts.upper_left_ring_finger.customLabel>
+  <!-- EN: upper left middle finger -->
+  <BS_Marlith.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.parts.upper_left_middle_finger.customLabel>Majeur supérieur gauche</BS_Marlith.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.parts.upper_left_middle_finger.customLabel>
+  <!-- EN: upper left index finger -->
+  <BS_Marlith.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.parts.upper_left_index_finger.customLabel>Index supérieur gauche</BS_Marlith.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.parts.upper_left_index_finger.customLabel>
+  <!-- EN: upper left thumb -->
+  <BS_Marlith.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.parts.upper_left_thumb.customLabel>Pouce supérieur gauche</BS_Marlith.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.parts.upper_left_thumb.customLabel>
+  <!-- EN: upper right shoulder -->
+  <BS_Marlith.corePart.parts.upper_right_shoulder.customLabel>Épaule supérieure droite</BS_Marlith.corePart.parts.upper_right_shoulder.customLabel>
+  <!-- EN: upper right clavicle -->
+  <BS_Marlith.corePart.parts.upper_right_shoulder.parts.upper_right_clavicle.customLabel>Clavicule supérieure droite</BS_Marlith.corePart.parts.upper_right_shoulder.parts.upper_right_clavicle.customLabel>
+  <!-- EN: upper right arm -->
+  <BS_Marlith.corePart.parts.upper_right_shoulder.parts.upper_right_arm.customLabel>Bras supérieur droit</BS_Marlith.corePart.parts.upper_right_shoulder.parts.upper_right_arm.customLabel>
+  <!-- EN: upper right humerus -->
+  <BS_Marlith.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_humerus.customLabel>Humérus supérieur droit</BS_Marlith.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_humerus.customLabel>
+  <!-- EN: upper right radius -->
+  <BS_Marlith.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_radius.customLabel>Radius supérieur droit</BS_Marlith.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_radius.customLabel>
+  <!-- EN: upper right hand -->
+  <BS_Marlith.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.customLabel>Main supérieure droite</BS_Marlith.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.customLabel>
+  <!-- EN: upper right pinky -->
+  <BS_Marlith.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.parts.upper_right_pinky.customLabel>Petit doigt supérieur droit</BS_Marlith.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.parts.upper_right_pinky.customLabel>
+  <!-- EN: upper right ring finger -->
+  <BS_Marlith.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.parts.upper_right_ring_finger.customLabel>Annulaire supérieur droit</BS_Marlith.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.parts.upper_right_ring_finger.customLabel>
+  <!-- EN: upper right middle finger -->
+  <BS_Marlith.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.parts.upper_right_middle_finger.customLabel>Majeur supérieur droit</BS_Marlith.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.parts.upper_right_middle_finger.customLabel>
+  <!-- EN: upper right index finger -->
+  <BS_Marlith.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.parts.upper_right_index_finger.customLabel>Index supérieur droit</BS_Marlith.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.parts.upper_right_index_finger.customLabel>
+  <!-- EN: upper right thumb -->
+  <BS_Marlith.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.parts.upper_right_thumb.customLabel>Pouce supérieur droit</BS_Marlith.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.parts.upper_right_thumb.customLabel>
+  <!-- EN: left shoulder -->
+  <BS_Marlith.corePart.parts.left_shoulder.customLabel>Épaule gauche</BS_Marlith.corePart.parts.left_shoulder.customLabel>
+  <!-- EN: left clavicle -->
+  <BS_Marlith.corePart.parts.left_shoulder.parts.left_clavicle.customLabel>Clavicule gauche</BS_Marlith.corePart.parts.left_shoulder.parts.left_clavicle.customLabel>
+  <!-- EN: left arm -->
+  <BS_Marlith.corePart.parts.left_shoulder.parts.left_arm.customLabel>Bras gauche</BS_Marlith.corePart.parts.left_shoulder.parts.left_arm.customLabel>
+  <!-- EN: left humerus -->
+  <BS_Marlith.corePart.parts.left_shoulder.parts.left_arm.parts.left_humerus.customLabel>Humérus gauche</BS_Marlith.corePart.parts.left_shoulder.parts.left_arm.parts.left_humerus.customLabel>
+  <!-- EN: left radius -->
+  <BS_Marlith.corePart.parts.left_shoulder.parts.left_arm.parts.left_radius.customLabel>Radius gauche</BS_Marlith.corePart.parts.left_shoulder.parts.left_arm.parts.left_radius.customLabel>
+  <!-- EN: left hand -->
+  <BS_Marlith.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.customLabel>Main gauche</BS_Marlith.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.customLabel>
+  <!-- EN: left pinky -->
+  <BS_Marlith.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_pinky.customLabel>Petit doigt gauche</BS_Marlith.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_pinky.customLabel>
+  <!-- EN: left ring finger -->
+  <BS_Marlith.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_ring_finger.customLabel>Annulaire gauche</BS_Marlith.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_ring_finger.customLabel>
+  <!-- EN: left middle finger -->
+  <BS_Marlith.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_middle_finger.customLabel>Majeur gauche</BS_Marlith.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_middle_finger.customLabel>
+  <!-- EN: left index finger -->
+  <BS_Marlith.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_index_finger.customLabel>Index gauche</BS_Marlith.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_index_finger.customLabel>
+  <!-- EN: left thumb -->
+  <BS_Marlith.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_thumb.customLabel>Pouce gauche</BS_Marlith.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_thumb.customLabel>
+  <!-- EN: right shoulder -->
+  <BS_Marlith.corePart.parts.right_shoulder.customLabel>Épaule droite</BS_Marlith.corePart.parts.right_shoulder.customLabel>
+  <!-- EN: right clavicle -->
+  <BS_Marlith.corePart.parts.right_shoulder.parts.right_clavicle.customLabel>Clavicule droite</BS_Marlith.corePart.parts.right_shoulder.parts.right_clavicle.customLabel>
+  <!-- EN: right arm -->
+  <BS_Marlith.corePart.parts.right_shoulder.parts.right_arm.customLabel>Bras droit</BS_Marlith.corePart.parts.right_shoulder.parts.right_arm.customLabel>
+  <!-- EN: right humerus -->
+  <BS_Marlith.corePart.parts.right_shoulder.parts.right_arm.parts.right_humerus.customLabel>Humérus droit</BS_Marlith.corePart.parts.right_shoulder.parts.right_arm.parts.right_humerus.customLabel>
+  <!-- EN: right radius -->
+  <BS_Marlith.corePart.parts.right_shoulder.parts.right_arm.parts.right_radius.customLabel>Radius droit</BS_Marlith.corePart.parts.right_shoulder.parts.right_arm.parts.right_radius.customLabel>
+  <!-- EN: right hand -->
+  <BS_Marlith.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.customLabel>Main droite</BS_Marlith.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.customLabel>
+  <!-- EN: right pinky -->
+  <BS_Marlith.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_pinky.customLabel>Petit doigt droit</BS_Marlith.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_pinky.customLabel>
+  <!-- EN: right ring finger -->
+  <BS_Marlith.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_ring_finger.customLabel>Annulaire droit</BS_Marlith.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_ring_finger.customLabel>
+  <!-- EN: right middle finger -->
+  <BS_Marlith.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_middle_finger.customLabel>Majeur droit</BS_Marlith.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_middle_finger.customLabel>
+  <!-- EN: right index finger -->
+  <BS_Marlith.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_index_finger.customLabel>Index droit</BS_Marlith.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_index_finger.customLabel>
+  <!-- EN: right thumb -->
+  <BS_Marlith.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_thumb.customLabel>Pouce droit</BS_Marlith.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_thumb.customLabel>
+  <!-- EN: lower left shoulder -->
+  <BS_Marlith.corePart.parts.lower_left_shoulder.customLabel>Épaule inférieure gauche</BS_Marlith.corePart.parts.lower_left_shoulder.customLabel>
+  <!-- EN: lower left clavicle -->
+  <BS_Marlith.corePart.parts.lower_left_shoulder.parts.lower_left_clavicle.customLabel>Clavicule inférieure gauche</BS_Marlith.corePart.parts.lower_left_shoulder.parts.lower_left_clavicle.customLabel>
+  <!-- EN: lower left arm -->
+  <BS_Marlith.corePart.parts.lower_left_shoulder.parts.lower_left_arm.customLabel>Bras inférieur gauche</BS_Marlith.corePart.parts.lower_left_shoulder.parts.lower_left_arm.customLabel>
+  <!-- EN: lower left humerus -->
+  <BS_Marlith.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_humerus.customLabel>Humérus inférieur gauche</BS_Marlith.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_humerus.customLabel>
+  <!-- EN: lower left radius -->
+  <BS_Marlith.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_radius.customLabel>Radius inférieur gauche</BS_Marlith.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_radius.customLabel>
+  <!-- EN: lower left hand -->
+  <BS_Marlith.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.customLabel>Main inférieure gauche</BS_Marlith.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.customLabel>
+  <!-- EN: lower left pinky -->
+  <BS_Marlith.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.parts.lower_left_pinky.customLabel>Petit doigt inférieur gauche</BS_Marlith.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.parts.lower_left_pinky.customLabel>
+  <!-- EN: lower left ring finger -->
+  <BS_Marlith.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.parts.lower_left_ring_finger.customLabel>Annulaire inférieur gauche</BS_Marlith.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.parts.lower_left_ring_finger.customLabel>
+  <!-- EN: lower left middle finger -->
+  <BS_Marlith.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.parts.lower_left_middle_finger.customLabel>Majeur inférieur gauche</BS_Marlith.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.parts.lower_left_middle_finger.customLabel>
+  <!-- EN: lower left index finger -->
+  <BS_Marlith.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.parts.lower_left_index_finger.customLabel>Index inférieur gauche</BS_Marlith.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.parts.lower_left_index_finger.customLabel>
+  <!-- EN: lower left thumb -->
+  <BS_Marlith.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.parts.lower_left_thumb.customLabel>Pouce inférieur gauche</BS_Marlith.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.parts.lower_left_thumb.customLabel>
+  <!-- EN: lower right shoulder -->
+  <BS_Marlith.corePart.parts.lower_right_shoulder.customLabel>Épaule inférieure droite</BS_Marlith.corePart.parts.lower_right_shoulder.customLabel>
+  <!-- EN: lower right clavicle -->
+  <BS_Marlith.corePart.parts.lower_right_shoulder.parts.lower_right_clavicle.customLabel>Clavicule inférieure droite</BS_Marlith.corePart.parts.lower_right_shoulder.parts.lower_right_clavicle.customLabel>
+  <!-- EN: lower right arm -->
+  <BS_Marlith.corePart.parts.lower_right_shoulder.parts.lower_right_arm.customLabel>Bras inférieur droit</BS_Marlith.corePart.parts.lower_right_shoulder.parts.lower_right_arm.customLabel>
+  <!-- EN: lower right humerus -->
+  <BS_Marlith.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_humerus.customLabel>Humérus inférieur droit</BS_Marlith.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_humerus.customLabel>
+  <!-- EN: lower right radius -->
+  <BS_Marlith.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_radius.customLabel>Radius inférieur droit</BS_Marlith.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_radius.customLabel>
+  <!-- EN: lower right hand -->
+  <BS_Marlith.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.customLabel>Main inférieure droite</BS_Marlith.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.customLabel>
+  <!-- EN: lower right pinky -->
+  <BS_Marlith.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.parts.lower_right_pinky.customLabel>Petit doigt inférieur droit</BS_Marlith.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.parts.lower_right_pinky.customLabel>
+  <!-- EN: lower right ring finger -->
+  <BS_Marlith.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.parts.lower_right_ring_finger.customLabel>Annulaire inférieur droit</BS_Marlith.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.parts.lower_right_ring_finger.customLabel>
+  <!-- EN: lower right middle finger -->
+  <BS_Marlith.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.parts.lower_right_middle_finger.customLabel>Majeur inférieur droit</BS_Marlith.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.parts.lower_right_middle_finger.customLabel>
+  <!-- EN: lower right index finger -->
+  <BS_Marlith.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.parts.lower_right_index_finger.customLabel>Index inférieur droit</BS_Marlith.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.parts.lower_right_index_finger.customLabel>
+  <!-- EN: lower right thumb -->
+  <BS_Marlith.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.parts.lower_right_thumb.customLabel>Pouce inférieur droit</BS_Marlith.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.parts.lower_right_thumb.customLabel>
+  <!-- EN: second heart -->
+  <BS_Marlith.corePart.parts.BS_SnakeBody.parts.second_heart.customLabel>Second cœur</BS_Marlith.corePart.parts.BS_SnakeBody.parts.second_heart.customLabel>
+  <!-- EN: left kidney -->
+  <BS_Marlith.corePart.parts.BS_SnakeBody.parts.left_kidney.customLabel>Rein gauche</BS_Marlith.corePart.parts.BS_SnakeBody.parts.left_kidney.customLabel>
+  <!-- EN: right kidney -->
+  <BS_Marlith.corePart.parts.BS_SnakeBody.parts.right_kidney.customLabel>Rein droit</BS_Marlith.corePart.parts.BS_SnakeBody.parts.right_kidney.customLabel>
+  <!-- EN: liver -->
+  <BS_Marlith.corePart.parts.BS_SnakeBody.parts.liver.customLabel>Foie</BS_Marlith.corePart.parts.BS_SnakeBody.parts.liver.customLabel>
+  <!-- EN: snake stomach -->
+  <BS_Marlith.corePart.parts.BS_SnakeBody.parts.snake_stomach.customLabel>Estomac de serpent</BS_Marlith.corePart.parts.BS_SnakeBody.parts.snake_stomach.customLabel>
+  
+</LanguageData>

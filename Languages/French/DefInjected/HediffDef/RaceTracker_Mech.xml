@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: mechanical -->
+  <BS_UrbMech_Race.label>mécanique</BS_UrbMech_Race.label>
+  <!-- EN: This creature is largely composed of highly ruggedized machinery. -->
+  <BS_UrbMech_Race.description>Cette créature est principalement composée de machines fortement robustes.</BS_UrbMech_Race.description>
+  
+</LanguageData>

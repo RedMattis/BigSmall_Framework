@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: four-armed humanlike -->
+  <BS_DefaultFusions.mergableBody.0.prefixLabel>humanoïde à quatre bras</BS_DefaultFusions.mergableBody.0.prefixLabel>
+  <!-- EN: four arms -->
+  <BS_DefaultFusions.mergableBody.0.suffixLabel>quatre bras</BS_DefaultFusions.mergableBody.0.suffixLabel>
+  <!-- EN: six-armed humanlike -->
+  <BS_DefaultFusions.mergableBody.1.prefixLabel>humanoïde à six bras</BS_DefaultFusions.mergableBody.1.prefixLabel>
+  <!-- EN: six arms -->
+  <BS_DefaultFusions.mergableBody.1.suffixLabel>six bras</BS_DefaultFusions.mergableBody.1.suffixLabel>
+  <!-- EN: tailed humanlike -->
+  <BS_DefaultFusions.mergableBody.2.prefixLabel>humanoïde avec queue</BS_DefaultFusions.mergableBody.2.prefixLabel>
+  <!-- EN: a tail -->
+  <BS_DefaultFusions.mergableBody.2.suffixLabel>une queue</BS_DefaultFusions.mergableBody.2.suffixLabel>
+  <!-- EN: winged humanlike -->
+  <BS_DefaultFusions.mergableBody.3.prefixLabel>humanoïde ailé</BS_DefaultFusions.mergableBody.3.prefixLabel>
+  <!-- EN: serpent-like tail -->
+  <BS_DefaultFusions.mergableBody.4.suffixLabel>queue de type serpent</BS_DefaultFusions.mergableBody.4.suffixLabel>
+  <!-- EN: spider-like abdomen -->
+  <BS_DefaultFusions.mergableBody.5.suffixLabel>abdomen de type araignée</BS_DefaultFusions.mergableBody.5.suffixLabel>
+  <!-- EN: four legs -->
+  <BS_DefaultFusions.mergableBody.6.suffixLabel>quatre pattes</BS_DefaultFusions.mergableBody.6.suffixLabel>
+  
+</LanguageData>

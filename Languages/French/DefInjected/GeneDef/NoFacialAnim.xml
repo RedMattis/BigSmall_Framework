@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: FA (Brow) -->
+  <BS_FA_Keep_Brows.label>FA (Sourcils)</BS_FA_Keep_Brows.label>
+  <!-- EN: Retains only animations related to the brows. -->
+  <BS_FA_Keep_Brows.description>Conserve uniquement les animations liées aux sourcils.</BS_FA_Keep_Brows.description>
+  
+  <!-- EN: FA (Eyes+) -->
+  <BS_FA_Keep_Eyes.label>FA (Yeux+)</BS_FA_Keep_Eyes.label>
+  <!-- EN: Retains only animations related to the eyes/lids. -->
+  <BS_FA_Keep_Eyes.description>Conserve uniquement les animations liées aux yeux et paupières.</BS_FA_Keep_Eyes.description>
+  
+  <!-- EN: FA (Brow, Lid) -->
+  <BS_FA_Keep_Lid.label>FA (Paupières)</BS_FA_Keep_Lid.label>
+  <!-- EN: Retains only animations related to the lids. -->
+  <BS_FA_Keep_Lid.description>Conserve uniquement les animations liées aux paupières.</BS_FA_Keep_Lid.description>
+  
+  <!-- EN: FA (Lid and Brow) -->
+  <BS_FA_Keep_LidBrow.label>FA (Paupières et Sourcils)</BS_FA_Keep_LidBrow.label>
+  <!-- EN: Retains the lids and brows. -->
+  <BS_FA_Keep_LidBrow.description>Conserve les paupières et les sourcils.</BS_FA_Keep_LidBrow.description>
+  
+  <!-- EN: No Facial Animations -->
+  <BS_FacialAnimDisabled.label>Aucune animation faciale</BS_FacialAnimDisabled.label>
+  <!-- EN: Completely disable facial animations from Nal's Facial Animation Mod and use the standard head instead. This is probably the version of the facial anim disablers you're want to use. -->
+  <BS_FacialAnimDisabled.description>Désactive complètement les animations faciales du mod Nal's Facial Animation et utilise la tête standard à la place. C’est probablement la version du désactiveur d’animations faciales que vous souhaitez utiliser.</BS_FacialAnimDisabled.description>
+  
+</LanguageData>

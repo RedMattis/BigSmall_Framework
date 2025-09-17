@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: amphibious -->
+  <BS_Amphibious.label>amphibie</BS_Amphibious.label>
+  <!-- EN: This individual moves easily over wet terrains. -->
+  <BS_Amphibious.description>Cette personne se déplace facilement sur les terrains humides.</BS_Amphibious.description>
+  
+  <!-- EN: glide -->
+  <BS_Floating.label>glissant</BS_Floating.label>
+  <!-- EN: This individual glides, hops, or otherwise traverses any type of terrain without additional difficulty. -->
+  <BS_Floating.description>Cette personne glisse, saute ou traverse tout type de terrain sans difficulté supplémentaire.</BS_Floating.description>
+  
+  <!-- EN: slither -->
+  <BS_Slither.label>serpentant</BS_Slither.label>
+  <!-- EN: While usually slower overal, this individual slithers unhindered across almost any type of difficult terrain. -->
+  <BS_Slither.description>Bien que généralement plus lente, cette personne se faufile sans encombre sur presque tous les terrains difficiles.</BS_Slither.description>
+  
+  <!-- EN: striding -->
+  <BS_Stride.label>marchant</BS_Stride.label>
+  <!-- EN: This individual walks unhindered across some types of difficult terrain. -->
+  <BS_Stride.description>Cette personne marche sans encombre sur certains types de terrains difficiles.</BS_Stride.description>
+  
+</LanguageData>

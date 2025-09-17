@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: amorphous -->
+  <BS_Amorphous.label>amorphe</BS_Amorphous.label>
+  <!-- EN: Individuals with this feature has a somewhat amorphous shape or form.\n\nParticularly affects abilities restricted by size requirements. -->
+  <BS_Amorphous.description>Les individus possédant cette caractéristique ont une forme ou une silhouette quelque peu amorphe.\n\nCela affecte particulièrement les capacités limitées par des exigences de taille.</BS_Amorphous.description>
+  
+  <!-- EN: drone -->
+  <BS_Drone.label>drone</BS_Drone.label>
+  <!-- EN: Individuals with this feature lack higher reasoning and true creativity. They might be highly advanced AI capable of feigning sapience, collecting and combine information, all without being a true AGI, Persona, or Archotech.\n\nAlternatively they might be like animals or insectoids of similar characteristics and limitations.\n\nThey will be less upset to see others die, and non-drones will care less about the death of a drone. -->
+  <BS_Drone.description>Les individus possédant cette caractéristique manquent de raisonnement supérieur et de véritable créativité.\n\nIls peuvent être des IA très avancées capables de simuler la sapience, de collecter et combiner des informations, sans pour autant être une véritable AGI, Persona ou Archotech.\n\nAlternativement, ils peuvent ressembler à des animaux ou insectoïdes avec des caractéristiques et limitations similaires.\n\nIls seront moins affectés par la mort des autres, et les non-drones se soucieront moins de la mort d’un drone.</BS_Drone.description>
+  
+  <!-- EN: mechanical -->
+  <BS_Mechanical.label>mécanique</BS_Mechanical.label>
+  <!-- EN: Individuals with this feature are mechanical. -->
+  <BS_Mechanical.description>Les individus possédant cette caractéristique sont mécaniques.</BS_Mechanical.description>
+  
+  <!-- EN: no family concept -->
+  <BS_NoFamilyRelations.label>sans concept de famille</BS_NoFamilyRelations.label>
+  <!-- EN: Individuals with this feature lack a concept of parents and siblings. They might be robots recognizing only a "creator", or they might be clones, insects or other strange beings. -->
+  <BS_NoFamilyRelations.description>Les individus possédant cette caractéristique n’ont pas de concept de parents ou de frères et sœurs.\n\nIls peuvent être des robots ne reconnaissant qu’un « créateur », ou bien des clones, insectes ou autres êtres étranges.</BS_NoFamilyRelations.description>
+  
+  <!-- EN: unliving -->
+  <BS_Unliving.label>non-vivant</BS_Unliving.label>
+  <!-- EN: Individuals with this feature are not alive in the traditional sense. -->
+  <BS_Unliving.description>Les individus possédant cette caractéristique ne sont pas vivants au sens traditionnel.</BS_Unliving.description>
+  
+</LanguageData>

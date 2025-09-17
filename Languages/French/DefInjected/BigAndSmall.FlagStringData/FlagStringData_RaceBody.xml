@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: abdomen -->
+  <BS_Abdomen.label>abdomen</BS_Abdomen.label>
+  
+  <!-- EN: misc body -->
+  <BS_MiscBodyGraphics.label>autres parties du corps</BS_MiscBodyGraphics.label>
+  
+  <!-- EN: tail -->
+  <BS_TailGraphics.label>queue</BS_TailGraphics.label>
+  
+  <!-- EN: wing -->
+  <BS_WingGraphics.label>aile</BS_WingGraphics.label>
+  
+</LanguageData>

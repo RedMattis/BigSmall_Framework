@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  <!-- EN: Target must be impaired, stunned, in great pain, or unaware. -->
+  <BS_ParasiteTargetNotImpaired>La cible doit être diminuée, étourdie, en grande douleur ou inconsciente.</BS_ParasiteTargetNotImpaired>
+  <!-- EN: Target is too small to parasite. -->
+  <BS_ParasiteTargetTooSmall>La cible est trop petite pour être parasitée.</BS_ParasiteTargetTooSmall>
+  <!-- EN: Target must be humanlike -->
+  <BS_ParasiteTargetNotHumanlike>La cible doit être humanoïde.</BS_ParasiteTargetNotHumanlike>
+  <!-- EN: Contents: -->
+  <BS_EngulfedContents>Contenu :</BS_EngulfedContents>
+  <!-- EN: In too much pain to use. -->
+  <BS_InTooMuchPain>Trop de douleur pour être utilisé.</BS_InTooMuchPain>
+  <!-- EN: Digestive ability is too low. -->
+  <DigestiveAbilityTooLow>La capacité digestive est trop faible.</DigestiveAbilityTooLow>
+  <!-- EN: Target is too large to engulf. -->
+  <BS_TooLargeToSwallow>La cible est trop grande pour être avalée.</BS_TooLargeToSwallow>
+  <!-- EN: Not enough space left. -->
+  <BS_NotEnoughRoom>Il n'y a plus assez de place.</BS_NotEnoughRoom>
+  <!-- EN: {0} threw up due to internal damage, pain, or reduced digestive ability. -->
+  <BS_EngulfedVomit>{0} a vomi en raison de blessures internes, de la douleur ou d'une faible capacité digestive.</BS_EngulfedVomit>
+  <!-- EN: {0} swallowed {1}! {1} will try to fight their way out as long as they are not downed. Pain or injuries to {0}'s stomach and torso will free them. -->
+  <BS_EngulfedColonist>{0} a avalé {1} ! {1} tentera de s’échapper tant qu’il n’est pas à terre. La douleur ou les blessures à l’estomac et au torse de {0} le libéreront.</BS_EngulfedColonist>
+</LanguageData>

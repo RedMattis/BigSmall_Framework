@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: reanimation psychosis -->
+  <BS_LostManhunter.label>psychose de réanimation</BS_LostManhunter.label>
+  <!-- EN: Reanimation psychosis -->
+  <BS_LostManhunter.baseInspectLine>Psychose de réanimation</BS_LostManhunter.baseInspectLine>
+  
+  <!-- EN: Permanent reanimation psychosis -->
+  <BS_LostManhunterPermanent.label>psychose de réanimation permanente</BS_LostManhunterPermanent.label>
+  <!-- EN: Permanent reanimation psychosis -->
+  <BS_LostManhunterPermanent.baseInspectLine>Psychose de réanimation permanente</BS_LostManhunterPermanent.baseInspectLine>
+  
+</LanguageData>

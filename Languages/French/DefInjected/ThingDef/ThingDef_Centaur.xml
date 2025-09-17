@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: centauroid -->
+  <BS_Centaur.label>centauroïde</BS_Centaur.label>
+  <!-- EN: The subject is quadrupedeal with a humanoid torso. -->
+  <BS_Centaur.description>Le sujet est quadrupède avec un torse humanoïde.</BS_Centaur.description>
+  <!-- EN: left fist -->
+  <BS_Centaur.tools.left_fist.label>Poing gauche</BS_Centaur.tools.left_fist.label>
+  <!-- EN: fist -->
+  <BS_Centaur.tools.left_fist.labelNoLocation>Poing</BS_Centaur.tools.left_fist.labelNoLocation>
+  <!-- EN: right fist -->
+  <BS_Centaur.tools.right_fist.label>Poing droit</BS_Centaur.tools.right_fist.label>
+  <!-- EN: fist -->
+  <BS_Centaur.tools.right_fist.labelNoLocation>Poing</BS_Centaur.tools.right_fist.labelNoLocation>
+  <!-- EN: teeth -->
+  <BS_Centaur.tools.teeth.label>Dents</BS_Centaur.tools.teeth.label>
+  <!-- EN: head -->
+  <BS_Centaur.tools.head.label>Tête</BS_Centaur.tools.head.label>
+  
+</LanguageData>

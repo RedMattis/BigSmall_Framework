@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: cardiac rating -->
+  <RED_CardiHealth.label>notation cardiaque</RED_CardiHealth.label>
+  <!-- EN: Cardiovascular health is a measure of how well the heart and blood vessels are functioning. It is a key indicator of overall health and fitness. -->
+  <RED_CardiHealth.description>La santé cardiovasculaire mesure le bon fonctionnement du cœur et des vaisseaux sanguins. C'est un indicateur clé de la santé générale et de la condition physique.</RED_CardiHealth.description>
+  <!-- EN: heart health -->
+  <RED_CardiHealth.labelSimple>santé du cœur</RED_CardiHealth.labelSimple>
+  <!-- EN: No notable issues -->
+  <RED_CardiHealth.thresholds.0.description>aucun problème notable</RED_CardiHealth.thresholds.0.description>
+  <!-- EN: some cardiovascular issues. -->
+  <RED_CardiHealth.thresholds.1.description>quelques problèmes cardiovasculaires</RED_CardiHealth.thresholds.1.description>
+  <!-- EN: Moderate cardiovascular issues. -->
+  <RED_CardiHealth.thresholds.2.description>problèmes cardiovasculaires modérés</RED_CardiHealth.thresholds.2.description>
+  <!-- EN: severe cardiovascular issues. -->
+  <RED_CardiHealth.thresholds.3.description>problèmes cardiovasculaires sévères</RED_CardiHealth.thresholds.3.description>
+  <!-- EN: extreme cardiovascular issues. -->
+  <RED_CardiHealth.thresholds.4.description>problèmes cardiovasculaires extrêmes</RED_CardiHealth.thresholds.4.description>
+  <!-- EN: critical cardiovascular issues. -->
+  <RED_CardiHealth.thresholds.5.description>problèmes cardiovasculaires critiques</RED_CardiHealth.thresholds.5.description>
+  
+</LanguageData>

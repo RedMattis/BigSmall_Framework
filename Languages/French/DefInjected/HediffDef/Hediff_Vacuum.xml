@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Vacuum Insulation -->
+  <BS_VacuumInsulation.label>Isolation sous vide</BS_VacuumInsulation.label>
+  <!-- EN: This creature can handle the temperature extremes of space. -->
+  <BS_VacuumInsulation.description>Cette créature peut supporter les extrêmes de température de l’espace.</BS_VacuumInsulation.description>
+  
+  <!-- EN: Moderate Vacuum Insulation -->
+  <BS_VacuumInsulationPoor.label>Isolation sous vide modérée</BS_VacuumInsulationPoor.label>
+  <!-- EN: This creature can somewhat handle the temperature extremes of space. -->
+  <BS_VacuumInsulationPoor.description>Cette créature peut plus ou moins supporter les extrêmes de température de l’espace.</BS_VacuumInsulationPoor.description>
+  
+</LanguageData>

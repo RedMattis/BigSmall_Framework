@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: colonist -->
+  <BS_ColonistXenoPlus.label>colon</BS_ColonistXenoPlus.label>
+  
+  <!-- EN: space refugee -->
+  <BS_SpaceRefugeeXenoPlus.label>réfugié spatial</BS_SpaceRefugeeXenoPlus.label>
+  
+  <!-- EN: member -->
+  <BS_TribespersonXenoPlus.label>membre</BS_TribespersonXenoPlus.label>
+  
+  <!-- EN: villager -->
+  <BS_VillagerXenoPlus.label>villageois</BS_VillagerXenoPlus.label>
+  
+</LanguageData>

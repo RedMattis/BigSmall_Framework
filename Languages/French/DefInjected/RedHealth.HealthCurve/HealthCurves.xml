@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: cubic curve -->
+  <RED_CubicCurve.label>courbe cubique</RED_CubicCurve.label>
+  <!-- EN: starts slow and then increases rapidly. Second best curve shape. -->
+  <RED_CubicCurve.description>commence lentement puis augmente rapidement. Deuxième meilleure forme de courbe.</RED_CubicCurve.description>
+  
+  <!-- EN: exponential curve -->
+  <RED_ExponentialCurve.label>courbe exponentielle</RED_ExponentialCurve.label>
+  <!-- EN: starts slow and doesn't shoot high until near the end. The best curve shape. -->
+  <RED_ExponentialCurve.description>commence lentement et ne s’élève que vers la fin. La meilleure forme de courbe.</RED_ExponentialCurve.description>
+  
+  <!-- EN: linear curve -->
+  <RED_LinearCurve.label>courbe linéaire</RED_LinearCurve.label>
+  <!-- EN: linear curve. -->
+  <RED_LinearCurve.description>courbe linéaire.</RED_LinearCurve.description>
+  
+  <!-- EN: logarithmic curve -->
+  <RED_LogarithmicCurve.label>courbe logarithmique</RED_LogarithmicCurve.label>
+  <!-- EN: starts fast, then tapers off. The shittiest of curve shapes. -->
+  <RED_LogarithmicCurve.description>commence vite, puis s’atténue. La pire des formes de courbe.</RED_LogarithmicCurve.description>
+  
+  <!-- EN: logarithmic curve (early) -->
+  <RED_LogarithmicCurve_EarlyOnset.label>courbe logarithmique (précoce)</RED_LogarithmicCurve_EarlyOnset.label>
+  <!-- EN: starts fast, then tapers off. The absolute worst curve shape. -->
+  <RED_LogarithmicCurve_EarlyOnset.description>commence vite, puis s’atténue. La pire forme de courbe absolue.</RED_LogarithmicCurve_EarlyOnset.description>
+  
+  <!-- EN: logarithmic curve (late) -->
+  <RED_LogarithmicCurve_LateOnset.label>courbe logarithmique (tardive)</RED_LogarithmicCurve_LateOnset.label>
+  <!-- EN: starts fast, then tapers off. -->
+  <RED_LogarithmicCurve_LateOnset.description>commence vite, puis s’atténue.</RED_LogarithmicCurve_LateOnset.description>
+  
+  <!-- EN: logistic curve -->
+  <RED_LogisticCurve.label>courbe logistique</RED_LogisticCurve.label>
+  <!-- EN: starts slow, accelerates, then levels off again. -->
+  <RED_LogisticCurve.description>commence lentement, accélère, puis se stabilise de nouveau.</RED_LogisticCurve.description>
+  
+  <!-- EN: reverse logistic curve -->
+  <RED_ReverseLogisticCurve.label>courbe logistique inversée</RED_ReverseLogisticCurve.label>
+  <!-- EN: starts fast, slows down, then shoots up again. -->
+  <RED_ReverseLogisticCurve.description>commence vite, ralentit, puis repart à la hausse.</RED_ReverseLogisticCurve.description>
+  
+</LanguageData>

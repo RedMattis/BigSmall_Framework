@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: locomotive thrusters -->
+  <BS_AirThrusters.label>propulseurs locomoteurs</BS_AirThrusters.label>
+  
+  <!-- EN: locomotive lung -->
+  <BS_LocomotiveLung.label>poumon locomoteur</BS_LocomotiveLung.label>
+  
+</LanguageData>

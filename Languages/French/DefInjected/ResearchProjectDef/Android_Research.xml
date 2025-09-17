@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: android conversion -->
+  <BS_AndroidConversion.label>conversion en androïde</BS_AndroidConversion.label>
+  <!-- EN: Learn how to replace all that weak flesh with superior plasteel. Required for most type of conversions of biological characters into machines.
+       Note unless you have mods adding android surgery or android building all this research does is enable the surgery to repair damaged android brains. -->
+  <BS_AndroidConversion.description>Apprenez à remplacer toute cette chair faible par du plastacier supérieur. Requis pour la plupart des conversions de personnages biologiques en machines.  
+Remarque : sauf si vous disposez de mods ajoutant la chirurgie ou la construction d’androïde, cette recherche ne fait que permettre la réparation des cerveaux d’androïde endommagés.</BS_AndroidConversion.description>
+ 
+</LanguageData>

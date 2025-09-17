@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: air cooling unit -->
+  <BS_AirCoolingUnit.label>unité de refroidissement aérien</BS_AirCoolingUnit.label>
+  
+  <!-- EN: artificial brain -->
+  <BS_ArtificialBrain.label>cerveau artificiel</BS_ArtificialBrain.label>
+  
+  <!-- EN: reprocessor -->
+  <BS_FluidReprocessor.label>reprocesseur</BS_FluidReprocessor.label>
+  
+  <!-- EN: fuel processor -->
+  <BS_FuelProcessor.label>processeur de carburant</BS_FuelProcessor.label>
+  
+  <!-- EN: acoustic sensor -->
+  <BS_HearingSensor.label>capteur acoustique</BS_HearingSensor.label>
+  
+  <!-- EN: utility slot -->
+  <BS_InorganicWaist.label>emplacement utilitaire</BS_InorganicWaist.label>
+  
+  <!-- EN: articulated arm -->
+  <BS_MechanicalArm.label>bras articulé</BS_MechanicalArm.label>
+  
+  <!-- EN: tie rod -->
+  <BS_MechanicalClavicle.label>biellette</BS_MechanicalClavicle.label>
+  
+  <!-- EN: hand actuator -->
+  <BS_MechanicalFinger.label>actionneur de main</BS_MechanicalFinger.label>
+  
+  <!-- EN: foot actuator -->
+  <BS_MechanicalFoot.label>actionneur de pied</BS_MechanicalFoot.label>
+  
+  <!-- EN: robotic hand -->
+  <BS_MechanicalHand.label>main robotique</BS_MechanicalHand.label>
+  
+  <!-- EN: arm actuator -->
+  <BS_MechanicalHumerus.label>actionneur de bras</BS_MechanicalHumerus.label>
+  
+  <!-- EN: jaw-clamp -->
+  <BS_MechanicalJaw.label>mâchoire mécanique</BS_MechanicalJaw.label>
+  
+  <!-- EN: robotic legs -->
+  <BS_MechanicalLeg.label>jambes robotiques</BS_MechanicalLeg.label>
+  
+  <!-- EN: articulated neck joint -->
+  <BS_MechanicalNeck.label>articulation de cou articulée</BS_MechanicalNeck.label>
+  
+  <!-- EN: pelvic brace -->
+  <BS_MechanicalPelvis.label>support pelvien</BS_MechanicalPelvis.label>
+  
+  <!-- EN: pivot joint -->
+  <BS_MechanicalRadius.label>articulation pivotante</BS_MechanicalRadius.label>
+  
+  <!-- EN: protective casing -->
+  <BS_MechanicalRibs.label>coque protectrice</BS_MechanicalRibs.label>
+  
+  <!-- EN: spherical bearing -->
+  <BS_MechanicalShoulder.label>palier sphérique</BS_MechanicalShoulder.label>
+  
+  <!-- EN: core housing -->
+  <BS_MechanicalSkull.label>logement du noyau</BS_MechanicalSkull.label>
+  
+  <!-- EN: spinal column -->
+  <BS_MechanicalSpine.label>colonne vertébrale</BS_MechanicalSpine.label>
+  
+  <!-- EN: chassis -->
+  <BS_MechanicalSternum.label>châssis</BS_MechanicalSternum.label>
+  
+  <!-- EN: spherical joint -->
+  <BS_MechanicalTibia.label>articulation sphérique</BS_MechanicalTibia.label>
+  
+  <!-- EN: toe actuator -->
+  <BS_MechanicalToe.label>actionneur d’orteil</BS_MechanicalToe.label>
+  
+  <!-- EN: artificial tongue -->
+  <BS_MechanicalTongue.label>langue artificielle</BS_MechanicalTongue.label>
+  <!-- EN: remove -->
+  <BS_MechanicalTongue.removeRecipeLabelOverride>retirer</BS_MechanicalTongue.removeRecipeLabelOverride>
+  
+  <!-- EN: central frame -->
+  <BS_MechanicalTorso.label>cadre central</BS_MechanicalTorso.label>
+  
+  <!-- EN: wheel -->
+  <BS_MechanicalWheel.label>roue</BS_MechanicalWheel.label>
+  
+  <!-- EN: reactor -->
+  <BS_Reactor.label>réacteur</BS_Reactor.label>
+  
+  <!-- EN: optic sensor -->
+  <BS_SightSensor.label>capteur optique</BS_SightSensor.label>
+  
+  <!-- EN: chemical analyzer -->
+  <BS_SmellSensor.label>analyseur chimique</BS_SmellSensor.label>
+  
+  <!-- EN: sustainer -->
+  <BS_Sustainer.label>mainteneur</BS_Sustainer.label>
+  
+</LanguageData>

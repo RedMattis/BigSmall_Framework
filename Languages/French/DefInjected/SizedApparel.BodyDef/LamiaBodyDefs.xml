@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: snake-person -->
+  <BS_SnakeHuman.label>homme-serpent</BS_SnakeHuman.label>
+  <!-- EN: left lung -->
+  <BS_SnakeHuman.corePart.parts.left_lung.customLabel>Poumon gauche</BS_SnakeHuman.corePart.parts.left_lung.customLabel>
+  <!-- EN: right lung -->
+  <BS_SnakeHuman.corePart.parts.right_lung.customLabel>Poumon droit</BS_SnakeHuman.corePart.parts.right_lung.customLabel>
+  <!-- EN: left eye -->
+  <BS_SnakeHuman.corePart.parts.Neck.parts.Head.parts.left_eye.customLabel>Œil gauche</BS_SnakeHuman.corePart.parts.Neck.parts.Head.parts.left_eye.customLabel>
+  <!-- EN: right eye -->
+  <BS_SnakeHuman.corePart.parts.Neck.parts.Head.parts.right_eye.customLabel>Œil droit</BS_SnakeHuman.corePart.parts.Neck.parts.Head.parts.right_eye.customLabel>
+  <!-- EN: left ear -->
+  <BS_SnakeHuman.corePart.parts.Neck.parts.Head.parts.left_ear.customLabel>Oreille gauche</BS_SnakeHuman.corePart.parts.Neck.parts.Head.parts.left_ear.customLabel>
+  <!-- EN: right ear -->
+  <BS_SnakeHuman.corePart.parts.Neck.parts.Head.parts.right_ear.customLabel>Oreille droite</BS_SnakeHuman.corePart.parts.Neck.parts.Head.parts.right_ear.customLabel>
+  <!-- EN: left shoulder -->
+  <BS_SnakeHuman.corePart.parts.left_shoulder.customLabel>Épaule gauche</BS_SnakeHuman.corePart.parts.left_shoulder.customLabel>
+  <!-- EN: left clavicle -->
+  <BS_SnakeHuman.corePart.parts.left_shoulder.parts.left_clavicle.customLabel>Clavicule gauche</BS_SnakeHuman.corePart.parts.left_shoulder.parts.left_clavicle.customLabel>
+  <!-- EN: left arm -->
+  <BS_SnakeHuman.corePart.parts.left_shoulder.parts.left_arm.customLabel>Bras gauche</BS_SnakeHuman.corePart.parts.left_shoulder.parts.left_arm.customLabel>
+  <!-- EN: left humerus -->
+  <BS_SnakeHuman.corePart.parts.left_shoulder.parts.left_arm.parts.left_humerus.customLabel>Humérus gauche</BS_SnakeHuman.corePart.parts.left_shoulder.parts.left_arm.parts.left_humerus.customLabel>
+  <!-- EN: left radius -->
+  <BS_SnakeHuman.corePart.parts.left_shoulder.parts.left_arm.parts.left_radius.customLabel>Radius gauche</BS_SnakeHuman.corePart.parts.left_shoulder.parts.left_arm.parts.left_radius.customLabel>
+  <!-- EN: left hand -->
+  <BS_SnakeHuman.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.customLabel>Main gauche</BS_SnakeHuman.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.customLabel>
+  <!-- EN: left pinky -->
+  <BS_SnakeHuman.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_pinky.customLabel>Petit doigt gauche</BS_SnakeHuman.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_pinky.customLabel>
+  <!-- EN: left ring finger -->
+  <BS_SnakeHuman.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_ring_finger.customLabel>Annulaire gauche</BS_SnakeHuman.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_ring_finger.customLabel>
+  <!-- EN: left middle finger -->
+  <BS_SnakeHuman.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_middle_finger.customLabel>Majeur gauche</BS_SnakeHuman.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_middle_finger.customLabel>
+  <!-- EN: left index finger -->
+  <BS_SnakeHuman.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_index_finger.customLabel>Index gauche</BS_SnakeHuman.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_index_finger.customLabel>
+  <!-- EN: left thumb -->
+  <BS_SnakeHuman.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_thumb.customLabel>Pouce gauche</BS_SnakeHuman.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_thumb.customLabel>
+  <!-- EN: right shoulder -->
+  <BS_SnakeHuman.corePart.parts.right_shoulder.customLabel>Épaule droite</BS_SnakeHuman.corePart.parts.right_shoulder.customLabel>
+  <!-- EN: right clavicle -->
+  <BS_SnakeHuman.corePart.parts.right_shoulder.parts.right_clavicle.customLabel>Clavicule droite</BS_SnakeHuman.corePart.parts.right_shoulder.parts.right_clavicle.customLabel>
+  <!-- EN: right arm -->
+  <BS_SnakeHuman.corePart.parts.right_shoulder.parts.right_arm.customLabel>Bras droit</BS_SnakeHuman.corePart.parts.right_shoulder.parts.right_arm.customLabel>
+  <!-- EN: right humerus -->
+  <BS_SnakeHuman.corePart.parts.right_shoulder.parts.right_arm.parts.right_humerus.customLabel>Humérus droit</BS_SnakeHuman.corePart.parts.right_shoulder.parts.right_arm.parts.right_humerus.customLabel>
+  <!-- EN: right radius -->
+  <BS_SnakeHuman.corePart.parts.right_shoulder.parts.right_arm.parts.right_radius.customLabel>Radius droit</BS_SnakeHuman.corePart.parts.right_shoulder.parts.right_arm.parts.right_radius.customLabel>
+  <!-- EN: right hand -->
+  <BS_SnakeHuman.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.customLabel>Main droite</BS_SnakeHuman.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.customLabel>
+  <!-- EN: right pinky -->
+  <BS_SnakeHuman.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_pinky.customLabel>Petit doigt droit</BS_SnakeHuman.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_pinky.customLabel>
+  <!-- EN: right ring finger -->
+  <BS_SnakeHuman.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_ring_finger.customLabel>Annulaire droit</BS_SnakeHuman.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_ring_finger.customLabel>
+  <!-- EN: right middle finger -->
+  <BS_SnakeHuman.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_middle_finger.customLabel>Majeur droit</BS_SnakeHuman.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_middle_finger.customLabel>
+  <!-- EN: right index finger -->
+  <BS_SnakeHuman.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_index_finger.customLabel>Index droit</BS_SnakeHuman.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_index_finger.customLabel>
+  <!-- EN: right thumb -->
+  <BS_SnakeHuman.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_thumb.customLabel>Pouce droit</BS_SnakeHuman.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_thumb.customLabel>
+  <!-- EN: second heart -->
+  <BS_SnakeHuman.corePart.parts.BS_SnakeBody.parts.second_heart.customLabel>Second cœur</BS_SnakeHuman.corePart.parts.BS_SnakeBody.parts.second_heart.customLabel>
+  <!-- EN: left kidney -->
+  <BS_SnakeHuman.corePart.parts.BS_SnakeBody.parts.left_kidney.customLabel>Rein gauche</BS_SnakeHuman.corePart.parts.BS_SnakeBody.parts.left_kidney.customLabel>
+  <!-- EN: right kidney -->
+  <BS_SnakeHuman.corePart.parts.BS_SnakeBody.parts.right_kidney.customLabel>Rein droit</BS_SnakeHuman.corePart.parts.BS_SnakeBody.parts.right_kidney.customLabel>
+  <!-- EN: liver -->
+  <BS_SnakeHuman.corePart.parts.BS_SnakeBody.parts.liver.customLabel>Foie</BS_SnakeHuman.corePart.parts.BS_SnakeBody.parts.liver.customLabel>
+  <!-- EN: snake stomach -->
+  <BS_SnakeHuman.corePart.parts.BS_SnakeBody.parts.snake_stomach.customLabel>Estomac de serpent</BS_SnakeHuman.corePart.parts.BS_SnakeBody.parts.snake_stomach.customLabel>
+  
+</LanguageData>

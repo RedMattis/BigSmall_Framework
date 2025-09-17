@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: snake-person -->
+  <BS_Naga.label>homme-serpent</BS_Naga.label>
+  <!-- EN: A humanlike being with a snake tail instead of legs. -->
+  <BS_Naga.description>Un être humanoïde avec une queue de serpent à la place des jambes.</BS_Naga.description>
+  <!-- EN: left fist -->
+  <BS_Naga.tools.left_fist.label>Poing gauche</BS_Naga.tools.left_fist.label>
+  <!-- EN: fist -->
+  <BS_Naga.tools.left_fist.labelNoLocation>Poing</BS_Naga.tools.left_fist.labelNoLocation>
+  <!-- EN: right fist -->
+  <BS_Naga.tools.right_fist.label>Poing droit</BS_Naga.tools.right_fist.label>
+  <!-- EN: fist -->
+  <BS_Naga.tools.right_fist.labelNoLocation>Poing</BS_Naga.tools.right_fist.labelNoLocation>
+  <!-- EN: teeth -->
+  <BS_Naga.tools.teeth.label>Dents</BS_Naga.tools.teeth.label>
+  <!-- EN: head -->
+  <BS_Naga.tools.head.label>Tête</BS_Naga.tools.head.label>
+  
+</LanguageData>

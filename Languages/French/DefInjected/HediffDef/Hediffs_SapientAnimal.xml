@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: no fine manipulators -->
+  <BS_NoHands.label>pas de manipulateurs fins</BS_NoHands.label>
+  <!-- EN: This individual lacks fine manipulation ability.\n\nAt best might be able to carry something in their mouth or arms. -->
+  <BS_NoHands.description>Cette personne n’a pas la capacité de manipulation fine.\n\nAu mieux, elle peut porter quelque chose dans sa bouche ou dans ses bras.</BS_NoHands.description>
+  
+  <!-- EN: fine manipulation, poor -->
+  <BS_PoorHands.label>manipulation fine, faible</BS_PoorHands.label>
+  <!-- EN: This individual lacks the fine manipulation ability possessed by baseline humans.\n\nThey might still be able to wield tools or weapons with some ingenuity however. -->
+  <BS_PoorHands.description>Cette personne n’a pas la capacité de manipulation fine que possèdent les humains de référence.\n\nElle peut toutefois encore manier des outils ou des armes avec une certaine ingéniosité.</BS_PoorHands.description>
+  
+</LanguageData>

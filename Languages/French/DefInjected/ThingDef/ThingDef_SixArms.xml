@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Six Armed Human -->
+  <BS_SixArmedHuman.label>humain à six bras</BS_SixArmedHuman.label>
+  <!-- EN: A humanlike being with an excessively large number of arms. -->
+  <BS_SixArmedHuman.description>Un être humanoïde avec un nombre excessif de bras.</BS_SixArmedHuman.description>
+  <!-- EN: left fist -->
+  <BS_SixArmedHuman.tools.left_fist.label>Poing gauche</BS_SixArmedHuman.tools.left_fist.label>
+  <!-- EN: fist -->
+  <BS_SixArmedHuman.tools.left_fist.labelNoLocation>Poing</BS_SixArmedHuman.tools.left_fist.labelNoLocation>
+  <!-- EN: right fist -->
+  <BS_SixArmedHuman.tools.right_fist.label>Poing droit</BS_SixArmedHuman.tools.right_fist.label>
+  <!-- EN: fist -->
+  <BS_SixArmedHuman.tools.right_fist.labelNoLocation>Poing</BS_SixArmedHuman.tools.right_fist.labelNoLocation>
+  <!-- EN: teeth -->
+  <BS_SixArmedHuman.tools.teeth.label>Dents</BS_SixArmedHuman.tools.teeth.label>
+  <!-- EN: head -->
+  <BS_SixArmedHuman.tools.head.label>Tête</BS_SixArmedHuman.tools.head.label>
+  
+</LanguageData>

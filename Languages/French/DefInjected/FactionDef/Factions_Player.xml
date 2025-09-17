@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: New Xeno Arrivals -->
+  <BS_PlayerColonyXenoPlus.label>Nouveaux arrivants xénos</BS_PlayerColonyXenoPlus.label>
+  <!-- EN: A colony of recently-arrived off-worlders. Who have found themselves on a world with a great variety of xenotypes. -->
+  <BS_PlayerColonyXenoPlus.description>Une colonie de nouveaux arrivants extra-mondiaux, qui se retrouvent sur un monde présentant une grande variété de xénotypes.</BS_PlayerColonyXenoPlus.description>
+  <!-- EN: leader -->
+  <BS_PlayerColonyXenoPlus.leaderTitle>chef</BS_PlayerColonyXenoPlus.leaderTitle>
+  <!-- EN: {0} from {1} are attacking your {2}. -->
+  <BS_PlayerColonyXenoPlus.messageDefendersAttacking>{0} de {1} attaquent votre {2}.</BS_PlayerColonyXenoPlus.messageDefendersAttacking>
+  <!-- EN: colonist -->
+  <BS_PlayerColonyXenoPlus.pawnSingular>colon</BS_PlayerColonyXenoPlus.pawnSingular>
+  <!-- EN: colonists -->
+  <BS_PlayerColonyXenoPlus.pawnsPlural>colons</BS_PlayerColonyXenoPlus.pawnsPlural>
+  
+  <!-- EN: New Xeno Tribe -->
+  <BS_PlayerTribeXenoPlus.label>Nouvelle tribu xéno</BS_PlayerTribeXenoPlus.label>
+  <!-- EN: A small tribe on a world with a great variety of xenotypes. -->
+  <BS_PlayerTribeXenoPlus.description>Une petite tribu sur un monde présentant une grande variété de xénotypes.</BS_PlayerTribeXenoPlus.description>
+  <!-- EN: leader -->
+  <BS_PlayerTribeXenoPlus.leaderTitle>chef</BS_PlayerTribeXenoPlus.leaderTitle>
+  <!-- EN: {0} from {1} are attacking your {2}. -->
+  <BS_PlayerTribeXenoPlus.messageDefendersAttacking>{0} de {1} attaquent votre {2}.</BS_PlayerTribeXenoPlus.messageDefendersAttacking>
+  <!-- EN: tribesman -->
+  <BS_PlayerTribeXenoPlus.pawnSingular>membre de la tribu</BS_PlayerTribeXenoPlus.pawnSingular>
+  <!-- EN: tribespeople -->
+  <BS_PlayerTribeXenoPlus.pawnsPlural>membres de la tribu</BS_PlayerTribeXenoPlus.pawnsPlural>
+  
+</LanguageData>

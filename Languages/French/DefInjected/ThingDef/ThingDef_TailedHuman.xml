@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: tailed humanoid -->
+  <BS_HumanoidWithTail.label>humanoïde à queue</BS_HumanoidWithTail.label>
+  <!-- EN: The inclusion of a tail statistically improves the sense of balance of the specimen uwu. -->
+  <BS_HumanoidWithTail.description>L’ajout d’une queue améliore statistiquement le sens de l’équilibre du spécimen uwu.</BS_HumanoidWithTail.description>
+  <!-- EN: left fist -->
+  <BS_HumanoidWithTail.tools.left_fist.label>Poing gauche</BS_HumanoidWithTail.tools.left_fist.label>
+  <!-- EN: fist -->
+  <BS_HumanoidWithTail.tools.left_fist.labelNoLocation>Poing</BS_HumanoidWithTail.tools.left_fist.labelNoLocation>
+  <!-- EN: right fist -->
+  <BS_HumanoidWithTail.tools.right_fist.label>Poing droit</BS_HumanoidWithTail.tools.right_fist.label>
+  <!-- EN: fist -->
+  <BS_HumanoidWithTail.tools.right_fist.labelNoLocation>Poing</BS_HumanoidWithTail.tools.right_fist.labelNoLocation>
+  <!-- EN: teeth -->
+  <BS_HumanoidWithTail.tools.teeth.label>Dents</BS_HumanoidWithTail.tools.teeth.label>
+  <!-- EN: head -->
+  <BS_HumanoidWithTail.tools.head.label>Tête</BS_HumanoidWithTail.tools.head.label>
+  
+</LanguageData>

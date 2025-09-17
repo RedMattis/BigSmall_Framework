@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: body bionics -->
+  <BS_BodyBionicGraphics.label>bioniques corporels</BS_BodyBionicGraphics.label>
+  
+  <!-- EN: body flesh -->
+  <BS_BodyFleshGraphics.label>chair corporelle</BS_BodyFleshGraphics.label>
+  
+  <!-- EN: head bionics -->
+  <BS_HeadBionicGraphics.label>bioniques de tête</BS_HeadBionicGraphics.label>
+  
+  <!-- EN: head flesh -->
+  <BS_HeadFleshGraphics.label>chair crânienne</BS_HeadFleshGraphics.label>
+  
+</LanguageData>

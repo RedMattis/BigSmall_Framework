@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: cryogenic inhibition -->
+  <BS_CryogenicInhibition.label>inhibition cryogénique</BS_CryogenicInhibition.label>
+  <!-- EN: In extreme cold lubricants thicken, batteries drain, and equipment starts incurring errors.\n\nEventually the robot will enter a state of dormancy to prevent damage from which recovery is very slow. -->
+  <BS_CryogenicInhibition.description>Par grand froid, les lubrifiants s’épaississent, les batteries se déchargent et l’équipement commence à rencontrer des erreurs.\n\nFinalement, le robot entrera dans un état de dormance pour prévenir des dommages dont la récupération sera très lente.</BS_CryogenicInhibition.description>
+  <!-- EN: minor -->
+  <BS_CryogenicInhibition.stages.minor-0.label>mineur</BS_CryogenicInhibition.stages.minor-0.label>
+  <!-- EN: minor -->
+  <BS_CryogenicInhibition.stages.minor-1.label>mineur</BS_CryogenicInhibition.stages.minor-1.label>
+  <!-- EN: moderate -->
+  <BS_CryogenicInhibition.stages.moderate.label>modéré</BS_CryogenicInhibition.stages.moderate.label>
+  <!-- EN: serious -->
+  <BS_CryogenicInhibition.stages.serious.label>sérieux</BS_CryogenicInhibition.stages.serious.label>
+  <!-- EN: extreme -->
+  <BS_CryogenicInhibition.stages.extreme.label>extrême</BS_CryogenicInhibition.stages.extreme.label>
+  
+  <!-- EN: liquid loss -->
+  <BS_RobotBloodloss.label>perte de fluides</BS_RobotBloodloss.label>
+  <!-- EN: A reduction in the essential lubricants and fluids that keep the robot's systems functioning smoothly. This results in reduced mobility, and potential system failures, or an emergency shutdown if it reaches critical levels. -->
+  <BS_RobotBloodloss.description>Réduction des lubrifiants et fluides essentiels au bon fonctionnement des systèmes du robot. Cela entraîne une mobilité réduite, des défaillances potentielles du système, ou un arrêt d’urgence si les niveaux deviennent critiques.</BS_RobotBloodloss.description>
+  <!-- EN: minor -->
+  <BS_RobotBloodloss.stages.minor-0.label>mineur</BS_RobotBloodloss.stages.minor-0.label>
+  <!-- EN: minor -->
+  <BS_RobotBloodloss.stages.minor-1.label>mineur</BS_RobotBloodloss.stages.minor-1.label>
+  <!-- EN: moderate -->
+  <BS_RobotBloodloss.stages.moderate.label>modéré</BS_RobotBloodloss.stages.moderate.label>
+  <!-- EN: severe -->
+  <BS_RobotBloodloss.stages.severe.label>sévère</BS_RobotBloodloss.stages.severe.label>
+  <!-- EN: extreme -->
+  <BS_RobotBloodloss.stages.extreme.label>extrême</BS_RobotBloodloss.stages.extreme.label>
+  <!-- EN: critical level -->
+  <BS_RobotBloodloss.stages.critical_level.label>critique</BS_RobotBloodloss.stages.critical_level.label>
+  
+  <!-- EN: thermal overload -->
+  <ThermalOverload.label>surcharge thermique</ThermalOverload.label>
+  <!-- EN: High ambient temperatures prevent this unit from effectively dissipating heat. Processor are forced to clock-down to prevent rapid overheating.\n\nProlonged exposure will force emergency shutdown from which recovery is slow. -->
+  <ThermalOverload.description>Des températures ambiantes élevées empêchent cette unité de dissiper efficacement la chaleur. Les processeurs sont forcés de réduire leur fréquence pour éviter une surchauffe rapide.\n\nUne exposition prolongée entraînera un arrêt d’urgence dont la récupération sera lente.</ThermalOverload.description>
+  <!-- EN: minor -->
+  <ThermalOverload.stages.minor-0.label>mineur</ThermalOverload.stages.minor-0.label>
+  <!-- EN: minor -->
+  <ThermalOverload.stages.minor-1.label>mineur</ThermalOverload.stages.minor-1.label>
+  <!-- EN: moderate -->
+  <ThermalOverload.stages.moderate.label>modéré</ThermalOverload.stages.moderate.label>
+  <!-- EN: serious -->
+  <ThermalOverload.stages.serious.label>sérieux</ThermalOverload.stages.serious.label>
+  <!-- EN: extreme -->
+  <ThermalOverload.stages.extreme.label>extrême</ThermalOverload.stages.extreme.label>
+  <!-- EN: critical level -->
+  <ThermalOverload.stages.critical_level.label>critique</ThermalOverload.stages.critical_level.label>
+  
+</LanguageData>

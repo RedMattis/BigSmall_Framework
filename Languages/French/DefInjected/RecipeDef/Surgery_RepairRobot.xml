@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: repair android brain -->
+  <BS_RepairAndroidBrain.label>réparer le cerveau de l’androïde</BS_RepairAndroidBrain.label>
+  <!-- EN: restore a damaged android brain to its original state. Very risky. -->
+  <BS_RepairAndroidBrain.description>restaurer un cerveau d’androïde endommagé à son état d’origine. Très risqué.</BS_RepairAndroidBrain.description>
+  <!-- EN: Restoring brain. -->
+  <BS_RepairAndroidBrain.jobString>restauration du cerveau…</BS_RepairAndroidBrain.jobString>
+  
+  <!-- EN: restore android part -->
+  <BS_RepairAndroidMinorOrganPart.label>restaurer une pièce d’androïde</BS_RepairAndroidMinorOrganPart.label>
+  <!-- EN: restore a damaged, replaced, or missing android part to its original state. -->
+  <BS_RepairAndroidMinorOrganPart.description>restaurer une pièce d’androïde endommagée, remplacée ou manquante à son état d’origine.</BS_RepairAndroidMinorOrganPart.description>
+  <!-- EN: Restoring part. -->
+  <BS_RepairAndroidMinorOrganPart.jobString>restauration de la pièce…</BS_RepairAndroidMinorOrganPart.jobString>
+  
+  <!-- EN: repair android component -->
+  <BS_RepairAndroidOrgan.label>réparer un organe d’androïde</BS_RepairAndroidOrgan.label>
+  <!-- EN: restore a damaged, replaced, or missing android part to its original state. -->
+  <BS_RepairAndroidOrgan.description>restaurer un organe d’androïde endommagé, remplacé ou manquant à son état d’origine.</BS_RepairAndroidOrgan.description>
+  <!-- EN: Restoring part. -->
+  <BS_RepairAndroidOrgan.jobString>restauration de l’organe…</BS_RepairAndroidOrgan.jobString>
+  
+  <!-- EN: restore android part -->
+  <BS_RepairAndroidPart.label>restaurer une pièce d’androïde</BS_RepairAndroidPart.label>
+  <!-- EN: restore a damaged, replaced, or missing android part to its original state. -->
+  <BS_RepairAndroidPart.description>restaurer une pièce d’androïde endommagée, remplacée ou manquante à son état d’origine.</BS_RepairAndroidPart.description>
+  <!-- EN: Restoring part. -->
+  <BS_RepairAndroidPart.jobString>restauration de la pièce…</BS_RepairAndroidPart.jobString>
+  
+  <!-- EN: restore android part -->
+  <BS_RepairAndroidPartSmall.label>restaurer une petite pièce d’androïde</BS_RepairAndroidPartSmall.label>
+  <!-- EN: restore a damaged, replaced, or missing android part to its original state. -->
+  <BS_RepairAndroidPartSmall.description>restaurer une petite pièce d’androïde endommagée, remplacée ou manquante à son état d’origine.</BS_RepairAndroidPartSmall.description>
+  <!-- EN: Restoring part. -->
+  <BS_RepairAndroidPartSmall.jobString>restauration de la petite pièce…</BS_RepairAndroidPartSmall.jobString>
+  
+  <!-- EN: repair android reactor -->
+  <BS_RepairAndroidReactor.label>réparer le réacteur de l’androïde</BS_RepairAndroidReactor.label>
+  <!-- EN: restore a damaged, replaced, or missing android part to its original state. Very risky. -->
+  <BS_RepairAndroidReactor.description>restaurer un réacteur d’androïde endommagé, remplacé ou manquant à son état d’origine. Très risqué.</BS_RepairAndroidReactor.description>
+  <!-- EN: Restoring reactor. -->
+  <BS_RepairAndroidReactor.jobString>restauration du réacteur…</BS_RepairAndroidReactor.jobString>
+  
+</LanguageData>

@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: encephalopathy -->
+  <RED_BrainFailure.label>encéphalopathie</RED_BrainFailure.label>
+  <!-- EN: a serious disease or malfunction that affects the function or structure of the brain. At this stage it is incurable by normal methods. -->
+  <RED_BrainFailure.description>Maladie ou dysfonction grave affectant le fonctionnement ou la structure du cerveau. À ce stade, elle est incurable par les méthodes normales.</RED_BrainFailure.description>
+  <!-- EN: {PAWN_labelShort}'s {1} has failed. -->
+  <RED_BrainFailure.comps.HediffComp_DestroyOrgan.messageText>Le {1} de {PAWN_labelShort} a cessé de fonctionner.</RED_BrainFailure.comps.HediffComp_DestroyOrgan.messageText>
+  <!-- EN: minor -->
+  <RED_BrainFailure.stages.minor.label>mineur</RED_BrainFailure.stages.minor.label>
+  <!-- EN: moderate -->
+  <RED_BrainFailure.stages.moderate.label>modéré</RED_BrainFailure.stages.moderate.label>
+  <!-- EN: severe -->
+  <RED_BrainFailure.stages.severe.label>sévère</RED_BrainFailure.stages.severe.label>
+  <!-- EN: extreme -->
+  <RED_BrainFailure.stages.extreme.label>extrême</RED_BrainFailure.stages.extreme.label>
+  
+  <!-- EN: organ damage -->
+  <RED_FailingOrganDamage.label>dégâts à l’organe</RED_FailingOrganDamage.label>
+  <!-- EN: This body part is failing. -->
+  <RED_FailingOrganDamage.description>Cette partie du corps est défaillante.</RED_FailingOrganDamage.description>
+  <!-- EN: failing organ -->
+  <RED_FailingOrganDamage.comps.HediffComp_GetsPermanent.permanentLabel>organe défaillant</RED_FailingOrganDamage.comps.HediffComp_GetsPermanent.permanentLabel>
+  <!-- EN: failing organ -->
+  <RED_FailingOrganDamage.labelNoun>organe défaillant</RED_FailingOrganDamage.labelNoun>
+  <!-- EN: failing {1} -->
+  <RED_FailingOrganDamage.labelNounPretty>{1} défaillant</RED_FailingOrganDamage.labelNounPretty>
+  
+  <!-- EN: organ failure -->
+  <RED_OrganFailure.label>insuffisance organique</RED_OrganFailure.label>
+  <!-- EN: a serious disease, auto-immune reaction, or malfunction that affects the function or structure of the organ. At this stage it is incurable by normal methods. -->
+  <RED_OrganFailure.description>Maladie grave, réaction auto-immune ou dysfonction affectant le fonctionnement ou la structure de l’organe. À ce stade, elle est incurable par les méthodes normales.</RED_OrganFailure.description>
+  <!-- EN: {PAWN_labelShort}'s {1} has failed. -->
+  <RED_OrganFailure.comps.HediffComp_DestroyOrgan.messageText>Le {1} de {PAWN_labelShort} a cessé de fonctionner.</RED_OrganFailure.comps.HediffComp_DestroyOrgan.messageText>
+  <!-- EN: minor -->
+  <RED_OrganFailure.stages.minor.label>mineur</RED_OrganFailure.stages.minor.label>
+  <!-- EN: moderate -->
+  <RED_OrganFailure.stages.moderate.label>modéré</RED_OrganFailure.stages.moderate.label>
+  <!-- EN: severe -->
+  <RED_OrganFailure.stages.severe.label>sévère</RED_OrganFailure.stages.severe.label>
+  <!-- EN: extreme -->
+  <RED_OrganFailure.stages.extreme.label>extrême</RED_OrganFailure.stages.extreme.label>
+  
+  <!-- EN: health tracking -->
+  <RED_SecretHealthTracker.label>surveillance de la santé</RED_SecretHealthTracker.label>
+  <!-- EN: quietly watching you. -->
+  <RED_SecretHealthTracker.description>vous observe discrètement.</RED_SecretHealthTracker.description>
+  <!-- EN: health tracking -->
+  <RED_SecretHealthTracker.stages.health_tracking.label>surveillance de la santé</RED_SecretHealthTracker.stages.health_tracking.label>
+  
+</LanguageData>

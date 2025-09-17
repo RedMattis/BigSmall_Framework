@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: metamorph -->
+  <BS_MetamorphTemplate.label>métamorphe</BS_MetamorphTemplate.label>
+  <!-- EN: Carriers of this gene can undergo metamorphosis to a {0} if the right conditions are met. -->
+  <BS_MetamorphTemplate.description>Les porteurs de ce gène peuvent subir une métamorphose en {0} si les conditions appropriées sont remplies.</BS_MetamorphTemplate.description>
+  <!-- EN: Genes such as "Morph [when] Adult", "Morph Pregnant", or "Morph Day" are valid conditions. -->
+  <BS_MetamorphTemplate.customEffectDescriptions.0>Les gènes comme « Morph [when] Adulte », « Morph Enceinte » ou « Morph Jour » sont des conditions valides.</BS_MetamorphTemplate.customEffectDescriptions.0>
+  
+  <!-- EN: retromorph -->
+  <BS_RetromorphDownTemplate.label>rétromorphe</BS_RetromorphDownTemplate.label>
+  <!-- EN: Carriers of this gene can undergo retromorphosis to a {0} if the right conditions are met. -->
+  <BS_RetromorphDownTemplate.description>Les porteurs de ce gène peuvent subir une rétromorphose en {0} si les conditions appropriées sont remplies.</BS_RetromorphDownTemplate.description>
+  <!-- EN: Genes such as "Retromorph [when] Pre-Adult" are valid conditions. -->
+  <BS_RetromorphDownTemplate.customEffectDescriptions.0>Les gènes comme « Retromorph [when] Pré-Adulte » sont des conditions valides.</BS_RetromorphDownTemplate.customEffectDescriptions.0>
+  
+</LanguageData>
