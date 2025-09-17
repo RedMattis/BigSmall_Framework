@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: winged humanoid -->
+  <BS_HumanoidWithWings_Body.label>humanoïde ailé</BS_HumanoidWithWings_Body.label>
+  <!-- EN: left lung -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_lung.customLabel>Poumon gauche</BS_HumanoidWithWings_Body.corePart.parts.left_lung.customLabel>
+  <!-- EN: right lung -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_lung.customLabel>Poumon droit</BS_HumanoidWithWings_Body.corePart.parts.right_lung.customLabel>
+  <!-- EN: left kidney -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_kidney.customLabel>Rein gauche</BS_HumanoidWithWings_Body.corePart.parts.left_kidney.customLabel>
+  <!-- EN: right kidney -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_kidney.customLabel>Rein droit</BS_HumanoidWithWings_Body.corePart.parts.right_kidney.customLabel>
+  <!-- EN: left eye -->
+  <BS_HumanoidWithWings_Body.corePart.parts.Neck.parts.Head.parts.left_eye.customLabel>Œil gauche</BS_HumanoidWithWings_Body.corePart.parts.Neck.parts.Head.parts.left_eye.customLabel>
+  <!-- EN: right eye -->
+  <BS_HumanoidWithWings_Body.corePart.parts.Neck.parts.Head.parts.right_eye.customLabel>Œil droit</BS_HumanoidWithWings_Body.corePart.parts.Neck.parts.Head.parts.right_eye.customLabel>
+  <!-- EN: left ear -->
+  <BS_HumanoidWithWings_Body.corePart.parts.Neck.parts.Head.parts.left_ear.customLabel>Oreille gauche</BS_HumanoidWithWings_Body.corePart.parts.Neck.parts.Head.parts.left_ear.customLabel>
+  <!-- EN: right ear -->
+  <BS_HumanoidWithWings_Body.corePart.parts.Neck.parts.Head.parts.right_ear.customLabel>Oreille droite</BS_HumanoidWithWings_Body.corePart.parts.Neck.parts.Head.parts.right_ear.customLabel>
+  <!-- EN: left shoulder -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.customLabel>Épaule gauche</BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.customLabel>
+  <!-- EN: left clavicle -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.parts.left_clavicle.customLabel>Clavicule gauche</BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.parts.left_clavicle.customLabel>
+  <!-- EN: left arm -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.parts.left_arm.customLabel>Bra gauche</BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.parts.left_arm.customLabel>
+  <!-- EN: left humerus -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_humerus.customLabel>Humérus gauche</BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_humerus.customLabel>
+  <!-- EN: left radius -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_radius.customLabel>Radius gauche</BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_radius.customLabel>
+  <!-- EN: left hand -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.customLabel>Main gauche</BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.customLabel>
+  <!-- EN: left pinky -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_pinky.customLabel>Petit doigt gauche</BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_pinky.customLabel>
+  <!-- EN: left ring finger -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_ring_finger.customLabel>Annulaire gauche</BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_ring_finger.customLabel>
+  <!-- EN: left middle finger -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_middle_finger.customLabel>Doigt du milieu gauche</BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_middle_finger.customLabel>
+  <!-- EN: left index finger -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_index_finger.customLabel>Index gauche</BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_index_finger.customLabel>
+  <!-- EN: left thumb -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_thumb.customLabel>Pouce gauche</BS_HumanoidWithWings_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_thumb.customLabel>
+  <!-- EN: right shoulder -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.customLabel>Épaule droite</BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.customLabel>
+  <!-- EN: right clavicle -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.parts.right_clavicle.customLabel>Clavicule droite</BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.parts.right_clavicle.customLabel>
+  <!-- EN: right arm -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.parts.right_arm.customLabel>Bra droit</BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.parts.right_arm.customLabel>
+  <!-- EN: right humerus -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_humerus.customLabel>Humérus droit</BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_humerus.customLabel>
+  <!-- EN: right radius -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_radius.customLabel>Radius droit</BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_radius.customLabel>
+  <!-- EN: right hand -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.customLabel>Main droite</BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.customLabel>
+  <!-- EN: right pinky -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_pinky.customLabel>Petit doigt droit</BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_pinky.customLabel>
+  <!-- EN: right ring finger -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_ring_finger.customLabel>Annulaire droit</BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_ring_finger.customLabel>
+  <!-- EN: right middle finger -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_middle_finger.customLabel>Doigt du milieu droit</BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_middle_finger.customLabel>
+  <!-- EN: right index finger -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_index_finger.customLabel>Index droit</BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_index_finger.customLabel>
+  <!-- EN: right thumb -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_thumb.customLabel>Pouce droit</BS_HumanoidWithWings_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_thumb.customLabel>
+  <!-- EN: left wing -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_wing.customLabel>Aile gauche</BS_HumanoidWithWings_Body.corePart.parts.left_wing.customLabel>
+  <!-- EN: right wing -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_wing.customLabel>Aile droite</BS_HumanoidWithWings_Body.corePart.parts.right_wing.customLabel>
+  <!-- EN: left leg -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_leg.customLabel>Jambe gauche</BS_HumanoidWithWings_Body.corePart.parts.left_leg.customLabel>
+  <!-- EN: left femur -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_leg.parts.left_femur.customLabel>Fémur gauche</BS_HumanoidWithWings_Body.corePart.parts.left_leg.parts.left_femur.customLabel>
+  <!-- EN: left tibia -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_leg.parts.left_tibia.customLabel>Tibia gauche</BS_HumanoidWithWings_Body.corePart.parts.left_leg.parts.left_tibia.customLabel>
+  <!-- EN: left foot -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_leg.parts.left_foot.customLabel>Pied gauche</BS_HumanoidWithWings_Body.corePart.parts.left_leg.parts.left_foot.customLabel>
+  <!-- EN: left little toe -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_leg.parts.left_foot.parts.left_little_toe.customLabel>Petit orteil gauche</BS_HumanoidWithWings_Body.corePart.parts.left_leg.parts.left_foot.parts.left_little_toe.customLabel>
+  <!-- EN: left fourth toe -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_leg.parts.left_foot.parts.left_fourth_toe.customLabel>Quatrième orteil gauche</BS_HumanoidWithWings_Body.corePart.parts.left_leg.parts.left_foot.parts.left_fourth_toe.customLabel>
+  <!-- EN: left middle toe -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_leg.parts.left_foot.parts.left_middle_toe.customLabel>Doigt du milieu du pied gauche</BS_HumanoidWithWings_Body.corePart.parts.left_leg.parts.left_foot.parts.left_middle_toe.customLabel>
+  <!-- EN: left second toe -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_leg.parts.left_foot.parts.left_second_toe.customLabel>Deuxième orteil gauche</BS_HumanoidWithWings_Body.corePart.parts.left_leg.parts.left_foot.parts.left_second_toe.customLabel>
+  <!-- EN: left big toe -->
+  <BS_HumanoidWithWings_Body.corePart.parts.left_leg.parts.left_foot.parts.left_big_toe.customLabel>Gros orteil gauche</BS_HumanoidWithWings_Body.corePart.parts.left_leg.parts.left_foot.parts.left_big_toe.customLabel>
+  <!-- EN: right leg -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_leg.customLabel>Jambe droite</BS_HumanoidWithWings_Body.corePart.parts.right_leg.customLabel>
+  <!-- EN: right femur -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_leg.parts.right_femur.customLabel>Fémur droit</BS_HumanoidWithWings_Body.corePart.parts.right_leg.parts.right_femur.customLabel>
+  <!-- EN: right tibia -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_leg.parts.right_tibia.customLabel>Tibia droit</BS_HumanoidWithWings_Body.corePart.parts.right_leg.parts.right_tibia.customLabel>
+  <!-- EN: right foot -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_leg.parts.right_foot.customLabel>Pied droit</BS_HumanoidWithWings_Body.corePart.parts.right_leg.parts.right_foot.customLabel>
+  <!-- EN: right little toe -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_leg.parts.right_foot.parts.right_little_toe.customLabel>Petit orteil droit</BS_HumanoidWithWings_Body.corePart.parts.right_leg.parts.right_foot.parts.right_little_toe.customLabel>
+  <!-- EN: right fourth toe -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_leg.parts.right_foot.parts.right_fourth_toe.customLabel>Quatrième orteil droit</BS_HumanoidWithWings_Body.corePart.parts.right_leg.parts.right_foot.parts.right_fourth_toe.customLabel>
+  <!-- EN: right middle toe -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_leg.parts.right_foot.parts.right_middle_toe.customLabel>Doigt du milieu du pied droit</BS_HumanoidWithWings_Body.corePart.parts.right_leg.parts.right_foot.parts.right_middle_toe.customLabel>
+  <!-- EN: right second toe -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_leg.parts.right_foot.parts.right_second_toe.customLabel>Deuxième orteil droit</BS_HumanoidWithWings_Body.corePart.parts.right_leg.parts.right_foot.parts.right_second_toe.customLabel>
+  <!-- EN: right big toe -->
+  <BS_HumanoidWithWings_Body.corePart.parts.right_leg.parts.right_foot.parts.right_big_toe.customLabel>Gros orteil droit</BS_HumanoidWithWings_Body.corePart.parts.right_leg.parts.right_foot.parts.right_big_toe.customLabel>
+  
+</LanguageData>

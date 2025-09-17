@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: mecha-snake body -->
+  <BS_Mech_SnakeBody.label>corps de méca-serpent</BS_Mech_SnakeBody.label>
+  
+  <!-- EN: extended mechanical spine -->
+  <BS_Mech_SnakeSpine.label>colonne mécanique étendue</BS_Mech_SnakeSpine.label>
+  
+  <!-- EN: octoleg-abdomen -->
+  <BS_Mech_SpiderAbdomen.label>abdomen octopode</BS_Mech_SpiderAbdomen.label>
+  
+  <!-- EN: mecha wing -->
+  <BS_Mech_Wing.label>aile méca</BS_Mech_Wing.label>
+  
+  <!-- EN: snake body -->
+  <BS_SnakeBody.label>corps de serpent</BS_SnakeBody.label>
+  
+  <!-- EN: Spine (snake body) -->
+  <BS_SnakeSpine.label>colonne (corps de serpent)</BS_SnakeSpine.label>
+  
+  <!-- EN: spider abdomen -->
+  <BS_SpiderAbdomen.label>abdomen d’araignée</BS_SpiderAbdomen.label>
+  
+  <!-- EN: wing -->
+  <BS_Wing.label>aile</BS_Wing.label>
+  
+</LanguageData>

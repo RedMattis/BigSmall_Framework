@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: visceral rating -->
+  <RED_OrganHealth.label>notation viscérale</RED_OrganHealth.label>
+  <!-- EN: A meassure of how well the organs are functioning. -->
+  <RED_OrganHealth.description>Mesure du bon fonctionnement des organes.</RED_OrganHealth.description>
+  <!-- EN: organ health -->
+  <RED_OrganHealth.labelSimple>santé des organes</RED_OrganHealth.labelSimple>
+  <!-- EN: No notable issues -->
+  <RED_OrganHealth.thresholds.0.description>aucun problème notable</RED_OrganHealth.thresholds.0.description>
+  <!-- EN: Minor organ health issues -->
+  <RED_OrganHealth.thresholds.1.description>problèmes mineurs de santé des organes</RED_OrganHealth.thresholds.1.description>
+  <!-- EN: Moderate organ health issues. -->
+  <RED_OrganHealth.thresholds.2.description>problèmes modérés de santé des organes</RED_OrganHealth.thresholds.2.description>
+  <!-- EN: Severe organ health issues. -->
+  <RED_OrganHealth.thresholds.3.description>problèmes sévères de santé des organes</RED_OrganHealth.thresholds.3.description>
+  <!-- EN: Extreme organ health issues. -->
+  <RED_OrganHealth.thresholds.4.description>problèmes extrêmes de santé des organes</RED_OrganHealth.thresholds.4.description>
+  <!-- EN: critical organ health issues. -->
+  <RED_OrganHealth.thresholds.5.description>problèmes critiques de santé des organes</RED_OrganHealth.thresholds.5.description>
+  
+</LanguageData>

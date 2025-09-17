@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: drone -->
+  <BS_DroneHediff.label>drone</BS_DroneHediff.label>
+  <!-- EN: This pawn is a drone, lacking some higher reasoning and creativity. -->
+  <BS_DroneHediff.description>Ce pion est un drone, dépourvu de certaines capacités de raisonnement supérieur et de créativité.</BS_DroneHediff.description>
+  
+</LanguageData>

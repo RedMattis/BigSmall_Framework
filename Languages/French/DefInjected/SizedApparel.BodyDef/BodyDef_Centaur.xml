@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: centauroid -->
+  <BS_Centaur_Body.label>centauroïde</BS_Centaur_Body.label>
+  <!-- EN: centauroid torso -->
+  <BS_Centaur_Body.corePart.customLabel>Torso de centauroïde</BS_Centaur_Body.corePart.customLabel>
+  <!-- EN: left lung -->
+  <BS_Centaur_Body.corePart.parts.left_lung.customLabel>Poumon gauche</BS_Centaur_Body.corePart.parts.left_lung.customLabel>
+  <!-- EN: right lung -->
+  <BS_Centaur_Body.corePart.parts.right_lung.customLabel>Poumon droit</BS_Centaur_Body.corePart.parts.right_lung.customLabel>
+  <!-- EN: left kidney -->
+  <BS_Centaur_Body.corePart.parts.left_kidney.customLabel>Rein gauche</BS_Centaur_Body.corePart.parts.left_kidney.customLabel>
+  <!-- EN: right kidney -->
+  <BS_Centaur_Body.corePart.parts.right_kidney.customLabel>Rein droit</BS_Centaur_Body.corePart.parts.right_kidney.customLabel>
+  <!-- EN: left eye -->
+  <BS_Centaur_Body.corePart.parts.Neck.parts.Head.parts.left_eye.customLabel>Œil gauche</BS_Centaur_Body.corePart.parts.Neck.parts.Head.parts.left_eye.customLabel>
+  <!-- EN: right eye -->
+  <BS_Centaur_Body.corePart.parts.Neck.parts.Head.parts.right_eye.customLabel>Œil droit</BS_Centaur_Body.corePart.parts.Neck.parts.Head.parts.right_eye.customLabel>
+  <!-- EN: left ear -->
+  <BS_Centaur_Body.corePart.parts.Neck.parts.Head.parts.left_ear.customLabel>Oreille gauche</BS_Centaur_Body.corePart.parts.Neck.parts.Head.parts.left_ear.customLabel>
+  <!-- EN: right ear -->
+  <BS_Centaur_Body.corePart.parts.Neck.parts.Head.parts.right_ear.customLabel>Oreille droite</BS_Centaur_Body.corePart.parts.Neck.parts.Head.parts.right_ear.customLabel>
+  <!-- EN: left shoulder -->
+  <BS_Centaur_Body.corePart.parts.left_shoulder.customLabel>Épaule gauche</BS_Centaur_Body.corePart.parts.left_shoulder.customLabel>
+  <!-- EN: left clavicle -->
+  <BS_Centaur_Body.corePart.parts.left_shoulder.parts.left_clavicle.customLabel>Clavicule gauche</BS_Centaur_Body.corePart.parts.left_shoulder.parts.left_clavicle.customLabel>
+  <!-- EN: left arm -->
+  <BS_Centaur_Body.corePart.parts.left_shoulder.parts.left_arm.customLabel>Bras gauche</BS_Centaur_Body.corePart.parts.left_shoulder.parts.left_arm.customLabel>
+  <!-- EN: left humerus -->
+  <BS_Centaur_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_humerus.customLabel>Humérus gauche</BS_Centaur_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_humerus.customLabel>
+  <!-- EN: left radius -->
+  <BS_Centaur_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_radius.customLabel>Radius gauche</BS_Centaur_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_radius.customLabel>
+  <!-- EN: left hand -->
+  <BS_Centaur_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.customLabel>Main gauche</BS_Centaur_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.customLabel>
+  <!-- EN: left pinky -->
+  <BS_Centaur_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_pinky.customLabel>Petit doigt gauche</BS_Centaur_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_pinky.customLabel>
+  <!-- EN: left ring finger -->
+  <BS_Centaur_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_ring_finger.customLabel>Annulaire gauche</BS_Centaur_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_ring_finger.customLabel>
+  <!-- EN: left middle finger -->
+  <BS_Centaur_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_middle_finger.customLabel>Doigt du milieu gauche</BS_Centaur_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_middle_finger.customLabel>
+  <!-- EN: left index finger -->
+  <BS_Centaur_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_index_finger.customLabel>Index gauche</BS_Centaur_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_index_finger.customLabel>
+  <!-- EN: left thumb -->
+  <BS_Centaur_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_thumb.customLabel>Pouce gauche</BS_Centaur_Body.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_thumb.customLabel>
+  <!-- EN: right shoulder -->
+  <BS_Centaur_Body.corePart.parts.right_shoulder.customLabel>Épaule droite</BS_Centaur_Body.corePart.parts.right_shoulder.customLabel>
+  <!-- EN: right clavicle -->
+  <BS_Centaur_Body.corePart.parts.right_shoulder.parts.right_clavicle.customLabel>Clavicule droite</BS_Centaur_Body.corePart.parts.right_shoulder.parts.right_clavicle.customLabel>
+  <!-- EN: right arm -->
+  <BS_Centaur_Body.corePart.parts.right_shoulder.parts.right_arm.customLabel>Bras droit</BS_Centaur_Body.corePart.parts.right_shoulder.parts.right_arm.customLabel>
+  <!-- EN: right humerus -->
+  <BS_Centaur_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_humerus.customLabel>Humérus droit</BS_Centaur_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_humerus.customLabel>
+  <!-- EN: right radius -->
+  <BS_Centaur_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_radius.customLabel>Radius droit</BS_Centaur_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_radius.customLabel>
+  <!-- EN: right hand -->
+  <BS_Centaur_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.customLabel>Main droite</BS_Centaur_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.customLabel>
+  <!-- EN: right pinky -->
+  <BS_Centaur_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_pinky.customLabel>Petit doigt droit</BS_Centaur_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_pinky.customLabel>
+  <!-- EN: right ring finger -->
+  <BS_Centaur_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_ring_finger.customLabel>Annulaire droit</BS_Centaur_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_ring_finger.customLabel>
+  <!-- EN: right middle finger -->
+  <BS_Centaur_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_middle_finger.customLabel>Doigt du milieu droit</BS_Centaur_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_middle_finger.customLabel>
+  <!-- EN: right index finger -->
+  <BS_Centaur_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_index_finger.customLabel>Index droit</BS_Centaur_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_index_finger.customLabel>
+  <!-- EN: right thumb -->
+  <BS_Centaur_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_thumb.customLabel>Pouce droit</BS_Centaur_Body.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_thumb.customLabel>
+  <!-- EN: front left leg -->
+  <BS_Centaur_Body.corePart.parts.front_left_leg.customLabel>Jambe avant gauche</BS_Centaur_Body.corePart.parts.front_left_leg.customLabel>
+  <!-- EN: front left femur -->
+  <BS_Centaur_Body.corePart.parts.front_left_leg.parts.front_left_femur.customLabel>Fémur avant gauche</BS_Centaur_Body.corePart.parts.front_left_leg.parts.front_left_femur.customLabel>
+  <!-- EN: front left tibia -->
+  <BS_Centaur_Body.corePart.parts.front_left_leg.parts.front_left_tibia.customLabel>Tibia avant gauche</BS_Centaur_Body.corePart.parts.front_left_leg.parts.front_left_tibia.customLabel>
+  <!-- EN: front left hoof -->
+  <BS_Centaur_Body.corePart.parts.front_left_leg.parts.front_left_hoof.customLabel>Sabot avant gauche</BS_Centaur_Body.corePart.parts.front_left_leg.parts.front_left_hoof.customLabel>
+  <!-- EN: front right leg -->
+  <BS_Centaur_Body.corePart.parts.front_right_leg.customLabel>Jambe avant droite</BS_Centaur_Body.corePart.parts.front_right_leg.customLabel>
+  <!-- EN: front right femur -->
+  <BS_Centaur_Body.corePart.parts.front_right_leg.parts.front_right_femur.customLabel>Fémur avant droit</BS_Centaur_Body.corePart.parts.front_right_leg.parts.front_right_femur.customLabel>
+  <!-- EN: front right tibia -->
+  <BS_Centaur_Body.corePart.parts.front_right_leg.parts.front_right_tibia.customLabel>Tibia avant droit</BS_Centaur_Body.corePart.parts.front_right_leg.parts.front_right_tibia.customLabel>
+  <!-- EN: front right hoof -->
+  <BS_Centaur_Body.corePart.parts.front_right_leg.parts.front_right_hoof.customLabel>Sabot avant droit</BS_Centaur_Body.corePart.parts.front_right_leg.parts.front_right_hoof.customLabel>
+  <!-- EN: rear left leg -->
+  <BS_Centaur_Body.corePart.parts.rear_left_leg.customLabel>Jambe arrière gauche</BS_Centaur_Body.corePart.parts.rear_left_leg.customLabel>
+  <!-- EN: rear left femur -->
+  <BS_Centaur_Body.corePart.parts.rear_left_leg.parts.rear_left_femur.customLabel>Fémur arrière gauche</BS_Centaur_Body.corePart.parts.rear_left_leg.parts.rear_left_femur.customLabel>
+  <!-- EN: rear left tibia -->
+  <BS_Centaur_Body.corePart.parts.rear_left_leg.parts.rear_left_tibia.customLabel>Tibia arrière gauche</BS_Centaur_Body.corePart.parts.rear_left_leg.parts.rear_left_tibia.customLabel>
+  <!-- EN: rear left hoof -->
+  <BS_Centaur_Body.corePart.parts.rear_left_leg.parts.rear_left_hoof.customLabel>Sabot arrière gauche</BS_Centaur_Body.corePart.parts.rear_left_leg.parts.rear_left_hoof.customLabel>
+  <!-- EN: rear right leg -->
+  <BS_Centaur_Body.corePart.parts.rear_right_leg.customLabel>Jambe arrière droite</BS_Centaur_Body.corePart.parts.rear_right_leg.customLabel>
+  <!-- EN: rear right femur -->
+  <BS_Centaur_Body.corePart.parts.rear_right_leg.parts.rear_right_femur.customLabel>Fémur arrière droit</BS_Centaur_Body.corePart.parts.rear_right_leg.parts.rear_right_femur.customLabel>
+  <!-- EN: rear right tibia -->
+  <BS_Centaur_Body.corePart.parts.rear_right_leg.parts.rear_right_tibia.customLabel>Tibia arrière droit</BS_Centaur_Body.corePart.parts.rear_right_leg.parts.rear_right_tibia.customLabel>
+  <!-- EN: rear right hoof -->
+  <BS_Centaur_Body.corePart.parts.rear_right_leg.parts.rear_right_hoof.customLabel>Sabot arrière droit</BS_Centaur_Body.corePart.parts.rear_right_leg.parts.rear_right_hoof.customLabel>
+  
+</LanguageData>

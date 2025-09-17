@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  <!-- EN: Editing: {0} -->
+  <BS_EditThing_Title>Édition : {0}</BS_EditThing_Title>
+
+  <!-- EN: Reset Custom -->
+  <BS_Reset>Réinitialiser le personnalisé</BS_Reset>
+
+  <!-- EN: Target -->
+  <BS_Tab_Thing>Cible</BS_Tab_Thing>
+  <!-- EN: Apparel -->
+  <BS_Tab_Apparel>Vêtements</BS_Tab_Apparel>
+  <!-- EN: Tagged -->
+  <BS_Tab_CustomTag>Étiqueté</BS_Tab_CustomTag>
+  
+  <!-- EN: skin color -->
+  <BS_Skin>couleur de peau</BS_Skin>
+  <!-- EN: hair color -->
+  <BS_Hair>couleur des cheveux</BS_Hair>
+  <!-- EN: custom -->
+  <BS_Custom>personnalisé</BS_Custom>
+  <!-- EN: custom color {0} -->
+  <BS_Custom_Str>couleur personnalisée {0}</BS_Custom_Str>
+
+  <!-- EN: shared colors -->
+  <BS_GlobalColors>couleurs partagées</BS_GlobalColors>
+  <!-- EN: color -->
+  <BS_Color>couleur</BS_Color>
+  <!-- EN: customize color -->
+  <BS_CustomizableColor>personnaliser la couleur</BS_CustomizableColor>
+
+  <!-- EN: base color -->
+  <BS_BaseColor>couleur de base</BS_BaseColor>
+  <!-- EN: primary -->
+  <BS_Primary>primaire</BS_Primary>
+  <!-- EN: secondary -->
+  <BS_Secondary>secondaire</BS_Secondary>
+  <!-- EN: tertiary -->
+  <BS_Tertiary>tertiaire</BS_Tertiary>
+
+  <!-- EN: primary color -->
+  <BS_PrimaryColor>couleur primaire</BS_PrimaryColor>
+  <!-- EN: secondary color -->
+  <BS_SecondaryColor>couleur secondaire</BS_SecondaryColor>
+  <!-- EN: tertiary color -->
+  <BS_TertiaryColor>couleur tertiaire</BS_TertiaryColor>
+  <!-- EN: enable -->
+  <BS_Enable>activer</BS_Enable>
+
+  <!-- EN: Display race info for {0} ({1}) -->
+  <BS_ShowPawnRaceTooltip>Afficher les informations de race pour {0} ({1})</BS_ShowPawnRaceTooltip>
+  <!-- EN: Edit pawn appearance -->
+  <BS_EditPawnTooltip>Modifier l'apparence du colon</BS_EditPawnTooltip>
+
+  <!-- EN: Restart required for changes to take effect -->
+  <BS_RestartRequired>Redémarrage requis pour que les modifications prennent effet</BS_RestartRequired>
+</LanguageData>

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: drone died -->
+  <BS_DroneDied.stages.drone_died.label>drone perdu</BS_DroneDied.stages.drone_died.label>
+  <!-- EN: We lost a drone. -->
+  <BS_DroneDied.stages.drone_died.description>Nous avons perdu un drone.</BS_DroneDied.stages.drone_died.description>
+  
+  <!-- EN: drone lost -->
+  <BS_DroneLost.stages.drone_lost.label>drone disparu</BS_DroneLost.stages.drone_lost.label>
+  <!-- EN: We lost a drone. -->
+  <BS_DroneLost.stages.drone_lost.description>Nous avons perdu un drone.</BS_DroneLost.stages.drone_lost.description>
+  
+</LanguageData>

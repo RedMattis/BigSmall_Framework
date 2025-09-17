@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: spider-person -->
+  <BS_SpiderHybrid.label>homme-araignée</BS_SpiderHybrid.label>
+  <!-- EN: left lung -->
+  <BS_SpiderHybrid.corePart.parts.left_lung.customLabel>Poumon gauche</BS_SpiderHybrid.corePart.parts.left_lung.customLabel>
+  <!-- EN: right lung -->
+  <BS_SpiderHybrid.corePart.parts.right_lung.customLabel>Poumon droit</BS_SpiderHybrid.corePart.parts.right_lung.customLabel>
+  <!-- EN: left eye -->
+  <BS_SpiderHybrid.corePart.parts.Neck.parts.Head.parts.left_eye.customLabel>Œil gauche</BS_SpiderHybrid.corePart.parts.Neck.parts.Head.parts.left_eye.customLabel>
+  <!-- EN: right eye -->
+  <BS_SpiderHybrid.corePart.parts.Neck.parts.Head.parts.right_eye.customLabel>Œil droit</BS_SpiderHybrid.corePart.parts.Neck.parts.Head.parts.right_eye.customLabel>
+  <!-- EN: left ear -->
+  <BS_SpiderHybrid.corePart.parts.Neck.parts.Head.parts.left_ear.customLabel>Oreille gauche</BS_SpiderHybrid.corePart.parts.Neck.parts.Head.parts.left_ear.customLabel>
+  <!-- EN: right ear -->
+  <BS_SpiderHybrid.corePart.parts.Neck.parts.Head.parts.right_ear.customLabel>Oreille droite</BS_SpiderHybrid.corePart.parts.Neck.parts.Head.parts.right_ear.customLabel>
+  <!-- EN: left shoulder -->
+  <BS_SpiderHybrid.corePart.parts.left_shoulder.customLabel>Épaule gauche</BS_SpiderHybrid.corePart.parts.left_shoulder.customLabel>
+  <!-- EN: left clavicle -->
+  <BS_SpiderHybrid.corePart.parts.left_shoulder.parts.left_clavicle.customLabel>Clavicule gauche</BS_SpiderHybrid.corePart.parts.left_shoulder.parts.left_clavicle.customLabel>
+  <!-- EN: left arm -->
+  <BS_SpiderHybrid.corePart.parts.left_shoulder.parts.left_arm.customLabel>Bra gauche</BS_SpiderHybrid.corePart.parts.left_shoulder.parts.left_arm.customLabel>
+  <!-- EN: left humerus -->
+  <BS_SpiderHybrid.corePart.parts.left_shoulder.parts.left_arm.parts.left_humerus.customLabel>Humérus gauche</BS_SpiderHybrid.corePart.parts.left_shoulder.parts.left_arm.parts.left_humerus.customLabel>
+  <!-- EN: left radius -->
+  <BS_SpiderHybrid.corePart.parts.left_shoulder.parts.left_arm.parts.left_radius.customLabel>Radius gauche</BS_SpiderHybrid.corePart.parts.left_shoulder.parts.left_arm.parts.left_radius.customLabel>
+  <!-- EN: left hand -->
+  <BS_SpiderHybrid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.customLabel>Main gauche</BS_SpiderHybrid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.customLabel>
+  <!-- EN: left pinky -->
+  <BS_SpiderHybrid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_pinky.customLabel>Petit doigt gauche</BS_SpiderHybrid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_pinky.customLabel>
+  <!-- EN: left ring finger -->
+  <BS_SpiderHybrid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_ring_finger.customLabel>Annulaire gauche</BS_SpiderHybrid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_ring_finger.customLabel>
+  <!-- EN: left middle finger -->
+  <BS_SpiderHybrid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_middle_finger.customLabel>Doigt du milieu gauche</BS_SpiderHybrid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_middle_finger.customLabel>
+  <!-- EN: left index finger -->
+  <BS_SpiderHybrid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_index_finger.customLabel>Index gauche</BS_SpiderHybrid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_index_finger.customLabel>
+  <!-- EN: left thumb -->
+  <BS_SpiderHybrid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_thumb.customLabel>Pouce gauche</BS_SpiderHybrid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_thumb.customLabel>
+  <!-- EN: right shoulder -->
+  <BS_SpiderHybrid.corePart.parts.right_shoulder.customLabel>Épaule droite</BS_SpiderHybrid.corePart.parts.right_shoulder.customLabel>
+  <!-- EN: right clavicle -->
+  <BS_SpiderHybrid.corePart.parts.right_shoulder.parts.right_clavicle.customLabel>Clavicule droite</BS_SpiderHybrid.corePart.parts.right_shoulder.parts.right_clavicle.customLabel>
+  <!-- EN: right arm -->
+  <BS_SpiderHybrid.corePart.parts.right_shoulder.parts.right_arm.customLabel>Bra droit</BS_SpiderHybrid.corePart.parts.right_shoulder.parts.right_arm.customLabel>
+  <!-- EN: right humerus -->
+  <BS_SpiderHybrid.corePart.parts.right_shoulder.parts.right_arm.parts.right_humerus.customLabel>Humérus droit</BS_SpiderHybrid.corePart.parts.right_shoulder.parts.right_arm.parts.right_humerus.customLabel>
+  <!-- EN: right radius -->
+  <BS_SpiderHybrid.corePart.parts.right_shoulder.parts.right_arm.parts.right_radius.customLabel>Radius droit</BS_SpiderHybrid.corePart.parts.right_shoulder.parts.right_arm.parts.right_radius.customLabel>
+  <!-- EN: right hand -->
+  <BS_SpiderHybrid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.customLabel>Main droite</BS_SpiderHybrid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.customLabel>
+  <!-- EN: right pinky -->
+  <BS_SpiderHybrid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_pinky.customLabel>Petit doigt droit</BS_SpiderHybrid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_pinky.customLabel>
+  <!-- EN: right ring finger -->
+  <BS_SpiderHybrid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_ring_finger.customLabel>Annulaire droit</BS_SpiderHybrid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_ring_finger.customLabel>
+  <!-- EN: right middle finger -->
+  <BS_SpiderHybrid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_middle_finger.customLabel>Doigt du milieu droit</BS_SpiderHybrid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_middle_finger.customLabel>
+  <!-- EN: right index finger -->
+  <BS_SpiderHybrid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_index_finger.customLabel>Index droit</BS_SpiderHybrid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_index_finger.customLabel>
+  <!-- EN: right thumb -->
+  <BS_SpiderHybrid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_thumb.customLabel>Pouce droit</BS_SpiderHybrid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_thumb.customLabel>
+  <!-- EN: second stomach -->
+  <BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.second_stomach.customLabel>Second estomac</BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.second_stomach.customLabel>
+  <!-- EN: second heart -->
+  <BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.second_heart.customLabel>Second cœur</BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.second_heart.customLabel>
+  <!-- EN: left kidney -->
+  <BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.left_kidney.customLabel>Rein gauche</BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.left_kidney.customLabel>
+  <!-- EN: right kidney -->
+  <BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.right_kidney.customLabel>Rein droit</BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.right_kidney.customLabel>
+  <!-- EN: left foremost leg -->
+  <BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.left_foremost_leg.customLabel>Patte avant gauche</BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.left_foremost_leg.customLabel>
+  <!-- EN: right foremost leg -->
+  <BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.right_foremost_leg.customLabel>Patte avant droite</BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.right_foremost_leg.customLabel>
+  <!-- EN: left middle front leg -->
+  <BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.left_middle_front_leg.customLabel>Patte médiane avant gauche</BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.left_middle_front_leg.customLabel>
+  <!-- EN: right middle front leg -->
+  <BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.right_middle_front_leg.customLabel>Patte médiane avant droite</BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.right_middle_front_leg.customLabel>
+  <!-- EN: left middle back leg -->
+  <BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.left_middle_back_leg.customLabel>Patte médiane arrière gauche</BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.left_middle_back_leg.customLabel>
+  <!-- EN: right middle back leg -->
+  <BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.right_middle_back_leg.customLabel>Patte médiane arrière droite</BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.right_middle_back_leg.customLabel>
+  <!-- EN: left backmost leg -->
+  <BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.left_backmost_leg.customLabel>Patte arrière gauche</BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.left_backmost_leg.customLabel>
+  <!-- EN: right backmost leg -->
+  <BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.right_backmost_leg.customLabel>Patte arrière droite</BS_SpiderHybrid.corePart.parts.BS_SpiderAbdomen.parts.right_backmost_leg.customLabel>
+  
+</LanguageData>

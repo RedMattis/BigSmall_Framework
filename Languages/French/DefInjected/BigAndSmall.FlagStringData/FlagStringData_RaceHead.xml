@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: ear -->
+  <BS_EarGraphics.label>oreille</BS_EarGraphics.label>
+  
+  <!-- EN: halo -->
+  <BS_HaloGraphics.label>auréole</BS_HaloGraphics.label>
+  
+  <!-- EN: horn -->
+  <BS_HornGraphics.label>corne</BS_HornGraphics.label>
+  
+  <!-- EN: misc head -->
+  <BS_MiscHeadGraphics.label>autres parties de la tête</BS_MiscHeadGraphics.label>
+  
+</LanguageData>

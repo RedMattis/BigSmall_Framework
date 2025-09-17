@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Crashlanded on Alien Planet -->
+  <BS_CrashlandedXenoPlus.label>Écrasé sur une planète extraterrestre</BS_CrashlandedXenoPlus.label>
+  <!-- EN: As per the crash-landed start except Wanderers and Space Refugees will have xenotypes much more often. -->
+  <BS_CrashlandedXenoPlus.description>Comme pour le départ écrasé, sauf que les Vagabonds et Réfugiés de l'Espace auront beaucoup plus souvent des xénotypes.</BS_CrashlandedXenoPlus.description>
+  <!-- EN: As per the crash-landed start except Wanderers and Space Refugees will have xenotypes much more often. -->
+  <BS_CrashlandedXenoPlus.scenario.description>Comme pour le départ écrasé, sauf que les Vagabonds et Réfugiés de l'Espace auront beaucoup plus souvent des xénotypes.</BS_CrashlandedXenoPlus.scenario.description>
+  <!-- EN: Crashlanded on Alien Planet -->
+  <BS_CrashlandedXenoPlus.scenario.name>Écrasé sur une planète extraterrestre</BS_CrashlandedXenoPlus.scenario.name>
+  <!-- EN: Three crashlanded survivors - the classic RimWorld experience, except with more frequent encounters with xenotypes. -->
+  <BS_CrashlandedXenoPlus.scenario.summary>Trois survivants écrasés - l'expérience classique de RimWorld, mais avec des rencontres de xénotypes beaucoup plus fréquentes.</BS_CrashlandedXenoPlus.scenario.summary>
+  
+</LanguageData>

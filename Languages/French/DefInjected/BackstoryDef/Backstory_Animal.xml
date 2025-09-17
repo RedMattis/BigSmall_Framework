@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: [PAWN_nameDef] grew up to be an adult animal. -->
+  <BS_AnimalAdult.description>[PAWN_nameDef] a grandi pour devenir un animal adulte.</BS_AnimalAdult.description>
+  <!-- EN: animal -->
+  <BS_AnimalAdult.title>Animal adulte</BS_AnimalAdult.title>
+  <!-- EN: animal -->
+  <BS_AnimalAdult.titleShort>Animal</BS_AnimalAdult.titleShort>
+  
+  <!-- EN: [PAWN_nameDef] was born as a baby animal. -->
+  <BS_AnimalBaby.description>[PAWN_nameDef] est né comme un animal bébé.</BS_AnimalBaby.description>
+  <!-- EN: baby animal -->
+  <BS_AnimalBaby.title>Animal bébé</BS_AnimalBaby.title>
+  <!-- EN: baby animal -->
+  <BS_AnimalBaby.titleShort>Bébé</BS_AnimalBaby.titleShort>
+  
+</LanguageData>

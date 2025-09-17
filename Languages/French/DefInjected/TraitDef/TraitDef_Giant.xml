@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: giant -->
+  <BS_Giant.degreeDatas.giant.label>géant</BS_Giant.degreeDatas.giant.label>
+  <!-- EN: {PAWN_nameDef} is able to use oversized weapons. -->
+  <BS_Giant.degreeDatas.giant.description>{PAWN_nameDef} est assez grand pour utiliser des armes surdimensionnées.</BS_Giant.degreeDatas.giant.description>
+  <BS_Giant.degreeDatas.giant.labelFemale>géante</BS_Giant.degreeDatas.giant.labelFemale>
+  
+</LanguageData>

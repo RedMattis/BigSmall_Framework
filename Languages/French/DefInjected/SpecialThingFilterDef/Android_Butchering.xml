@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: allow colonist corpses -->
+  <BS_AllowCorpsesColonistRobot.label>Autoriser les cadavres de colons</BS_AllowCorpsesColonistRobot.label>
+  <!-- EN: Allow the dead bodies of colonists. -->
+  <BS_AllowCorpsesColonistRobot.description>Autorise les corps des colons morts.</BS_AllowCorpsesColonistRobot.description>
+  
+  <!-- EN: allow slave corpses -->
+  <BS_AllowCorpsesSlaveRobot.label>Autoriser les cadavres d’esclaves</BS_AllowCorpsesSlaveRobot.label>
+  <!-- EN: Allow the dead bodies of slaves. -->
+  <BS_AllowCorpsesSlaveRobot.description>Autorise les corps des esclaves morts.</BS_AllowCorpsesSlaveRobot.description>
+  
+  <!-- EN: allow stranger corpses -->
+  <BS_AllowCorpsesStrangerRobot.label>Autoriser les cadavres d’étrangers</BS_AllowCorpsesStrangerRobot.label>
+  <!-- EN: Allow the dead bodies of strangers and enemies. -->
+  <BS_AllowCorpsesStrangerRobot.description>Autorise les corps des étrangers et ennemis morts.</BS_AllowCorpsesStrangerRobot.description>
+  
+</LanguageData>

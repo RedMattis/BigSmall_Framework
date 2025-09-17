@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: corunan -->
+  <BS_Corunan.label>corogne</BS_Corunan.label>
+  <!-- EN: An ancient culture common among rimworld tribes. -->
+  <BS_Corunan.description>Une ancienne culture commune aux tribus du Rimworld.</BS_Corunan.description>
+  
+  <!-- EN: medieval -->
+  <BS_MedievalCulture.label>médiévale</BS_MedievalCulture.label>
+  <!-- EN: A culture common among rimworld medieval societies. -->
+  <BS_MedievalCulture.description>Une culture commune aux sociétés médiévales du Rimworld.</BS_MedievalCulture.description>
+  
+</LanguageData>

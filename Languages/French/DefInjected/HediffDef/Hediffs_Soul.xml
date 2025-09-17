@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Soul Power Stockpile -->
+  <BS_SoulCollector.label>Réserve de puissance spirituelle</BS_SoulCollector.label>
+  <!-- EN: Spiritual power of strange origins. -->
+  <BS_SoulCollector.description>Puissance spirituelle d’origines étranges.</BS_SoulCollector.description>
+  
+  <!-- EN: Soulless Husk -->
+  <BS_Soulless.label>Coquille sans âme</BS_Soulless.label>
+  <!-- EN: This creature has been robbed of its spiritual essence causing irreversible damage. -->
+  <BS_Soulless.description>Cette créature a été dépouillée de son essence spirituelle, causant des dommages irréversibles.</BS_Soulless.description>
+  
+  <!-- EN: Soul Power -->
+  <BS_SoulPowerHediff.label>Puissance spirituelle</BS_SoulPowerHediff.label>
+  <!-- EN: A limited manifestation of spiritual power. -->
+  <BS_SoulPowerHediff.description>Manifestation limitée de puissance spirituelle.</BS_SoulPowerHediff.description>
+  
+</LanguageData>

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: winged humanoid -->
+  <BS_HumanoidWithWings_Race.label>humanoïde ailé</BS_HumanoidWithWings_Race.label>
+  <!-- EN: This individual has wings. -->
+  <BS_HumanoidWithWings_Race.description>Cet individu a des ailes.</BS_HumanoidWithWings_Race.description>
+  
+</LanguageData>

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: spider-person -->
+  <BS_SpiderPersonRace.label>homme-araignée</BS_SpiderPersonRace.label>
+  <!-- EN: A humanlike being with a lot of agile legs -->
+  <BS_SpiderPersonRace.description>Un être humanoïde doté de nombreuses jambes agiles.</BS_SpiderPersonRace.description>
+  
+</LanguageData>

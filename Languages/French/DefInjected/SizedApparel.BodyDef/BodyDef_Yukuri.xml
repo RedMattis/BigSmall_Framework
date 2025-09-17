@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: disembodied head -->
+  <BS_JustAHead.label>tête détachée</BS_JustAHead.label>
+  <!-- EN: neck -->
+  <BS_JustAHead.corePart.customLabel>Cou</BS_JustAHead.corePart.customLabel>
+  <!-- EN: nape -->
+  <BS_JustAHead.corePart.parts.nape.customLabel>Nuque</BS_JustAHead.corePart.parts.nape.customLabel>
+  <!-- EN: left kidney -->
+  <BS_JustAHead.corePart.parts.nape.parts.Head.parts.Skull.parts.left_kidney.customLabel>Rein gauche</BS_JustAHead.corePart.parts.nape.parts.Head.parts.Skull.parts.left_kidney.customLabel>
+  <!-- EN: right kidney -->
+  <BS_JustAHead.corePart.parts.nape.parts.Head.parts.Skull.parts.right_kidney.customLabel>Rein droit</BS_JustAHead.corePart.parts.nape.parts.Head.parts.Skull.parts.right_kidney.customLabel>
+  <!-- EN: left eye -->
+  <BS_JustAHead.corePart.parts.nape.parts.Head.parts.left_eye.customLabel>Œil gauche</BS_JustAHead.corePart.parts.nape.parts.Head.parts.left_eye.customLabel>
+  <!-- EN: right eye -->
+  <BS_JustAHead.corePart.parts.nape.parts.Head.parts.right_eye.customLabel>Œil droit</BS_JustAHead.corePart.parts.nape.parts.Head.parts.right_eye.customLabel>
+  <!-- EN: left ear -->
+  <BS_JustAHead.corePart.parts.nape.parts.Head.parts.left_ear.customLabel>Oreille gauche</BS_JustAHead.corePart.parts.nape.parts.Head.parts.left_ear.customLabel>
+  <!-- EN: right ear -->
+  <BS_JustAHead.corePart.parts.nape.parts.Head.parts.right_ear.customLabel>Oreille droite</BS_JustAHead.corePart.parts.nape.parts.Head.parts.right_ear.customLabel>
+  <!-- EN: left locomotive lung -->
+  <BS_JustAHead.corePart.parts.left_locomotive_lung.customLabel>Poumon gauche locomoteur</BS_JustAHead.corePart.parts.left_locomotive_lung.customLabel>
+  <!-- EN: right locomotive lung -->
+  <BS_JustAHead.corePart.parts.right_locomotive_lung.customLabel>Poumon droit locomoteur</BS_JustAHead.corePart.parts.right_locomotive_lung.customLabel>
+  
+</LanguageData>
