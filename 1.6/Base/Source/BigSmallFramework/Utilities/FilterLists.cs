@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -75,22 +76,27 @@ namespace BigAndSmall
             {
                 foreach (XmlNode cNode in xmlRoot.ChildNodes)
                 {
-                    if (typeof(T) == typeof(FlagString))
-                    {
-                        var fs = new FlagString();
-                        fs.LoadDataFromXML(cNode);
-                        Add((T)(object)fs);
-                    }
-                    else if (typeof(T) == typeof(string))
-                    {
-                        Add((T)(object)cNode.FirstChild.Value);
-                    }
-                    else
-                    {
-                        string defName = cNode.FirstChild.Value;
-                        string mayRequireMod = cNode.Attributes?["MayRequire"]?.Value;
-                        DirectXmlCrossRefLoader.RegisterListWantsCrossRef(this, defName, mayRequireMod: mayRequireMod);
-                    }
+                    LoadSingleXmlNode(cNode);
+                }
+            }
+
+            public void LoadSingleXmlNode(XmlNode cNode)
+            {
+                if (typeof(T) == typeof(FlagString))
+                {
+                    var fs = new FlagString();
+                    fs.LoadDataFromXML(cNode);
+                    Add((T)(object)fs);
+                }
+                else if (typeof(T) == typeof(string))
+                {
+                    Add((T)(object)cNode.FirstChild.Value);
+                }
+                else
+                {
+                    string defName = cNode.FirstChild.Value;
+                    string mayRequireMod = cNode.Attributes?["MayRequire"]?.Value;
+                    DirectXmlCrossRefLoader.RegisterListWantsCrossRef(this, defName, mayRequireMod: mayRequireMod);
                 }
             }
         }
@@ -197,6 +203,10 @@ namespace BigAndSmall
             public Blacklist<T> blacklist = null;
             public Banlist<T> banlist = null;
 
+            // This is typically ignored unless unless explicitly checked.
+            // For legacy reasons we can't make relying on this the defaut. At least not until 1.7.
+            public bool requireExplicitPermission = false;
+
             protected List<FilterList<T>> items = null;
             public List<FilterList<T>> Items => items ??= new List<FilterList<T>> { allowlist, whitelist, blacklist, banlist, acceptlist }.Where(x => x != null).ToList();
 
@@ -227,6 +237,7 @@ namespace BigAndSmall
 
             public void LoadDataFromXmlCustom(XmlNode xmlRoot)
             {
+                List<XmlNode> blackListAuto = [];
                 foreach (XmlNode xmlNode in xmlRoot.ChildNodes)
                 {
                     switch (xmlNode.Name.ToLower())
@@ -251,10 +262,21 @@ namespace BigAndSmall
                             acceptlist = [];
                             acceptlist.LoadDataFromXmlCustom(xmlNode);
                             break;
+                        case "requireexplicitpermission":
+                            if (bool.TryParse(xmlNode.InnerText, out bool reqExplicit))
+                            {
+                                requireExplicitPermission = reqExplicit;
+                            }
+                            break;
                         default:
-                            Log.Error($"Unknown filter list type {xmlNode.Name}");
+                            blackListAuto.Add(xmlNode);
                             break;
                     }
+                }
+                foreach (var node in blackListAuto)
+                {
+                    blacklist ??= [];
+                    blacklist.LoadSingleXmlNode(node);
                 }
             }
         }

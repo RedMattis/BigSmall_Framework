@@ -15,6 +15,7 @@ namespace BigAndSmall
         public bool colorA = false;
         public bool colorB = false;
         public bool colorC = false;
+        public FlagStringList customFlags = [];
 
         public FlagString Flag { get => tag; set => tag = value; }
 
@@ -29,7 +30,8 @@ namespace BigAndSmall
                     Flag = newTag,
                     colorA = colorA || other.colorA,
                     colorB = colorB || other.colorB,
-                    colorC = colorC || other.colorC
+                    colorC = colorC || other.colorC,
+                    customFlags = [.. customFlags.Union(other.customFlags)]
                 };
             }
             return null;

@@ -108,7 +108,7 @@ namespace BigAndSmall
             new Color(0.5f, 0.2f, 0.2f), // medium magenta
             ];
 
-        public static Color? MakeColorPicker(Rect inRect, Color color, ref bool draggingSlider, ref bool draggingHSV)
+        public static Color? MakeColorPicker(Rect inRect, Color color, ref bool draggingSlider, ref bool draggingHSV, List<Color> extraColors = null)
         {
             Rect rect = new(inRect);
 
@@ -152,7 +152,8 @@ namespace BigAndSmall
                 wasHsvChanged = true;
             }
 
-            if (GetPaletteColors(color, PaletteWithSkinClrs, paletteRect) is Color newColorFromPalette)
+            var palleteColors = extraColors == null ? PaletteWithSkinClrs : [.. PaletteWithSkinClrs, .. extraColors];
+            if (GetPaletteColors(color, palleteColors, paletteRect) is Color newColorFromPalette)
             {
                 return newColorFromPalette;
             }

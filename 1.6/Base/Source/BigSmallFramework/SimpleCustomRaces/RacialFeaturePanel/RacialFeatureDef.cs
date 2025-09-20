@@ -19,35 +19,31 @@ namespace BigAndSmall
     public class RacialFeatureDef : Def, IRacialFeature
     {
         [NoTranslate]
-        public string iconPath = "BS_DefaultIcon";
+        public string iconPath = "BS_Traits/DisguisedDemon";
         public Color? iconColor = Color.white;
         private string cachedDescription;
 
-        [Unsaved(false)]
-        private Texture2D cachedIcon;
-
-        public HediffDef hediffDescriptionSource = null;
         public string Label => label;
         public Texture2D Icon
         {
             get
             {
-                if (cachedIcon == null)
+                if (field == null)
                 {
                     if (iconPath.NullOrEmpty())
                     {
-                        cachedIcon = BaseContent.BadTex;
+                        field = BaseContent.BadTex;
                     }
                     else
                     {
-                        cachedIcon = ContentFinder<Texture2D>.Get(iconPath) ?? BaseContent.BadTex;
+                        field = ContentFinder<Texture2D>.Get(iconPath) ?? BaseContent.BadTex;
                     }
                 }
-                return cachedIcon;
+                return field;
             }
         }
 
-        public Color IconColor => iconColor.HasValue ? iconColor.Value : Color.white;
+        public Color IconColor => iconColor ?? Color.white;
 
         public string DescriptionFull => cachedDescription ??= GetDescriptionFull();
 
@@ -59,14 +55,6 @@ namespace BigAndSmall
             {
                 stringBuilder.AppendLine(description);
             }
-            else if (hediffDescriptionSource?.Description.NullOrEmpty() == false)
-            {
-                stringBuilder.AppendLine(hediffDescriptionSource.Description);
-            }
-            else
-            {
-                //stringBuilder.AppendLine("No description available.");
-            }
             
             return stringBuilder.ToString();
         }
@@ -77,10 +65,9 @@ namespace BigAndSmall
         public string label = "Unnamed";
         public string description = "No description available.";
         public HediffDef hediffDescriptionSource = null;
-        public string iconPath = "BS_DefaultIcon";
+        public string iconPath = "BS_Traits/Disguised";
         public Color? iconColor = Color.white;
         private string cachedDescription;
-        private Texture2D cachedIcon;
 
         public string Label => label;
         public string DescriptionFull => cachedDescription ??= GetDescriptionFull();
@@ -88,31 +75,55 @@ namespace BigAndSmall
         {
             get
             {
-                if (cachedIcon == null)
+                if (field == null)
                 {
                     if (iconPath.NullOrEmpty())
                     {
-                        cachedIcon = BaseContent.BadTex;
+                        field = BaseContent.BadTex;
                     }
                     else
                     {
-                        cachedIcon = ContentFinder<Texture2D>.Get(iconPath) ?? BaseContent.BadTex;
+                        field = ContentFinder<Texture2D>.Get(iconPath) ?? BaseContent.BadTex;
                     }
                 }
-                return cachedIcon;
+                return field;
             }
         }
-        public Color IconColor => iconColor.HasValue ? iconColor.Value : Color.white;
+        public Color IconColor => iconColor ?? Color.white;
         protected string GetDescriptionFull()
         {
             StringBuilder stringBuilder = new();
-            stringBuilder.AppendLine(description);
-            stringBuilder.AppendLine();
             if (hediffDescriptionSource != null)
             {
                 stringBuilder.AppendLine(hediffDescriptionSource.Description);
             }
+            stringBuilder.AppendLine(description);
+            
             return stringBuilder.ToString();
+        }
+
+        public RacialFeature SetupFromThis(List<PawnExtension> extensions)
+        {
+            var rf = new RacialFeature
+            {
+                label = label,
+                description = description,
+                iconPath = iconPath,
+                iconColor = iconColor,
+                hediffDescriptionSource = hediffDescriptionSource,
+            };
+            try
+            {
+                if (extensions.TryGetDescription(out string content))
+                {
+                    rf.cachedDescription = content + "\n\n" + rf.cachedDescription;
+                }
+            }
+            catch (Exception e)
+            {
+                Log.ErrorOnce($"Caught Exception in RacialFeatureDef.SetupFromThis: {e.Message}\n{e.StackTrace}", 423589);
+            }
+            return rf;
         }
     }
 }

@@ -162,7 +162,7 @@ namespace BigAndSmall
             {
                 var cmd = __instance as Command_Ability;
                 var pawn = cmd.Pawn;
-                if (IsDraftedPlayerPawn(pawn))
+                if (IsDraftedPlayerPawn(pawn) && AutoCombatEnabled)
                 {
                     var data = DraftedActionHolder.GetData(pawn);
                     if (data.AutoCastFor(cmd.Ability.def))

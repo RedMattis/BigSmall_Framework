@@ -105,7 +105,8 @@ namespace BigAndSmall
         public bool deathlike = false;
         public bool isMechanical = false;
 
-        public HashSet<RacialFeatureDef> racialFeatures = [];
+        public HashSet<RacialFeature> racialFeatures = [];
+        public HashSet<RacialFeatureDef> racialFeaturesAuto = [];
 
         /// <summary>
         /// Banns addictions that are not whitelisted or better.
@@ -135,6 +136,7 @@ namespace BigAndSmall
         public List<NewFoodCategory> newFoodCatAllow = null;
         public List<NewFoodCategory> newFoodCatDeny = null;
         public List<PawnDiet> pawnDiet = [];
+        public bool canUseChargers = false;
 
         public List<ApparelCache> apparelCaches = [];
 
@@ -163,10 +165,11 @@ namespace BigAndSmall
         public bool isAmorphous = false;
         public List<Aptitude> aptitudes = [];
         public List<WorkTypeDef> disabledWorkTypes = [];
+        public List<WorkTypeDef> explicitlyDisabled = [];
         //public List<SkillDef> disabledSkills = [];
 
         //public WorkTags workTagsDisabledByMod = WorkTags.None;
-        public List<SkillDef> skillsDisabledByAptitudes = [];
+        public List<SkillDef> skillsDisabledByExtensions = [];
         public List<GeneDef> endogenesRemovedByRace = [];
         public List<GeneDef> xenoenesRemovedByRace = [];
 

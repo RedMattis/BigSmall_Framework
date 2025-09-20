@@ -144,10 +144,6 @@
 			</operations>
 		</match>
 	</Operation>
-
-
-
-
   
   <Operation Class="PatchOperationAdd">
     <success>Always</success>
@@ -185,30 +181,5 @@
       <li>BS_SmashRobot</li>
     </value>
   </Operation>
-
-	<!-- <Operation Class="PatchOperationAdd">
-    <success>Always</success>
-    <xpath>Defs/StatDef[defName="PainShockThreshold"][not(labelMechanoids)]</xpath>
-    <value>
-      <labelMechanoids>Intake</labelMechanoids>
-    </value>
-  </Operation> -->
-
-	<!-- <Operation Class="PatchOperationAdd">
-    <success>Always</success>
-    <xpath>Defs/PawnCapacityDef[defName="Moving"][not(labelMechanoids)]</xpath>
-    <value>
-      <labelMechanoids>Locomotion</labelMechanoids>
-    </value>
-  </Operation> -->
 	
 </Patch>
-<!-- 
-
-<Operation Class="PatchOperationAdd">
-	<success>Always</success>
-	<xpath>Defs/ThoughtDef[defName="AteCorpse"][not(nullifyingGenes)]</xpath>
-	<value>
-		<nullifyingGenes/>
-	</value>
-</Operation> -->

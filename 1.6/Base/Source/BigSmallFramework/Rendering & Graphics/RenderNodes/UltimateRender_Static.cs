@@ -13,7 +13,6 @@ namespace BigAndSmall
         public PawnRenderNode Base { get; }
         public bool ScaleSet { get; set; }
         public Vector2 CachedScale { get; set; }
-        public ShaderTypeDef ShaderOverride { get; set; }
         public bool AllowTexPathFor => false;
     }
 
@@ -30,16 +29,16 @@ namespace BigAndSmall
                 var graphicSet = cgs.GetGraphicsSet(cache);
                 var texPath = graphicSet.GetPath(cache, noImage);
                 var maskPath = graphicSet.GetMaskPath(cache, null);
-                var conditionalProps = graphicSet.props.GetGraphicProperties(cache);
+                var conditionalProps = graphicSet.ConditionalProps.GetGraphicProperties(cache);
 
-                if (conditionalProps.drawSize != Vector2.one)
+                if (conditionalProps.drawSize != null)
                 {
                     uNode.ScaleSet = true;
-                    uNode.CachedScale = conditionalProps.drawSize;
+                    uNode.CachedScale = conditionalProps.drawSize.Value;
                 }
-                if (conditionalProps.shader != null)
+                else
                 {
-                    uNode.ShaderOverride = conditionalProps.shader;
+                    uNode.ScaleSet = false;
                 }
 
                 if (uNode.AllowTexPathFor && (texPath.NullOrEmpty() || texPath == noImage))
@@ -75,9 +74,9 @@ namespace BigAndSmall
                 Color colorThree = graphicSet.ColorC.GetColor(node, Color.white, ColorSetting.clrThreeKey);
 
                 Shader shader;
-                if (uNode.ShaderOverride != null)
+                if (conditionalProps?.shader?.Shader is Shader conShader)
                 {
-                    shader = uNode.ShaderOverride.Shader;
+                    shader = conShader;
                 }
                 else
                 {

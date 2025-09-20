@@ -51,7 +51,8 @@ Shader "BS_FlatTransparentOverlay"
         // We only want to overlay "lit" areas, so black/dark areas are also treated as transparent.
         float col_lumen = dot(col.rgb, float3(0.299, 0.587, 0.114));
         float overlayAlpha = col_lumen * col.a * _DrawColor.a;
-        
+        clip (overlayAlpha - 0.001);
+
         col.rgb = _DrawColor.rgb;
         col.a = overlayAlpha;
 				return col;

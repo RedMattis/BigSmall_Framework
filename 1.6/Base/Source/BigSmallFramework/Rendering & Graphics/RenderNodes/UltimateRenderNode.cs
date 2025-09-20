@@ -21,6 +21,14 @@ namespace BigAndSmall
         public bool autoBodyTypeMasks = false;
         public bool useHeadMesh = false;
 
+        //public class LabeledAdaptivePathNamed
+        //{
+        //    public AdaptivePathList adaptivePawnPaths;
+        //    public string label;
+        //}
+        //public List<LabeledAdaptivePathNamed> adaptivePathGroup = [];
+        //public List<ShaderTypeDef> customShader = [];
+
         // Never set this from XML.
         public ConditionalGraphicsSet generated = null;
 

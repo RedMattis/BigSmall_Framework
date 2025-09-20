@@ -16,6 +16,13 @@ namespace BigAndSmall
         {
             AnyOf, AllOf, NoneOf
         }
+        //[Flags]
+        //public enum PrerequisiteCheck // Not yet implemented. Always uses Genes right now.
+        //{
+        //    Gene,
+        //    Hediff,
+        //    PawnExtension,
+        //}
 
         public float allOfPerecntage = 1.0f; // Percentage of genes that must be present for AllOf to be considered met.
         public float noneOfPercentage = 0f;

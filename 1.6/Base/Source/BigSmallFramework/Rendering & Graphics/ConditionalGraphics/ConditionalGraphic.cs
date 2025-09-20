@@ -28,6 +28,7 @@ namespace BigAndSmall
             public bool colorA = false;
             public bool colorB = false;
             public bool colorC = false;
+            public FlagStringList customFlags = [];
         }
         public enum AltTrigger
         {
@@ -63,11 +64,9 @@ namespace BigAndSmall
         public FilterListSet<FlagString> triggerFlags = new();
         public int randSeed = 0;
         
-
         private List<AltTrigger> triggers = [];
         public HasTagGraphicOverride customTagGraphicIsSet = null;
 
-        [Obsolete]
         private List<AltTrigger> triggerConditions = [];
         public float? chanceTrigger = null;
         public SimpleCurve chanceByAge = null; // 1.0 means 100% chance at age 100.
@@ -78,9 +77,13 @@ namespace BigAndSmall
 
         public bool HasGeneTriggers => triggerGeneTag.AnyItems() || triggerGene.AnyItems();
 
-#pragma warning disable CS0612 // Type or member is obsolete
 		public HashSet<AltTrigger> Triggers { get => [.. triggerConditions, .. triggers]; }
-#pragma warning restore CS0612 // Type or member is obsolete
+
+        public static void ResetStaticData()
+        {
+            ColorSetting.allLeatherColors = null;
+            ColorSetting.randomClrPerId.Clear();
+        }
 
 		public List<GraphicsOverride> GetGraphicOverrides(Pawn pawn)
         {
@@ -151,7 +154,7 @@ namespace BigAndSmall
             {
                 var tags = Flagger.GetTagStrings(pawn, includeInactive:false);
                 var filterResult = triggerFlags.GetFilterResultFromItemList(tags);
-                if (filterResult.Denied()) return false;
+                if (filterResult.Denied() || (triggerFlags.requireExplicitPermission && filterResult.NotExplicitlyAllowed())) return false;
             }
             return true;
         }
@@ -191,6 +194,12 @@ namespace BigAndSmall
                     return false;
                 }
                 if (tagOverride.colorC && pawn.GetFlagColor(tagOverride.tag, 2) == null)
+                {
+                    return false;
+                }
+                if (tagOverride.customFlags.Count != 0
+                    && !tagOverride.customFlags.All(x =>
+                        pawn.HasFlagTagValue(tagOverride.tag, x.mainTag, x.subTag)))
                 {
                     return false;
                 }

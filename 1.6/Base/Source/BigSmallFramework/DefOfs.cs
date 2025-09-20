@@ -9,11 +9,16 @@ namespace BigAndSmall
     {
         public static bool IsBSShader(Shader shader) => shader == BS_CutoutThreeColor.Shader
             || shader == BS_TransparentThreeColor.Shader
-            || shader == BS_FlatTransparentOverlay.Shader;
+            || shader == BS_FlatTransparentOverlay.Shader
+            || shader == BS_EnergyShader.Shader
+            || shader == BS_VoidShader.Shader
+        ;
 
         public static ShaderTypeDef BS_CutoutThreeColor;
         public static ShaderTypeDef BS_TransparentThreeColor;
         public static ShaderTypeDef BS_FlatTransparentOverlay;
+        public static ShaderTypeDef BS_EnergyShader;
+        public static ShaderTypeDef BS_VoidShader;
 
         public static StatDef ButcheryFleshEfficiency;
         public static StatDef ButcheryMechanoidEfficiency;
@@ -171,9 +176,13 @@ namespace BigAndSmall
 		public static RecipeDef BS_ShredRobot;
         public static RecipeDef BS_SmashRobot;
 
+        // Jobs
+        public static JobDef BS_UseCharger;
+
         // Shaders
         public static ShaderTypeDef CutoutComplexBlend;
 
+        // Incidents
         public static IncidentDef StrangerInBlackJoin;
 
         // Xenotypes
@@ -191,6 +200,7 @@ namespace BigAndSmall
 
 		public static ColorSettingDef BS_DefaultSapientAnimalColorA;
 		public static ColorSettingDef BS_DefaultSapientAnimalColorB;
+
 
 
         static BSDefs()

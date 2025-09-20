@@ -14,6 +14,7 @@ Shader "BS_TransparentThreeColor"
         
     Pass
 		{
+      ZWrite Off
       Blend SrcAlpha OneMinusSrcAlpha
 
 			CGPROGRAM
@@ -52,7 +53,7 @@ Shader "BS_TransparentThreeColor"
 			float4 frag(v2f i) : SV_Target
 			{
 				float4 col = tex2D(_MainTex, i.uv);
-        clip (col.a - 0.0001);
+        clip (col.a - 0.001);
         float col_lumen = dot(col.rgb, float3(0.299, 0.587, 0.114));
 
 				float4 mask = tex2D(_MaskTex, i.uv);

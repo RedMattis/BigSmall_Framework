@@ -1,7 +1,7 @@
 <LanguageData>
   <BS_EditThing_Title>Editing: {0}</BS_EditThing_Title>
 
-  <BS_Reset>Reset Custom</BS_Reset>
+  <BS_Reset_Custom>Reset Custom</BS_Reset_Custom>
 
   <BS_Tab_Thing>Target</BS_Tab_Thing>
   <BS_Tab_Apparel>Apparel</BS_Tab_Apparel>
@@ -21,10 +21,16 @@
   <BS_Secondary>secondary</BS_Secondary>
   <BS_Tertiary>tertiary</BS_Tertiary>
 
+  <BS_Default>Default</BS_Default>
+  <BS_Reset>Reset</BS_Reset>
+
   <BS_PrimaryColor>primary color</BS_PrimaryColor>
   <BS_SecondaryColor>secondary color</BS_SecondaryColor>
   <BS_TertiaryColor>tertiary color</BS_TertiaryColor>
+
+  <BS_VariantsOf>Variants for {0}</BS_VariantsOf>
   <BS_Enable>enable</BS_Enable>
+  <BS_Shader>shader</BS_Shader>
 
   <BS_ShowPawnRaceTooltip>Display race info for {0} ({1})</BS_ShowPawnRaceTooltip>
   <BS_EditPawnTooltip>Edit pawn appearance</BS_EditPawnTooltip>

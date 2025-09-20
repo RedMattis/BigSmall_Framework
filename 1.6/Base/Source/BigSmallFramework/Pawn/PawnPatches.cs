@@ -56,20 +56,44 @@ namespace BigAndSmall
     //    }
     //}
 
-    [HarmonyPatch(typeof(Pawn_WorkSettings), nameof(Pawn_WorkSettings.Notify_DisabledWorkTypesChanged))]
-    public static class Notify_DisabledWorkTypesChanged
+    [HarmonyPatch(typeof(SkillRecord), nameof(SkillRecord.Notify_SkillDisablesChanged))]
+    public static class SkillRecord_Notify_SkillDisablesChanged
     {
-        public static void Postfix(Pawn_WorkSettings __instance)
+        public static void Postfix(SkillRecord __instance)
         {
-            if (__instance.priorities == null)
+            if (__instance?.pawn == null)
             {
                 return;
             }
+            if (__instance.pawn.GetCachePrepatched() is BSCache cache && cache.skillsDisabledByExtensions.Any())
+            {
+                if (cache.skillsDisabledByExtensions.Contains(__instance.def))
+                {
+                    __instance.cachedPermanentlyDisabled = BoolUnknown.True;
+                    __instance.cachedTotallyDisabled = BoolUnknown.True;
+                }
+
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Pawn_WorkSettings), nameof(Pawn_WorkSettings.Notify_DisabledWorkTypesChanged))]
+    public static class Pawn_WorkSettings_Notify_DisabledWorkTypesChanged
+    {
+        public static void Postfix(Pawn_WorkSettings __instance)
+        {
+            if (__instance.priorities == null || __instance.pawn == null)
+            {
+                return;
+            }
+            
             if (__instance.pawn.GetCachePrepatched() is BSCache cache && cache.disabledWorkTypes.Any())
             {
                 foreach (var workType in cache.disabledWorkTypes)
                 {
                     __instance.Disable(workType);
+                    __instance.pawn.cachedDisabledWorkTypes?.AddDistinct(workType);
+                    __instance.pawn.cachedDisabledWorkTypesPermanent?.AddDistinct(workType);
                 }
 
             }

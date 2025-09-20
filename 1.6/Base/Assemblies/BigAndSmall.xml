@@ -219,6 +219,21 @@
             Higher numbers are applied later, which means they can in some cases overwrite earlier extensions.
             </summary>
         </member>
+        <member name="F:BigAndSmall.PawnExtension.exclusionTags">
+            <summary>
+            Exclusion tags makes this PawnExtension disable all PawnExtensions of a lower priority and sharing any tag.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.tags">
+            <summary>
+            Tags which can be used for checks, filtering, etc.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.fuseTag">
+            <summary>
+            If used it will display them in UI as one entry when used with racialFeatureData.
+            </summary>
+        </member>
         <member name="F:BigAndSmall.PawnExtension.conditionals">
             <summary>
             Used by Genes. If it evaluates to False the gene will disable itself.
@@ -314,6 +329,11 @@
         <member name="F:BigAndSmall.PawnExtension.pawnDiet">
             <summary>
             Set what the pawn can eat. By default assumes human diet.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.canUseChargers">
+            <summary>
+            If true this will let the pawn use electric chargers.
             </summary>
         </member>
         <member name="F:BigAndSmall.PawnExtension.pawnDietRacialOverride">

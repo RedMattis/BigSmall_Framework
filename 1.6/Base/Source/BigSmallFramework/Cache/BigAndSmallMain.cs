@@ -10,7 +10,7 @@ namespace BigAndSmall
     [StaticConstructorOnStartup]
     public static class BigSmall
     {
-        public static Thread mainThread = null;
+        public static Thread mainThread = Thread.CurrentThread;
         public static bool performScaleCalculations = true;
 
         private static bool? _BSGenesActive = null;
@@ -58,10 +58,7 @@ namespace BigAndSmall
         public static bool IsAutoCombatEnabled => BigSmallMod.settings.enableDraftedJobs || (IsAutoCombatEnabledCached && !DisableAllExtraWidgets);
 
 
-        static BigSmall()
-        {
-            mainThread = Thread.CurrentThread;
-        }
+        static BigSmall() { }
     }
 
     [HarmonyPatch]

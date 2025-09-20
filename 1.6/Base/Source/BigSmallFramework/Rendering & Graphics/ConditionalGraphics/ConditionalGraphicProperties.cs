@@ -6,11 +6,15 @@ using Verse;
 
 namespace BigAndSmall
 {
+    public class ConditionalGraphicPropertiesDef : Def
+    {
+        public ConditionalGraphicProperties properties = new();
+    }
+
     public class ConditionalGraphicProperties : ConditionalGraphic
     {
-        public Vector2 drawSize = Vector2.one;
+        public Vector2? drawSize = null;
         public ShaderTypeDef shader = null;
-
         public List<ConditionalGraphicProperties> alts = [];
 
         public ConditionalGraphicProperties GetGraphicProperties(BSCache cache)

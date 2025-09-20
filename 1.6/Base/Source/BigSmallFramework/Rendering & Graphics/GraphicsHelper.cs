@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using UnityEngine;
 using Verse;
 using static BigAndSmall.RenderingLib;
@@ -29,11 +30,18 @@ namespace BigAndSmall
             return null;
         }
 
-        public static Color GetColorFromColourListRange(this List<Color> colorList, float rngValue, float rngValue2)
+        public static Color GetColorFromColorListRange(this List<Color> colorList, float rngValue, float rngValue2)
         {
             // If there is only one color, return it.
             if (colorList.Count == 1)
+            {
                 return colorList[0];
+            }
+            if (colorList.Count == 0)
+            {
+                Log.WarningOnce("Tried to get color from empty color list. Returning White.", 92345);
+                return Color.white;
+            }
 
             // Get two random adjacent colors from the list.
             int index1 = (int)Mathf.Lerp(0, colorList.Count - 2, rngValue);
@@ -45,6 +53,39 @@ namespace BigAndSmall
             float interp = rngValue2;
             return color1 * (1 - interp) + color2 * interp;
         }
+
+        public static Color GetColorFromColorListRangeWithWeights(this ColorOptionList colorList, float rngValue)
+        {
+            var colors = colorList.colors;
+            if (colors.Count == 0)
+            {
+                Log.WarningOnce("Tried to get color from empty color list. Returning White.", 92345);
+                return Color.white;
+            }
+            if (colors.Count == 1)
+            {
+                return colors[0].color;
+            }
+
+            float totalWeight = colors.Sum(c => c.weight);
+            float target = rngValue * totalWeight;
+
+            float cumulative = 0f;
+            for (int i = 0; i < colors.Count - 1; i++)
+            {
+                float nextCumulative = cumulative + colors[i].weight;
+                if (target <= nextCumulative)
+                {
+                    float interp = (target - cumulative) / colors[i].weight;
+                    return Color.Lerp(colors[i].color, colors[i + 1].color, interp);
+                }
+                cumulative = nextCumulative;
+            }
+            return colors.Last().color;
+        }
+
+
+
 
         public static Graphic TryGetCustomGraphics(PawnRenderNode renderNode, string path, Color colorOne, Color colorTwo, Color colorThree, Vector2 drawSize, CustomMaterial data)
         {

@@ -25,9 +25,11 @@ namespace BigAndSmall
 
     public class PawnExtension : SmartExtension
     {
-
         // Used for race-defaults.
         public static PawnExtension defaultPawnExtension = new();
+
+        // Optional data if you want to make the entire pawn extension into a racial feature.
+        public RacialFeature featureInfo = null;
 
         public string traitIcon = null;
 
@@ -37,7 +39,20 @@ namespace BigAndSmall
         /// </summary>
         public int priority = int.MinValue;
 
+        /// <summary>
+        /// Exclusion tags makes this PawnExtension disable all PawnExtensions of a lower priority and sharing any tag.
+        /// </summary>
         public List<string> exclusionTags = null;
+
+        /// <summary>
+        /// Tags which can be used for checks, filtering, etc.
+        /// </summary>
+        public List<string> tags = null;
+
+        /// <summary>
+        /// If used it will display them in UI as one entry when used with racialFeatureData.
+        /// </summary>
+        public string fuseTag = null;
 
         public bool frequentUpdate = false;
 
@@ -195,6 +210,12 @@ namespace BigAndSmall
         /// </summary>
         public PawnDiet pawnDiet = null;
         public string PawnDietDescription => pawnDiet?.LabelCap;
+
+        /// <summary>
+        /// If true this will let the pawn use electric chargers.
+        /// </summary>
+        public bool canUseChargers = false;
+
         /// <summary>
         /// If true this will make the race's "PawnDiet" be ignored in favor of other diets.
         /// 
@@ -359,8 +380,8 @@ namespace BigAndSmall
         /// Sets the path(s) of the body. Can be per body type, gender, etc.
         /// You can for example set a list of paths to be used by male hulks only.
         /// </summary>
-        public AdaptivePathPathList bodyPaths = [];
-        public AdaptivePathPathList bodyDessicatedPaths = [];
+        public AdaptivePathList bodyPaths = [];
+        public AdaptivePathList bodyDessicatedPaths = [];
         public BodyTypesPerGender bodyTypes = [];
         public bool removeTattoos = false;
         // Gets based on index at the moment. This is a bit lazy. I'll rewrite it properly later.
@@ -369,8 +390,8 @@ namespace BigAndSmall
         /// <summary>
         /// Same as above.
         /// </summary>
-        public AdaptivePathPathList headPaths = [];
-        public AdaptivePathPathList headDessicatedPaths = [];
+        public AdaptivePathList headPaths = [];
+        public AdaptivePathList headDessicatedPaths = [];
         /// <summary>
         /// Offsets the entire pawn's body up or down.
         /// </summary>

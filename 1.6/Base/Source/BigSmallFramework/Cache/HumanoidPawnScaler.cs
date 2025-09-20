@@ -1,5 +1,4 @@
-﻿using BigAndSmall;
-using BigAndSmall.FilteredLists;
+﻿using BigAndSmall.FilteredLists;
 using HarmonyLib;
 using JetBrains.Annotations;
 using Prepatcher;
@@ -11,7 +10,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Verse;
-using Verse.Noise;
 
 
 namespace BigAndSmall
@@ -259,6 +257,10 @@ namespace BigAndSmall
 
                 var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
                 var allPawnExt = ModExtHelper.GetAllPawnExtensions(pawn);
+
+                //var allPawnExtPlusInactive = ModExtHelper.GetAllPawnExtensions(pawn, includeInactive: true, checkForExclusionTags:false);
+                //List<PawnExtension> allInactivePawnExt = [.. allPawnExtPlusInactive.Except(allPawnExt)];
+
                 var racePawnExts = pawn.GetRacePawnExtensions();
                 var nonRacePawnExt = ModExtHelper.GetAllPawnExtensions(pawn, parentBlacklist: [typeof(RaceTracker)]);
                 preventHeadScaling = allPawnExt.Any(x => x.preventHeadScaling);
@@ -318,6 +320,8 @@ namespace BigAndSmall
 
                     canWield = allPawnExt.Any(x => x.canWieldThings == true) || !allPawnExt.Any(x => x.canWieldThings == false);
                 }
+
+                this.canUseChargers = allPawnExt.Any(x=>x.canUseChargers);
 
                 HandleSkillsAndAptitudes(allPawnExt);
 
@@ -386,9 +390,7 @@ namespace BigAndSmall
 
                 isMechanical = allPawnExt.Any(x => x.isMechanical) || pawn.RaceProps.IsMechanoid;
 
-                racialFeatures = [.. allPawnExt
-                    .Where(x => x.RacialFeaturesWithAuto != null)
-                    .SelectMany(x => x.RacialFeaturesWithAuto ?? [])];
+                SetupRacialFeatures(allPawnExt);
 
                 bool everFertile = activeGenes.Any(x => x.def.defName == "BS_EverFertile");
                 animalFriend = pawn.story?.traits?.allTraits.Any(x => !x.Suppressed && x.def.defName == "BS_AnimalFriend") == true || isMechanical;
@@ -418,7 +420,7 @@ namespace BigAndSmall
                     ? allPawnExt.Where(x => x.internalDamageDivisor != null)
                     .Aggregate(1f, (acc, x) => acc * x.internalDamageDivisor.Value) : 1;
 
-                
+
 
                 if (allPawnExt.Count > 0 && allPawnExt.Any(x => x.canHavePassions == false))
                 {
@@ -533,6 +535,40 @@ namespace BigAndSmall
             return true;
         }
 
+        private void SetupRacialFeatures(List<PawnExtension> allPawnExt)
+        {
+            racialFeatures = [];
+            var pawnExtGroupedByFuseTag = allPawnExt
+                .Where(x => x.fuseTag != null || x.featureInfo != null)
+                .GroupBy(x => x.fuseTag);
+            foreach (var group in pawnExtGroupedByFuseTag)
+            {
+                string name = group.Key;
+                if (name == null)
+                {
+                    foreach (var item in group)
+                    {
+                        var featureInfo = item.featureInfo.SetupFromThis([item]);
+                        racialFeatures.Add(featureInfo);
+                    }
+                }
+                else
+                {
+                    var items = group.ToList();
+                    RacialFeature featureData = items.FirstOrDefault(items => items.featureInfo != null)?.featureInfo;
+                    if (featureData != null)
+                    {
+                        var featureInfo = featureData.SetupFromThis(items);
+                        racialFeatures.Add(featureInfo);
+                    }
+                }
+            }
+
+            racialFeaturesAuto = [.. allPawnExt
+                .Where(x => x.RacialFeaturesWithAuto != null)
+                .SelectMany(x => x.RacialFeaturesWithAuto ?? [])];
+        }
+
         public void HandleSkillsAndAptitudes(List<PawnExtension> allPawnExt)
         {
             
@@ -559,21 +595,43 @@ namespace BigAndSmall
                     }
                 }
             }
-            var workTypesDisabledSpecifically = allPawnExt.SelectMany(x => x.disabledWorkTypes ?? []).Distinct();
+
+            var explicitlyDisabled = allPawnExt.SelectMany(x => x.disabledWorkTypes ?? []).Distinct();
             if (pawn.skills?.skills != null && (
                 aptitudes.Any()
-                || workTypesDisabledSpecifically.Any()
-                || allPawnExt.Any(x => x.disableSkillsWithMinus20Aptitude || x.disableSkillBelowAptitude != null)
-                || skillsDisabledByAptitudes.Any() == false))
+                || explicitlyDisabled.Any()
+                || disabledWorkTypes.Any()
+                || allPawnExt.Any(x => x.disableSkillsWithMinus20Aptitude
+                || x.disableSkillBelowAptitude != null)
+                || skillsDisabledByExtensions.Any() == false))
             {
                 if (pawn.cachedDisabledWorkTypes == null)
                 {
                     pawn.GetDisabledWorkTypes(permanentOnly: false);
                     pawn.GetDisabledWorkTypes(permanentOnly: true);
                 }
-
                 bool skillsChanged = false;
-                List<SkillDef> skillsDisabled = [];
+                if (this.explicitlyDisabled.Count() != explicitlyDisabled.Count()
+                    || this.explicitlyDisabled.Intersect(explicitlyDisabled).Count() != explicitlyDisabled.Count())
+                {
+                    this.explicitlyDisabled = [.. explicitlyDisabled];
+                    skillsChanged = true;
+                }
+
+                HashSet<SkillDef> skillsDisabled = [];
+                if (skillsChanged)
+                {
+                    foreach (var skill in pawn.skills.skills)
+                    { 
+                        var allAssociatedWorkTypes = DefDatabase<WorkTypeDef>.AllDefs.Where(wt => wt.relevantSkills.Contains(skill.def));
+                        if (allAssociatedWorkTypes.Count() > 0
+                            && explicitlyDisabled.Intersect(allAssociatedWorkTypes).Count() == allAssociatedWorkTypes.Count())
+                        {
+                            skillsDisabled.Add(skill.def);
+                        }
+                    }
+                }
+
                 HashSet<Aptitude> disabledByAptitude = [.. allPawnExt.SelectMany(x => x.disableSkillBelowAptitude ?? []).Distinct()];
                 foreach (var skill in pawn.skills.skills)
                 {
@@ -583,41 +641,33 @@ namespace BigAndSmall
                         .Select(x => x.level)
                         .DefaultIfEmpty(-19)
                         .Min();
-                    if (skill.Aptitude < limit && skill.cachedPermanentlyDisabled != BoolUnknown.True)
+                    if (skill.Aptitude < limit)
                     {
-                        skill.cachedPermanentlyDisabled = BoolUnknown.True;
                         skillsDisabled.Add(skill.def);
-                        skillsChanged = true;
-                    }
-                }
-                if (skillsDisabledByAptitudes.NullOrEmpty() == false)
-                {
-                    foreach (var skillToEnable in skillsDisabledByAptitudes.Where(x => skillsDisabled.Contains(x) == false))
-                    {
-                        if (pawn.skills.GetSkill(skillToEnable) is SkillRecord skill && skill.cachedPermanentlyDisabled == BoolUnknown.True)
+                        if (!skillsDisabledByExtensions.Contains(skill.def))
                         {
-                            skill.cachedPermanentlyDisabled = BoolUnknown.Unknown;
                             skillsChanged = true;
                         }
                     }
                 }
-                skillsDisabledByAptitudes = skillsDisabled;
-                if (!skillsChanged && disabledWorkTypes.Intersect(workTypesDisabledSpecifically).Count() == workTypesDisabledSpecifically.Count())
+                if (skillsDisabledByExtensions.NullOrEmpty() == false)
                 {
-                    skillsChanged = true;
+                    if (skillsDisabledByExtensions.Any(x => skillsDisabled.Contains(x) == false))
+                    {
+                        skillsChanged = true;
+                    }
                 }
+                skillsDisabledByExtensions = [.. skillsDisabled];
                 if (skillsChanged)
                 {
-                    List<WorkTypeDef> affectedWorkTypes = [.. workTypesDisabledSpecifically];
+                    List<WorkTypeDef> affectedWorkTypes = [.. explicitlyDisabled];
                     foreach (var skillDef in skillsDisabled)
                     {
                         affectedWorkTypes.AddRange(DefDatabase<WorkTypeDef>.AllDefs.Where(wt => wt.relevantSkills.Contains(skillDef)));
                     }
-                    affectedWorkTypes = [.. affectedWorkTypes.Distinct()];
-                    disabledWorkTypes.AddDistinctRange(affectedWorkTypes.Distinct());
-                    pawn.workSettings?.Notify_DisabledWorkTypesChanged();
-                    pawn.cachedDisabledWorkTypes?.AddDistinctRange(affectedWorkTypes);
-                    pawn.cachedDisabledWorkTypesPermanent?.AddDistinctRange(affectedWorkTypes);
+                    disabledWorkTypes = [..affectedWorkTypes];
+                    pawn.Notify_DisabledWorkTypesChanged();
+                    //Log.Message($"DEBUG: Notified pawn {pawn} of disabled work types: {string.Join(", ", disabledWorkTypes.Select(x => x.defName))}");
                 }
             }
         }
@@ -690,7 +740,7 @@ namespace BigAndSmall
 
         private void SetPawnHeadAndBodyTextures(HashSet<PawnExtension> otherPawnExt, HashSet<PawnExtension> fromRace, int pawnRNGSeed)
         {
-            List<(AdaptivePathPathList, PawnExtension)> GetValidPaths(HashSet<PawnExtension> allPawnExt, Func<PawnExtension, AdaptivePathPathList> pathSelector, BSCache cache)
+            List<(AdaptivePathList, PawnExtension)> GetValidPaths(HashSet<PawnExtension> allPawnExt, Func<PawnExtension, AdaptivePathList> pathSelector, BSCache cache)
             {
                 var validPaths = allPawnExt.Select(p => (pathSelector(p), p)).Where(x => x.Item1 != null && x.Item1.ValidFor(cache, apparentGender)).ToList();
                 if (validPaths.Count == 0) return [];

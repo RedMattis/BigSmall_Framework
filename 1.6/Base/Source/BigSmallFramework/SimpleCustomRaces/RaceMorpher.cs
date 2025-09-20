@@ -287,7 +287,7 @@ namespace BigAndSmall
                 var thingDefHediffs = ModExtHelper.GetAllPawnExtensions(pawn, parentBlacklist: [typeof(RaceTracker)]).Where(x => x.thingDefSwap != null).Select(x => x.thingDefSwap).ToList();
                 var thingDefActiveGenes = ModExtHelper.GetAllPawnExtensions(pawn).Where(x=>x.thingDefSwap != null).Select(x => x.thingDefSwap).ToList();
 
-                var thingDefGenes = ModExtHelper.GetAllPawnExtensions(pawn, includeInactiveGenes:true).Where(x => x.thingDefSwap != null).Select(x => x.thingDefSwap).ToList();
+                var thingDefGenes = ModExtHelper.GetAllPawnExtensions(pawn, includeInactive:true).Where(x => x.thingDefSwap != null).Select(x => x.thingDefSwap).ToList();
 
 
                 // Check if the ThingDef we CURRENTLY are is among the genesWithThingDefSwaps

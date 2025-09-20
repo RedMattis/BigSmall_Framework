@@ -1,0 +1,16 @@
+<Patch>
+  <Operation Class="PatchOperationInsert">
+    <xpath>.//li[@Class="JobGiver_Orders"]</xpath>
+    <value>
+      <li Class="BigAndSmall.JobGiver_AutoCombat"/>
+    </value>
+  </Operation>
+
+
+  <Operation Class="PatchOperationInsert">
+    <xpath>Defs/ThinkTreeDef[defName = "MainColonistBehaviorCore"]/thinkRoot[@Class="ThinkNode_Tagger"]/subNodes/li[@Class="ThinkNode_PrioritySorter"]/subNodes//li[2]</xpath>
+    <value>
+      <li Class="BigAndSmall.JobGiver_UseCharger"/>
+    </value>
+  </Operation>
+</Patch>

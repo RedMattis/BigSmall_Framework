@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using static BigAndSmall.CustomizableGraphicTracker;
@@ -17,6 +15,7 @@ namespace BigAndSmall
             public Color? colorA;
             public Color? colorB;
             public Color? colorC;
+            public Dictionary<string, List<string>> triggers = [];
 
             public override string ToString() => $"[{nameof(SubItemGraphic)}] - Def: {flagString}, ColorA: {colorA}, ColorB: {colorB}, ColorC: {colorC}";
             public void ExposeData()
@@ -25,23 +24,16 @@ namespace BigAndSmall
                 Scribe_Values.Look(ref colorA, "colorA");
                 Scribe_Values.Look(ref colorB, "colorB");
                 Scribe_Values.Look(ref colorC, "colorC");
+                Scribe_Collections.Look(ref triggers, "triggers", LookMode.Value, LookMode.Value);
             }
         }
 
         public Color? colorA;
         public Color? colorB;
         public Color? colorC;
+        public Dictionary<string, List<string>> triggers = [];
 
         public List<SubItemGraphic> flagItems = [];
-
-        // Not yet implemented.
-        //public string texturePath = null;
-        //public string maskPath = null;
-
-        // Used only by pawnkinds.
-        public ColorGenerator colorAGenerator = null;  // Not yet implemented.
-        public ColorGenerator colorBGenerator = null;
-        public ColorGenerator colorCGenerator = null;
 
         public static void Replace(Thing t, CustomizableGraphic graphic)
         {
@@ -96,6 +88,7 @@ namespace BigAndSmall
             Scribe_Values.Look(ref colorB, "colorB");
             Scribe_Values.Look(ref colorC, "colorC");
             Scribe_Collections.Look(ref flagItems, "tagItems", LookMode.Deep);
+            Scribe_Collections.Look(ref triggers, "triggers", LookMode.Value, LookMode.Value);
         }
 
         public override string ToString()
@@ -115,9 +108,29 @@ namespace BigAndSmall
         public static Color SetCustomColorC(this Thing t, Color color) =>
             (CustomizableGraphic.Get(t, true).colorC = color).Value;
 
+        public static void SetCustomTag(this Thing t, string key, string value)
+        {
+            var cg = CustomizableGraphic.Get(t, true);
+            if (!cg.triggers.TryGetValue(key, out var list))
+            {
+                cg.triggers[key] = list =[];
+            }
+            list.Add(value);
+        }
+        public static void RemoveCustomTag(this Thing t, string key)
+        {
+            CustomizableGraphic.Get(t)?.triggers.Remove(key);
+        }
+
         public static Color? GetCustomColorA(this Thing t) => CustomizableGraphic.Get(t)?.colorA;
         public static Color? GetCustomColorB(this Thing t) => CustomizableGraphic.Get(t)?.colorB;
         public static Color? GetCustomColorC(this Thing t) => CustomizableGraphic.Get(t)?.colorC;
+
+        public static bool HasCustomTag(this Thing t, string key) =>
+            CustomizableGraphic.Get(t)?.triggers.ContainsKey(key) == true;
+
+        public static bool HasCustomTagValue(this Thing t, string key, string value) =>
+            CustomizableGraphic.Get(t)?.triggers.TryGetValue(key, out var val) == true && val.Contains(value);
 
         public static Color? GetFlagColor(this Thing t, FlagString fString, int colorIndex)
         {
@@ -148,6 +161,27 @@ namespace BigAndSmall
                 2 => (subItem.colorC = color).Value,
                 _ => throw new IndexOutOfRangeException($"requested color index {colorIndex}. Max index is 2."),
             };
+        }
+
+        public static bool HasFlagTag(this Thing t, FlagString fString, string key) =>
+            fString != null && t != null && CustomizableGraphic.GetFlagGraphic(t, fString)?.triggers.ContainsKey(key) == true;
+
+        public static bool HasFlagTagValue(this Thing t, FlagString fString, string key, string value) =>
+            fString != null && t != null && CustomizableGraphic.GetFlagGraphic(t, fString)?.triggers.TryGetValue(key, out var val) == true && val.Contains(value);
+
+        public static void SetFlagTag(this Thing t, FlagString fString, string key, string value)
+        {
+            var subItem = CustomizableGraphic.GetFlagGraphic(t, fString, true);
+            if (!subItem.triggers.TryGetValue(key, out var list))
+            {
+                subItem.triggers[key] = list = [];
+            }
+            list.Add(value);
+        }
+
+        public static void RemoveFlagTag(this Thing t, FlagString fString, string key)
+        {
+            CustomizableGraphic.GetFlagGraphic(t, fString)?.triggers.Remove(key);
         }
     }
 }

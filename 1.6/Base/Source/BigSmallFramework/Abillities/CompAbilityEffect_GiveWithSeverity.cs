@@ -12,7 +12,23 @@ namespace BigAndSmall
 {
     public class CompProperties_AbilityGiveHediffComplex : CompProperties_AbilityGiveHediff
     {
+        public class OffsetSeverityByStats
+        {
+            public StatDef stat;
+            public float multiplier;
+        }
+        public class OffsetSeverityByBodySize
+        {
+            public float multiplier;
+        }
+        public List<OffsetSeverityByStats> offsetSeverityByStats = [];
+        public float offsetSeverityBodySizeFactor = 0;
+        public bool hediffStacks = false;
+
+
+        [Obsolete]
         public StatDef offsetSeverityByStat = null;
+        [Obsolete]
         public bool offsetSeverityBodySize = false;
     }
 
@@ -65,20 +81,8 @@ namespace BigAndSmall
                 hediffComp_Disappears.ticksToDisappear = GetDurationSeconds(target).SecondsToTicks();
             }
 
-            if (Props.severity >= 0f)
-            {
-                hediff.Severity = Props.severity;
-            }
-            if (Props.offsetSeverityByStat != null)
-            {
-                float statScale = target.GetStatValue(Props.offsetSeverityByStat);
-                hediff.Severity += statScale;
-            }
-            if (Props.offsetSeverityBodySize)
-            {
-                hediff.Severity += target.BodySize;
-            }
-
+            SetSeverity(target, hediff);
+            
             HediffComp_Link hediffComp_Link = hediff.TryGetComp<HediffComp_Link>();
             if (hediffComp_Link != null)
             {
@@ -89,6 +93,40 @@ namespace BigAndSmall
             target.health.AddHediff(hediff);
         }
 
+        private void SetSeverity(Pawn target, Hediff hediff)
+        {
+            if (Props.severity >= 0f)
+            {
+                hediff.Severity = Props.severity;
+            }
+            foreach (var offset in Props.offsetSeverityByStats)
+            {
+                if (offset.stat != null)
+                {
+                    float statScale = target.GetStatValue(offset.stat) * offset.multiplier;
+                    hediff.Severity += statScale;
+                }
+            }
+            if (Props.offsetSeverityBodySizeFactor != 0)
+            {
+                hediff.Severity += target.BodySize * Props.offsetSeverityBodySizeFactor;
+            }
+            SetSeverityLegacy(target, hediff);
+        }
+
+        private void SetSeverityLegacy(Pawn target, Hediff hediff)
+        {
+            if (Props.offsetSeverityByStat != null)
+            {
+                float statScale = target.GetStatValue(Props.offsetSeverityByStat);
+                hediff.Severity += statScale;
+            }
+            if (Props.offsetSeverityBodySize)
+            {
+                hediff.Severity += target.BodySize;
+            }
+        }
+
         protected virtual bool TryResist(Pawn pawn)
         {
             return false;
@@ -96,9 +134,16 @@ namespace BigAndSmall
 
         public override bool AICanTargetNow(LocalTargetInfo target)
         {
-            if (parent.pawn.Faction == Faction.OfPlayer)
+            if (Props.onlyApplyToSelf)
             {
-                return false;
+                target = parent.pawn;
+            }
+            if (!Props.hediffStacks)
+            {
+                if (target.Pawn != null && target.Pawn.health.hediffSet.GetFirstHediffOfDef(Props.hediffDef) != null)
+                {
+                    return false;
+                }
             }
 
             return target.Pawn != null;

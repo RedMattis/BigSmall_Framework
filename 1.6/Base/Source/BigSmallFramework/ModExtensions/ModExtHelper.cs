@@ -13,16 +13,16 @@ namespace BigAndSmall
             List<Type> parentWhitelist = null,
             List<Type> parentBlacklist = null,
             bool doSort = true,
-            bool includeInactiveGenes = false,
+            bool includeInactive = false,
             bool checkForExclusionTags = true
             )
         {
             List<PawnExtension> result = [];
-            if (includeInactiveGenes)
+            if (includeInactive)
             {
                 result = [.. GetHediffExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
                     .. GetAllGeneExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
-                    .. GetAllActiveTraitExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
+                    .. GetAllTraitExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
                     .. pawn.kindDef.GetAllPawnExtensions(parentWhitelist, parentBlacklist, doSort)
                 ];
             }

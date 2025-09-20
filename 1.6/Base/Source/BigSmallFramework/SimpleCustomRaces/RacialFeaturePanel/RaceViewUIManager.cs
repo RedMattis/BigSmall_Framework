@@ -168,21 +168,24 @@ namespace BigAndSmall
                 //    racialFeatures.AddDistinct(BSDefs.BS_Mechanical);
                 //}
                 racialFeatures.AddDistinctRange(cache.racialFeatures);
+                racialFeatures.AddDistinctRange(cache.racialFeaturesAuto);
 
                 foreach (var hediff in pawn.health.hediffSet.hediffs)
                 {
                     var pawnExtensionsOnHediff = hediff.def.GetAllPawnExtensionsOnHediff();
-                    var pawnExtensionsWithIcon = pawnExtensionsOnHediff.Where(x => x.traitIcon != null);
+                    var pawnExtensionsWithIcon = pawnExtensionsOnHediff
+                        // Only grab those with an icon, but no racialFeatureData.
+                        .Where(x => x.traitIcon != null && x.fuseTag == null && x.featureInfo == null);
                     if (!pawnExtensionsWithIcon.Any())
                     {
                         continue;
                     }
-                    var featureDef = new RacialFeatureDef
+                    var featureDef = new RacialFeature
                     {
                         label = hediff.Label.CapitalizeFirst(),
                         description = hediff.Description,
                         iconPath = pawnExtensionsWithIcon.First().traitIcon,
-                        hediffDescriptionSource = hediff.def,
+                        //hediffDescriptionSource = hediff.def,
                     };
 
                     try

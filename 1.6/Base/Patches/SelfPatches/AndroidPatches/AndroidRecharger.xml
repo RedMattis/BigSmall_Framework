@@ -1,0 +1,60 @@
+<Patch> <Operation Class="BigAndSmall.PatchOp_RobotsEnabled"> <match Class="PatchOperationAdd"> <xpath>Defs</xpath><value>
+  
+  <ThingDef ParentName="BuildingBase">
+    <defName>BS_AndroidChargingStation</defName>
+    <label>charging station</label>
+    <description>A station where androids can recharge power cells. Requires batteries and a powerful power grid to support.\n\n(art pending)</description>
+    <thingClass>BigAndSmall.Building_AndroidCharger</thingClass>
+    <graphicData>
+      <texPath>Things/Building/Production/ButcherSpot</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+
+    <statBases>
+      <MaxHitPoints>150</MaxHitPoints>
+      <WorkToBuild>4000</WorkToBuild>
+      <Mass>10</Mass>
+      <Flammability>0.35</Flammability>
+    </statBases>
+
+    <size>(1,1)</size>
+    <passability>PassThroughOnly</passability>
+    <rotatable>false</rotatable>
+    <designationCategory>Misc</designationCategory>
+
+    <building>
+      <ai_chillDestination>false</ai_chillDestination>
+    </building>
+    <tickerType>Normal</tickerType>
+
+    <costList>
+      <Steel>80</Steel>
+      <ComponentIndustrial>3</ComponentIndustrial>
+    </costList>
+    <comps>
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerTrader</compClass>
+        <basePowerConsumption>0</basePowerConsumption>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <HediffDef>
+    <defName>BS_ChargerCompatible</defName>
+    <label>battery-powered</label>
+    <description>Permits use of charging stations.</description>
+
+    <defaultLabelColor>(1.0, 1.0, 0.5)</defaultLabelColor>
+    <isBad>false</isBad>
+    <everCurableByItem>false</everCurableByItem>
+    <initialSeverity>1</initialSeverity>
+
+    <modExtensions>
+      <li Class="BigAndSmall.PawnExtension">
+        <canUseChargers>true</canUseChargers>
+      </li> 
+    </modExtensions>
+
+  </HediffDef>
+
+</value> </match> </Operation> </Patch>

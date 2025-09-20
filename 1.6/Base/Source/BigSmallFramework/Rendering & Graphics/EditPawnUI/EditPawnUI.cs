@@ -5,10 +5,6 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using HarmonyLib;
-using static HarmonyLib.Code;
-using System.Reflection.Emit;
-using System.Security.Cryptography;
 
 namespace BigAndSmall
 {
@@ -33,6 +29,7 @@ namespace BigAndSmall
             public bool colorA = false;
             public bool colorB = false;
             public bool colorC = false;
+            public List<FlagString> customFlags = [];
 
             public bool HasMultipleClrs => (colorA ? 1 : 0) + (colorB ? 1 : 0) + (colorC ? 1 : 0) > 1;
         }
@@ -54,6 +51,8 @@ namespace BigAndSmall
         private readonly Dictionary<string, List<SectionData>> CustomSections = [];
         private readonly Pawn pawn = null;
         private readonly Thing thing = null;
+        private readonly List<Color> extraColors = null;
+        private readonly Dictionary<Thing, List<ThingStyleDef>> apparelStyles = [];
 
         private Vector2 scrollPosition = Vector2.zero;
         private float scrollViewHeight = 0f;
@@ -68,7 +67,8 @@ namespace BigAndSmall
 
 
         private static WindowTab EditModeFrom(HasCustomizableGraphics cg, WindowTab @default) => FlagStringData.DataFor(cg?.Flag).displayTab ?? @default;
-        
+        public static bool queuedUpdate = false;
+
         public EditPawnWindow(ILoadReferenceable target)
         {
             thing = target as Thing;
@@ -80,6 +80,7 @@ namespace BigAndSmall
             _tabs = null;
             tabsWithContent = [WindowTab.Thing];
             EditableThings = [];
+            apparelStyles.Clear();
 
             this.target = target;
             forcePause = false;
@@ -92,6 +93,19 @@ namespace BigAndSmall
             resizeable = true;
             draggable = true;
 
+            if(ModsConfig.IdeologyActive)
+            {
+                extraColors = [];
+                if (pawn.Ideo is Ideo ideo)
+                {
+                    extraColors.Add(ideo.Color);
+                }
+                if (pawn.story?.favoriteColor is ColorDef favorite)
+                {
+                    extraColors.Add(favorite.color);
+                }
+            }
+
             AddEditable(null, WindowTab.Thing);
             if (pawn != null)
             {
@@ -99,6 +113,24 @@ namespace BigAndSmall
                 foreach (var item in wornApparel)
                 {
                     var customGfx = item.def.ExtensionsOnDef<HasCustomizableGraphics, ThingDef>();
+                    if (ModsConfig.IdeologyActive && item.def.CanBeStyled())
+                    {
+                        List<ThingStyleDef> styles = [];
+                        foreach (var styleCatDef in DefDatabase<StyleCategoryDef>.AllDefs)
+                        {
+                            foreach (var thingStyleDef in styleCatDef.thingDefStyles)
+                            {
+                                if (thingStyleDef.ThingDef == item.def)
+                                {
+                                    styles.Add(thingStyleDef.StyleDef);
+                                }
+                            }
+                        }
+                        if (styles.Count != 0)
+                        {
+                            apparelStyles[item] = styles;
+                        }
+                    }
                     if (customGfx.Count != 0)
                     {
                         HasCustomizableGraphics first = customGfx[0];
@@ -164,6 +196,8 @@ namespace BigAndSmall
                     sData.colorA |= cg.colorA;
                     sData.colorB |= cg.colorB;
                     sData.colorC |= cg.colorC;
+                    sData.customFlags.AddRange(cg.customFlags);
+                    sData.customFlags.Distinct();
                 }
                 else
                 {
@@ -177,6 +211,8 @@ namespace BigAndSmall
                 generic.colorA |= cg.colorA;
                 generic.colorB |= cg.colorB;
                 generic.colorC |= cg.colorC;
+                generic.customFlags.AddRange(cg.customFlags);
+                generic.customFlags.Distinct();
             }
 
             ThingGData GetMakeMainSection(WindowTab defaultMode, Thing target)
@@ -222,6 +258,12 @@ namespace BigAndSmall
                 }
             }
 
+            if (queuedUpdate && pawn != null)
+            {
+                queuedUpdate = false;
+                pawn.Drawer.renderer.SetAllGraphicsDirty();
+            }
+
             Rect tabRect = new(inRect.x, inRect.y + tabHeight - 4, inRect.width, tabHeight);
             Rect contentRect = new(inRect.x, inRect.y + contentHeight, inRect.width, inRect.height - contentHeight - 40);
 
@@ -260,7 +302,7 @@ namespace BigAndSmall
 
             List<(string, Action)> btmButtons =
             [
-                ("BS_Reset".Translate(), () => { SoundDefOf.Tick_High.PlayOneShotOnCamera(); ClearAll(); }),
+                ("BS_Reset_Custom".Translate(), () => { SoundDefOf.Tick_High.PlayOneShotOnCamera(); ClearAll(); }),
                 ("Close".Translate(), () => { SoundDefOf.Tick_High.PlayOneShotOnCamera(); Close(); }),
             ];
             if (!BigSmallMod.settings.makeDefsRecolorable)
@@ -407,6 +449,36 @@ namespace BigAndSmall
             else if (thing is Apparel apparel && tab == WindowTab.Apparel)
             {
                 DrawApparelIcon(apparel, rect, ref curY, apparel.DrawColor);
+                if (apparelStyles.TryGetValue(apparel, out var styleList))
+                {
+                    string styleLabel = apparel.StyleDef?.LabelCap ?? "BS_Default".Translate();
+                    var styleRect = new Rect(rect.x, curY, ButtonSize.x + 20, 32f);
+                    int nameLessStyleIdx = 2;
+                    if (Widgets.ButtonText(styleRect, styleLabel))
+                    {
+                        List<FloatMenuOption> options = [];
+                        options.Add(new FloatMenuOption("BS_Reset".Translate(), () =>
+                        {
+                            apparel.SetStyleDef(null);
+                            queuedUpdate = true;
+                        }));
+                        foreach (var style in styleList)
+                        {
+                            if (style.overrideLabel is string styleName == false)
+                            {
+                                styleName = $"{apparel.LabelCap} {nameLessStyleIdx}";
+                                nameLessStyleIdx++;
+                            }
+                            options.Add(new FloatMenuOption(styleName, () =>
+                            {
+                                apparel.SetStyleDef(style);
+                                queuedUpdate = true;
+                            }));
+                        }
+                        Find.WindowStack.Add(new FloatMenu(options));
+                    }
+                    curY = styleRect.yMax + 12f;
+                }
             }
             curY = MakeSharedCustomColorSection(rect, curY, thing, generic);
 
@@ -466,6 +538,39 @@ namespace BigAndSmall
                     DrawColorPicker(inThing.GetCustomColorC(), rect, ref curY, (Color col) => inThing.SetCustomColorC(col),
                         $"{"BS_Color".Translate()} {"BS_Tertiary".Translate()}");
                 }
+                if (data?.customFlags?.Any() == true)
+                {
+                    string customData = "BS_VariantsOf".Translate(inThing.LabelCap).CapitalizeFirst();
+                    var customDataRect = new Rect(rect.x, curY, ButtonSize.x + 20, 32f);
+                    if (Widgets.ButtonText(customDataRect, customData))
+                    {
+                        List<FloatMenuOption> options = [];
+                        options.Add(new FloatMenuOption("BS_Reset".Translate(), () =>
+                        {
+                            foreach (var otherFlag in data.customFlags)
+                            {
+                                inThing.RemoveCustomTag(otherFlag.mainTag);
+                            }
+                            queuedUpdate = true;
+                        }));
+                        foreach (var subFlag in data.customFlags)
+                        {
+                            string label = subFlag.Label;
+                            options.Add(new FloatMenuOption(label, () =>
+                            {
+                                foreach (var otherFlag in data.customFlags)
+                                {
+                                    inThing.RemoveCustomTag(otherFlag.mainTag);
+                                }
+                                inThing.SetCustomTag(subFlag.mainTag, subFlag.subTag);
+                                queuedUpdate = true;
+
+                            }));
+                        }
+                        Find.WindowStack.Add(new FloatMenu(options));
+                    }
+                    curY = customDataRect.yMax + 12f;
+                }
 
                 return curY;
             }
@@ -481,6 +586,7 @@ namespace BigAndSmall
         private float DrawCustom(Rect rect, float curY, Thing thing, SectionData data)
         {
             bool flagManyClr = data.HasMultipleClrs;
+            
             if (data.colorA)
             {
                 int idx = 0;
@@ -520,7 +626,38 @@ namespace BigAndSmall
                     Log.WarningOnce($"[BigAndSmall] Tried to draw custom color for {thing} with null flag.", 7123745);
                 }
             }
-
+            if (data?.customFlags?.Any() == true)
+            {
+                string customData = "BS_VariantsOf".Translate(data.flag.Label).CapitalizeFirst();
+                var customDataRect = new Rect(rect.x, curY, ButtonSize.x + 20, 32f);
+                if (Widgets.ButtonText(customDataRect, customData))
+                {
+                    List<FloatMenuOption> options = [];
+                    options.Add(new FloatMenuOption("BS_Default".Translate(), () =>
+                    {
+                        foreach (var otherFlag in data.customFlags)
+                        {
+                            thing.RemoveFlagTag(data.flag, otherFlag.mainTag);
+                        }
+                        queuedUpdate = true;
+                    }));
+                    foreach (var subFlag in data.customFlags)
+                    {
+                        string label = subFlag.Label;
+                        options.Add(new FloatMenuOption(label, () =>
+                        {
+                            foreach (var otherFlag in data.customFlags)
+                            {
+                                thing.RemoveFlagTag(data.flag, otherFlag.mainTag);
+                            }
+                            thing.SetFlagTag(data.flag, subFlag.mainTag, subFlag.subTag);
+                            queuedUpdate = true;
+                        }));
+                    }
+                    Find.WindowStack.Add(new FloatMenu(options));
+                }
+                curY = customDataRect.yMax + 12f;
+            }
             return curY;
         }
 
@@ -584,7 +721,7 @@ namespace BigAndSmall
             if (currClrNullable == null)
             {
                 string overrideClrStr = ("BS_Enable".Translate() + " " + title).CapitalizeFirst();
-                var overrideRect = new Rect(rect.x, curY, ButtonSize.x, ButtonSize.y);
+                var overrideRect = new Rect(rect.x, curY, ButtonSize.x+20, ButtonSize.y);
                 if (Widgets.ButtonText(overrideRect, overrideClrStr))
                 {
                     SoundDefOf.Tick_Low.PlayOneShotOnCamera();
@@ -603,7 +740,7 @@ namespace BigAndSmall
                 Color currClr = currClrNullable.Value;
                 Color color = currClr;
                 const float height = 180;
-                if (SmartColorWidgets.MakeColorPicker(new Rect(rect.x, curY, rect.width, height), color, ref draggingSlider, ref draggingWheel) is Color newColor)
+                if (SmartColorWidgets.MakeColorPicker(new Rect(rect.x, curY, rect.width, height), color, ref draggingSlider, ref draggingWheel, extraColors: extraColors) is Color newColor)
                 {
                     setColor(newColor);
                     pawn?.Drawer.renderer.SetAllGraphicsDirty();

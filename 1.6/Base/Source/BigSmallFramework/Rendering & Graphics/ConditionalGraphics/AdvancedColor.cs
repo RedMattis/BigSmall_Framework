@@ -3,6 +3,7 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using UnityEngine;
 using Verse;
 
@@ -23,6 +24,7 @@ namespace BigAndSmall
         public static Color neutralClr = new(0.45f, 0.8f, 1f);
         public static Color slaveClr = new(1f, 0.9f, 0.4f);
         public static List<Color> allLeatherColors = null;
+        public readonly static Dictionary<string, Color> randomClrPerId = [];
 
         public ColorSettingDef replacementDef = null;
         public List<ColorSettingDef> altDefs = [];
@@ -39,7 +41,8 @@ namespace BigAndSmall
         public bool invisibleIfUnconcious = false;
         public bool apparelColorOrFavorite = false;
         public bool favoriteColor = false;
-        public List<Color> colourRange = null;
+        public ColorOptionList colourRange = null;
+        public ColorOptionList colorOptions = null; // Based on exact options instead of a range.
         public bool apparelColorA = false; // Only works if the item is apparel.
         public bool apparelStuff = false; 
         public bool randomLeatherColor = false;
@@ -96,9 +99,6 @@ namespace BigAndSmall
 
         public List<ColorSetting> alts = [];
         public List<ColorSetting> altsLate = [];  // Exactly the same as above but applied after AltDefs.
-
-        [Unsaved(false)]
-        private readonly static Dictionary<string, Color> randomClrPerId = [];
 
         public List<ColorSettingDef> AltDefs => replacementDef == null ? [.. altDefs] : [.. altDefs, replacementDef];
         /// <summary>
@@ -333,14 +333,30 @@ namespace BigAndSmall
 
                     // This generates a deterministic value from 0 to 1 based on the id.
                     float randomValue = Mathf.Abs((strToHash.GetHashCode() % 200) / 200f);
-                    float randomValue2 = Mathf.Abs((strToHash.GetHashCode() % 333) / 333f);
-                    Color rngColor = GraphicsHelper.GetColorFromColourListRange(colourRange, randomValue, randomValue2);
+                    Color rngColor = GraphicsHelper.GetColorFromColorListRangeWithWeights(colourRange, randomValue);
                     randomClrPerId[clrId] = rngColor;
-                    //finalClr *= rngColor;
                     colorsAdded.Add(rngColor);
                     didSet = true;
                 }
             }
+            if (colorOptions != null)
+            {
+                string strToHash = id + id + hashOffset + id;
+                float randomValue = Mathf.Abs((strToHash.GetHashCode() % 189) / 189f);
+                float totalWeight = colorOptions.colors.Sum(x => x.weight);
+                float accumWeight = 0;
+                foreach (var (weight, color) in colorOptions.colors)
+                {
+                    accumWeight += weight;
+                    if (randomValue <= accumWeight / totalWeight)
+                    {
+                        colorsAdded.Add(color);
+                        didSet = true;
+                        break;
+                    }
+                }
+            }
+
             //if (forcedSkinColorGene && GeneHelpers.GetAllActiveGenes(pawn) is HashSet<Gene> genes)
             //{
             //    foreach(var gene in genes)
@@ -363,15 +379,16 @@ namespace BigAndSmall
             if (colorsAdded.Count > 0) {
                 if (averageColors)
                 {
-                    float r = 0, g = 0, b = 0;
+                    float r = 0, g = 0, b = 0, a = 1;
                     foreach (var color in colorsAdded)
                     {
                         r += color.r;
                         g += color.g;
                         b += color.b;
+                        a *= color.a;
                     }
                     int count = colorsAdded.Count;
-                    finalClr = new Color(r / count, g / count, b / count);
+                    finalClr = new Color(r / count, g / count, b / count, a);
 
                     didSet = true;
                 }

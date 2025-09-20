@@ -14,7 +14,7 @@ namespace BigAndSmall
     {
         public ConditionalTextureDef replacementDef = null;
         public List<ConditionalTextureDef> altDefs = [];
-        public AdaptivePathPathList texturePaths = [];
+        public AdaptivePathList texturePaths = [];
         public Vector2 drawSize = Vector2.one;
 
         public List<ConditionalTexture> alts = [];

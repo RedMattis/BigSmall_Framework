@@ -17,6 +17,7 @@ namespace BigAndSmall
     /// </summary>
     public class PawnRenderingProps_Lite : PawnRenderingProps_Ultimate //PawnRenderNodeProperties
     {
+        
         [Flags]
         public enum EnumColorSource
         {
@@ -29,9 +30,14 @@ namespace BigAndSmall
 
         public FlagString tag = null;
 
+        // Used by the RenderNodeAutoPatcher. Will usually be the DefName of the Def this is attached to.
+        public string identifier = null;
+
         private Color? colorA = null;
         public Color? colorB = null;
         public Color? colorC = null;
+
+        public List<ShaderTypeDef> userPickableShaders = [];
 
         // Can be used to simply link this to an "Ultimate" GraphicSetDef from XML. Will replace everything else.
         public GraphicSetDef link = null;
@@ -102,6 +108,25 @@ namespace BigAndSmall
             ColorSetting clrSetA;
             ColorSetting clrSetB = null;
             ColorSetting clrSetC = null;
+            ConditionalGraphicProperties conditionalProps = null;
+            if (identifier != null)
+            {
+                conditionalProps = new()
+                {
+                    shader = null,
+                    alts = [..
+                        userPickableShaders.Select(shader=> new ConditionalGraphicProperties
+                        {
+                            shader = shader,
+                            customTagGraphicIsSet = new ConditionalGraphic.HasTagGraphicOverride
+                            {
+                                tag = tag,
+                                customFlags = [new (identifier, shader.defName)]
+                            },
+                        })
+                    ]
+                };
+            }
 
             var (customColorA, source) = GetMainColorData();
             if (tag is FlagString flag)
@@ -191,7 +216,7 @@ namespace BigAndSmall
                 clrSetA.useRottedColor = true;
             }
 
-            return new ConditionalGraphicsSet(clrSetA, clrSetB, clrSetC);
+            return new ConditionalGraphicsSet(clrSetA, clrSetB, clrSetC, conditionalProps);
         }
     }
 

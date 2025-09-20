@@ -93,6 +93,7 @@
     <Publicize Include="Assembly-CSharp:RimWorld.CharacterCardUtility.tmpStackElements" />
     <Publicize Include="Assembly-CSharp:RimWorld.CharacterCardUtility.pawn" />
     <Publicize Include="Assembly-CSharp:RimWorld.SkillRecord.pawn" />
+    <Publicize Include="Assembly-CSharp:RimWorld.SkillRecord.cachedTotallyDisabled" />
     <Publicize Include="Assembly-CSharp:RimWorld.SkillRecord.cachedPermanentlyDisabled" />
     <Publicize Include="Assembly-CSharp:RimWorld.SkillRecord.CalculatePermanentlyDisabled" />
     <Publicize Include="Assembly-CSharp:RimWorld.SkillRecord.aptitudeCached" />

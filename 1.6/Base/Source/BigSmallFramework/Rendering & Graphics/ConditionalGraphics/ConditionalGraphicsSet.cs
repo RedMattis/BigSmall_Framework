@@ -20,13 +20,14 @@ namespace BigAndSmall
         protected ColorSettingDef colorADef = null;
         protected ColorSettingDef colorBDef = null;
         protected ColorSettingDef colorCDef = null;
-        public ConditionalGraphicProperties props = new();
+        protected ConditionalGraphicProperties props = new();
+        protected ConditionalGraphicPropertiesDef propsDef = null;
         protected ConditionalTexture conditionalPaths = null;
-        protected AdaptivePathPathList texturePaths = [];
+        protected AdaptivePathList texturePaths = [];
         protected AdaptivePawnPathDef adaptivePawnPathDef = null;
         protected ConditionalTexture conditionalMaskPaths = null;
         protected PathGetter pathGetter = null;
-        public AdaptivePathPathList maskPaths = [];
+        public AdaptivePathList maskPaths = [];
         public List<ConditionalGraphicsSet> alts = [];
         public List<ConditionalGraphicsSet> altsLate = [];  // Exactly the same as above but applied after AltDefs.
 
@@ -35,20 +36,23 @@ namespace BigAndSmall
         public ColorSetting ColorB => colorBDef?.color ?? colorB ?? ColorA;
 
         public ColorSetting ColorC => colorCDef?.color ?? colorC ?? ColorB;
-        public AdaptivePathPathList TexturePaths => adaptivePawnPathDef?.texturePaths ?? texturePaths;
+        public AdaptivePathList TexturePaths => adaptivePawnPathDef?.texturePaths ?? texturePaths;
         public string GetPath(BSCache cache, string path) => pathGetter?.TryGetPath(cache, ref path) == true
             || conditionalPaths?.TryGetPath(cache, ref path) == true
             || TexturePaths.TryGetPath(cache, ref path) ? path : path;
+
+        public ConditionalGraphicProperties ConditionalProps => propsDef?.properties ?? props;
 
         public string GetMaskPath(BSCache cache, string path) => conditionalMaskPaths?.TryGetPath(cache, ref path) == true || maskPaths.TryGetPath(cache, ref path) ? path : path;
 
         public ConditionalGraphicsSet() { }
 
-        public ConditionalGraphicsSet(ColorSetting colorA, ColorSetting colorB = null, ColorSetting colorC = null)
+        public ConditionalGraphicsSet(ColorSetting colorA, ColorSetting colorB = null, ColorSetting colorC = null, ConditionalGraphicProperties props = null)
         {
-            this.colorA = colorA;
-            this.colorB = colorB;
-            this.colorC = colorC;
+            this.colorA = colorA ?? new ColorSetting();
+            this.colorB = colorB ?? new ColorSetting();
+            this.colorC = colorC ?? new ColorSetting();
+            this.props = props ?? new ConditionalGraphicProperties();
         }
 
         public ConditionalGraphicsSet ReturnThis(BSCache cache)

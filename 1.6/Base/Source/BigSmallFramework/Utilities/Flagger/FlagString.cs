@@ -15,9 +15,10 @@ namespace BigAndSmall
         private const string DEFAULT = "default";
         public string mainTag;
         public string subTag = DEFAULT;
+        public string label = null;
         public Dictionary<string, string> extraData = [];
         public FlagStringStateData Data { get { return field ??= FlagStringData.DataFor(this); } set { field = value; } }
-        public string Label { get { return field ??= GetCustomLabel() ?? Data?.label ?? ToStringShort(); } set { field = value; } }
+        public string Label { get { return field ??= label ?? Data?.label ?? ToStringShort(); } set { field = value; } }
         public EditPawnWindow.WindowTab? DisplayTab { get { return field ??= Data?.displayTab; } set { field = value; } }
         public string CustomCategory { get { return field ??= Data?.customCategory; } set { field = value; } }
 
@@ -27,7 +28,8 @@ namespace BigAndSmall
         {
             if (obj is FlagString other)
             {
-                return mainTag == other.mainTag && subTag == other.subTag;
+                return mainTag == other.mainTag && subTag == other.subTag && extraData.Count == other.extraData.Count
+                    && (extraData.Count == 0 || !extraData.Except(other.extraData).Any());
             }
             return false;
         }
@@ -38,13 +40,13 @@ namespace BigAndSmall
         public bool MainTagEquals(FlagString other) => this?.mainTag != null && other?.mainTag != null
             && mainTag == other.mainTag;
 
-
         public FlagString() { }
-        public FlagString(string simpleString)
+        public FlagString(string mainTag, string subTag=null, Dictionary<string, string> extraData = null, string label=null)
         {
-            mainTag = simpleString;
-            subTag = DEFAULT;
-            extraData = [];
+            this.mainTag = mainTag;
+            this.subTag = subTag ?? DEFAULT;
+            this.extraData = extraData ?? [];
+            this.label = label;
         }
 
         /// <summary>
@@ -87,18 +89,26 @@ namespace BigAndSmall
                 return hash;
             }
         }
-        public string GetCustomLabel() => extraData.TryGetValue("Label", out var label) ? label : null;
         public override string ToString() => $"{mainTag}/{subTag}" + (extraData.Any() ? $"[{string.Join(",", extraData)}]" : "");
         public string ToStringShort() => subTag == DEFAULT ? mainTag : $"{mainTag}, {subTag}";
 
         public void LoadDataFromXML(XmlNode node)
         {
+            extraData = node.Attributes?
+                .OfType<XmlAttribute>()
+                .ToDictionary(attr => attr.Name, attr => attr.Value) ?? [];
+            if (extraData.ContainsKey("Label"))
+            {
+                label = extraData["Label"];
+                extraData.Remove("Label");
+            }
+
             if (node.Name == "li")
             {
                 SetupSimple(node);
                 return;
             }
-            if (node.NodeType == XmlNodeType.Text)
+            if (node.NodeType == XmlNodeType.Text && node.InnerText is null)
             {
                 SetupSimple(node);
                 return;
@@ -109,21 +119,37 @@ namespace BigAndSmall
             {
                 subTag = node.InnerText;
             }
-            extraData = node.Attributes?
-                .OfType<XmlAttribute>()
-                .ToDictionary(attr => attr.Name, attr => attr.Value) ?? [];
+            
 
             void SetupSimple(XmlNode node)
             {
                 mainTag = node.InnerText;
                 subTag = DEFAULT;
-                extraData = [];
             }
         }
         public void LoadDataFromXmlCustom(XmlNode xmlRoot)
         {
             var node = xmlRoot.FirstChild;
             LoadDataFromXML(node);
+        }
+
+        public FlagString Clone(Dictionary<string, string> appendData = null)
+        {
+            var result = new FlagString()
+            {
+                mainTag = mainTag,
+                subTag = subTag,
+                label = label,
+                extraData = new Dictionary<string, string>(extraData) 
+            };
+            if (appendData != null)
+            {
+                foreach (var kvp in appendData)
+                {
+                    result.extraData[kvp.Key] = kvp.Value;
+                }
+            }
+            return result;
         }
 
         public void ExposeData()
@@ -134,7 +160,7 @@ namespace BigAndSmall
         }
     }
 
-    public class FlagStringList : List<FlagString>
+    public class FlagStringList : HashSet<FlagString>
     {
         public void LoadDataFromXmlCustom(XmlNode xmlRoot)
         {

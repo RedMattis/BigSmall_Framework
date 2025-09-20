@@ -17,7 +17,7 @@ namespace BigAndSmall
         private static int lastTick = 0;
         public static void Postfix(ref float __result, Pawn __instance)
         {
-            if (__instance.GetCachePrepatched() is BSCache cache)
+            if (__instance.GetCachePrepatched() is BSCache cache && !cache.isDefaultCache)
             {
                 float newScale = __result * cache.healthMultiplier;
                 if (!cache.injuriesRescaled)

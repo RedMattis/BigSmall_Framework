@@ -2,6 +2,7 @@
 
   <ShaderTypeDef>
     <defName>BS_CutoutThreeColor</defName>
+    <label>Three Color</label>
     <shaderPath>BS_CutoutThreeColor</shaderPath>
   </ShaderTypeDef>
 
@@ -9,17 +10,26 @@
 
   <ShaderTypeDef>
     <defName>BS_TransparentThreeColor</defName>
+    <label>Three Color Transparency</label>
     <shaderPath>BS_TransparentThreeColor</shaderPath>
   </ShaderTypeDef>
 
   <ShaderTypeDef>
     <defName>BS_FlatTransparentOverlay</defName>
+    <label>Flat Overlay</label>
     <shaderPath>BS_FlatTransparentOverlay</shaderPath>
   </ShaderTypeDef>
 
-  <!-- <ShaderTypeDef>
-    <defName>BS_FlatSampleOverlay</defName>
-    <shaderPath>BS_FlatSampleOverlay</shaderPath>
-  </ShaderTypeDef> -->
+  <ShaderTypeDef>
+    <defName>BS_EnergyShader</defName>
+    <label>Energy Effect</label>
+    <shaderPath>BS_EnergyShader</shaderPath>
+  </ShaderTypeDef>
+
+  <ShaderTypeDef>
+    <defName>BS_VoidShader</defName>
+    <label>Void Effect</label>
+    <shaderPath>BS_VoidShader</shaderPath>
+  </ShaderTypeDef>
 
 </Defs>

@@ -165,6 +165,13 @@ namespace BigAndSmall
             {
                 return null;
             }
+            if (ability.def.aiCanUse == true)
+            {
+                if (!ability.AICanTargetNow(target))
+                {
+                    return null;
+                }
+            }
 
             bool aiCanUse = ability.def.aiCanUse;
             // Hack to get the AI to use abilities that the player selected even though not marked as AI usable.
@@ -385,10 +392,13 @@ namespace BigAndSmall
         private Job TrySelfBuff(Pawn pawn, List<Ability> abilities)
         {
             var selfTarget = new LocalTargetInfo(pawn);
-            var self_buffs = abilities.Where(ability => ability.verb.targetParams.canTargetSelf && ability.CanCast).ToList();
-            if (self_buffs.Any())
+            var selfBuffs = abilities.Where(ability => ability.verb.targetParams.canTargetSelf
+                && ability.CanCast
+                && (ability.def.aiCanUse == false || ability.AICanTargetNow(pawn))
+            ).ToList();
+            if (selfBuffs.Any())
             {
-                var tempAbilityJob = self_buffs.RandomElement().GetJob(selfTarget, selfTarget);
+                var tempAbilityJob = selfBuffs.RandomElement().GetJob(selfTarget, selfTarget);
 
                 return tempAbilityJob;
             }
