@@ -6,8 +6,15 @@
     <description>A station where androids can recharge power cells. Requires batteries and a powerful power grid to support.\n\n(art pending)</description>
     <thingClass>BigAndSmall.Building_AndroidCharger</thingClass>
     <graphicData>
-      <texPath>Things/Building/Production/ButcherSpot</texPath>
+      <texPath>BS_Buildings/AndroidCharger</texPath>
       <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(2,2)</drawSize>
+      <damageData>
+        <cornerTL>Damage/Corner</cornerTL>
+        <cornerTR>Damage/Corner</cornerTR>
+        <cornerBL>Damage/Corner</cornerBL>
+        <cornerBR>Damage/Corner</cornerBR>
+      </damageData>
     </graphicData>
 
     <statBases>
@@ -15,12 +22,27 @@
       <WorkToBuild>4000</WorkToBuild>
       <Mass>10</Mass>
       <Flammability>0.35</Flammability>
+      <!-- 1.0 means 0.5 battery per 2 food, 4 means 0.5 battery per 4 food, etc. -->
+      <WorkTableEfficiencyFactor>1.0</WorkTableEfficiencyFactor>
+      <!-- 1.0 means 4.0 food provided per hour. -->
+      <WorkTableWorkSpeedFactor>1.0</WorkTableWorkSpeedFactor>
     </statBases>
 
+    <minifiedDef>MinifiedThing</minifiedDef>
     <size>(1,1)</size>
+    <altitudeLayer>Building</altitudeLayer>
     <passability>PassThroughOnly</passability>
+    <pathCost>50</pathCost>
     <rotatable>false</rotatable>
-    <designationCategory>Misc</designationCategory>
+    <designationCategory>Power</designationCategory>
+    <castEdgeShadows>true</castEdgeShadows>
+    <staticSunShadowHeight>0.35</staticSunShadowHeight>
+    <thingCategories>
+      <li>BuildingsPower</li>
+    </thingCategories>
+    <researchPrerequisites>
+      <li>Batteries</li>
+    </researchPrerequisites>
 
     <building>
       <ai_chillDestination>false</ai_chillDestination>
@@ -48,6 +70,7 @@
     <isBad>false</isBad>
     <everCurableByItem>false</everCurableByItem>
     <initialSeverity>1</initialSeverity>
+    <stages> <li> <statOffsets> <BS_BatteryCharging>0.3</BS_BatteryCharging> </statOffsets> </li> </stages>
 
     <modExtensions>
       <li Class="BigAndSmall.PawnExtension">

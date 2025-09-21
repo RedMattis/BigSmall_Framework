@@ -137,6 +137,7 @@ namespace BigAndSmall
         public List<NewFoodCategory> newFoodCatDeny = null;
         public List<PawnDiet> pawnDiet = [];
         public bool canUseChargers = false;
+        public bool poorUserOfChargers = false;
 
         public List<ApparelCache> apparelCaches = [];
 

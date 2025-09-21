@@ -37,6 +37,7 @@ namespace BigAndSmall
         [MayRequire("RedMattis.BigSmall.Core")]
         public static StatDef BS_SoulPower;
         public static StatDef SM_FlirtChance;
+        public static StatDef BS_BatteryCharging;
 
         // Rendering Nodes
         public static PawnRenderNodeTagDef Root;

@@ -42,6 +42,8 @@ namespace BigAndSmall
         public static bool BSSapientMechanoidsActive => _BSSapientMechanoidsActive ??= GlobalSettings.IsFeatureEnabled("SapientMechanoids")
             || BigSmallMod.settings.sapientMechanoids;
 
+        public static bool RobotsEnabled => GlobalSettings.IsFeatureEnabled("Robots") || BSSapientMechanoidsActive;
+
         public static bool BSGenesActive =>
             _BSGenesActive ??= ModsConfig.ActiveModsInLoadOrder.Any(x => x.PackageIdPlayerFacing == "RedMattis.BigSmall.Core");
 

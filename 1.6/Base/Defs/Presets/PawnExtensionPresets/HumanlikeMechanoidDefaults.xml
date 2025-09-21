@@ -9,6 +9,7 @@
       <pawnDiet>BS_ChemRobotDiet</pawnDiet>
       <banAddictionsByDefault>true</banAddictionsByDefault>
       <canWieldThings>true</canWieldThings>
+      <canUseChargers>true</canUseChargers>
       <apparelRestrictions>
         <noArmor>true</noArmor>
         <tags>
@@ -36,9 +37,6 @@
         <Humanlike>0.5</Humanlike>
         <Mechanoid>0.5</Mechanoid>
       </romanceTags>
-      <!-- <aptitudes>
-        <Construction>2</Construction>
-      </aptitudes> -->
       <traitFilters>
         <blacklist>
           <li>Wimp</li>

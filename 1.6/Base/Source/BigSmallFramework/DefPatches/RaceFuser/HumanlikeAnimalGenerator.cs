@@ -697,6 +697,8 @@ namespace BigAndSmall
                 {
                     newThing.SetStatBaseValue(StatDefOf.Fertility, 0);
                 }
+                // 1.6 is just a random value. Might need tweaking. Probably better to make it too cheap than too expensive though while we're experimenting.
+                newThing.SetStatBaseValue(BSDefs.BS_BatteryCharging, Mathf.Max(animalThing.GetStatValueAbstract(BSDefs.BS_BatteryCharging), 1.6f));
             }
 
 

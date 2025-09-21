@@ -10,5 +10,6 @@
     <defName>BS_UseCharger</defName>
     <driverClass>BigAndSmall.JobDriver_UseCharger</driverClass>
     <reportString>Recharging with TargetA.</reportString>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
   </JobDef>
 </Defs>

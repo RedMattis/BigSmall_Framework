@@ -321,7 +321,22 @@ namespace BigAndSmall
                     canWield = allPawnExt.Any(x => x.canWieldThings == true) || !allPawnExt.Any(x => x.canWieldThings == false);
                 }
 
-                this.canUseChargers = allPawnExt.Any(x=>x.canUseChargers);
+                canUseChargers = allPawnExt.Any(x=>x.canUseChargers);
+                
+                if (canUseChargers)
+                {
+                    float efficiency = pawn.GetStatValue(BSDefs.BS_BatteryCharging, applyPostProcess: true);
+                    
+                    if (efficiency <= 0)
+                    {
+                        canUseChargers = false;
+                        Log.WarningOnce($"[BigAndSmall] {pawn} has canUseChargers enabled but has 0 or negative BatteryChargingEfficiency. Disabling canUseChargers.", 14237890);
+                    }
+                    else
+                    {
+                        poorUserOfChargers = efficiency < 0.71f;
+                    }
+                }
 
                 HandleSkillsAndAptitudes(allPawnExt);
 
