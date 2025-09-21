@@ -49,9 +49,8 @@ namespace BigAndSmall
         public bool canHealBrain = false;
         public const int tickRate = 530;
 
-        // For the "Lamia?" special behavior.
-        //public List<string> tags = new List<string>();
-
+        private float? FoodFallRate { get => field ??= GetFoodFallRate(); set;}
+        private float GetFoodFallRate() => pawn.needs.food.FoodFallPerTickAssumingCategory(HungerCategory.Hungry, ignoreMalnutrition: true);
         public static float PowScale(float bodySize) => Mathf.Pow(bodySize, 1.4f);
 
         public float MaxCapacity { get => baseCapacity * PowScale(pawn.BodySize); }
@@ -123,6 +122,7 @@ namespace BigAndSmall
                 flag = innerContainer.TryAdd(thing);
             }
             EnchumberanceHediff.Severity = Fullness;
+            FoodFallRate = GetFoodFallRate();
             return flag;
         }
 
@@ -299,12 +299,12 @@ namespace BigAndSmall
                 {
                     // Add tiny amount of nutrition to the pawn to prevent starvation and get people to quit complaining that they only get hunger
                     // when the corpse is destroyed.
-                    pawn.needs.food.CurLevel += pawn.needs.food.FoodFallPerTick * tickRate * 1.20f;
+                    pawn.needs.food.CurLevel += FoodFallRate.Value * tickRate * 1.20f;
                 }
                 else if (containsPawn && HealsInner)
                 {
                     // Drain nutrition faster if the pawn is healing an inner pawn.
-                    pawn.needs.food.CurLevel += -pawn.needs.food.FoodFallPerTick * tickRate * -0.5f;
+                    pawn.needs.food.CurLevel += -FoodFallRate.Value * tickRate * -0.5f;
                 }
 
                 List<Thing> toRemove = [];

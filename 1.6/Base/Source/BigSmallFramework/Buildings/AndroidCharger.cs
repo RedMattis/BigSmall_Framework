@@ -31,6 +31,7 @@ namespace BigAndSmall
         private Pawn user;
         private float userChargingEfficiency = 1f;
         private float extraSpeedFactor = 1f;
+        private float pawnFoodFallRate = 0f;
         private int lastTick = -1;
 
         public CompPowerTrader Power => this.TryGetComp<CompPowerTrader>();
@@ -96,7 +97,16 @@ namespace BigAndSmall
             extraSpeedFactor = 1f;
             if (pawn.BodySize is float size && size > 1f)
             {
-                extraSpeedFactor = 1 + (1 - size) / 1.5f;
+                extraSpeedFactor = size;
+            }
+            try
+            {
+                pawnFoodFallRate = pawn.needs.food.FoodFallPerTickAssumingCategory(HungerCategory.Hungry, ignoreMalnutrition: true);
+            }
+            catch
+            {
+                Log.ErrorOnce($"Error getting food fall rate for {pawn}. Setting to 0.", 81410);
+                pawnFoodFallRate = 0f;
             }
             lastTick = Find.TickManager.TicksGame;
         }
@@ -122,7 +132,7 @@ namespace BigAndSmall
                 float hoursPassed = (ticksPassed / (float)TicksPerHour);
 
                 food.CurLevel += transferRate * hoursPassed;
-                food.CurLevel += pawn.needs.food.FoodFallPerTick * ticksPassed; // Reverse the natural decay.
+                food.CurLevel += pawnFoodFallRate * ticksPassed; // Reverse the natural decay.
                 if (food.CurLevelPercentage >= 1f)
                 {
                     pawn.jobs.EndCurrentJob(JobCondition.Succeeded);
@@ -156,6 +166,7 @@ namespace BigAndSmall
             Scribe_References.Look(ref user, "userOfBuilding");
             Scribe_Values.Look(ref userChargingEfficiency, "currentUserChargingEfficiency", 1f);
             Scribe_Values.Look(ref extraSpeedFactor, "extraSpeedFactor", 1f);
+            Scribe_Values.Look(ref pawnFoodFallRate, "pawnFoodFallRate", 0f);
         }
     }
 }
