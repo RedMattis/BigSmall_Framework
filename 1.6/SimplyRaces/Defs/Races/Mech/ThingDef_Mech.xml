@@ -1,7 +1,6 @@
 <Defs>
-  <!-- Suitable for the mechanical kind of robot blatantly made from steel and bolts. Basically a Diet Soda version of the steel Enforcer-->
-  <ThingDef ParentName="BS_DefaultHumanlike" Name="BS_UrbMech" BS_Alt="ThingDef_AlienRace">
-    <defName>BS_UrbMech</defName>
+  <!-- Suitable for the mechanical kind of robot blatantly made from steel and bolts. Basically version of the steel Enforcer-->
+  <ThingDef ParentName="BS_DefaultHumanlike" Name="BS_UrbMech_Base" BS_Alt="ThingDef_AlienRace" Abstract="True">
     <label>mech</label>
     <description>This is a creature largely composed of highly ruggedized machinery.</description>
     <descriptionHyperlinks>
@@ -9,7 +8,6 @@
       <BigAndSmall.DefTag>BS_MechanicalDescription</BigAndSmall.DefTag>
     </descriptionHyperlinks>
     <statBases>
-      <!-- <MarketValue>3000</MarketValue> -->
       <MarketValue>2500</MarketValue>
       <MoveSpeed>4.6</MoveSpeed>
       <PsychicSensitivity>0.75</PsychicSensitivity>
@@ -27,14 +25,10 @@
       <CarryingCapacity>80</CarryingCapacity>
       <VEF_MassCarryCapacity MayRequire="OskarPotocki.VanillaFactionsExpanded.Core">100</VEF_MassCarryCapacity>
       <VacuumResistance MayRequire="Ludeon.Rimworld.Odyssey">2</VacuumResistance>
-      <!-- <SM_HeadSize_Cosmetic>1.05</SM_HeadSize_Cosmetic>
-      <SM_BodySizeMultiplier>1.15</SM_BodySizeMultiplier> -->
-      <ArmorRating_Heat>2.00</ArmorRating_Heat>
-      <ArmorRating_Blunt>0.25</ArmorRating_Blunt>
-      <ArmorRating_Sharp>0.45</ArmorRating_Sharp>
+      
     </statBases>
+    <soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
     <race>
-      <!-- <thinkTreeMain>Mechanoid</thinkTreeMain>-->
       <thinkTreeMain>Humanlike</thinkTreeMain>
       <thinkTreeConstant>HumanlikeConstant</thinkTreeConstant>
       <intelligence>Humanlike</intelligence>
@@ -46,7 +40,7 @@
       <baseHealthScale>1</baseHealthScale>
 
       <gestationPeriodDays>18</gestationPeriodDays>
-
+      <!-- <fleshType>Mechanoid</fleshType> --> <!--Not worth it. Too much hardcoded trouble.-->
       <canBecomeShambler>false</canBecomeShambler>
 
       <willNeverEat>
@@ -55,7 +49,6 @@
         <li>Luciferium</li> <li>Penoxycyline</li> <li>Beer</li>
       </willNeverEat>
 
-      <!-- <specificMeatDef>Steel</specificMeatDef> -->
       <useMeatFrom IsNull="True"/>
       <hasMeat>false</hasMeat>
       <leatherDef IsNull="True"/>
@@ -69,12 +62,6 @@
       <soundMeleeHitBuilding>Pawn_Melee_MechanoidBash_HitBuilding</soundMeleeHitBuilding>
       <soundMeleeMiss>Pawn_Melee_MechanoidBash_Miss</soundMeleeMiss>
       
-      <!-- <soundCallIntervalRange>1000~2000</soundCallIntervalRange> -->
-
-      <lifeStageWorkSettings Inherit="False"/>
-      <hediffGiverSets Inherit="False">
-        <li>BS_RobotHediffGiver</li>
-      </hediffGiverSets>
       
       <lifeStageAges Inherit="False">
         <!-- We're not using custom defs because some Rimworld stuff is hardcoded to look for certain defs.
@@ -128,10 +115,15 @@
       <Plasteel>25</Plasteel>
     </butcherProducts>
     <ingredient Inherit="False"/>
+    
+  </ThingDef>
+
+  <ThingDef ParentName="BS_UrbMech_Base" Name="BS_UrbMech" BS_Alt="ThingDef_AlienRace">
+    <defName>BS_UrbMech</defName>
     <modExtensions>
       <li Class="BigAndSmall.RaceExtension"><raceHediff>BS_UrbMech_Race</raceHediff> </li>
     </modExtensions>
-  </ThingDef>
+  </ThingDef> 
 
   
 

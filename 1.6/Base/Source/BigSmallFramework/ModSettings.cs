@@ -31,6 +31,9 @@ namespace BigAndSmall
             "BS_General", "BS_Races", "BS_Size", "BS_AutoCombat", "BS_Extras", "BS_Advanced", "BS_Developer"
         };
         
+        private static float columnWidth = 100;
+        private const float scrollAreaWidthMod = 20f;
+
         public override void DoSettingsWindowContents(Rect inRect)
         {
             base.DoSettingsWindowContents(inRect);
@@ -54,6 +57,7 @@ namespace BigAndSmall
 
             // Content
             Rect innerRect = contentRect.ContractedBy(15f);
+            columnWidth = innerRect.width - scrollAreaWidthMod;
 
             switch (selectedTab)
             {
@@ -68,10 +72,24 @@ namespace BigAndSmall
             }
         }
 
+        private void BeginScrollArea(Rect inRect, ref Vector2 scrollPos, out Rect viewRect, float height = 600f)
+        {
+            Rect scrollRect = inRect;
+            viewRect = new Rect(0f, 0f, scrollRect.width - scrollAreaWidthMod, height);
+            Widgets.BeginScrollView(scrollRect, ref scrollPos, viewRect);
+        }
+        private void EndScrollArea()
+        {
+            Widgets.EndScrollView();
+        }
+
         private void DrawGeneralTab(Rect inRect)
         {
-            Listing_Standard listStd = new Listing_Standard();
-            BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 300f);
+            Listing_Standard listStd = new()
+            {
+                ColumnWidth = columnWidth
+            };
+            BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 600f);
             listStd.Begin(viewRect);
 
             if (listStd.ButtonText("BS_ResetCache".Translate()))
@@ -118,8 +136,11 @@ namespace BigAndSmall
 
         private void DrawRacesTab(Rect inRect)
         {
-            Listing_Standard listStd = new Listing_Standard();
-            BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 300f);
+            Listing_Standard listStd = new()
+            {
+                ColumnWidth = columnWidth
+            };
+            BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 600f);
             listStd.Begin(viewRect);
 
             listStd.Label("BS_ToggleFeatures".Translate().AsTipTitle());
@@ -148,7 +169,10 @@ namespace BigAndSmall
 
         private void DrawSizeTab(Rect inRect)
         {
-            Listing_Standard listStd = new Listing_Standard();
+            Listing_Standard listStd = new()
+            {
+                ColumnWidth = columnWidth
+            };
             BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 700f);
             listStd.Begin(viewRect);
 
@@ -197,14 +221,24 @@ namespace BigAndSmall
 
         private void DrawAutoCombat(Rect inRect)
         {
-            Listing_Standard listStd = new Listing_Standard();
-            BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 200f);
+            Listing_Standard listStd = new()
+            {
+                ColumnWidth = columnWidth
+            };
+            BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 600f);
             listStd.Begin(viewRect);
             
             listStd.Label("BS_AutoCombatExplain".Translate());
             listStd.GapLine();
             CreateSettingCheckbox(listStd, "BS_EnabledDraftedJobs".Translate(), ref settings.enableDraftedJobs);
-            CreateSettingCheckbox(listStd, "BS_AutCombatResets".Translate(), ref settings.autoCombatResets);
+            listStd.GapLine();
+            CreateSettingCheckbox(listStd, "BS_AutoCombatResets".Translate(), ref settings.autoCombatResets);
+            CreateSettingCheckbox(listStd, "BS_ShowMeleeChargeBtn".Translate(), ref settings.showMeleeChargeBtn);
+            CreateSettingCheckbox(listStd, "BS_ShowTakeCoverBtn".Translate(), ref settings.showTakeCoverBtn);
+            CreateSettingCheckbox(listStd, "BS_ShowAutoUseAllAbilitiesBtn".Translate(), ref settings.showAutoUseAllAbilitiesBtn);
+
+            CreateRadioButtonsTwoOptions(listStd, "BS_RightClickAutoCombat".Translate(), ref settings.rightClickAutoCombatShowsMenu,
+                "BS_RightClickAutoCombat_ShowMenu".Translate(), "BS_RightClickAutoCombat_Toggle".Translate());
 
             listStd.End();
             EndScrollArea();
@@ -212,8 +246,11 @@ namespace BigAndSmall
 
         private void DrawExtrasTab(Rect inRect)
         {
-            Listing_Standard listStd = new Listing_Standard();
-            BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 200f);
+            Listing_Standard listStd = new()
+            {
+                ColumnWidth = columnWidth
+            };
+            BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 600f);
             listStd.Begin(viewRect);
 
             CreateSettingCheckbox(listStd, "BS_ForceDisableExtraUIWidgets".Translate(), ref settings.disableExtraWidgets);
@@ -255,8 +292,11 @@ namespace BigAndSmall
 
         private void DrawAdvancedTab(Rect inRect)
         {
-            Listing_Standard listStd = new Listing_Standard();
-            BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 200f);
+            Listing_Standard listStd = new()
+            {
+                ColumnWidth = columnWidth
+            };
+            BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 600f);
             listStd.Begin(viewRect);
 
             listStd.Label("BS_RecolourAnything".Translate().AsTipTitle());
@@ -276,8 +316,11 @@ namespace BigAndSmall
 
         private void DrawDeveloperTab(Rect inRect)
         {
-            Listing_Standard listStd = new Listing_Standard();
-            BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 200f);
+            Listing_Standard listStd = new()
+            {
+                ColumnWidth = columnWidth
+            };
+            BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 600f);
             listStd.Begin(viewRect);
 
             listStd.Label("BS_DevSettings".Translate().AsTipTitle());
@@ -288,16 +331,7 @@ namespace BigAndSmall
             EndScrollArea();
         }
 
-        private void BeginScrollArea(Rect inRect, ref Vector2 scrollPos, out Rect viewRect, float height = 600f)
-        {
-            Rect scrollRect = inRect;
-            viewRect = new Rect(0f, 0f, scrollRect.width - 16f, height);
-            Widgets.BeginScrollView(scrollRect, ref scrollPos, viewRect);
-        }
-        private void EndScrollArea()
-        {
-            Widgets.EndScrollView();
-        }
+        
 
         public override string SettingsCategory()
         {
@@ -307,8 +341,11 @@ namespace BigAndSmall
 
     public class BSSettings : ModSettings
     {
+        // SYSTEM. Don't sort.
         public bool forcedOn = true;
         public bool forcedOff = false;
+
+        // Sort these
 
         private static readonly bool defaultGenerateDefs = true;
         public bool generateDefs = defaultGenerateDefs;
@@ -319,6 +356,7 @@ namespace BigAndSmall
         private static readonly bool defaultMakeDefsRecolorable = false;
         public bool makeDefsRecolorable = defaultMakeDefsRecolorable;
 
+        // 6. Advanced Tab
         private static readonly bool defaultExperimental = false;
         public bool experimental = defaultExperimental;
 
@@ -331,6 +369,7 @@ namespace BigAndSmall
         private static readonly bool defaultSapientMechanoids = false;
         public bool sapientMechanoids = defaultSapientMechanoids;
 
+        // 2. Races Tab
         private static readonly bool defaultSurgeryAndBionics = true;
         public bool surgeryAndBionics = defaultSurgeryAndBionics;
 
@@ -358,6 +397,7 @@ namespace BigAndSmall
         private static readonly bool defaultScaleBT = false;
         public bool scaleBodyTypes = defaultScaleBT;
 
+        // 3. Size Tab
         private static readonly bool defaultScaleAnimals = true;
         public bool scaleAnimals = defaultScaleAnimals;
 
@@ -373,9 +413,11 @@ namespace BigAndSmall
         private static readonly bool defaultOffsetAnimalBodyPos = true;
         public bool offsetAnimalBodyPos = defaultOffsetAnimalBodyPos;
 
+        // Misc
         private static readonly bool defaultPatchPlayerFactions = true;
         public bool patchPlayerFactions = defaultPatchPlayerFactions;
 
+        // 1. General Tab
         public static readonly bool defaultPreventUndead = false;
         public bool preventUndead = defaultPreventUndead;
 
@@ -409,13 +451,26 @@ namespace BigAndSmall
         private static readonly bool defaultAnimalsLowSkillPenalty = false;
         public bool animalsLowSkillPenalty = defaultAnimalsLowSkillPenalty;
 
+        // 4. AutoCombat Tab
         private static readonly bool defaultEnableDraftedJobs = false;
         public bool enableDraftedJobs = defaultEnableDraftedJobs;
 
         public static readonly bool defaultAutoCombatResets = false;
         public bool autoCombatResets = defaultAutoCombatResets;
 
-        // Add default values for showClrPaletteBtn and showRaceBtn
+        public static readonly bool defaultShowMeleeChargeBtn = true;
+        public bool showMeleeChargeBtn = defaultShowMeleeChargeBtn;
+
+        public static readonly bool defaultShowTakeCoverBtn = true;
+        public bool showTakeCoverBtn = defaultShowTakeCoverBtn;
+
+        public static readonly bool defaultShowAutoUseAllAbilitiesBtn = true;
+        public bool showAutoUseAllAbilitiesBtn = defaultShowAutoUseAllAbilitiesBtn;
+
+        public static readonly bool defaultRightClickAutoCombatShowsMenu = false;
+        public bool rightClickAutoCombatShowsMenu = defaultRightClickAutoCombatShowsMenu;
+
+        // 5. Extras Tab
         private static readonly bool defaultShowClrPaletteBtn = false;
         public bool showClrPaletteBtn = defaultShowClrPaletteBtn;
 
@@ -428,7 +483,7 @@ namespace BigAndSmall
         public bool disableExtraWidgets = defaultDisableExtraWidgets;
 
 
-        // DEV Settings
+        // 7. Developer Tab
         public static readonly bool defaultJesusMode = false;
         public bool jesusMode = defaultJesusMode;
 
@@ -442,96 +497,130 @@ namespace BigAndSmall
 
         public override void ExposeData()
         {
-            Scribe_Values.Look(ref experimental, "experimental", defaultExperimental);
-            Scribe_Values.Look(ref makeDefsRecolorable, "makeDefsRecolorable", defaultMakeDefsRecolorable);
-            Scribe_Values.Look(ref pathRacesFromOtherMods, "pathRacesFromOtherMods", defaultPathRacesFromOtherMods);
-            Scribe_Values.Look(ref generateDefs, "generateDefs", defaultGenerateDefs);
-            Scribe_Values.Look(ref sapientAnimals, "sapientAnimals", defaultSapientAnimals);
-            Scribe_Values.Look(ref sapientAnimalsChance, "sapientAnimalsChance", defaultSapientAnimalsChance);
-            Scribe_Values.Look(ref sapientMechanoids, "sapientMechanoids", defaultSapientMechanoids);
-            Scribe_Values.Look(ref surgeryAndBionics, "surgeryAndBionics", defaultSurgeryAndBionics);
-            Scribe_Values.Look(ref visualLargerMult, "visualLargerMult", defaultVisualLargerMult);
-            Scribe_Values.Look(ref visualSmallerMult, "visualSmallerMult", defaultVisualSmallerMult);
-            Scribe_Values.Look(ref headPowLarge, "headPowLarge", defaultHeadPowLarge);
-            Scribe_Values.Look(ref headPowSmall, "headPowSmall2", defaultHeadPowSmall);
-            Scribe_Values.Look(ref dmgExponent, "dmgExponent", defaultDmgExponent);
-            Scribe_Values.Look(ref hungerRate, "hungerRate", defaultHungerRate);
-            Scribe_Values.Look(ref scaleAnimals, "scaleAnimals", defaultScaleAnimals);
-            Scribe_Values.Look(ref scaleBodyTypes, "scaleBt", defaultScaleBT);
-            Scribe_Values.Look(ref flatDamageIncrease, "flatDmgIncrease", defaultFlatDmgIncrease);
-            Scribe_Values.Look(ref disableTextureCaching, "disableBSTextureCaching", defaultDisableTextureCaching);
-            Scribe_Values.Look(ref realTimeUpdates, "realTimeUpdates", defaultRealTimeUpdates);
-            //Scribe_Values.Look(ref offsetBodyPos, "offsetBodyPos_EXPERIMENTAL", defaultOffsetBodyPos);
-            Scribe_Values.Look(ref offsetBodyPos, "offsetBodyPos", defaultOffsetBodyPos);
-            Scribe_Values.Look(ref offsetAnimalBodyPos, "offsetAnimalBodyPos", defaultOffsetAnimalBodyPos);
-            Scribe_Values.Look(ref patchPlayerFactions, "patchPlayerFactions", defaultPatchPlayerFactions);
+            // 1. General Tab
             Scribe_Values.Look(ref preventUndead, "preventUndead", defaultPreventUndead);
-            Scribe_Values.Look(ref useSciFiNames, "useSciFiNames", defaultUseSciFiNaming);
-            Scribe_Values.Look(ref useFantasyNames, "useFantasyNames", defaultUseFantasyNaming);
             Scribe_Values.Look(ref inflitratorChance, "inflitratorChance", inflitratorChanceDefault);
             Scribe_Values.Look(ref inflitratorRaidChance, "inflitratorRaidChance", inflitratorRaidChanceDefault);
             Scribe_Values.Look(ref immortalReturnTimeFactor, "immortalReturnTimeFactor", immortalReturnTimeFactorDefault);
             Scribe_Values.Look(ref soulPowerFalloffOffset, "soulPowerFalloffOffset", soulPowerFalloffOffsetDefault);
             Scribe_Values.Look(ref soulPowerGainMultiplier, "soulPowerGainMultiplier", soulPowerGainMultiplierDefault);
 
-
+            // 2. Races Tab
+            Scribe_Values.Look(ref surgeryAndBionics, "surgeryAndBionics", defaultSurgeryAndBionics);
+            Scribe_Values.Look(ref sapientAnimals, "sapientAnimals", defaultSapientAnimals);
+            Scribe_Values.Look(ref sapientAnimalsChance, "sapientAnimalsChance", defaultSapientAnimalsChance);
+            Scribe_Values.Look(ref sapientMechanoids, "sapientMechanoids", defaultSapientMechanoids);
             Scribe_Values.Look(ref allAnimalsHaveHands, "allAnimalsHaveHands", defaultAllAnimalsHaveHands);
             Scribe_Values.Look(ref animalOnAnimal, "sapientAnimalsCanRomanceAnySapientAnimals", defaultAnimalOnAnimal);
             Scribe_Values.Look(ref animalsLowSkillPenalty, "animalsNoSkillPenalty", defaultAnimalsLowSkillPenalty);
 
+            // 3. Size Tab
+            Scribe_Values.Look(ref scaleAnimals, "scaleAnimals", defaultScaleAnimals);
+            Scribe_Values.Look(ref dmgExponent, "dmgExponent", defaultDmgExponent);
+            Scribe_Values.Look(ref flatDamageIncrease, "flatDmgIncrease", defaultFlatDmgIncrease);
+            Scribe_Values.Look(ref hungerRate, "hungerRate", defaultHungerRate);
+            Scribe_Values.Look(ref offsetBodyPos, "offsetBodyPos", defaultOffsetBodyPos);
+            Scribe_Values.Look(ref offsetAnimalBodyPos, "offsetAnimalBodyPos", defaultOffsetAnimalBodyPos);
+            Scribe_Values.Look(ref disableTextureCaching, "disableBSTextureCaching", defaultDisableTextureCaching);
+            Scribe_Values.Look(ref visualLargerMult, "visualLargerMult", defaultVisualLargerMult);
+            Scribe_Values.Look(ref visualSmallerMult, "visualSmallerMult", defaultVisualSmallerMult);
+            Scribe_Values.Look(ref headPowLarge, "headPowLarge", defaultHeadPowLarge);
+            Scribe_Values.Look(ref headPowSmall, "headPowSmall2", defaultHeadPowSmall);
+            Scribe_Values.Look(ref scaleBodyTypes, "scaleBt", defaultScaleBT);
+
+            // 4. AutoCombat Tab
             Scribe_Values.Look(ref enableDraftedJobs, "enableDraftedJobs", defaultEnableDraftedJobs);
             Scribe_Values.Look(ref autoCombatResets, "autoCombatResets", defaultAutoCombatResets);
+            Scribe_Values.Look(ref showMeleeChargeBtn, "showMeleeChargeBtn", defaultShowMeleeChargeBtn);
+            Scribe_Values.Look(ref showTakeCoverBtn, "showTakeCoverBtn", defaultShowTakeCoverBtn);
+            Scribe_Values.Look(ref showAutoUseAllAbilitiesBtn, "showAutoUseAllAbilitiesBtn", defaultShowAutoUseAllAbilitiesBtn);
+            Scribe_Values.Look(ref rightClickAutoCombatShowsMenu, "rightClickAutoCombatShowsMenu", defaultRightClickAutoCombatShowsMenu);
+
+            // 5. Extras Tab
             Scribe_Values.Look(ref showClrPaletteBtn, "showClrPaletteBtn", defaultShowClrPaletteBtn);
             Scribe_Values.Look(ref showRaceBtn, "showRaceBtn", defaultShowRaceBtn);
-
-            // Special
             Scribe_Values.Look(ref disableExtraWidgets, "disableExtraWidgets", defaultDisableExtraWidgets);
+            Scribe_Values.Look(ref useSciFiNames, "useSciFiNames", defaultUseSciFiNaming);
+            Scribe_Values.Look(ref useFantasyNames, "useFantasyNames", defaultUseFantasyNaming);
 
-            // Scribe Dev Settings
+            // 6. Advanced Tab
+            Scribe_Values.Look(ref experimental, "experimental", defaultExperimental);
+            Scribe_Values.Look(ref makeDefsRecolorable, "makeDefsRecolorable", defaultMakeDefsRecolorable);
+            Scribe_Values.Look(ref pathRacesFromOtherMods, "pathRacesFromOtherMods", defaultPathRacesFromOtherMods);
+            Scribe_Values.Look(ref generateDefs, "generateDefs", defaultGenerateDefs);
+
+            // 7. Developer Tab
             Scribe_Values.Look(ref jesusMode, "jesusMode", defaultJesusMode);
             Scribe_Values.Look(ref recruitDevSpawned, "recruitDevSpawned", defaultRecruitDevSpawned);
+
+            // Misc
+            Scribe_Values.Look(ref patchPlayerFactions, "patchPlayerFactions", defaultPatchPlayerFactions);
+            Scribe_Values.Look(ref realTimeUpdates, "realTimeUpdates", defaultRealTimeUpdates);
 
             base.ExposeData();
         }
 
         public void ResetToDefault()
         {
-            generateDefs = defaultGenerateDefs;
-            pathRacesFromOtherMods = defaultPathRacesFromOtherMods;
-            experimental = defaultExperimental;
+            // 1. General Tab
+            preventUndead = defaultPreventUndead;
+            inflitratorChance = inflitratorChanceDefault;
+            inflitratorRaidChance = inflitratorRaidChanceDefault;
+            immortalReturnTimeFactor = immortalReturnTimeFactorDefault;
+            soulPowerFalloffOffset = soulPowerFalloffOffsetDefault;
+            soulPowerGainMultiplier = soulPowerGainMultiplierDefault;
+
+            // 2. Races Tab
+            surgeryAndBionics = defaultSurgeryAndBionics;
             sapientAnimals = defaultSapientAnimals;
             sapientAnimalsChance = defaultSapientAnimalsChance;
             sapientMechanoids = defaultSapientMechanoids;
-            surgeryAndBionics = defaultSurgeryAndBionics;
+            allAnimalsHaveHands = defaultAllAnimalsHaveHands;
+            animalOnAnimal = defaultAnimalOnAnimal;
+            animalsLowSkillPenalty = defaultAnimalsLowSkillPenalty;
+
+            // 3. Size Tab
+            scaleAnimals = defaultScaleAnimals;
+            dmgExponent = defaultDmgExponent;
+            flatDamageIncrease = defaultFlatDmgIncrease;
+            hungerRate = defaultHungerRate;
+            offsetBodyPos = defaultOffsetBodyPos;
+            offsetAnimalBodyPos = defaultOffsetAnimalBodyPos;
+            disableTextureCaching = defaultDisableTextureCaching;
             visualLargerMult = defaultVisualLargerMult;
             visualSmallerMult = defaultVisualSmallerMult;
             headPowLarge = defaultHeadPowLarge;
             headPowSmall = defaultHeadPowSmall;
-            dmgExponent = defaultDmgExponent;
-            flatDamageIncrease = defaultFlatDmgIncrease;
-            hungerRate = defaultHungerRate;
             scaleBodyTypes = defaultScaleBT;
-            scaleAnimals = defaultScaleAnimals;
-            disableTextureCaching = defaultDisableTextureCaching;
-            realTimeUpdates = defaultRealTimeUpdates;
-            offsetBodyPos = defaultOffsetBodyPos;
-            offsetAnimalBodyPos = defaultOffsetAnimalBodyPos;
-            patchPlayerFactions = defaultPatchPlayerFactions;
-            preventUndead = defaultPreventUndead;
-            useSciFiNames = defaultUseSciFiNaming;
-            useFantasyNames = defaultUseFantasyNaming;
-            inflitratorChance = inflitratorChanceDefault;
-            inflitratorRaidChance = inflitratorRaidChanceDefault;
-            immortalReturnTimeFactor = immortalReturnTimeFactorDefault;
-            allAnimalsHaveHands = defaultAllAnimalsHaveHands;
-            animalOnAnimal = defaultAnimalOnAnimal;
-            animalsLowSkillPenalty = defaultAnimalsLowSkillPenalty;
-            jesusMode = defaultJesusMode;
-            recruitDevSpawned = defaultRecruitDevSpawned;
+
+            // 4. AutoCombat Tab
             enableDraftedJobs = defaultEnableDraftedJobs;
+            autoCombatResets = defaultAutoCombatResets;
+            showMeleeChargeBtn = defaultShowMeleeChargeBtn;
+            showTakeCoverBtn = defaultShowTakeCoverBtn;
+            showAutoUseAllAbilitiesBtn = defaultShowAutoUseAllAbilitiesBtn;
+            rightClickAutoCombatShowsMenu = defaultRightClickAutoCombatShowsMenu;
+
+            // 5. Extras Tab
             showClrPaletteBtn = defaultShowClrPaletteBtn;
             showRaceBtn = defaultShowRaceBtn;
             disableExtraWidgets = defaultDisableExtraWidgets;
+            useSciFiNames = defaultUseSciFiNaming;
+            useFantasyNames = defaultUseFantasyNaming;
+
+            // 6. Advanced Tab
+            experimental = defaultExperimental;
+            makeDefsRecolorable = defaultMakeDefsRecolorable;
+            pathRacesFromOtherMods = defaultPathRacesFromOtherMods;
+            generateDefs = defaultGenerateDefs;
+
+            // 7. Developer Tab
+            jesusMode = defaultJesusMode;
+            recruitDevSpawned = defaultRecruitDevSpawned;
+
+            // Misc
+            patchPlayerFactions = defaultPatchPlayerFactions;
+            realTimeUpdates = defaultRealTimeUpdates;
         }
         public void ResetToRecommended()
         {

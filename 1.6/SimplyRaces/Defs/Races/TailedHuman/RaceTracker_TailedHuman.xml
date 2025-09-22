@@ -39,10 +39,9 @@
             <li>
               <!-- Hide the tail if we have a tail-gene. -->
               <triggerGeneTag>
-                <acceptlist>
-                  <li>taur</li><li>tail</li><li>tails</li>
-                </acceptlist>
+                <acceptlist> <li>taur</li><li>tail</li><li>tails</li> </acceptlist>
               </triggerGeneTag>
+              <triggerFlags><blacklist><ShowBaseAbdomen/></blacklist></triggerFlags>
               <texturePaths><default>BS_Blank</default></texturePaths>
             </li>
             <li>

@@ -68,9 +68,16 @@
   <BS_FantasyNames>Fantasy naming auto-patcher (restart required)</BS_FantasyNames>
   <BS_PatchPlayerFactions>Patch Player Faction</BS_PatchPlayerFactions>
 
+  <!-- Auto Combat -->
   <BS_AutoCombatExplain>Options for giving pawns partial autonomy in combat.</BS_AutoCombatExplain>
   <BS_EnabledDraftedJobs>Enable auto-combat button</BS_EnabledDraftedJobs>
-  <BS_AutCombatResets>Disable auto-combat when undrafting that pawn</BS_AutCombatResets>
+  <BS_AutoCombatResets>Disable auto-combat when undrafting that pawn</BS_AutoCombatResets>
+  <BS_ShowMeleeChargeBtn>Show Melee Charge button</BS_ShowMeleeChargeBtn>
+  <BS_ShowTakeCoverBtn>Show "Take Cover" button</BS_ShowTakeCoverBtn>
+  <BS_ShowAutoUseAllAbilitiesBtn>Show "Auto-Use All Abilities" button</BS_ShowAutoUseAllAbilitiesBtn>
+  <BS_RightClickAutoCombat>Right click Auto-Combat gizmo behavior</BS_RightClickAutoCombat>
+  <BS_RightClickAutoCombat_ShowMenu>Open Context Menu</BS_RightClickAutoCombat_ShowMenu>
+  <BS_RightClickAutoCombat_Toggle>Toggle Auto-use of Abilities</BS_RightClickAutoCombat_Toggle>
 
   <!-- Advanced -->
   <BS_RecolourAnything>Enable Experimental</BS_RecolourAnything>

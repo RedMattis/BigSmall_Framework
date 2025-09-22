@@ -39,23 +39,6 @@ namespace BigAndSmall
         }
     }
 
-
-
-    //[HarmonyPatch(typeof(SkillRecord), nameof(SkillRecord.CalculatePermanentlyDisabled))]
-    //public static class Pawn_GetDisabledWorkTypes
-    //{
-    //    public static void Postfix(SkillRecord __instance, ref bool __result)
-    //    {
-    //        if (HumanoidPawnScaler.GetCache(__instance.pawn) is BSCache cache && cache.disabledWorkTypes.Any())
-    //        {
-    //            if (cache.disabledWorkTypes.Contains(__instance.def))
-    //            {
-    //                __result = true;
-    //            }
-    //        }
-    //    }
-    //}
-
     [HarmonyPatch(typeof(SkillRecord), nameof(SkillRecord.Notify_SkillDisablesChanged))]
     public static class SkillRecord_Notify_SkillDisablesChanged
     {

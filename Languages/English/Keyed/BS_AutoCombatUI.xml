@@ -1,0 +1,13 @@
+<LanguageData>
+  <BS_DraftHuntLabel>Auto-Combat</BS_DraftHuntLabel>
+  <BS_HuntDescription>Track down and attack nearby foes. Any abilities on auto-cast (right-click) will be automatically used.</BS_HuntDescription>
+  <BS_TakeCoverLabel>Auto-Cover</BS_TakeCoverLabel>
+  <BS_TakeCoverDescription>Automatically try to move into cover while in combat.</BS_TakeCoverDescription>
+  <BS_MeleeChargeLabel>Long-Charge</BS_MeleeChargeLabel>
+  <BS_MeleeChargeDescription>Charge a long distance to reach seen threats / Charge only a very short distance (when off).</BS_MeleeChargeDescription>
+  <BS_AutoUseAllAbilitiesLabel>Auto-Use All</BS_AutoUseAllAbilitiesLabel>
+  <BS_AutoUseAllAbilitiesDescription>Toggle automatic use of ALL abilities.\n\nNote: you can hide this button in the setting and instead simply right-click the Auto-Combat button.\n\nThis was mostly added because some users wasn't aware of the included ability to auto-cast.</BS_AutoUseAllAbilitiesDescription>
+
+  <BS_IsEnabledP>(Enabled)</BS_IsEnabledP>
+  <BS_IsDisabledP>(Disabled)</BS_IsDisabledP>
+</LanguageData>

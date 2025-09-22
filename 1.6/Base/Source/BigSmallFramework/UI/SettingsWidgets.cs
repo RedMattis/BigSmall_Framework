@@ -120,5 +120,35 @@ namespace BigAndSmall
             Widgets.Label(labelRect, labelName);
             Widgets.Checkbox(checkboxRect.position, ref value, disabled: disabled);
         }
+
+        public static void CreateRadioButtonsTwoOptions(Listing_Standard lst, string labelName, ref bool value, string optionTrue, string optionFalse)
+        {
+            const float labelWidth = 0.55f;
+            const float radioWidth = 0.45f;
+
+            lst.GapLine();
+            Rect radioRect = lst.GetRect(Text.LineHeight * 2);
+
+            Rect firstRow = new(radioRect.x, radioRect.y, radioRect.width, Text.LineHeight);
+            Rect labelRect = new(firstRow.x, firstRow.y, firstRow.width * labelWidth, firstRow.height);
+            Rect radioTrueRect = new(labelRect.xMax, firstRow.y, firstRow.width * radioWidth, firstRow.height);
+            Widgets.Label(labelRect, labelName);
+            Widgets.Label(radioTrueRect, optionTrue);
+            if (Widgets.RadioButton(radioTrueRect.x-32, radioTrueRect.y, value))
+            {
+                value = true;
+            }
+
+            // Second line
+            Rect secondRow = new(radioRect.x, firstRow.yMax + lst.verticalSpacing, radioRect.width, Text.LineHeight);
+            Rect dummyLabelRect = new(secondRow.x, secondRow.y, secondRow.width * labelWidth, secondRow.height);
+            Rect radioFalseRect = new(dummyLabelRect.xMax, secondRow.y, secondRow.width * radioWidth, secondRow.height);
+            Widgets.Label(radioFalseRect, optionFalse);
+            if (Widgets.RadioButton(radioFalseRect.x-32, radioFalseRect.y, !value))
+            {
+                value = false;
+            }
+            lst.GapLine();
+        }
     }
 }

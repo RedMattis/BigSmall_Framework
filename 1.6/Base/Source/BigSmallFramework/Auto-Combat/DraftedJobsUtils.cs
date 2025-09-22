@@ -37,7 +37,8 @@ namespace BigAndSmall
         public static readonly Texture2D HuntIcon = ContentFinder<Texture2D>.Get("BS_UI/Hunt");
         public static readonly Texture2D TakeCoverIcon = ContentFinder<Texture2D>.Get("BS_UI/TakeCover");
         public static readonly Texture2D MeleeCharge = ContentFinder<Texture2D>.Get("BS_UI/MeleeCharge");
-        
+        public static readonly Texture2D AutoUseAllTex = ContentFinder<Texture2D>.Get("BS_UI/Auto_Large");
+
         // If the LITERAL sub-mod is active then NO setting will turn it off.
         private static bool? autoCombatModEnabled = null;
         public static bool AutoCombatEnabled
@@ -80,22 +81,53 @@ namespace BigAndSmall
             if (AutoCombatEnabled && IsDraftedPlayerPawn(pawn))
             {
                 // Add Hunt Toggle Gizmo
+                
                 Command_ToggleWithRClick huntCommand = AddHuntGizmo(pawn);
+                List<Command_ToggleWithRClick> commands = [huntCommand];
                 if (DraftedActionHolder.GetData(pawn).hunt)
                 {
-                    Command_ToggleWithRClick takeCover = AddCoerGizmo(pawn);
-                    Command_ToggleWithRClick meleeCharge = AddChargeGizmo(pawn);
-                    return UpdateEnumerable(__result, [huntCommand, takeCover, meleeCharge]);
+
+                    if (BS.Settings.showTakeCoverBtn)
+                    {
+                        Command_ToggleWithRClick takeCover = AddCoverGizmo(pawn);
+                        commands.Add(takeCover);
+                    }
+                    if (BS.Settings.showMeleeChargeBtn)
+                    {
+                        Command_ToggleWithRClick meleeCharge = AddChargeGizmo(pawn);
+                        commands.Add(meleeCharge);
+                    }
+                    if (BS.Settings.showAutoUseAllAbilitiesBtn)
+                    {
+                        Command_ToggleWithRClick toggleAll = AddToggleAllAbilitiesButton(pawn);
+                        commands.Add(toggleAll);
+                    }
+                    return UpdateEnumerable(__result, commands);
                 }
                 else
                 {
                     return UpdateEnumerable(__result, [huntCommand]);
                 }
-
-
-
             }
             return __result;
+        }
+
+        private static Command_ToggleWithRClick AddToggleAllAbilitiesButton(Pawn pawn)
+        {
+            return new Command_ToggleWithRClick
+            {
+                defaultLabel = "BS_AutoUseAllAbilitiesLabel".Translate(),
+                defaultDesc = "BS_AutoUseAllAbilitiesDescription".Translate(),
+                icon = AutoUseAllTex,
+                isActive = () => !DraftedActionHolder.GetData(pawn).autocastAbilities.Empty(),
+                toggleAction = () => DraftedActionHolder.GetData(pawn).ToggleAutoForAll(),
+                rightClickAction = () =>
+                {
+                },
+                activateSound = SoundDefOf.Click,
+                groupKey = 6173616,
+                hotKey = KeyBindingDefOf.Misc6
+            };
         }
 
         private static Command_ToggleWithRClick AddChargeGizmo(Pawn pawn)
@@ -116,7 +148,7 @@ namespace BigAndSmall
             };
         }
 
-        private static Command_ToggleWithRClick AddCoerGizmo(Pawn pawn)
+        private static Command_ToggleWithRClick AddCoverGizmo(Pawn pawn)
         {
             return new Command_ToggleWithRClick
             {
@@ -136,6 +168,19 @@ namespace BigAndSmall
 
         private static Command_ToggleWithRClick AddHuntGizmo(Pawn pawn)
         {
+            Action rClickAction;
+            if (BS.Settings.rightClickAutoCombatShowsMenu)
+            {
+                rClickAction = () => ShowHuntContextMenu(pawn);
+            }
+            else
+            {
+                rClickAction = () =>
+                {
+                    DraftedActionData data = DraftedActionHolder.GetData(pawn);
+                    data.ToggleAutoForAll();
+                };
+            }
             return new Command_ToggleWithRClick
             {
                 defaultLabel = "BS_DraftHuntLabel".Translate(),
@@ -143,15 +188,49 @@ namespace BigAndSmall
                 icon = HuntIcon,
                 isActive = () => DraftedActionHolder.GetData(pawn).hunt,
                 toggleAction = () => DraftedActionHolder.GetData(pawn).ToggleHuntMode(),
-                rightClickAction = () =>
-                {
-                    DraftedActionData data = DraftedActionHolder.GetData(pawn);
-                    data.ToggleAutoForAll();
-                },
+                rightClickAction = rClickAction,
                 activateSound = SoundDefOf.Click,
                 groupKey = 6173613,
                 hotKey = KeyBindingDefOf.Misc3
             };
+        }
+
+        private static void ShowHuntContextMenu(Pawn pawn)
+        {
+            bool takeCoverActive = DraftedActionHolder.GetData(pawn).takeCover;
+            bool meleeChargeActive = DraftedActionHolder.GetData(pawn).meleeCharge;
+            bool autoUseAllAbilitiesActive = DraftedActionHolder.GetData(pawn).autocastAbilities.Count > 0;
+            List<FloatMenuOption> options =
+            [
+                new FloatMenuOption("BS_TakeCoverLabel".Translate() + " "
+                + (DraftedActionHolder.GetData(pawn).takeCover ? "BS_IsEnabledP".Translate() : "BS_IsDisabledP".Translate()),
+                () =>
+                {
+                    foreach(var aPawn in Find.Selector.SelectedPawns)
+                    {
+                        DraftedActionHolder.GetData(aPawn).ToggleCoverMode(force:!takeCoverActive);
+                    }
+                }),
+                new FloatMenuOption("BS_MeleeChargeLabel".Translate() + " "
+                + (DraftedActionHolder.GetData(pawn).meleeCharge ? "BS_IsEnabledP".Translate() : "BS_IsDisabledP".Translate()),
+                () =>
+                {
+                    foreach(var aPawn in Find.Selector.SelectedPawns)
+                    {
+                        DraftedActionHolder.GetData(aPawn).ToggleMeleeCharge(force:!meleeChargeActive);
+                    }
+                }),
+                new FloatMenuOption("BS_AutoUseAllAbilitiesLabel".Translate() + " "
+                + (DraftedActionHolder.GetData(pawn).autocastAbilities.Count > 0 ? "BS_IsEnabledP".Translate() : "BS_IsDisabledP".Translate()),
+                () =>
+                {
+                    foreach(var aPawn in Find.Selector.SelectedPawns)
+                    {
+                        DraftedActionHolder.GetData(aPawn).ToggleAutoForAll(force:!autoUseAllAbilitiesActive);
+                    }
+                }),
+            ];
+            Find.WindowStack.Add(new FloatMenu(options));
         }
 
         [HarmonyPatch(typeof(Command), "GizmoOnGUIInt")]
@@ -272,15 +351,17 @@ namespace BigAndSmall
             Pawn.jobs.EndCurrentJob(JobCondition.InterruptForced);
         }
 
-        public bool ToggleCoverMode()
+        public bool ToggleCoverMode(bool? force = null)
         {
-            takeCover = !takeCover;
+            bool newState = force is bool state ? state : !takeCover;
+            takeCover = newState;
             Pawn.jobs.EndCurrentJob(JobCondition.InterruptForced);
             return takeCover;
         }
-        public bool ToggleMeleeCharge()
+        public bool ToggleMeleeCharge(bool? force = null)
         {
-            meleeCharge = !meleeCharge;
+            bool newState = force is bool state ? state : !meleeCharge;
+            meleeCharge = newState;
             RefreshDraft();
             return meleeCharge;
         }
@@ -296,9 +377,10 @@ namespace BigAndSmall
             return autocastAbilities.Contains(def);
         }
 
-        public void ToggleAutoForAll()
+        public void ToggleAutoForAll(bool? force = null)
         {
-            if (autocastAbilities.Empty() && Pawn?.abilities?.abilities != null)
+            bool toggleOn = force is bool state ? state : autocastAbilities.Empty();
+            if (toggleOn && Pawn?.abilities?.abilities != null)
             {
                 foreach (var ability in Pawn.abilities.abilities)
                 {

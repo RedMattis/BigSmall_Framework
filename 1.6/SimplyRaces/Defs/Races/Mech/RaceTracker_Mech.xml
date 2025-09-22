@@ -25,6 +25,9 @@
         <statOffsets>
           <VacuumResistance MayRequire="Ludeon.Rimworld.Odyssey">2</VacuumResistance>
           <ToxicResistance>2</ToxicResistance>
+          <ArmorRating_Heat>2.00</ArmorRating_Heat>
+          <ArmorRating_Blunt>0.25</ArmorRating_Blunt>
+          <ArmorRating_Sharp>0.45</ArmorRating_Sharp>
         </statOffsets>
         <damageFactors>
           <Frostbite>0</Frostbite>
