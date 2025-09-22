@@ -142,14 +142,22 @@ namespace BigAndSmall
         public List<ApparelCache> apparelCaches = [];
 
         // Color and Fur Transform cache
+        // Saved
         public Color? savedSkinColor = null;
         public Color? savedHairColor = null;
         public string savedFurSkin = null;
         public string savedBodyDef = null;
         public string savedHeadDef = null;
-        //public bool disableBeards = false;
         public string savedBeardDef = null;
         public string savedHairDef = null;
+        // Picked
+        public Color? overridenSkinColor = null;
+        public Color? overridenHairColor = null;
+        public FurDef overridenFurSkin = null;
+        public BodyTypeDef overridenBodyDef = null;
+        public HeadTypeDef overridenHeadDef = null;
+        public BeardDef overridenBeardDef = null;
+        public HairDef overridenHairDef = null;
 
 
         public int? randomPickSkinColor = null;
@@ -230,15 +238,27 @@ namespace BigAndSmall
             Scribe_Collections.Look(ref apparelCaches, "BS_ApparelCaches", LookMode.Deep);
             Scribe_Values.Look(ref preventDisfigurement, "BS_PreventDisfigurement", false);
             Scribe_Values.Look(ref renderCacheOff, "BS_RenderCacheOff", false);
+
+            Scribe_Values.Look(ref savedBodyDef, "BS_SavedBodyDefName", null);
+            Scribe_Values.Look(ref savedHeadDef, "BS_SavedHeadDefName", null);
             Scribe_Values.Look(ref savedSkinColor, "BS_SavedSkinColor", null);
             Scribe_Values.Look(ref savedHairColor, "BS_SavedHairColor", null);
             Scribe_Values.Look(ref savedBeardDef, "BS_SavedBeardDef", null);
+            Scribe_Values.Look(ref savedFurSkin, "BS_SavedFurskinName", null);
+
+            Scribe_Defs.Look(ref overridenFurSkin, "BS_OverridenFurSkin");
+            Scribe_Defs.Look(ref overridenBodyDef, "BS_OverridenBodyDef");
+            Scribe_Defs.Look(ref overridenHeadDef, "BS_OverridenHeadDef");
+            Scribe_Defs.Look(ref overridenBeardDef, "BS_OverridenBeardDef");
+            Scribe_Defs.Look(ref overridenHairDef, "BS_OverridenHairDef");
+            Scribe_Values.Look(ref overridenSkinColor, "BS_OverridenSkinColor", null);
+            Scribe_Values.Look(ref overridenHairColor, "BS_OverridenHairColor", null);
+
+
             Scribe_Values.Look(ref randomPickSkinColor, "BS_RandomPickSkinColor", null);
             Scribe_Values.Look(ref randomPickHairColor, "BS_RandomPickHairColor", null);
             Scribe_Values.Look(ref facialAnimationDisabled, "BS_FacialAnimationDisabled", false);
-            Scribe_Values.Look(ref savedFurSkin, "BS_SavedFurskinName");
-            Scribe_Values.Look(ref savedBodyDef, "BS_SavedBodyDefName");
-            Scribe_Values.Look(ref savedHeadDef, "BS_SavedHeadDefName");
+            
             //Scribe_Values.Look(ref workTagsDisabledByMod, "BS_WorkTagsDisabledByMod", WorkTags.None);
             Scribe_Collections.Look(ref endogenesRemovedByRace, "BS_EndogenesRemovedByRace", LookMode.Def);
             Scribe_Collections.Look(ref xenoenesRemovedByRace, "BS_XenoenesRemovedByRace", LookMode.Def);

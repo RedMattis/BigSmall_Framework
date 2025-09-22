@@ -77,7 +77,7 @@ namespace BigAndSmall
                     {
                         cache.randomPickHairColor = Rand.Range(0, CRProps.HairColorOverride.Count - 1);
                     }
-                    pawn.story.HairColor = CRProps.HairColorOverride[cache.randomPickHairColor.Value];
+                    cache.overridenHairColor = pawn.story.HairColor  = CRProps.HairColorOverride[cache.randomPickHairColor.Value];
                 }
                 if (CRProps.skinIsHairColor)
                 {
@@ -88,7 +88,7 @@ namespace BigAndSmall
                     }
                     var hairColor = pawn.story.HairColor;
                     hairColor.a = 1f;
-                    pawn.story.skinColorOverride = pawn.story.HairColor;
+                    pawn.story.skinColorOverride = cache.overridenSkinColor = pawn.story.HairColor;
                 }
                 else if (CRProps.SkinColorOverride != null)
                 {
@@ -96,14 +96,14 @@ namespace BigAndSmall
                     {
                         cache.randomPickSkinColor = Rand.Range(0, CRProps.SkinColorOverride.Count - 1);
                     }
-                    pawn.story.skinColorOverride = CRProps.SkinColorOverride[cache.randomPickSkinColor.Value];
+                    pawn.story.skinColorOverride = cache.overridenSkinColor = CRProps.SkinColorOverride[cache.randomPickSkinColor.Value];
                 }
                 var bodyTypes = CRProps.BodyTypeDefs(targetGender);
                 if (pawn.story != null && bodyTypes.Any() && !bodyTypes.Contains(pawn.story.bodyType))
                 {
                     using (new RandBlock(pawn.thingIDNumber))
                     {
-                        pawn.story.bodyType = bodyTypes.RandomElement();
+                        pawn.story.bodyType = cache.overridenBodyDef = bodyTypes.RandomElement();
                     }
                 }
                 var headTypes = CRProps.HeadTypeDefs(targetGender);
@@ -111,13 +111,13 @@ namespace BigAndSmall
                 {
                     using (new RandBlock(pawn.thingIDNumber))
                     {
-                        pawn.story.headType = headTypes.RandomElement();
+                        pawn.story.headType = cache.overridenHeadDef = headTypes.RandomElement();
                     }
                 }
                 
                 if (CRProps.furskinOverride != null)
                 {
-                    pawn.story.furDef = CRProps.furskinOverride;
+                    pawn.story.furDef = cache.overridenFurSkin = CRProps.furskinOverride;
                     //pawn.Drawer.renderer.SetAllGraphicsDirty();
                 }
                 if (CRProps.disableFacialAnims)
@@ -126,11 +126,11 @@ namespace BigAndSmall
                 }
                 if (CRProps.disableBeards)
                 {
-                    pawn.style.beardDef = null;
+                    pawn.style.beardDef = cache.overridenBeardDef = null;
                 }
                 if (CRProps.disableHair)
                 {
-                    pawn.story.hairDef = HairDefOf.Bald;
+                    pawn.story.hairDef = cache.overridenHairDef = HairDefOf.Bald;
                 }
             }
         }
@@ -146,23 +146,27 @@ namespace BigAndSmall
                     if (cache.savedSkinColor != null && cache.savedSkinColor.Value.a > 0.05)
                     {
                         pawn.story.skinColorOverride = cache.savedSkinColor.Value;
+                        cache.savedSkinColor = null;
                     }
                     if (cache.savedHairColor != null && cache.savedHairColor.Value.a > 0.05)
                     {
                         pawn.story.HairColor = cache.savedHairColor.Value;
+                        cache.savedHairColor = null;
                     }
                     if (cache.savedFurSkin != null && DefDatabase<FurDef>.GetNamed(cache.savedFurSkin) is FurDef furDef)
                     {
                         pawn.story.furDef = furDef;
-                        //pawn.Drawer.renderer.SetAllGraphicsDirty();
+                        cache.savedFurSkin = null;
                     }
                     if (cache.savedBodyDef != null && DefDatabase<BodyTypeDef>.GetNamed(cache.savedBodyDef) is BodyTypeDef bodyDef)
                     {
                         pawn.story.bodyType = bodyDef;
+                        cache.savedBodyDef = null;
                     }
                     if (cache.savedHeadDef != null && DefDatabase<HeadTypeDef>.GetNamed(cache.savedHeadDef) is HeadTypeDef headDef)
                     {
                         pawn.story.headType = headDef;
+                        cache.savedHeadDef = null;
                     }
                     if (CRProps.disableFacialAnims)
                     {
@@ -176,6 +180,7 @@ namespace BigAndSmall
                         {
                             pawn.style.beardDef = null;
                         }
+                        cache.savedBeardDef = null;
                     }
                     if (CRProps.disableHair)
                     {
@@ -185,6 +190,7 @@ namespace BigAndSmall
                         {
                             pawn.story.hairDef = DefDatabase<HairDef>.AllDefs.RandomElement();
                         }
+                        cache.savedHairDef = null;
                     }
                 }
             }

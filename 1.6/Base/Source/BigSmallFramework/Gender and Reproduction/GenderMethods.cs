@@ -89,6 +89,11 @@ namespace BigAndSmall
                     return;
                 }
                 bool femaleBody = cache.GetApparentGender() == Gender.Female;
+                if (cache.overridenBodyDef != null)
+                {
+                    pawn.story.bodyType = cache.overridenBodyDef;
+                    return;
+                }
 
                 if (femaleBody && bodyNakedGraphicPath != null && !bodyNakedGraphicPath.Contains("_Female") &&
                     (bodyNakedGraphicPath.Contains("_Thin") || bodyNakedGraphicPath.Contains("_Fat") || bodyNakedGraphicPath.Contains("_Hulk")))
@@ -191,6 +196,7 @@ namespace BigAndSmall
             {
                 return;
             }
+            
 
             bool headNeedsChange = pawn.story?.headType?.gender != 0 && pawn.story?.headType?.gender != apparentGender;
 
@@ -204,9 +210,18 @@ namespace BigAndSmall
                 banNarrow ||
                 force;
 
-            // 
             var harLegalBodies = HARCompat.TryGetHarBodiesForThingdef(cache?.pawn?.def);
 
+            if (cache.overridenBodyDef != null)
+            {
+                pawn.story.bodyType = cache.overridenBodyDef;
+                updateBody = false;
+            }
+            if (cache.overridenHeadDef != null)
+            {
+                pawn.story.headType = cache.overridenHeadDef;
+                headNeedsChange = false;
+            }
 
             if (updateBody && harLegalBodies == null)
             {
@@ -324,6 +339,11 @@ namespace BigAndSmall
 
         private static void TrySetMissingBodytype(Pawn pawn, Gender gender)
         {
+            if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache && cache.overridenBodyDef != null)
+            {
+                pawn.story.bodyType = cache.overridenBodyDef;
+                return;
+            }
             if (pawn?.story == null) return;
             if (pawn.story.Adulthood != null)
             {
@@ -347,6 +367,10 @@ namespace BigAndSmall
         private static bool TryGetBodyTypeOverride(BSCache cache, Pawn pawn, Gender apparentGender, out BodyTypeDef bodyType)
         {
             bodyType = null;
+            if (cache.overridenBodyDef != null)
+            {
+                bodyType = cache.overridenBodyDef;
+            }
             if (cache.bodyTypeOverride != null)
             {
                 var bodyTypeOverride = cache.bodyTypeOverride.BodytypesForGender(pawn, apparentGender);
@@ -371,6 +395,31 @@ namespace BigAndSmall
         {
             try
             {
+                if (pawn.GetCachePrepatched() is BSCache cache)
+                {
+                    bool hairSet = false;
+                    bool headSet = false;
+                    if (cache.overridenHeadDef != null)
+                    {
+                        pawn.story.headType = cache.overridenHeadDef;
+                        headSet = true;
+                    }
+                    if (cache.overridenHairDef != null)
+                    {
+                        pawn.story.hairDef = cache.overridenHairDef;
+                        hairSet = true;
+                    }
+                    if (cache.overridenBodyDef != null)
+                    {
+                        pawn.story.bodyType = cache.overridenBodyDef;
+                    }
+                    if (hairSet && headSet)
+                    {
+                        // Nothing needs to be done.
+                        return;
+                    }
+
+                }
                 // Get all active genes
                 var genes = GeneHelpers.GetAllActiveGenes(pawn);
                 if (genes.Count == 0) return;

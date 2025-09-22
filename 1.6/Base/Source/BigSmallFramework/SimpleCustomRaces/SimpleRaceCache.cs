@@ -23,6 +23,7 @@ namespace BigAndSmall
             ProcessRaceHediffRequirements(raceExts);
             ProcessHediffsToRemove(allExt);
             UpdateGeneOverrideStates(allExt);  // Run again here in case Metamorph etc. changed the state.
+
             raceCompProps.EnsureValidBodyType(this);
             raceCompProps.EnsureValidHeadType(this);
 
@@ -121,6 +122,7 @@ namespace BigAndSmall
                     {
                         Trait trait = traitsToRemove[idx];
                         traits.allTraits.Remove(trait);
+                        traits.RemoveTrait(trait);
                     }
                 }
 
