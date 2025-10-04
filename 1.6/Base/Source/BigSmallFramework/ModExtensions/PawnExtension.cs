@@ -512,7 +512,11 @@ namespace BigAndSmall
         private string AmorphousDescription => isAmorphous ? "BS_AmorphousDesc".Translate() : null;
         public List<string> TagDescriptions => new List<string> { UnlivingDescription, DeathlikeDescription, MechanicalDescription, BloodfeederDescription, AmorphousDescription, DroneDescription }
                 .Where(x => x != null).ToList();
-        public bool FrequentUpdate => frequentUpdate
+
+		/// <summary>
+		/// Returns true if frequent update is true in xml, time-based morphing, locked needs, conditional genes or active gene filters.
+		/// </summary>
+		public bool FrequentUpdate => frequentUpdate
             || MorphFrequent 
             || HasActiveGeneFilters
             || !lockedNeeds.NullOrEmpty()
