@@ -67,7 +67,7 @@ namespace BigAndSmall
         public static void Prefix(PawnRenderer __instance, ref Vector3 drawLoc, Rot4? rotOverride, bool neverAimWeapon, ref bool disableCache, Pawn ___pawn)
         {
             if (___pawn == null) return;
-            bool requestNewCache = threadStaticCache.pawn != ___pawn || threadStaticCache.cache.isDefaultCache;
+            bool requestNewCache = threadStaticCache.pawn != ___pawn || threadStaticCache.cache.IsTempCache;
             if (requestNewCache)
             {
                 threadStaticCache.cache = ___pawn.GetCachePrepatchedThreaded();

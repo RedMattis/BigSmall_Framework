@@ -20,7 +20,7 @@ namespace BigAndSmall
             if (props?.pawnType == PawnRenderNodeProperties.RenderNodePawnType.HumanlikeOnly)
             {
                 var pawn = __instance.pawn;
-                if (HumanoidPawnScaler.GetCacheUltraSpeed(pawn) is BSCache cache && cache.hideHumanlikeRenderNodes && !cache.isDefaultCache && cache.isHumanlike)
+                if (HumanoidPawnScaler.GetCacheUltraSpeed(pawn) is BSCache cache && cache.hideHumanlikeRenderNodes && !cache.IsTempCache && cache.isHumanlike)
                 {
                     __result = false;
                     return false;

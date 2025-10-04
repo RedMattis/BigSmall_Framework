@@ -11,7 +11,10 @@ namespace BigAndSmall
 {
     public partial class BSCache
     {
+        public bool IsTempCache => isDefaultCache || isJunkCache;
         public bool isDefaultCache = false;
+        [DefaultValue(false)]
+        public bool isJunkCache = true;
 
         public Pawn pawn = null;
         public uint changeIndex = 0; // Used to track changes in the cache, so we can update the pawn when needed.
@@ -104,6 +107,7 @@ namespace BigAndSmall
         public bool slowBleeding = false;
         public bool deathlike = false;
         public bool isMechanical = false;
+        public bool empVulnerable = false;
 
         public HashSet<RacialFeature> racialFeatures = [];
         public HashSet<RacialFeatureDef> racialFeaturesAuto = [];
@@ -189,6 +193,7 @@ namespace BigAndSmall
 
         public void ExposeData()
         {
+            Scribe_Values.Look(ref isJunkCache, "BS_IsJunkCache", false);
 
             // Scribe Pawn
             Scribe_Values.Look(ref id, "BS_CachePawnID", defaultValue: "BS_DefaultCahced");

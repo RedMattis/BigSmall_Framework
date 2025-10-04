@@ -154,11 +154,11 @@ namespace BigAndSmall
             {
                 if (pawn == otherPawn) return;
 
-                if (pawn == null || cache.isDefaultCache || cache.romanceTags == null)
+                if (pawn == null || cache.IsTempCache || cache.romanceTags == null)
                 {
                     return;
                 }
-                if (otherPawn == null || cacheTwo.isDefaultCache || cacheTwo.romanceTags == null)
+                if (otherPawn == null || cacheTwo.IsTempCache || cacheTwo.romanceTags == null)
                 {
                     return;
                 }
@@ -196,11 +196,11 @@ namespace BigAndSmall
             {
                 if (pawn == otherPawn) return false;
 
-                if (pawn == null || cache.isDefaultCache || cache.romanceTags == null)
+                if (pawn == null || cache.IsTempCache || cache.romanceTags == null)
                 {
                     return false;
                 }
-                if (otherPawn == null || cacheTwo.isDefaultCache || cacheTwo.romanceTags == null)
+                if (otherPawn == null || cacheTwo.IsTempCache || cacheTwo.romanceTags == null)
                 {
                     return false;
                 }

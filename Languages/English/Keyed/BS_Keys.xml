@@ -59,7 +59,8 @@
   <BS_StoleSkillAmount>{0}'s ability stole {1} xp in {2} from {3}</BS_StoleSkillAmount>
   <BS_StoleSkillAmount_Attack>{0}'s attack stole {1} xp in {2} from {3}</BS_StoleSkillAmount_Attack>
 
-  <BS_UseAndroidCharger>Use Charger</BS_UseAndroidCharger>
+  <BS_UseAndroidCharger>use charger</BS_UseAndroidCharger>
+  <BS_InsufficientBatteryPower>insufficient battery power</BS_InsufficientBatteryPower>
 
   <BS_GenesRemovedByOverLimit>{0} lost {1} genes due to reaching the metabolism limit of {2}</BS_GenesRemovedByOverLimit>
 

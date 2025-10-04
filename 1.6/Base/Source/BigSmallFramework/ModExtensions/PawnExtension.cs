@@ -292,7 +292,8 @@ namespace BigAndSmall
         /// </summary>
         public bool isDrone = false;
         public bool noFamilyRelations = false;
-        
+        public bool? empVulnerable = null;
+
 
         // Locked Needs.
         /// <summary>

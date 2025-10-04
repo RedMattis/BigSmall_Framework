@@ -150,12 +150,19 @@ namespace BigAndSmall
             {
                 if (user == null)
                 {
-                    yield return new FloatMenuOption("BS_UseAndroidCharger".Translate().CapitalizeFirst(), delegate
+                    var chargeOption = new FloatMenuOption("BS_UseAndroidCharger".Translate().CapitalizeFirst(), delegate
                     {
                         var job = JobMaker.MakeJob(BSDefs.BS_UseCharger, this);
-                        selPawn.Reserve(this,job, ignoreOtherReservations:true);
+                        selPawn.Reserve(this, job, ignoreOtherReservations: true);
                         selPawn.jobs.TryTakeOrderedJob(job);
                     });
+                    if (!PowerGridSufficientPowerToStart)
+                    {
+                        chargeOption.Disabled = true;
+                        chargeOption.Label = "BS_InsufficientBatteryPower".Translate().CapitalizeFirst();
+                    }
+                    
+                    yield return chargeOption;
                 }
             }
         }

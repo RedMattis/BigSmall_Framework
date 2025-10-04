@@ -161,6 +161,11 @@ namespace BigAndSmall
             // From List of items. A bit slow, don't use in performance critical places.
             public static FilterResult GetFilterResultFromItemList<T>(this IEnumerable<FilterList<T>> filterList, List<T> itemList)
             {
+                if (itemList.Count == 0 && filterList.Any(x=>x is Whitelist<T>))
+                {
+                    // If we have a whitelist, and no items to check, we should return Deny.
+                    return FilterResult.Deny;
+                }
                 return filterList.SelectMany(x=> itemList.Select(y => x.GetFilterResult(y))).FuseNoNullCheck(); 
             }
 

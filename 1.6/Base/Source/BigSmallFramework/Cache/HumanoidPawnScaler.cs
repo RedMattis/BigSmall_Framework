@@ -58,7 +58,7 @@ namespace BigAndSmall
                     return cache;
                 }
                 _tCache.cache = GetCache(pawn, canRegenerate: canRegenerate);
-                _tCache.properCache = !_tCache.cache.isDefaultCache;
+                _tCache.properCache = !_tCache.cache.IsTempCache;
                 return _tCache.cache;
             }
             else return _tCache.cache;
@@ -102,7 +102,7 @@ namespace BigAndSmall
                 result = GetCacheInner(pawn, out newEntry, forceRefresh, canRegenerate: false);
 
                 // Need to check performance of this carefully...
-                if (result.isDefaultCache && CheckForScribedEntry(pawn) is BSCache scribedCache)
+                if (result.IsTempCache && CheckForScribedEntry(pawn) is BSCache scribedCache)
                 {
                     result = scribedCache;
                 }
@@ -120,7 +120,7 @@ namespace BigAndSmall
                     BigAndSmallCache.ScribedCache.Add(result);
                     ShedueleForceRegenerate(result, 1);
                 }
-                if (!result.isDefaultCache) // BS.PrePatcherActive && 
+                if (!result.IsTempCache) // BS.PrePatcherActive && 
                 {
                     pawn.GetCachePrepatchedThreaded() = result;
                     pawn.GetCachePrepatched() = result;
@@ -238,7 +238,7 @@ namespace BigAndSmall
                         $"This likely means the pawn lacks \"lifeStageAges\" or another requirement for fetching the age is missing.\n{e.Message}\n{e.StackTrace}");
                     return false;
                 }
-
+                isJunkCache = false;
                 isHumanlike = pawn.RaceProps?.Humanlike == true;
                 originalThing ??= pawn.def;
 
@@ -404,6 +404,9 @@ namespace BigAndSmall
                 }
 
                 isMechanical = allPawnExt.Any(x => x.isMechanical) || pawn.RaceProps.IsMechanoid;
+                empVulnerable = allPawnExt.Any(x => x.empVulnerable == false) ? false
+                    : allPawnExt.Any(x => x.empVulnerable == true) ? true
+                    : isMechanical;
 
                 SetupRacialFeatures(allPawnExt);
 

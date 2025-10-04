@@ -17,7 +17,7 @@ namespace BigAndSmall
             {
                 return;
             }
-            if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache && !cache.isDefaultCache && cache.isHumanlike)
+            if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache && !cache.IsTempCache && cache.isHumanlike)
             {
                 HeadGraphics.CalculateHeadGraphicsForPawn(__instance, ref __result, cache);
             }

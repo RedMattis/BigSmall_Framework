@@ -12,7 +12,7 @@ namespace BigAndSmall
         public static void Postfix(PawnRenderNode_Body __instance, ref Pawn pawn, ref Graphic __result)
         {
             if (__result == null) return;
-            if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache && !cache.isDefaultCache && cache.isHumanlike)
+            if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache && !cache.IsTempCache && cache.isHumanlike)
             {
                 BodyGraphics.CalculateBodyGraphicsForPawn(__instance, pawn, ref __result, cache);
             }
