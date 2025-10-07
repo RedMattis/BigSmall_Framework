@@ -64,6 +64,11 @@ namespace BigAndSmall
 
         public static bool skipOffset = false;
 
+        private static bool SpawnedOrVisible(Pawn pawn)
+        {
+            return pawn.Spawned || pawn.ParentHolder is PawnFlyer;
+        }
+
         public static void Prefix(PawnRenderer __instance, ref Vector3 drawLoc, Rot4? rotOverride, bool neverAimWeapon, ref bool disableCache, Pawn ___pawn)
         {
             if (___pawn == null) return;
@@ -75,7 +80,7 @@ namespace BigAndSmall
                 threadStaticCache.approxNoChange = threadStaticCache.cache.approximatelyNoChange;
                 if (!threadStaticCache.approxNoChange)
                 {
-                    threadStaticCache.spawned = ___pawn.Spawned;
+                    threadStaticCache.spawned = SpawnedOrVisible(___pawn);
                 }
             }
             if (threadStaticCache.approxNoChange || !threadStaticCache.spawned)

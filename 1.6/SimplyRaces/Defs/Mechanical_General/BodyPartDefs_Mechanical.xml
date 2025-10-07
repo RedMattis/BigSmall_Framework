@@ -121,6 +121,7 @@
         </importAllRecipesFrom>
         <mechanicalVersionOf>
           <li>Kidney</li>
+          <li>Liver</li>
           <li>FluidReprocessor</li>
         </mechanicalVersionOf>
       </li>

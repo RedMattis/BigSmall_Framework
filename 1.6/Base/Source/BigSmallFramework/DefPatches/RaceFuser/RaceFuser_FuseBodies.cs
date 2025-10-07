@@ -22,15 +22,11 @@ namespace BigAndSmall
             foreach (var def in DefDatabase<BodyPartDef>.AllDefsListForReading)
             {
                 var extensions = def.ExtensionsOnDef<BodyPartExtension, BodyPartDef>();
-                if (extensions != null)
+                foreach (var extension in extensions)
                 {
-                    foreach (var extension in extensions)
+                    if (extension.mechanicalVersionOf != null && extension.mechanicalVersionOf.Any())
                     {
-                        if (extension.mechanicalVersionOf != null && extension.mechanicalVersionOf.Any())
-                        {
-                            parts.Add((def, extension));
-                            break;
-                        }
+                        parts.Add((def, extension));
                     }
                 }
             }
@@ -64,7 +60,11 @@ namespace BigAndSmall
                 mechVersionList.TryGetValue(source.def, out var mechVersions) && !mechVersions.NullOrEmpty())
             {
                 partDef = mechVersions.First();
-                customLabel = customLabel ?? (source.def.IsMirroredPart ? (source.flipGraphic ? "BS_Left".Translate() : "BS_Right".Translate() + " " + partDef.label) : partDef.label);
+                if (customLabel != null)
+                {
+                    customLabel = "BS_Artificial".Translate().CapitalizeFirst() + " " + customLabel.ToLower();
+                }
+                customLabel ??= (source.def.IsMirroredPart ? (source.flipGraphic ? "BS_Left".Translate() : "BS_Right".Translate() + " " + partDef.label) : partDef.label);
             }
 
             var nGenPart = new BodyPartRecord

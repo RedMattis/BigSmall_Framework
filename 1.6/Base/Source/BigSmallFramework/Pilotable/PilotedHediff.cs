@@ -144,6 +144,11 @@ namespace BigAndSmall
                     }
                     if (Props.temporarilySwapFaction && pilot.Faction != null)
                     {
+                        // Reduce odds of getting killed if downed. Keep doing so for each repeat.
+                        pawn.health.overrideDeathOnDownedChance = pawn.health.overrideDeathOnDownedChance > 0
+                            ? pawn.health.overrideDeathOnDownedChance / 2
+                            : Find.Storyteller.difficulty.enemyDeathOnDownedChanceFactor / 2;
+                        
                         cachedFaction = pawn.Faction;
                         pawn.SetFaction(pilot.Faction);
                     }
@@ -407,25 +412,20 @@ namespace BigAndSmall
                 GenPlace.TryPlaceThing(thing, pawn.Position, pawn.MapHeld, ThingPlaceMode.Near);
             }
 
-            Log.Message($"checking for ideology/faction restore on {pawn.Name}");
             if (!pawn.Dead && Props.temporarilySwapIdeology && cachedIdeology != null)
             {
                 pawn.ideo.SetIdeo(cachedIdeology);
                 cachedIdeology = null;
-                Log.Message($"restored ideology for {pawn.Name}");
             }
-            Log.Message($"checking for faction restore on {pawn.Name}");
             if (!pawn.DestroyedOrNull() && Props.temporarilySwapFaction && cachedFaction != null)
             {
                 pawn.SetFaction(cachedFaction);
                 cachedFaction = null;
-                Log.Message($"restored faction for {pawn.Name}");
             }
 
             pilotEjectCountdown = -1; // Reset the eject countdown.
             pawn.health.Notify_HediffChanged(this);
             forcePilotableUpdate = true;
-
             
 
             // mayRemoveHediff is false when called from PostRemoved or Pawn.Kill to avoid recursion.

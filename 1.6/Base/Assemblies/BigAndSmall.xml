@@ -547,6 +547,11 @@
             Should work even without biotech
             </summary>;
         </member>
+        <member name="P:BigAndSmall.PawnExtension.FrequentUpdate">
+            <summary>
+            Returns true if frequent update is true in xml, time-based morphing, locked needs, conditional genes or active gene filters.
+            </summary>
+        </member>
         <member name="M:BigAndSmall.PawnExtension.IsGeneLegal(Verse.GeneDef,System.Boolean)">
             <summary>
             Checks if a gene is legal for the pawn.

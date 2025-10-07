@@ -160,13 +160,12 @@ namespace BigAndSmall
             {
                 if (thing is Pawn innerPawn)
                 {
-                    // get inner pawn overal health percentage
                     float healthPercent = innerPawn.health.summaryHealth.SummaryHealthPercent;
-                    stringBuilder.AppendLine($"{thing.LabelCap} {healthPercent * 100f}% {(innerPawn.Downed ? ", downed" : "")}");
+                    stringBuilder.AppendLine($"{thing.LabelCap} {healthPercent * 100f:f0}% {(innerPawn.Downed ? $", {"DownedLower".Translate()}" : "")}");
                 }
                 else
                 {
-                    stringBuilder.AppendLine($"{thing.LabelCap} {thing.HitPoints / thing.MaxHitPoints * 100f}%");
+                    stringBuilder.AppendLine($"{thing.LabelCap} {((float)thing.HitPoints) / thing.MaxHitPoints * 100f:f0}%");
                 }
             }
             return stringBuilder.ToString().TrimEndNewlines();
@@ -228,10 +227,7 @@ namespace BigAndSmall
                 if (damageDef == null)
                 {
                     damageDef = DefDatabase<DamageDef>.GetNamed("BS_AcidDmgDirectQuiet");
-                    if (damageDef == null)
-                    {
-                        damageDef = DefDatabase<DamageDef>.GetNamed("AcidBurn");
-                    }
+                    damageDef ??= DefDatabase<DamageDef>.GetNamed("AcidBurn");
                 }
 
                 float digestionEffiency = 1;
@@ -250,14 +246,15 @@ namespace BigAndSmall
                 bool ejectDownedPrisoner = pawn.health.Downed && pawn.IsPrisonerOfColony;
                 bool inSeriousPain = pawn?.health?.hediffSet?.PainTotal > 0.5f;
                 bool stomachIntact = true;
-                bool torsoIntact = true;
+                bool coreIntact = true;
 
-                // Get stomach part, if it exists or is destroyed, get the torso.
-                var stomach = pawn.RaceProps.body.AllParts.FirstOrDefault(x => x.def.defName == "Stomach");
-                var torso = pawn.RaceProps.body.AllParts.FirstOrDefault(x => x.def.defName == "Torso");
+                // Get stomach part, if it exists or is destroyed, get the core part.
+                var stomach = pawn.RaceProps.body.AllParts.FirstOrDefault(x => x.def.defName.Contains("stomach", StringComparison.OrdinalIgnoreCase));
+                stomach ??= pawn.RaceProps.body.AllParts.FirstOrDefault(x => x.def.tags?.Contains(BodyPartTagDefOf.MetabolismSource) == true);
+                var corePart = pawn.RaceProps.body.corePart;
                 if (stomach == null)
                 {
-                    stomach = torso;
+                    stomach = corePart;
                 }
                 else
                 {
@@ -265,23 +262,25 @@ namespace BigAndSmall
                     var stomachHealth = pawn.health.hediffSet.GetPartHealth(stomach);
                     if (stomachHealth < stomach.def.GetMaxHealth(pawn) * 0.3f)
                     {
-                        stomach = torso;
+                        stomach = corePart;
                         stomachIntact = false;
                     }
-                    if (torso != null)
+                    if (corePart != null)
                     {
                         // Check torso
-                        var torsoHealth = pawn.health.hediffSet.GetPartHealth(torso);
-                        if (torsoHealth < torso.def.GetMaxHealth(pawn) * 0.3f)
+                        var torsoHealth = pawn.health.hediffSet.GetPartHealth(corePart);
+                        if (torsoHealth < corePart.def.GetMaxHealth(pawn) * 0.3f)
                         {
-                            torsoIntact = false;
+                            coreIntact = false;
                         }
                     }
                 }
 
                 // If a pawn can't vomit they will take damage to the torso instead. If the torso is destroyed, the contents will spill out.
-                if (ejectDownedPrisoner || (inSeriousPain || digestionEffiency < 0.51f || stomachIntact == false)
-                    && canEject || !torsoIntact || Fullness > 1.4f)
+                if (ejectDownedPrisoner
+                    || ((inSeriousPain || digestionEffiency < 0.51f || stomachIntact == false) && canEject)
+                    || !coreIntact
+                    || Fullness > 1.4f)
                 {
                     // Remove this Hediff
                     pawn.health.RemoveHediff(this);
@@ -308,68 +307,18 @@ namespace BigAndSmall
                 }
 
                 List<Thing> toRemove = [];
-                foreach (var thing in innerContainer)
+                IList<Thing> contents = innerContainer;
+                for (int i = contents.Count - 1; i >= 0; i--)
                 {
+                    Thing thing = contents[i];
                     if (thing is Pawn innerPawn)
                     {
-                        if (SanguophageUtility.ShouldBeDeathrestingOrInComaInsteadOfDead(innerPawn))
+                        if (TryKill(digestionEffiency, stomach, thing, innerPawn))
                         {
-                            innerPawn.Kill(new DamageInfo(damageDef, 999 * digestionEffiency, armorPenetration: 100, instigator: pawn, intendedTarget: thing, spawnFilth: false));
-
-                            if (innerPawn.RaceProps.DeathActionWorker is DeathActionWorker deathAction && innerPawn.IsShambler == false)
-                            {
-                                if (deathAction is DeathActionWorker_BigExplosion)
-                                {
-                                    // AHAHAHAHAHAHAHAHAHA
-                                    InnerDeathWorkerHelper.BigExplosion(innerPawn.Corpse, pawn, stomach);
-                                }
-                                else if (deathAction.ToString().ToLower().Contains("explosion"))
-                                {
-                                    InnerDeathWorkerHelper.SmallExplosion(innerPawn.Corpse, pawn, stomach);
-                                }
-                            }
-
+                            continue;
                         }
-                        else if (!innerPawn.IsColonist && innerPawn.health.summaryHealth.SummaryHealthPercent < 0.1f)
-                        {
-                            innerPawn.Kill(new DamageInfo(damageDef, 999 * digestionEffiency, armorPenetration: 100, instigator: pawn, intendedTarget: thing, spawnFilth: false));
-                        }
-
-                        if (dealsDamage)
-                        {
-                            AttackInnerThing(digestionEffiency, stomachIntact, thing);
-                        }
-                        else if (HealsInner)
-                        {
-                            HealInner(innerPawn);
-                        }
-
-                        // If innerPawn is not downed.
-                        if (!innerPawn.health.Downed && !innerPawn.health.ShouldBeDead() && !innerPawn.health.ShouldBeDowned())
-                        {
-                            try
-                            {
-                                // Check if pawn is an enemy and isn't a prisoner or slave. If the faction is null we'll assume it's an enemy.
-                                bool isEnemy = innerPawn.Faction == null || pawn.Faction == null ||
-                                    (pawn.Faction != null && pawn.Faction.HostileTo(innerPawn.Faction) && !innerPawn.IsSlaveOfColony && !innerPawn.IsPrisonerOfColony);
-
-                                if (alliesAttackBack || isEnemy)
-                                {
-                                    AttackPossessor(stomach, innerPawn);
-                                }
-
-                                // If the pawn is dead, delay the removal of this hediff so it goes into the corpse-processing step.
-                                if (innerPawn.Dead)
-                                {
-                                    Severity += 0.2f;
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                // Whatever if this fails, it's not critical.
-                                //Log.Error("Error in BS_HediffComp_Engulfed.CompPostTick(): " + e);
-                            }
-                        }
+                        HandleEffectToInner(digestionEffiency, stomachIntact, thing, innerPawn);
+                        HandleEffectFromInner(stomach, innerPawn);
                     }
                     // if Thing is indestructible expell it
                     else if (thing.def.destroyable == false || thing.def.useHitPoints == false)
@@ -398,14 +347,80 @@ namespace BigAndSmall
                 for (int i = toRemove.Count - 1; i >= 0; i--)
                 {
                     innerContainer.Remove(toRemove[i]);
-                    GenPlace.TryPlaceThing(toRemove[i], pawn.Position, pawn.Map, ThingPlaceMode.Near);
+                    if (pawn.Spawned)
+                    {
+                        GenPlace.TryPlaceThing(toRemove[i], pawn.Position, pawn.Map, ThingPlaceMode.Near);
+                    }
                 }
-
             }
             EnchumberanceHediff.Severity = Fullness;
         }
 
-        
+        private void HandleEffectFromInner(BodyPartRecord stomach, Pawn innerPawn)
+        {
+            if (!innerPawn.DeadOrDowned && !innerPawn.health.ShouldBeDead() && !innerPawn.health.ShouldBeDowned())
+            {
+                try
+                {
+                    // Check if pawn is an enemy and isn't a prisoner or slave. If the faction is null we'll assume it's an enemy.
+                    bool isEnemy = innerPawn.Faction == null || pawn.Faction == null ||
+                        (pawn.Faction != null && pawn.Faction.HostileTo(innerPawn.Faction) && !innerPawn.IsSlaveOfColony && !innerPawn.IsPrisonerOfColony);
+
+                    if (alliesAttackBack || isEnemy)
+                    {
+                        AttackPossessor(stomach, innerPawn);
+                    }
+
+                    // If the pawn is dead, delay the removal of this hediff so it goes into the corpse-processing step.
+                    if (innerPawn.Dead)
+                    {
+                        Severity += 0.2f;
+                    }
+                }
+                catch (Exception e)
+                {
+                    // Investigate later, iirc. there was some compat issue, but it needs to be tracked down.
+                    Log.ErrorOnce($"Error in BS_HediffComp_Engulfed.CompPostTick():\n{e.Message}\n{e.StackTrace}", 983452345);
+                }
+            }
+        }
+
+        private void HandleEffectToInner(float digestionEffiency, bool stomachIntact, Thing thing, Pawn innerPawn)
+        {
+            if (dealsDamage)
+            {
+                AttackInnerThing(digestionEffiency, stomachIntact, thing);
+            }
+            else if (HealsInner)
+            {
+                HealInner(innerPawn);
+            }
+        }
+
+        private bool TryKill(float digestionEffiency, BodyPartRecord stomach, Thing thing, Pawn innerPawn)
+        {
+            if (SanguophageUtility.ShouldBeDeathrestingOrInComaInsteadOfDead(innerPawn)
+                || (!innerPawn.IsColonist && innerPawn.health.summaryHealth.SummaryHealthPercent < 0.1f))
+            {
+                innerPawn.Kill(new DamageInfo(damageDef, 999 * digestionEffiency, armorPenetration: 100, instigator: pawn, intendedTarget: thing, spawnFilth: false));
+
+                if (innerPawn.RaceProps.DeathActionWorker is DeathActionWorker deathAction && innerPawn.IsShambler == false)
+                {
+                    if (deathAction is DeathActionWorker_BigExplosion)
+                    {
+                        // AHAHAHAHAHAHAHAHAHA
+                        InnerDeathWorkerHelper.BigExplosion(innerPawn.Corpse, pawn, stomach);
+                    }
+                    else if (deathAction.ToString().ToLower().Contains("explosion"))
+                    {
+                        InnerDeathWorkerHelper.SmallExplosion(innerPawn.Corpse, pawn, stomach);
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
 
         private int countDownToRegenerate = 0;
         private void HealInner(Pawn innerPawn)
@@ -531,8 +546,6 @@ namespace BigAndSmall
 
             if (!stomachIntact)
             {
-                // Only relevant for True Lamia. Further reduce digestion dramatically if the stomach is destroyed.
-                // They are unable to vomit, so they still need to deal some damage to the target.
                 thing.TakeDamage(new DamageInfo(dmgType, damageAmount * 0.66f, instigatorGuilty: guilty,
                     armorPenetration: 100, instigator: pawn, intendedTarget: thing, spawnFilth: false));
             }
@@ -551,7 +564,7 @@ namespace BigAndSmall
 
             // Check if the innerPawn has melee skill, if so, use that as a multiplier for the damage.
             float damageFromSkills = 1;
-            if (innerPawn?.skills?.GetSkill(SkillDefOf.Melee)?.Level > 0)
+            if (innerPawn?.skills?.GetSkill(SkillDefOf.Melee)?.Level >= 0)
             {
                 int skill = innerPawn.skills.GetSkill(SkillDefOf.Melee).Level;
                 if (skill <= 4)
@@ -592,10 +605,21 @@ namespace BigAndSmall
             bool canInterruptJobs = damageType.canInterruptJobs;
             bool makesBlood = damageType.makesBlood;
 
-            // If damage is less than 1/16 of the part health when adjusted for incomming damage multiplier, abort.
-            if (damage < targetPart.def.GetMaxHealth(pawn) / pawn.GetStatValue(StatDefOf.IncomingDamageFactor) / 16)
+            // If the damage is below a certain threshold RNG it to a minimum value or deal nothing. This is to avoid annoyance of constant negilible hits
+            // that unpause the game.
+            float minimumDamage = targetPart.def.GetMaxHealth(pawn) / pawn.GetStatValue(StatDefOf.IncomingDamageFactor) / 16;
+            
+            if (damage < minimumDamage)
             {
-                return;
+                float chanceOfDamage = damage / minimumDamage;
+                if (Rand.Chance(chanceOfDamage))
+                {
+                    damage = minimumDamage;
+                }
+                else
+                {
+                    return;
+                }
             }
 
             float idd = HumanoidPawnScaler.GetCacheUltraSpeed(pawn, canRegenerate: false)?.internalDamageDivisor ?? 1;
