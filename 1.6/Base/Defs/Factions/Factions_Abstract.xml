@@ -12,7 +12,7 @@
     <!-- <settlementTexturePath>MapIcons/Expanding/CastleExpanding</settlementTexturePath> -->
     <!-- <factionNameMaker>BS_NamerFactionMedieval</factionNameMaker>
     <settlementNameMaker>BS_NamerSettlementMedieval</settlementNameMaker> -->
-    <allowedCultures><li>BS_MedievalCulture</li></allowedCultures>
+    <allowedCultures Inherit="False"><li>BS_MedievalCulture</li></allowedCultures>
     <raidLootMaker>TribeRaidLootMaker</raidLootMaker>
 	  <leaderTitle>lord</leaderTitle>
     <disallowedMemes>
