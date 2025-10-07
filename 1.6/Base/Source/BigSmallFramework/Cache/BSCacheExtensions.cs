@@ -35,10 +35,16 @@ namespace BigAndSmall
             return ref _placeholderCache;
         }
 
-        /// <summary>
-        /// The threaded version of GetCache is for use on rendering threads where we DON'T want to regenerate the cache.
-        /// </summary>
-        [PrepatcherField]
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static BSCache GetCache(this Pawn pawn)
+		{
+			return GetCachePrepatched(pawn);
+		}
+
+		/// <summary>
+		/// The threaded version of GetCache is for use on rendering threads where we DON'T want to regenerate the cache.
+		/// </summary>
+		[PrepatcherField]
         [ValueInitializer(nameof(GetDefaultCache))]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref BSCache GetCachePrepatchedThreaded(this Pawn pawn)

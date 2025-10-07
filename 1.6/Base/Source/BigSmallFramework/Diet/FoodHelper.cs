@@ -41,9 +41,16 @@ namespace BigAndSmall
             var result = FilterResult.None;
             if (cache.pawnDiet.NullOrEmpty() == false)
             {
-                foreach (var diet in cache.pawnDiet)
+				int count = cache.pawnDiet.Count;
+				for (int i = 0; i < count; i++)
                 {
-                    result = result.Fuse(diet.FilterForFood(food));
+					PawnDiet diet = cache.pawnDiet[i];
+					FilterResult filterResult = diet.FilterForFood(food);
+					if (filterResult.Denied())
+						return filterResult;
+
+					if (filterResult > result)
+						result = filterResult;
                 }
             }
 

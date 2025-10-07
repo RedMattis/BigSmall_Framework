@@ -20,7 +20,6 @@ namespace BigAndSmall
         {
             if (p == null) return true;
             if (p.IsWildMan()) return true;
-            if (p.IsBloodfeeder()) { return true; }
             if (p.IsMutant) { return true; }
             if (p.DevelopmentalStage == DevelopmentalStage.Baby) { return true; }
             return false;
@@ -47,8 +46,12 @@ namespace BigAndSmall
             {
                 return true;
             }
-            if (p.GetCachePrepatched() is BSCache cache)
+
+            if (p.GetCache() is BSCache cache)
             {
+				if (cache.isBloodFeeder)
+					return true;
+
                 if (cache.willEatDef.TryGetValue(food, out bool cachedResult))
                 {
                     if (cachedResult == false)
@@ -100,8 +103,11 @@ namespace BigAndSmall
             }
 
             // Ignore unspawned pawns, it just gets messy because of Ludeon hardcoding.
-            if (p.Spawned == true && p.GetCachePrepatched() is BSCache cache && cache.isHumanlike)
+            if (p.Spawned == true && p.GetCache() is BSCache cache && cache.isHumanlike)
             {
+				if (cache.isBloodFeeder)
+					return true;
+
                 FilterResult result = food.FilterForFoodThing(cache);
                 if (result.Denied())
                 {
