@@ -28,7 +28,7 @@
         <parentTagDef>Body</parentTagDef>
         <shader>BS_TransparentThreeColor</shader>
         <conditionalGraphics>
-          <props><replaceFlags><Wings/></replaceFlags></props>
+          <props><replaceFlags><WingGraphics/></replaceFlags></props>
           <conditionalPaths><altDefs><li>BS_FeatheredWingFront</li></altDefs></conditionalPaths>
           <colorA> <altDefs> <li>BS_WingClrDark_A</li> </altDefs> </colorA>
           <colorB> <altDefs> <li>BS_WingClrDark_B</li> </altDefs> </colorB>
@@ -59,7 +59,7 @@
         <parentTagDef>Body</parentTagDef>
         <shader>BS_TransparentThreeColor</shader>
         <conditionalGraphics>
-          <props><replaceFlags><Wings/></replaceFlags></props>
+          <props><replaceFlags><WingGraphics/></replaceFlags></props>
           <conditionalPaths><altDefs><li>BS_FeatheredWingInner</li></altDefs></conditionalPaths>
           <colorA> <altDefs> <li>BS_WingClr_A</li> </altDefs> </colorA>
           <colorB> <altDefs> <li>BS_WingClrSaturated_B</li> </altDefs> </colorB>
@@ -93,7 +93,7 @@
         <parentTagDef>Body</parentTagDef>
         <shader>BS_TransparentThreeColor</shader>
         <conditionalGraphics>
-          <props><replaceFlags><Wings/></replaceFlags></props>
+          <props><replaceFlags><WingGraphics/></replaceFlags></props>
           <conditionalPaths><altDefs><li>BS_FeatheredWingBack</li></altDefs></conditionalPaths>
           <colorA> <altDefs> <li>BS_WingClrSaturated_A</li> </altDefs> </colorA>
           <colorB> <altDefs> <li>BS_WingClrDark_B</li> </altDefs> </colorB>
@@ -124,7 +124,7 @@
         <parentTagDef>Body</parentTagDef>
         <shader>BS_TransparentThreeColor</shader>
         <conditionalGraphics>
-          <props><replaceFlags><Wings/></replaceFlags></props>
+          <props><replaceFlags><WingGraphics/></replaceFlags></props>
           <conditionalPaths><altDefs><li>BS_FeatheredWingFront</li></altDefs></conditionalPaths>
           <colorA> <altDefs> <li>BS_WingClrDark_A</li> </altDefs> </colorA>
           <colorB> <altDefs> <li>BS_WingClrDark_B</li> </altDefs> </colorB>
@@ -154,7 +154,7 @@
         <parentTagDef>Body</parentTagDef>
         <shader>BS_TransparentThreeColor</shader>
         <conditionalGraphics>
-          <props><replaceFlags><Wings/></replaceFlags></props>
+          <props><replaceFlags><WingGraphics/></replaceFlags></props>
           <conditionalPaths><altDefs><li>BS_FeatheredWingInner</li></altDefs></conditionalPaths>
           <colorA> <altDefs> <li>BS_WingClr_A</li> </altDefs> </colorA>
           <colorB> <altDefs> <li>BS_WingClrSaturated_B</li> </altDefs> </colorB>
@@ -188,7 +188,7 @@
         <parentTagDef>Body</parentTagDef>
         <shader>BS_TransparentThreeColor</shader>
         <conditionalGraphics>
-          <props><replaceFlags><Wings/></replaceFlags></props>
+          <props><replaceFlags><WingGraphics/></replaceFlags></props>
           <conditionalPaths><altDefs><li>BS_FeatheredWingBack</li></altDefs></conditionalPaths>
           <colorA> <altDefs> <li>BS_WingClrSaturated_A</li> </altDefs> </colorA>
           <colorB> <altDefs> <li>BS_WingClrDark_B</li> </altDefs> </colorB>

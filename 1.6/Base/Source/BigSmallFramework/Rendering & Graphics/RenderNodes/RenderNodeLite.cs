@@ -114,6 +114,8 @@ namespace BigAndSmall
                 conditionalProps = new()
                 {
                     shader = null,
+                    replaceFlagMinPriority = 1000,
+                    replaceFlags = [tag],
                     alts = [..
                         userPickableShaders.Select(shader=> new ConditionalGraphicProperties
                         {

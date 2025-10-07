@@ -75,6 +75,8 @@ namespace BigAndSmall
         public FlagStringList replaceFlags = [];
         public FlagStringList replaceFlagsAndInactive = [];  // Means that even inactive genes/traits will be checked.
 
+        public float replaceFlagMinPriority = float.MinValue;
+
         public bool HasGeneTriggers => triggerGeneTag.AnyItems() || triggerGene.AnyItems();
 
 		public HashSet<AltTrigger> Triggers { get => [.. triggerConditions, .. triggers]; }
@@ -98,9 +100,12 @@ namespace BigAndSmall
             List<FlagString> allFlags = [.. replaceFlags, .. replaceFlagsAndInactive];
             if (allOverrides.Any())
             {
-                List<GraphicsOverride> resultsActiveOnly = [.. activeOverrides.SelectMany(x => x.Overrides).Where(x => x.replaceFlags.Any(t => replaceFlags.Contains(t))).OrderByDescending(x => x.priority)];
-                List<GraphicsOverride> resultsAll = [.. overridesInactive.SelectMany(x => x.Overrides).Where(x => x.replaceFlags.Any(t => allFlags.Contains(t))).OrderByDescending(x => x.priority)];
-                return [.. resultsActiveOnly, .. resultsAll];
+                List<GraphicsOverride> resultsActiveOnly = [.. activeOverrides.SelectMany(x => x.Overrides).Where(x => x.replaceFlags.Any(t => replaceFlags.Contains(t)))];
+                List<GraphicsOverride> resultsAll = [.. overridesInactive.SelectMany(x => x.Overrides).Where(x => x.replaceFlags.Any(t => allFlags.Contains(t)))];
+
+                return [.. new List<GraphicsOverride>([.. resultsActiveOnly, .. resultsAll])
+                    .Where(x=>x.priority >= replaceFlagMinPriority)
+                    .OrderBy(x => x.priority)];
             }
             return [];
         }

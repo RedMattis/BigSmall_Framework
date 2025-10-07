@@ -34,10 +34,7 @@ namespace BigAndSmall
         }
         public static void TryPatchPawnRenderNodeDefs()
         {
-            if (BigSmallMod.settings?.makeDefsRecolorable != true)
-            {
-                return;
-            }
+            bool patchAll = BigSmallMod.settings?.makeDefsRecolorable == true;
             var allGenes = DefDatabase<GeneDef>.AllDefsListForReading
                 .Where(x=>!x.RenderNodeProperties.NullOrEmpty()
                 && x.modExtensions?.Any(x=>x is HasCustomizableGraphics) != true
@@ -49,6 +46,11 @@ namespace BigAndSmall
                 && x.modExtensions?.Any(x => x is HasCustomizableGraphics) != true
                 && x.modExtensions?.Any(x => x is GraphicsOverride) != true
             );
+            if (!patchAll)
+            {
+                allGenes = allGenes.Where(x => x.defName.StartsWith("BS_"));
+                allHediffs = allHediffs.Where(x => x.defName.StartsWith("BS_"));
+            }
 
             List<PawnRenderingProps_Lite> newNodes = [];
 
@@ -265,6 +267,7 @@ namespace BigAndSmall
             newProps.tag = tag;
             newProps.nodeClass = typeof(RenderNodeLite);
             newProps.useHeadMesh = useHeadMesh;
+            newProps.workerClass = typeof(UltimateRenderNodeWorker);
             if (original.shaderTypeDef == null || original.shaderTypeDef == ShaderTypeDefOf.Cutout)
             {
                 newProps.shader = ShaderTypeDefOf.Cutout;
