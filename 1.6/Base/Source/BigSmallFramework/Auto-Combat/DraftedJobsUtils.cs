@@ -33,11 +33,12 @@ namespace BigAndSmall
     [StaticConstructorOnStartup]
     public static class DraftGizmos
     {
-        public static readonly Texture2D AutoCastTex = ContentFinder<Texture2D>.Get("BS_UI/Auto_Tiny");
+        public static readonly Texture2D AutoCastIcon = ContentFinder<Texture2D>.Get("BS_UI/Auto_Tiny");
         public static readonly Texture2D HuntIcon = ContentFinder<Texture2D>.Get("BS_UI/Hunt");
         public static readonly Texture2D TakeCoverIcon = ContentFinder<Texture2D>.Get("BS_UI/TakeCover");
-        public static readonly Texture2D MeleeCharge = ContentFinder<Texture2D>.Get("BS_UI/MeleeCharge");
-        public static readonly Texture2D AutoUseAllTex = ContentFinder<Texture2D>.Get("BS_UI/Auto_Large");
+        public static readonly Texture2D MeleeChargeIcon = ContentFinder<Texture2D>.Get("BS_UI/MeleeCharge");
+        public static readonly Texture2D AIControlIcon = ContentFinder<Texture2D>.Get("BS_UI/AIControl");
+        public static readonly Texture2D AutoUseAllIcon = ContentFinder<Texture2D>.Get("BS_UI/Auto_Large");
 
         // If the LITERAL sub-mod is active then NO setting will turn it off.
         private static bool? autoCombatModEnabled = null;
@@ -84,9 +85,9 @@ namespace BigAndSmall
                 
                 Command_ToggleWithRClick huntCommand = AddHuntGizmo(pawn);
                 List<Command_ToggleWithRClick> commands = [huntCommand];
-                if (DraftedActionHolder.GetData(pawn).hunt)
+                var data = DraftedActionHolder.GetData(pawn);
+                if (data.hunt)
                 {
-
                     if (BS.Settings.showTakeCoverBtn)
                     {
                         Command_ToggleWithRClick takeCover = AddCoverGizmo(pawn);
@@ -94,13 +95,18 @@ namespace BigAndSmall
                     }
                     if (BS.Settings.showMeleeChargeBtn)
                     {
-                        Command_ToggleWithRClick meleeCharge = AddChargeGizmo(pawn);
+                        Command_ToggleWithRClick meleeCharge = AddChargeGizmo(pawn, data.fullAIControl);
                         commands.Add(meleeCharge);
                     }
                     if (BS.Settings.showAutoUseAllAbilitiesBtn)
                     {
                         Command_ToggleWithRClick toggleAll = AddToggleAllAbilitiesButton(pawn);
                         commands.Add(toggleAll);
+                    }
+                    if (BS.Settings.showFullAIControlBtn)
+                    {
+                        Command_ToggleWithRClick aiControl = AddAIControlGizmo(pawn);
+                        commands.Add(aiControl);
                     }
                     return UpdateEnumerable(__result, commands);
                 }
@@ -118,7 +124,7 @@ namespace BigAndSmall
             {
                 defaultLabel = "BS_AutoUseAllAbilitiesLabel".Translate(),
                 defaultDesc = "BS_AutoUseAllAbilitiesDescription".Translate(),
-                icon = AutoUseAllTex,
+                icon = AutoUseAllIcon,
                 isActive = () => !DraftedActionHolder.GetData(pawn).autocastAbilities.Empty(),
                 toggleAction = () => DraftedActionHolder.GetData(pawn).ToggleAutoForAll(),
                 rightClickAction = () =>
@@ -130,18 +136,19 @@ namespace BigAndSmall
             };
         }
 
-        private static Command_ToggleWithRClick AddChargeGizmo(Pawn pawn)
+        private static Command_ToggleWithRClick AddChargeGizmo(Pawn pawn, bool disabled)
         {
             return new Command_ToggleWithRClick
             {
                 defaultLabel = "BS_MeleeChargeLabel".Translate(),
                 defaultDesc = "BS_MeleeChargeDescription".Translate(),
-                icon = MeleeCharge,
+                icon = MeleeChargeIcon,
                 isActive = () => DraftedActionHolder.GetData(pawn).meleeCharge,
                 toggleAction = () => DraftedActionHolder.GetData(pawn).ToggleMeleeCharge(),
                 rightClickAction = () =>
                 {
                 },
+                Disabled = disabled,
                 activateSound = SoundDefOf.Click,
                 groupKey = 6173615,
                 hotKey = KeyBindingDefOf.Misc5
@@ -162,7 +169,6 @@ namespace BigAndSmall
                 },
                 activateSound = SoundDefOf.Click,
                 groupKey = 6173614,
-                hotKey = KeyBindingDefOf.Misc4
             };
         }
 
@@ -195,6 +201,27 @@ namespace BigAndSmall
             };
         }
 
+        private static Command_ToggleWithRClick AddAIControlGizmo(Pawn pawn)
+        {
+            return new Command_ToggleWithRClick
+            {
+                defaultLabel = "BS_FullAIControlLabel".Translate(),
+                defaultDesc = "BS_FullAIControlDescription".Translate(),
+                icon = AIControlIcon,
+                isActive = () => DraftedActionHolder.GetData(pawn).fullAIControl,
+                toggleAction = () =>
+                {
+                    DraftedActionHolder.GetData(pawn).ToggleFullAIControl();
+                },
+                rightClickAction = () =>
+                {
+                },
+                activateSound = SoundDefOf.Click,
+                groupKey = 6173612,
+                hotKey = KeyBindingDefOf.Misc4
+            };
+        }
+
         private static void ShowHuntContextMenu(Pawn pawn)
         {
             bool takeCoverActive = DraftedActionHolder.GetData(pawn).takeCover;
@@ -218,6 +245,15 @@ namespace BigAndSmall
                     foreach(var aPawn in Find.Selector.SelectedPawns)
                     {
                         DraftedActionHolder.GetData(aPawn).ToggleMeleeCharge(force:!meleeChargeActive);
+                    }
+                }),
+                new FloatMenuOption("BS_FullAIControlLabel".Translate() + " "
+                + (DraftedActionHolder.GetData(pawn).fullAIControl ? "BS_IsEnabledP".Translate() : "BS_IsDisabledP".Translate()),
+                () =>
+                {
+                    foreach(var aPawn in Find.Selector.SelectedPawns)
+                    {
+                        DraftedActionHolder.GetData(aPawn).ToggleFullAIControl(force:!DraftedActionHolder.GetData(aPawn).fullAIControl);
                     }
                 }),
                 new FloatMenuOption("BS_AutoUseAllAbilitiesLabel".Translate() + " "
@@ -248,7 +284,7 @@ namespace BigAndSmall
                     {
                         var size = parms.shrunk ? 12f : 24f;
                         Rect position = new(butRect.x + butRect.width - size, butRect.y, size, size);
-                        GUI.DrawTexture(position, AutoCastTex);
+                        GUI.DrawTexture(position, AutoCastIcon);
                     }
                     if (__result.State == GizmoState.OpenedFloatMenu)
                     {
@@ -273,6 +309,17 @@ namespace BigAndSmall
                     }
                 }
             }
+            if (BigSmallMod.settings.autoCombatResetsLongCharge)
+            {
+                if (!__instance.pawn.Drafted)
+                {
+                    var pawn = __instance.pawn;
+                    if (DraftedActionHolder.GetData(pawn) is DraftedActionData data)
+                    {
+                        data.meleeCharge = false;
+                    }
+                }
+            }
         }
     }
 
@@ -282,6 +329,7 @@ namespace BigAndSmall
 
         public static DraftedActionData GetData(Pawn pawn)
         {
+            pawnDraftActionData ??= [];
             if (pawnDraftActionData.TryGetValue(pawn.ThingID, out DraftedActionData data))
             {
                 return data;
@@ -313,6 +361,7 @@ namespace BigAndSmall
         public bool hunt = false;
         public bool takeCover = false;
         public bool meleeCharge = true;
+        public bool fullAIControl = false;
         public List<AbilityDef> autocastAbilities = new();
 
         public Pawn Pawn  // Always use this to get the pawn, not the field since it might be null.
@@ -355,7 +404,7 @@ namespace BigAndSmall
         {
             bool newState = force is bool state ? state : !takeCover;
             takeCover = newState;
-            Pawn.jobs.EndCurrentJob(JobCondition.InterruptForced);
+            RefreshDraft();
             return takeCover;
         }
         public bool ToggleMeleeCharge(bool? force = null)
@@ -371,6 +420,15 @@ namespace BigAndSmall
             RefreshDraft();
             return hunt;
         }
+
+        public bool ToggleFullAIControl(bool? force = null)
+        {
+            bool newState = force is bool state ? state : !fullAIControl;
+            fullAIControl = newState;
+            RefreshDraft();
+            return fullAIControl;
+        }
+
 
         public bool AutoCastFor(AbilityDef def)
         {
@@ -413,6 +471,7 @@ namespace BigAndSmall
             Scribe_Values.Look(ref hunt, "huntMode", false);
             Scribe_Values.Look(ref takeCover, "takeCoverMode", false);
             Scribe_Values.Look(ref meleeCharge, "meleeChargeMode", true);
+            Scribe_Values.Look(ref fullAIControl, "fullAIControl", false);
             Scribe_Collections.Look(ref autocastAbilities, "autocastAbilities", LookMode.Def);
         }
     }

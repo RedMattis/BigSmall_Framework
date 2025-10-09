@@ -233,8 +233,12 @@ namespace BigAndSmall
             CreateSettingCheckbox(listStd, "BS_EnabledDraftedJobs".Translate(), ref settings.enableDraftedJobs);
             listStd.GapLine();
             CreateSettingCheckbox(listStd, "BS_AutoCombatResets".Translate(), ref settings.autoCombatResets);
+            CreateSettingCheckbox(listStd, "BS_LongChargeDefaultOff".Translate(), ref settings.autoCombatResetsLongCharge);
+
+            listStd.GapLine();
             CreateSettingCheckbox(listStd, "BS_ShowMeleeChargeBtn".Translate(), ref settings.showMeleeChargeBtn);
             CreateSettingCheckbox(listStd, "BS_ShowTakeCoverBtn".Translate(), ref settings.showTakeCoverBtn);
+            CreateSettingCheckbox(listStd, "BS_FullAIControl".Translate(), ref settings.showFullAIControlBtn);
             CreateSettingCheckbox(listStd, "BS_ShowAutoUseAllAbilitiesBtn".Translate(), ref settings.showAutoUseAllAbilitiesBtn);
 
             CreateRadioButtonsTwoOptions(listStd, "BS_RightClickAutoCombat".Translate(), ref settings.rightClickAutoCombatShowsMenu,
@@ -458,11 +462,17 @@ namespace BigAndSmall
         public static readonly bool defaultAutoCombatResets = false;
         public bool autoCombatResets = defaultAutoCombatResets;
 
+        public static readonly bool defaultAutoCombatResetsLongCharge = false;
+        public bool autoCombatResetsLongCharge = defaultAutoCombatResetsLongCharge;
+
         public static readonly bool defaultShowMeleeChargeBtn = true;
         public bool showMeleeChargeBtn = defaultShowMeleeChargeBtn;
 
         public static readonly bool defaultShowTakeCoverBtn = true;
         public bool showTakeCoverBtn = defaultShowTakeCoverBtn;
+
+        public static readonly bool defaultShowFullAiControlBtn = true;
+        public bool showFullAIControlBtn = defaultShowFullAiControlBtn;
 
         public static readonly bool defaultShowAutoUseAllAbilitiesBtn = true;
         public bool showAutoUseAllAbilitiesBtn = defaultShowAutoUseAllAbilitiesBtn;
@@ -531,8 +541,10 @@ namespace BigAndSmall
             // 4. AutoCombat Tab
             Scribe_Values.Look(ref enableDraftedJobs, "enableDraftedJobs", defaultEnableDraftedJobs);
             Scribe_Values.Look(ref autoCombatResets, "autoCombatResets", defaultAutoCombatResets);
+            Scribe_Values.Look(ref autoCombatResetsLongCharge, "autoCombatResetsLongCharge", defaultAutoCombatResetsLongCharge);
             Scribe_Values.Look(ref showMeleeChargeBtn, "showMeleeChargeBtn", defaultShowMeleeChargeBtn);
             Scribe_Values.Look(ref showTakeCoverBtn, "showTakeCoverBtn", defaultShowTakeCoverBtn);
+            Scribe_Values.Look(ref showFullAIControlBtn, "showFullAiControlBtn", defaultShowFullAiControlBtn);
             Scribe_Values.Look(ref showAutoUseAllAbilitiesBtn, "showAutoUseAllAbilitiesBtn", defaultShowAutoUseAllAbilitiesBtn);
             Scribe_Values.Look(ref rightClickAutoCombatShowsMenu, "rightClickAutoCombatShowsMenu", defaultRightClickAutoCombatShowsMenu);
 

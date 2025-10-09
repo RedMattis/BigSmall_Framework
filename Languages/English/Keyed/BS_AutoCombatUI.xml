@@ -5,6 +5,9 @@
   <BS_TakeCoverDescription>Automatically try to move into cover while in combat.</BS_TakeCoverDescription>
   <BS_MeleeChargeLabel>Long-Charge</BS_MeleeChargeLabel>
   <BS_MeleeChargeDescription>Charge a long distance to reach seen threats / Charge only a very short distance (when off).</BS_MeleeChargeDescription>
+  <BS_FullAIControlLabel>AI Control</BS_FullAIControlLabel>
+  <BS_FullAIControlDescription>Let the AI do as it pleases. Chase across the map, bash down doors, or whatever is required to eliminate known threats. Still respects cover-setting and auto-ability use.</BS_FullAIControlDescription>
+ 
   <BS_AutoUseAllAbilitiesLabel>Auto-Use All</BS_AutoUseAllAbilitiesLabel>
   <BS_AutoUseAllAbilitiesDescription>Toggle automatic use of ALL abilities.\n\nNote: you can hide this button in the setting and instead simply right-click the Auto-Combat button.\n\nThis was mostly added because some users wasn't aware of the included ability to auto-cast.</BS_AutoUseAllAbilitiesDescription>
 
