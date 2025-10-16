@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using System.Xml.Linq;
 using UnityEngine;
 using Verse;
 
@@ -67,6 +68,19 @@ namespace BigAndSmall
                     FType.Blacklist => this.Any(t => Match(item, t)) ? FilterResult.Deny : FilterResult.Neutral,
                     FType.Banlist => this.Any(t => Match(item, t)) ? FilterResult.Banned : FilterResult.Neutral,
                     _ => throw(new NotImplementedException($"No filter behaviour for type {FilterType}"))
+                };
+            }
+
+            public FilterResult GetFilterResult(object item, Func<object, T, bool> predicate)
+            {
+                return FilterType switch
+                {
+                    FType.Allowlist => this.Any(t => predicate(item, t)) ? FilterResult.ForceAllow : FilterResult.Neutral,
+                    FType.Whitelist => this.Any(t => predicate(item, t)) ? FilterResult.Allow : FilterResult.Deny,
+                    FType.Acceptlist => this.Any(t => predicate(item, t)) ? FilterResult.Allow : FilterResult.Neutral,
+                    FType.Blacklist => this.Any(t => predicate(item, t)) ? FilterResult.Deny : FilterResult.Neutral,
+                    FType.Banlist => this.Any(t => predicate(item, t)) ? FilterResult.Banned : FilterResult.Neutral,
+                    _ => throw (new NotImplementedException($"No filter behaviour for type {FilterType}"))
                 };
             }
 
@@ -159,14 +173,32 @@ namespace BigAndSmall
             }
 
             // From List of items. A bit slow, don't use in performance critical places.
-            public static FilterResult GetFilterResultFromItemList<T>(this IEnumerable<FilterList<T>> filterList, List<T> itemList)
+            public static FilterResult GetFilterResultFromItemList<T>(this IEnumerable<FilterList<T>> filterList, IEnumerable<T> itemList)
             {
-                if (itemList.Count == 0 && filterList.Any(x=>x is Whitelist<T>))
+                if (itemList.Any() && filterList.Any(x=>x is Whitelist<T>))
                 {
                     // If we have a whitelist, and no items to check, we should return Deny.
                     return FilterResult.Deny;
                 }
                 return filterList.SelectMany(x=> itemList.Select(y => x.GetFilterResult(y))).FuseNoNullCheck(); 
+            }
+
+            // Predicate version.
+            public static FilterResult GetFilterResult<T>(this IEnumerable<FilterList<T>> filterList, object item, Func<object, T, bool> predicate)
+            {
+                return filterList.Select(x => x.GetFilterResult(item, predicate)).FuseNoNullCheck();
+            }
+            public static IEnumerable<FilterResult> GetFilterResults<T>(this IEnumerable<FilterList<T>> filterList, object item, Func<object, T, bool>  predicate)
+            {
+                return filterList.Select(x => x.GetFilterResult(item, predicate));
+            }
+            public static FilterResult GetFilterResultFromItemList<T>(this IEnumerable<FilterList<T>> filterList, IEnumerable<object> itemList, Func<object, T, bool>  predicate)
+            {
+                if (itemList.Any() && filterList.Any(x => x is Whitelist<T>))
+                {
+                    return FilterResult.Deny;
+                }
+                return filterList.SelectMany(x => itemList.Select(y => x.GetFilterResult(y, predicate))).FuseNoNullCheck();
             }
 
 
@@ -213,7 +245,7 @@ namespace BigAndSmall
             public bool requireExplicitPermission = false;
 
             protected List<FilterList<T>> items = null;
-            public List<FilterList<T>> Items => items ??= new List<FilterList<T>> { allowlist, whitelist, blacklist, banlist, acceptlist }.Where(x => x != null).ToList();
+            public List<FilterList<T>> Items => items ??= [.. new List<FilterList<T>> { allowlist, whitelist, blacklist, banlist, acceptlist }.Where(x => x != null)];
 
             public List<T> ExplicitlyAcceptedItems
             {
@@ -229,10 +261,13 @@ namespace BigAndSmall
 
             public IEnumerable<FilterResult> GetFilterResults(T item) => Items.GetFilterResults(item);
             public FilterResult GetFilterResult(T item) => Items.GetFilterResult(item);
+            public FilterResult GetFilterResult(object item, Func<object, T, bool>  predicate) => Items.GetFilterResult(item, predicate);
 
             public FilterResult GetFilterResultFromItemList(List<T> itemList) => Items.GetFilterResultFromItemList(itemList);
+            public FilterResult GetFilterResultFromItemList(IEnumerable<object> itemList, Func<object, T, bool>  predicate) =>
+                Items.GetFilterResultFromItemList(itemList, predicate);
 
-            public List<T> GetAllItermsInAnyFilter() => Items.SelectMany(x => x).ToList();
+            public List<T> GetAllItemsInAnyFilter() => [.. Items.SelectMany(x => x)];
 
             public bool AnyContains(T obj)
             {

@@ -61,13 +61,14 @@ namespace BigAndSmall
         // If the filter evaluates to TRUE the graphic will be used.
         public FilterListSet<string> triggerGeneTag = new();
         public FilterListSet<GeneDef> triggerGene = new();
+        public FilterListSet<ApparelMatch> triggerApparel = new();
         public FilterListSet<FlagString> triggerFlags = new();
         public int randSeed = 0;
         
-        private List<AltTrigger> triggers = [];
+        private readonly List<AltTrigger> triggers = [];
         public HasTagGraphicOverride customTagGraphicIsSet = null;
 
-        private List<AltTrigger> triggerConditions = [];
+        private readonly List<AltTrigger> triggerConditions = [];
         public float? chanceTrigger = null;
         public SimpleCurve chanceByAge = null; // 1.0 means 100% chance at age 100.
         public ChanceByStat chanceByStat = null;
@@ -78,8 +79,9 @@ namespace BigAndSmall
         public float replaceFlagMinPriority = float.MinValue;
 
         public bool HasGeneTriggers => triggerGeneTag.AnyItems() || triggerGene.AnyItems();
+        public bool HasApparelTrigger => triggerApparel.AnyItems();
 
-		public HashSet<AltTrigger> Triggers { get => [.. triggerConditions, .. triggers]; }
+        public HashSet<AltTrigger> Triggers { get => [.. triggerConditions, .. triggers]; }
 
         public static void ResetStaticData()
         {
@@ -185,6 +187,17 @@ namespace BigAndSmall
             return true;
         }
 
+        private bool EquipTriggersValid(Pawn pawn)
+        {
+            if (HasApparelTrigger)
+            {
+                var wornApparel = pawn.apparel.WornApparel.Select(x => x.def.apparel).ToList();
+                FilterResult filterResults = triggerApparel.GetFilterResultFromItemList(
+                    wornApparel, ApparelMatch.Matches);
+            }
+            return true;
+        }
+
         private bool CustomTagGraphicIsSetIsValid(Pawn pawn)
         {
             if (customTagGraphicIsSet != null)
@@ -257,6 +270,10 @@ namespace BigAndSmall
                 return false;
             }
             if (!GeneTriggersValid(pawn))
+            {
+                return false;
+            }
+            if (!EquipTriggersValid(pawn))
             {
                 return false;
             }
