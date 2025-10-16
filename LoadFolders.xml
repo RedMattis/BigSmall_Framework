@@ -29,5 +29,6 @@
     <li IfModActive="OskarPotocki.VanillaFactionsExpanded.Core">1.6/Mods/VEF</li>
     <li IfModActive="nals.facialanimation">1.6/Mods/FacialAnim</li>
     <li IfModNotActive="RedMattis.RedHealth">1.6/RedHealth</li>
+    <li IfModActive="OskarPotocki.VanillaFactionsExpanded.Core">1.6/Mods/No_VEF</li>
   </v1.6>
 </loadFolders>

@@ -1,0 +1,19 @@
+<Defs>
+  <!-- Same thing as Vanilla Expanded, only used if their framework isn't active. -->
+	<ThinkTreeDef>
+		<defName>BS_DraftableAnimal</defName>
+		<insertTag>Animal_PreMain</insertTag>
+		<insertPriority>100</insertPriority>
+			<thinkRoot Class="ThinkNode_ConditionalOfPlayerFaction">
+				<subNodes>
+					<li Class="ThinkNode_Tagger">
+						<tagToGive>DraftedOrder</tagToGive>
+						<subNodes>
+							<li Class="JobGiver_MoveToStandable" />
+							<li Class="JobGiver_Orders" />
+						</subNodes>
+					</li>
+				</subNodes>
+			</thinkRoot>
+	</ThinkTreeDef>
+</Defs>
