@@ -58,6 +58,7 @@ namespace BigAndSmall
 
         [HarmonyPatch(typeof(Pawn_DraftController), "GetGizmos")]
         [HarmonyPostfix]
+        [HarmonyPriority(Priority.Low)]
         public static IEnumerable<Gizmo> GetGizmosPostfix(IEnumerable<Gizmo> __result, Pawn_DraftController __instance)
         {
             static IEnumerable<Gizmo> UpdateEnumerable(IEnumerable<Gizmo> gizmos, List<Command_ToggleWithRClick> commands)
@@ -354,8 +355,15 @@ namespace BigAndSmall
         }
     }
 
+    [StaticConstructorOnStartup]
     public class DraftedActionData : IExposable
     {
+        protected delegate void VEFAbilityVerbPostfixDelegate(Pawn __instance, ref Verb __result, Thing target);
+
+        private static readonly bool VEFLoaded = ModsConfig.IsActive("OskarPotocki.VanillaFactionsExpanded.Core");
+        private static bool delegatesInitialized = false;
+        protected static VEFAbilityVerbPostfixDelegate vefDelegate = null;
+
         private Pawn pawn = null;
         public string pawnID;
         public bool hunt = false;
@@ -384,6 +392,38 @@ namespace BigAndSmall
                     }
                 }
                 return pawn;
+            }
+        }
+
+        public static Verb TryGetVEFAbilityVerb(Pawn pawn, Thing target)
+        {
+            if (VEFLoaded && !delegatesInitialized)
+            {
+                InitializeVEFDelegates();
+            }
+            if (vefDelegate != null)
+            {
+                Verb result = null;
+                vefDelegate(pawn, ref result, target);
+                return result;
+            }
+            return null;
+        }
+
+        public static void InitializeVEFDelegates()
+        {
+            if (delegatesInitialized) return;
+            try
+            {
+                var vefType = AccessTools.TypeByName("VEF.Abilities.VanillaExpandedFramework_Pawn_TryGetAttackVerb_Patch");
+                var methodInfo = AccessTools.Method(vefType, "Postfix");
+                var del = (VEFAbilityVerbPostfixDelegate)Delegate.CreateDelegate(typeof(VEFAbilityVerbPostfixDelegate), methodInfo);
+                vefDelegate = del;
+                delegatesInitialized = true;
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Big and Small failed to initialize VEF Ability Verb delegate: {e}");
             }
         }
 

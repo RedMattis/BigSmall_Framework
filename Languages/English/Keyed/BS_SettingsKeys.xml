@@ -79,6 +79,7 @@
   <BS_RightClickAutoCombat>Right click Auto-Combat gizmo behavior</BS_RightClickAutoCombat>
   <BS_RightClickAutoCombat_ShowMenu>Open Context Menu</BS_RightClickAutoCombat_ShowMenu>
   <BS_RightClickAutoCombat_Toggle>Toggle Auto-use of Abilities</BS_RightClickAutoCombat_Toggle>
+  <BS_ShowAutoUseAllAbilitiesBtn>Show Auto-Use All Abilities button</BS_ShowAutoUseAllAbilitiesBtn>
 
   <!-- Advanced -->
   <BS_RecolourAnything>Enable Experimental</BS_RecolourAnything>

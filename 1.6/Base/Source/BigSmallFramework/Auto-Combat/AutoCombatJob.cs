@@ -15,6 +15,8 @@ namespace BigAndSmall
     public class JobGiver_AutoCombat : JobGiver_AIFightEnemy
     {
         public DraftedActionData actionData = null;
+        public bool draftedOnly = true;
+
         public bool Hunt => actionData.hunt;
         protected override bool OnlyUseAbilityVerbs => !actionData.hunt;
         protected override bool OnlyUseRangedSearch => false;
@@ -30,6 +32,13 @@ namespace BigAndSmall
         protected override bool TryFindShootingPosition(Pawn pawn, out IntVec3 dest, Verb verbToUse = null)
         {
             return TryFindShootinPositionInner(pawn, out dest, verbToUse);
+        }
+
+        public bool ValidUser(Pawn pawn)
+        {
+            if (pawn == null) return false;
+            if (draftedOnly && pawn.Drafted == false) return false;
+            return true;
         }
 
         protected bool TryFindShootinPositionInner(Pawn pawn, out IntVec3 dest, Verb verbToUse, bool requestNewPos=false)
@@ -62,7 +71,7 @@ namespace BigAndSmall
 
         protected override bool ExtraTargetValidator(Pawn pawn, Thing target)
         {
-            if (pawn?.Drafted != true) return false;
+            if (!ValidUser(pawn)) return false;
 
             if (base.ExtraTargetValidator(pawn, target))
             {
@@ -73,7 +82,7 @@ namespace BigAndSmall
 
         protected override Job TryGiveJob(Pawn pawn)
         {
-            if (pawn?.Drafted != true)
+            if (!ValidUser(pawn))
             {
                 return null;
             }
@@ -154,7 +163,7 @@ namespace BigAndSmall
         protected bool CanTargetWithAbillities(Pawn pawn, Thing target, out Ability pickedAbility)
         {
             pickedAbility = null;
-            if (pawn.Drafted == false || pawn.abilities?.abilities == null)
+            if (!ValidUser(pawn) || pawn.abilities?.abilities == null)
             {
                 return false;
             }
@@ -272,7 +281,7 @@ namespace BigAndSmall
             float verbRange = verb.verbProps.range;
             bool closeEnough = (pawn.Position - enemyTarget.Position).LengthHorizontalSquared < verbRange * verbRange;
 
-           if (coverOkay && standable && canHitTarget && closeEnough)
+            if (coverOkay && standable && canHitTarget && closeEnough)
             {
                 return JobMaker.MakeJob(JobDefOf.Wait_Combat, ExpiryInterval_ShooterSucceeded.RandomInRange / 3, checkOverrideOnExpiry: true);
             }
@@ -425,6 +434,10 @@ namespace BigAndSmall
         // Use our own method for more aggressive behaviour.
         public Verb TryGetAttackVerb(Pawn pawn, Thing target, bool allowManualCastWeapons = false, bool allowOnlyManualCastWeapons = false)
         {
+            if (DraftedActionData.TryGetVEFAbilityVerb(pawn, target) is Verb vefVerb)
+            {
+                return vefVerb;
+            }
             if (allowManualCastWeapons) // Unlike the vanilla method, we make this PREFER manual cast stuff if enabled. Let's blow those cooldowns and charges!
             {
                 if (pawn.equipment?.Primary != null && pawn.equipment.PrimaryEq.PrimaryVerb.Available() && pawn.equipment.PrimaryEq.PrimaryVerb.verbProps.onlyManualCast)
