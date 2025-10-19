@@ -25,6 +25,10 @@ namespace BigAndSmall
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             RemovePilotedHediff(parent.pawn);
+            if (parent.pawn?.Dead == false)
+            {
+                parent.pawn?.stances?.stunner?.StunFor(Rand.Range(80, 240), parent.pawn);
+            }
         }
 
         // Remove the piloted Hediff.

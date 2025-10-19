@@ -26,7 +26,7 @@ namespace BigAndSmall
             {
                 return 0;
             }
-            if (food.CurLevelPercentage > 0.45f)
+            if (food.CurLevelPercentage >= pawn.RaceProps.FoodLevelPercentageWantEat)
             {
                 return 0; 
             }
@@ -36,9 +36,9 @@ namespace BigAndSmall
                 {
                     if (cache.poorUserOfChargers)
                     {
-                        return 9.4f; // Prefer food instead of power if possible.
+                        return 9.45f; // Prefer food instead of power if possible.
                     }
-                    return 9.51f;
+                    return 9.55f;
                 }
             }
             return 0;

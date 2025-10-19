@@ -12,17 +12,17 @@ using UnityEngine.Networking;
 
 namespace BigAndSmall
 {
-    // Based on my work for Insectoids 2 in Vanilla Expanded.
     public class JobGiver_AutoCombat : JobGiver_AIFightEnemy
     {
         public DraftedActionData actionData = null;
+        public bool draftedOnly = true;
+
         public bool Hunt => actionData.hunt;
         protected override bool OnlyUseAbilityVerbs => !actionData.hunt;
         protected override bool OnlyUseRangedSearch => false;
 
         public List<AbilityDef> blacklist = [];
 
-        // Not totally sure what this is used for, but it seems standard for these things. / Red.
         public override ThinkNode DeepCopy(bool resolve = true)
         {
             JobGiver_AutoCombat obj = (JobGiver_AutoCombat)base.DeepCopy(resolve);
@@ -32,6 +32,13 @@ namespace BigAndSmall
         protected override bool TryFindShootingPosition(Pawn pawn, out IntVec3 dest, Verb verbToUse = null)
         {
             return TryFindShootinPositionInner(pawn, out dest, verbToUse);
+        }
+
+        public bool ValidUser(Pawn pawn)
+        {
+            if (pawn == null) return false;
+            if (draftedOnly && pawn.Drafted == false) return false;
+            return true;
         }
 
         protected bool TryFindShootinPositionInner(Pawn pawn, out IntVec3 dest, Verb verbToUse, bool requestNewPos=false)
@@ -64,7 +71,7 @@ namespace BigAndSmall
 
         protected override bool ExtraTargetValidator(Pawn pawn, Thing target)
         {
-            if (pawn?.Drafted != true) return false;
+            if (!ValidUser(pawn)) return false;
 
             if (base.ExtraTargetValidator(pawn, target))
             {
@@ -75,8 +82,7 @@ namespace BigAndSmall
 
         protected override Job TryGiveJob(Pawn pawn)
         {
-            // If IS is drated I think we can assume it is player controlled? I don't think non-player controlled pawns can be drafted? / Red.
-            if (pawn?.Drafted != true)
+            if (!ValidUser(pawn))
             {
                 return null;
             }
@@ -120,19 +126,44 @@ namespace BigAndSmall
 
         protected override bool ShouldLoseTarget(Pawn pawn)
         {
-            if (base.ShouldLoseTarget(pawn))
+            Thing enemyTarget = pawn.mindState.enemyTarget;
+            float targetKeepRadius = actionData.fullAIControl ? 999 : this.targetKeepRadius;
+            if (enemyTarget.Destroyed || Find.TickManager.TicksGame - pawn.mindState.lastEngageTargetTick > TicksSinceEngageToLoseTarget)
+            {
+                return true;
+            }
+            if ((enemyTarget as IAttackTarget)?.ThreatDisabled(pawn) == true || (enemyTarget is Pawn targetPawn && targetPawn.DeadOrDowned))
+            {
+                return true;
+            }
+            if (actionData.fullAIControl)
+            {
+                if (!pawn.CanReach(enemyTarget, PathEndMode.Touch, Danger.Deadly, canBashDoors: true))
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if (!pawn.CanReach(enemyTarget, PathEndMode.Touch, Danger.Deadly)
+                    || !((pawn.Position - enemyTarget.Position).LengthHorizontalSquared > targetKeepRadius * targetKeepRadius))
+                {
+                    return true;
+                }
+            }
+            if (!Hunt || !CanTargetWithAbillities(pawn, pawn.mindState.enemyTarget, out _))
             {
                 return true;
             }
 
-            return !Hunt && !CanTargetWithAbillities(pawn, pawn.mindState.enemyTarget, out _);
+            return false;
         }
 
 
         protected bool CanTargetWithAbillities(Pawn pawn, Thing target, out Ability pickedAbility)
         {
             pickedAbility = null;
-            if (pawn.Drafted == false || pawn.abilities?.abilities == null)
+            if (!ValidUser(pawn) || pawn.abilities?.abilities == null)
             {
                 return false;
             }
@@ -202,7 +233,7 @@ namespace BigAndSmall
                 return null;
             }
 
-            if (enemyTarget is Pawn enemyPawn && enemyPawn.IsPsychologicallyInvisible())
+            if (enemyTarget is Pawn enemyPawn && (enemyPawn.IsPsychologicallyInvisible() || enemyPawn.DeadOrDowned))
             {
                 return null;
             }
@@ -226,7 +257,7 @@ namespace BigAndSmall
 
             if (verb.verbProps.IsMeleeAttack)
             {
-                if (!actionData.meleeCharge)
+                if (!actionData.fullAIControl && !actionData.meleeCharge)
                 {
                     // Check distance to foe, if we'd need to move more than 2 tiles, don't melee charge.
                     const int maxDist = 3 * 3;
@@ -238,10 +269,11 @@ namespace BigAndSmall
                 var meleeJob = MeleeAttackJob(pawn, enemyTarget);  // Make sure they still re-check for abilities, and etc.
                 meleeJob.checkOverrideOnExpire = true;
                 meleeJob.expiryInterval = 100;
+                meleeJob.canBashDoors = actionData.fullAIControl;
                 return meleeJob;
             }
             bool takeCover = actionData.takeCover;
-            float coverAmount = takeCover ? 0.24f : 0.01f;
+            float coverAmount = takeCover ? 0.24f : 0.0f;
             float coverAmountFound = CoverUtility.CalculateOverallBlockChance(pawn, enemyTarget.Position, pawn.Map);
             bool coverOkay = CoverUtility.CalculateOverallBlockChance(pawn, enemyTarget.Position, pawn.Map) >= coverAmount;
             bool standable = pawn.Position.Standable(pawn.Map) && pawn.Map.pawnDestinationReservationManager.CanReserve(pawn.Position, pawn, pawn.Drafted);
@@ -249,13 +281,16 @@ namespace BigAndSmall
             float verbRange = verb.verbProps.range;
             bool closeEnough = (pawn.Position - enemyTarget.Position).LengthHorizontalSquared < verbRange * verbRange;
 
-           if (coverOkay && standable && canHitTarget && closeEnough)
+            if (coverOkay && standable && canHitTarget && closeEnough)
             {
                 return JobMaker.MakeJob(JobDefOf.Wait_Combat, ExpiryInterval_ShooterSucceeded.RandomInRange / 3, checkOverrideOnExpiry: true);
             }
 
             if (!TryFindShootingPosition(pawn, out var shootingPos, verbToUse: verb))
             {
+                if (TryMeleeAttackJob(pawn, enemyTarget) is Job meleeJob)
+                    return meleeJob;
+
                 return JobMaker.MakeJob(JobDefOf.Wait_Combat, 100, checkOverrideOnExpiry: true);
             }
 
@@ -267,10 +302,31 @@ namespace BigAndSmall
                     {
                         return MakeGotoJob(newShootingPos);
                     }
+                    else
+                    {
+                        if (TryMeleeAttackJob(pawn, enemyTarget) is Job meleeJob)
+                            return meleeJob;
+                    }
                 }
                 return JobMaker.MakeJob(JobDefOf.Wait_Combat, ExpiryInterval_ShooterSucceeded.RandomInRange / 3, checkOverrideOnExpiry: true);
             }
             return MakeGotoJob(shootingPos);
+        }
+
+        protected virtual Job TryMeleeAttackJob(Pawn pawn, Thing enemyTarget)
+        {
+            if (actionData.fullAIControl)
+            {
+                // If we can't find a shooting position, and we're allowed to bash doors, try meleeing.
+                // Only one attack though to prevent actually moving into melee after doors are down.
+                var meleeJob = MeleeAttackJob(pawn, enemyTarget);
+                meleeJob.checkOverrideOnExpire = true;
+                meleeJob.expiryInterval = 100;
+                meleeJob.canBashDoors = true;
+                meleeJob.maxNumMeleeAttacks = 1;
+                return meleeJob;
+            }
+            return null;
         }
 
         protected static Job MakeGotoJob(IntVec3 shootingPos)
@@ -332,12 +388,56 @@ namespace BigAndSmall
                 return null;
             }
 
-            return FindAttackTarget(pawn);
+            if (actionData.fullAIControl)
+            {
+                return FindAttackTargetAnywhere(pawn);
+            }
+            else
+            {
+                return FindAttackTarget(pawn);
+            }
         }
+
+        public virtual Thing FindAttackTargetAnywhere(Pawn pawn)
+        {
+            var flags = TargetScanFlags.NeedReachable | TargetScanFlags.NeedThreat | TargetScanFlags.NeedAutoTargetable;
+            return (Thing)AttackTargetFinder.BestAttackTarget(pawn, flags, IsGoodTarget, 0f, 900, default, float.MaxValue, canBashDoors: true);
+        }
+
+        public virtual bool IsGoodTarget(Thing thing)
+        {
+            if (!PlayerCanSeeThing(thing))
+            {
+                return false;
+            }
+            if (thing is Pawn pawn && !pawn.Downed)
+            {
+                return !pawn.IsPsychologicallyInvisible();
+            }
+            return false;
+        }
+
+        public static bool PlayerCanSeeThing(Thing thing)
+        {
+            if (!thing.Spawned)
+            {
+                return false;
+            }
+            if (thing.MapHeld != null && !thing.Fogged())
+            {
+                return true;
+            }
+            return false;
+        }
+
 
         // Use our own method for more aggressive behaviour.
         public Verb TryGetAttackVerb(Pawn pawn, Thing target, bool allowManualCastWeapons = false, bool allowOnlyManualCastWeapons = false)
         {
+            if (DraftedActionData.TryGetVEFAbilityVerb(pawn, target) is Verb vefVerb)
+            {
+                return vefVerb;
+            }
             if (allowManualCastWeapons) // Unlike the vanilla method, we make this PREFER manual cast stuff if enabled. Let's blow those cooldowns and charges!
             {
                 if (pawn.equipment?.Primary != null && pawn.equipment.PrimaryEq.PrimaryVerb.Available() && pawn.equipment.PrimaryEq.PrimaryVerb.verbProps.onlyManualCast)

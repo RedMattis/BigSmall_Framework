@@ -52,7 +52,13 @@ namespace BigAndSmall
         {
             if (Pawn.Faction != null)
             {
-                foreach (IntVec3 item in AffectedCells(target))
+                int radius = Props.radiusToHit;
+                if (Props.projectileDef?.projectile?.explosionRadius > 0)
+                {
+                    radius += Mathf.FloorToInt(Props.projectileDef.projectile.explosionRadius);  
+                }
+
+                foreach (IntVec3 item in AffectedCells(target, radiusOverride: radius))
                 {
                     List<Thing> thingList = item.GetThingList(Pawn.Map);
                     for (int i = 0; i < thingList.Count; i++)
@@ -67,7 +73,7 @@ namespace BigAndSmall
             return true;
         }
 
-        private List<IntVec3> AffectedCells(LocalTargetInfo target)
+        private List<IntVec3> AffectedCells(LocalTargetInfo target, int? radiusOverride=null)
         {
             tmpCellDots.Clear();
             tmpCells.Clear();
@@ -75,9 +81,11 @@ namespace BigAndSmall
 
             Vector3 targetVector = target.Cell.ToVector3Shifted().Yto0();
 
-            if (Props.radiusToHit > 0)
+            int radius = radiusOverride ?? Props.radiusToHit;
+
+            if (radius > 0)
             {
-                foreach (IntVec3 cell in GenRadial.RadialCellsAround(target.Cell, Props.radiusToHit, true))
+                foreach (IntVec3 cell in GenRadial.RadialCellsAround(target.Cell, radius, true))
                 {
                     Vector3 cellVector = cell.ToVector3Shifted().Yto0();
                     float dotProduct = Vector3.Dot((cellVector - targetVector).normalized, targetVector.normalized);

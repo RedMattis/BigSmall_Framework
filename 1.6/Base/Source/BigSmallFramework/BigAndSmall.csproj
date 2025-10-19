@@ -99,6 +99,8 @@
     <Publicize Include="Assembly-CSharp:RimWorld.SkillRecord.aptitudeCached" />
     <Publicize Include="Assembly-CSharp:RimWorld.Pawn_WorkSettings.pawn" />
     <Publicize Include="Assembly-CSharp:RimWorld.Pawn_WorkSettings.priorities" />
+    <Publicize Include="Assembly-CSharp:RimWorld.Ability.charges" />
+    
     <!-- <Publicize Include="Assembly-CSharp:Verse.GraphicDatabase.cachedGraphicGetters" /> -->
   </ItemGroup>
 </Project>

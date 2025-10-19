@@ -107,28 +107,27 @@ namespace BigAndSmall
                     result = scribedCache;
                 }
             }
-            if (newEntry)
+            if (newEntry || forceRefresh)
             {
-                // Check if the new entry is actually new or if there is a scribed entry to load instead.
-                var scribedResult = CheckForScribedEntry(pawn);
-                if (scribedResult != null)
+                if (newEntry)
                 {
-                    result = scribedResult;
+                    // Check if the new entry is actually new or if there is a scribed entry to load instead.
+                    var scribedResult = CheckForScribedEntry(pawn);
+                    if (scribedResult != null)
+                    {
+                        result = scribedResult;
+                    }
+                    else
+                    {
+                        BigAndSmallCache.ScribedCache.Add(result);
+                        ShedueleForceRegenerate(result, 1);
+                    }
                 }
-                else
-                {
-                    BigAndSmallCache.ScribedCache.Add(result);
-                    ShedueleForceRegenerate(result, 1);
-                }
-                if (!result.IsTempCache) // BS.PrePatcherActive && 
+                if (!result.IsTempCache)
                 {
                     pawn.GetCachePrepatchedThreaded() = result;
                     pawn.GetCachePrepatched() = result;
                 }
-                
-            }
-            if (forceRefresh)
-            {
                 // Refresh graphics
                 SafeGfxDirty(pawn);
             }

@@ -4,6 +4,8 @@
     <defName>BS_NoHands</defName>
     <label>no fine manipulators</label>
     <description>This individual lacks fine manipulation ability.\n\nAt best might be able to carry something in their mouth or arms.</description>
+    <isBad>false</isBad>
+    <everCurableByItem>false</everCurableByItem>
     <modExtensions>
       <li Class="BigAndSmall.PawnExtension">
         <canWieldThings>false</canWieldThings>
@@ -45,6 +47,8 @@
     <defName>BS_PoorHands</defName>
     <label>fine manipulation, poor</label>
     <description>This individual lacks the fine manipulation ability possessed by baseline humans.\n\nThey might still be able to wield tools or weapons with some ingenuity however.</description>
+    <isBad>false</isBad>
+    <everCurableByItem>false</everCurableByItem>
     <modExtensions>
       <li Class="BigAndSmall.PawnExtension">
         <aptitudes>

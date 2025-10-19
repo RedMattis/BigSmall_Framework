@@ -74,6 +74,7 @@
   <BS_Right>right</BS_Right>
   <BS_Left>left</BS_Left>
   <BS_Mech>robotic</BS_Mech>
+  <BS_Artificial>artificial</BS_Artificial>
 
   <!-- PatchExtensions -->
   <BS_Applies>applies</BS_Applies>

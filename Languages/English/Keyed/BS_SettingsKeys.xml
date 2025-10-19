@@ -71,13 +71,15 @@
   <!-- Auto Combat -->
   <BS_AutoCombatExplain>Options for giving pawns partial autonomy in combat.</BS_AutoCombatExplain>
   <BS_EnabledDraftedJobs>Enable auto-combat button</BS_EnabledDraftedJobs>
-  <BS_AutoCombatResets>Disable auto-combat when undrafting that pawn</BS_AutoCombatResets>
+  <BS_AutoCombatResets>Disable auto-combat when undrafting a pawn</BS_AutoCombatResets>
+  <BS_LongChargeDefaultOff>Disable long-charge when undrafting a pawn</BS_LongChargeDefaultOff>
   <BS_ShowMeleeChargeBtn>Show Melee Charge button</BS_ShowMeleeChargeBtn>
   <BS_ShowTakeCoverBtn>Show "Take Cover" button</BS_ShowTakeCoverBtn>
-  <BS_ShowAutoUseAllAbilitiesBtn>Show "Auto-Use All Abilities" button</BS_ShowAutoUseAllAbilitiesBtn>
+  <BS_FullAIControl>Show Full AI Control button</BS_FullAIControl>
   <BS_RightClickAutoCombat>Right click Auto-Combat gizmo behavior</BS_RightClickAutoCombat>
   <BS_RightClickAutoCombat_ShowMenu>Open Context Menu</BS_RightClickAutoCombat_ShowMenu>
   <BS_RightClickAutoCombat_Toggle>Toggle Auto-use of Abilities</BS_RightClickAutoCombat_Toggle>
+  <BS_ShowAutoUseAllAbilitiesBtn>Show Auto-Use All Abilities button</BS_ShowAutoUseAllAbilitiesBtn>
 
   <!-- Advanced -->
   <BS_RecolourAnything>Enable Experimental</BS_RecolourAnything>
