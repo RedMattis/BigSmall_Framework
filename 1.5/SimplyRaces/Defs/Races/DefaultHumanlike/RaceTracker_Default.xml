@@ -9,6 +9,9 @@
     <isBad>false</isBad>
     <everCurableByItem>false</everCurableByItem>
     <initialSeverity>1</initialSeverity>
+		<alwaysAllowMothball>True</alwaysAllowMothball>
+		<alwaysAllowMothballCached>True</alwaysAllowMothballCached>
+
 
     <!-- You're probably going to want to populate these with stuff. :) -->
     <!-- <stages Inherit="False"></stages>
