@@ -28,6 +28,13 @@ namespace BigAndSmall
         public bool temporarilySwapFaction = false;
         public int? injuryOnRemoval = null;
         public bool canAutoEjectIfColonist = true;
+        
+        public XenotypeDef xenotypeToApplyOnApply = null;
+        public bool restoreXenotypeOnRemove = false;
+        public XenotypeDef xenotypeToApplyOnRemove = null;
+        
+        public bool pilotInheritMentalTraitsOnRemove = false;
+        
 
         // Only works for a single pilot.
         public float? pilotLearnSkills = null;
@@ -35,6 +42,20 @@ namespace BigAndSmall
         public CompProperties_Piloted()
         {
             compClass = typeof(PilotedCompProps);
+        }
+
+
+        public override IEnumerable<string> ConfigErrors(HediffDef parentDef)
+        {
+            foreach (string configError in base.ConfigErrors(parentDef))
+            {
+                yield return configError;
+            }
+
+            if (xenotypeToApplyOnRemove != null && restoreXenotypeOnRemove)
+            {
+                yield return "Cannot apply xenotype on remove and restore xenotype on remove at the same time.";
+            }
         }
     }
     public class PilotedCompProps : HediffComp
