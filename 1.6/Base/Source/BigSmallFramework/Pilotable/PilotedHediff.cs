@@ -26,6 +26,7 @@ namespace BigAndSmall
         private int startPilotTime = 0;
         protected Ideo cachedIdeology = null;
         protected Faction cachedFaction = null;
+        protected XenotypeDef cachedXenotype = null;
 
 
         public CompProperties_Piloted Props => GetProperties();
@@ -153,9 +154,12 @@ namespace BigAndSmall
                         pawn.SetFaction(pilot.Faction);
                     }
 
+                    cachedXenotype = pawn.genes.Xenotype;
+
                     try { InheritPilotSkills(pilot, pawn); } catch (Exception e) { Log.Warning($"Failed to transfer pilot skills:\n{e.Message}\n{e.StackTrace}"); }
                     try { InheritPilotTraits(pilot); } catch (Exception e) { Log.Warning($"Failed to transfer pilot traits:\n{e.Message}\n{e.StackTrace}"); }
                     try { InheritRelationships(pilot, pawn); } catch (Exception e) { Log.Warning($"Failed to transfer pilot relationships:\n{e.Message}\n{e.StackTrace}"); }
+                    try { ApplyXenotypeToTargetOnApply(pawn); } catch (Exception e) { Log.Warning($"Failed to apply xenotype:\n{e.Message}\n{e.StackTrace}"); }
                     startPilotTime = Find.TickManager.TicksGame;
                 }
             }
@@ -172,6 +176,14 @@ namespace BigAndSmall
         [
             "speedoffset", "beauty", "gigantism", "large", "small", "dwarfism", "bs_giant", "tough"
         ];
+
+        public void ApplyXenotypeToTargetOnApply(Pawn target)
+        {
+            if (Props.xenotypeToApplyOnApply != null)
+            {
+                target.genes.SetXenotype(Props.xenotypeToApplyOnApply);
+            }
+        }
 
         public void InheritRelationships(Pawn pilot, Pawn target)
         {
@@ -375,6 +387,21 @@ namespace BigAndSmall
                 pawn.story.traits.GainTrait(trait);
             }
         }
+        
+        public void InheritTargetTraits(Pawn pilot)
+        {
+            if (!Props.pilotInheritMentalTraitsOnRemove)
+            {
+                return;
+            }
+
+            // Add all traits from the pilot (that are not physical).
+            var traitsToAdd = pawn.story.traits.allTraits.Where(x => !PhysicalTraitList.Any(y => x.def.defName.ToLower().StartsWith(y))).ToList();
+            foreach (Trait trait in traitsToAdd)
+            {
+                pilot.story.traits.GainTrait(trait);
+            }
+        }
 
 
         public void RemovePilots(bool mayRemoveHediff = true)
@@ -399,6 +426,14 @@ namespace BigAndSmall
                 {
                     Log.Error($"Failed to inherit relationships from {pawn.Name} with error:\n{e.Message}\n{e.StackTrace}");
                 }
+
+                // Give the pilot the piloted's traits
+                try { InheritTargetTraits(thing as Pawn); }
+                catch (Exception e)
+                {
+                    Log.Error($"Failed to have pilot inherit traits from {pawn.Name} with error:\n{e.Message}\n{e.StackTrace}");
+                }
+                
                 break; // Never add skills from more than one pilot, or we might overwrite some other pawn's skills.
             }
 
@@ -422,7 +457,16 @@ namespace BigAndSmall
                 pawn.SetFaction(cachedFaction);
                 cachedFaction = null;
             }
-
+            if (!pawn.DestroyedOrNull() && Props.restoreXenotypeOnRemove && cachedXenotype != null)
+            {
+                pawn.genes.SetXenotype(cachedXenotype);
+            }
+            if (!pawn.DestroyedOrNull() && Props.xenotypeToApplyOnRemove != null)
+            {
+                pawn.genes.SetXenotype(cachedXenotype);
+            }
+            cachedXenotype = null;
+            
             pilotEjectCountdown = -1; // Reset the eject countdown.
             pawn.health.Notify_HediffChanged(this);
             forcePilotableUpdate = true;
@@ -666,6 +710,7 @@ namespace BigAndSmall
             Scribe_Values.Look(ref defaultEnterable, "defaultEnterable", defaultValue: true);
             Scribe_References.Look(ref cachedFaction, "cachedFaction");
             Scribe_References.Look(ref cachedIdeology, "cachedIdeology");
+            Scribe_Defs.Look(ref cachedXenotype, "cachedXenotype");
             Scribe_Values.Look(ref startPilotTime, "timeSpentPiloting", 0);
         }
     }
