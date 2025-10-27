@@ -1,9 +1,6 @@
 ﻿using RimWorld;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
@@ -17,6 +14,19 @@ namespace BigAndSmall
             public Passion? passion = null;
             public int incrementBy = 0;
         }
+
+        public class AppendGeneGroup
+        {
+            public float chance = 1f;
+            public string modID = null;
+            public List<GeneDef> appendGenes = null;
+            public bool appendAsXenogenes = true;
+            public XenotypeIconDef xenotypeIconDef = null;
+            public string customXenotypeName = null;
+            public string customXenotypeNameFemale = null;
+            public bool removeOverlappingGenes = true;
+        }
+
         public class ApparelAndEquipmentGraphics
         {
             public CustomizableGraphic graphic = null;
@@ -46,9 +56,13 @@ namespace BigAndSmall
         public List<SkillPassion> forcedPassions = null;
 
         public List<GeneDef> appendGenes = [];
+        public List<AppendGeneGroup> ifModAppendGenes = [];
         public bool appendAsXenogenes = false;
         public bool removeOverlappingGenes = true;
         public float animalSapienceChance = 0;
+        public XenotypeIconDef xenotypeIconDef = null;
+        public string customXenotypeName = null;
+        public string customXenotypeNameFemale = null;
 
         public List<ApparelAndEquipmentGraphics> itemGraphics = null;
         public CustomizableGraphic pawnGraphic = null;
@@ -71,12 +85,29 @@ namespace BigAndSmall
             {
                 pawn = RaceMorpher.SwapAnimalToSapientVersion(pawn);
             }
-            AppendGenes(pawn);
+            if (ModsConfig.BiotechActive)
+            {
+                DoBiotechStuff(pawn);
+            }
             ApplyPsylink(pawn);
             ApplyAgeCurve(pawn);
             ModifySkills(pawn);
 
             return pawn;
+        }
+
+        private void DoBiotechStuff(Pawn pawn)
+        {
+            SetFakeXenotype(pawn, xenotypeIconDef, customXenotypeName, customXenotypeNameFemale);
+            AppendGenes(pawn, appendGenes, appendAsXenogenes, removeOverlappingGenes);
+            foreach (var modAppend in ifModAppendGenes)
+            {
+                if (modAppend.modID == null || ModLister.GetActiveModWithIdentifier(modAppend.modID) != null)
+                {
+                    SetFakeXenotype(pawn, modAppend.xenotypeIconDef, modAppend.customXenotypeName, modAppend.customXenotypeNameFemale);
+                    AppendGenes(pawn, modAppend.appendGenes, modAppend.appendAsXenogenes, modAppend.removeOverlappingGenes);
+                }
+            }
         }
 
         public void SetModdableGraphics(Pawn pawn)
@@ -128,14 +159,18 @@ namespace BigAndSmall
             }
         }
 
-        public void AppendGenes(Pawn pawn)
+        public static void AppendGenes(Pawn pawn, List<GeneDef> appendGenes, bool appendAsXenogenes, bool removeOverlappingGenes)
         {
             if (pawn.genes == null) return;
             // Check exclusion tags and remove all conflicting genes.
             List<Gene> pawnGenes = [..pawn.genes.GenesListForReading];
             if (removeOverlappingGenes)
             {
-                var appendGeneExlusions = appendGenes.SelectMany(x => x.exclusionTags).ToList();
+                List<string> appendGeneExlusions = [];
+                foreach (var gene in appendGenes.Where(x => !x.exclusionTags.NullOrEmpty()))
+                {
+                    appendGeneExlusions.AddRange(gene.exclusionTags);
+                }
                 if (appendGeneExlusions.Any())
                 {
                     foreach (var gene in pawnGenes.Where(x => !x.def.exclusionTags.NullOrEmpty() && x.def.exclusionTags.Intersect(appendGeneExlusions).Any()))
@@ -159,6 +194,23 @@ namespace BigAndSmall
                 {
                     pawn.genes.AddGene(gene, false);
                 }
+            }
+        }
+
+        public static void SetFakeXenotype(Pawn pawn, XenotypeIconDef icon, string customName, string customNameFemale)
+        {
+            if (icon == null && customName == null)
+            {
+                return;
+            }
+            var newIcon = icon ?? XenoTypeDefExtensions.TryFindIconDef(pawn);
+            if (newIcon != null)
+            {
+                pawn.genes.iconDef = newIcon;
+            }
+            if (!string.IsNullOrEmpty(customName))
+            {
+                pawn.genes.xenotypeName = pawn.gender == Gender.Female && customNameFemale != null ? customNameFemale : customName;
             }
         }
 

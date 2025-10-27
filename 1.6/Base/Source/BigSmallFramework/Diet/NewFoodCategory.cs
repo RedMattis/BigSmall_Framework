@@ -50,7 +50,10 @@ namespace BigAndSmall
             FilterResult result = FilterResult.None;
             if (!diets.NullOrEmpty())
             {
-                result = result.Fuse(diets.Where(x => x.newFoodCategoryFilters != null).SelectMany(x => x.newFoodCategoryFilters.Items).GetFilterResult(this));
+                result = result.Fuse(diets
+                    .Where(x => x.newFoodCategoryFilters != null)
+                    .SelectMany(x => x.newFoodCategoryFilters.Items)
+                    .GetFilterResult(this));
             }
             var fleshType = pawn.RaceProps?.FleshType;
             if (filterListFor.fleshTypes?.Items.GetFilterResult(fleshType) is FilterResult fleshResult && fleshResult != FilterResult.None)

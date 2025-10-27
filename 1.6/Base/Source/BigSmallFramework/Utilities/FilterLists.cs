@@ -167,15 +167,15 @@ namespace BigAndSmall
                 return filterList.Select(x => x.GetFilterResult(item)).FuseNoNullCheck();
             }
 
-            public static IEnumerable<FilterResult> GetFilterResults<T>(this IEnumerable<FilterList<T>> filterList, T item)
+            public static IEnumerable<FilterResult> GetFilterResults<T>(this IReadOnlyCollection<FilterList<T>> filterList, T item)
             {
                 return filterList.Select(x => x.GetFilterResult(item));
             }
 
             // From List of items. A bit slow, don't use in performance critical places.
-            public static FilterResult GetFilterResultFromItemList<T>(this IEnumerable<FilterList<T>> filterList, IEnumerable<T> itemList)
+            public static FilterResult GetFilterResultFromItemList<T>(this IReadOnlyCollection<FilterList<T>> filterList, IReadOnlyCollection<T> itemList)
             {
-                if (itemList.Any() && filterList.Any(x=>x is Whitelist<T>))
+                if (itemList.Count == 0 && filterList.Any(x=>x is Whitelist<T>))
                 {
                     // If we have a whitelist, and no items to check, we should return Deny.
                     return FilterResult.Deny;
@@ -184,17 +184,17 @@ namespace BigAndSmall
             }
 
             // Predicate version.
-            public static FilterResult GetFilterResult<T>(this IEnumerable<FilterList<T>> filterList, object item, Func<object, T, bool> predicate)
+            public static FilterResult GetFilterResult<T>(this IReadOnlyCollection<FilterList<T>> filterList, object item, Func<object, T, bool> predicate)
             {
                 return filterList.Select(x => x.GetFilterResult(item, predicate)).FuseNoNullCheck();
             }
-            public static IEnumerable<FilterResult> GetFilterResults<T>(this IEnumerable<FilterList<T>> filterList, object item, Func<object, T, bool>  predicate)
+            public static IEnumerable<FilterResult> GetFilterResults<T>(this IReadOnlyCollection<FilterList<T>> filterList, object item, Func<object, T, bool>  predicate)
             {
                 return filterList.Select(x => x.GetFilterResult(item, predicate));
             }
-            public static FilterResult GetFilterResultFromItemList<T>(this IEnumerable<FilterList<T>> filterList, IEnumerable<object> itemList, Func<object, T, bool>  predicate)
+            public static FilterResult GetFilterResultFromItemList<T>(this IReadOnlyCollection<FilterList<T>> filterList, IReadOnlyCollection<object> itemList, Func<object, T, bool>  predicate)
             {
-                if (itemList.Any() && filterList.Any(x => x is Whitelist<T>))
+                if (itemList.Count == 0 && filterList.Any(x => x is Whitelist<T>))
                 {
                     return FilterResult.Deny;
                 }
@@ -264,7 +264,7 @@ namespace BigAndSmall
             public FilterResult GetFilterResult(object item, Func<object, T, bool>  predicate) => Items.GetFilterResult(item, predicate);
 
             public FilterResult GetFilterResultFromItemList(List<T> itemList) => Items.GetFilterResultFromItemList(itemList);
-            public FilterResult GetFilterResultFromItemList(IEnumerable<object> itemList, Func<object, T, bool>  predicate) =>
+            public FilterResult GetFilterResultFromItemList(IReadOnlyCollection<object> itemList, Func<object, T, bool>  predicate) =>
                 Items.GetFilterResultFromItemList(itemList, predicate);
 
             public List<T> GetAllItemsInAnyFilter() => [.. Items.SelectMany(x => x)];

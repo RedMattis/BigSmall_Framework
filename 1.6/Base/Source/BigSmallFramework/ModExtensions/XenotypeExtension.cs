@@ -26,6 +26,14 @@ namespace BigAndSmall
 
     public static class XenoTypeDefExtensions
     {
+        public static XenotypeIconDef TryFindIconDef(Pawn parent)
+        {
+            var iconPath = parent.genes.Xenotype.iconPath;
+            var xIconDef = DefDatabase<XenotypeIconDef>.AllDefsListForReading
+                .FirstOrDefault(x => string.Equals(x.texPath, iconPath, StringComparison.OrdinalIgnoreCase));
+            return xIconDef;
+        }
+
         public static float GetMorphWeight(this XenotypeDef def)
         {
             if (def.HasModExtension<XenotypeExtension>())
