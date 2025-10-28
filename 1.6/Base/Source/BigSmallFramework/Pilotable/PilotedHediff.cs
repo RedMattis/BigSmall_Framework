@@ -26,6 +26,7 @@ namespace BigAndSmall
         private int startPilotTime = 0;
         protected Ideo cachedIdeology = null;
         protected Faction cachedFaction = null;
+        protected Name cachedName = null;
         protected XenotypeDef cachedXenotype = null;
 
 
@@ -152,6 +153,12 @@ namespace BigAndSmall
                         
                         cachedFaction = pawn.Faction;
                         pawn.SetFaction(pilot.Faction);
+                    }
+
+                    if (Props.temporarilySwapName)
+                    {
+                        cachedName = pawn.Name;
+                        pawn.Name = pilot.Name;
                     }
 
                     cachedXenotype = pawn.genes.Xenotype;
@@ -465,7 +472,19 @@ namespace BigAndSmall
             {
                 pawn.genes.SetXenotype(cachedXenotype);
             }
+
+            if (Props.temporarilySwapName && cachedName != null)
+            {
+                pawn.Name = cachedName;
+                cachedName = null;
+            }
             cachedXenotype = null;
+
+            if (!pawn.Dead && Props.killOnRemove)
+            {
+                DamageInfo damageInfo = new DamageInfo(DamageDefOf.ExecutionCut, 10000, 300, -1, null, null);
+                pawn.Kill(damageInfo, this);
+            }
             
             pilotEjectCountdown = -1; // Reset the eject countdown.
             pawn.health.Notify_HediffChanged(this);
