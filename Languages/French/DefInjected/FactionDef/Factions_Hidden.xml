@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: lost -->
+  <BS_ZombieFaction.label>perdu</BS_ZombieFaction.label>
+  <!-- EN: These individuals have lost most of their sense and are attacking others indiscriminately. -->
+  <BS_ZombieFaction.description>Ces personnes ont perdu la plupart de leurs sens et attaquent les autres sans discernement.</BS_ZombieFaction.description>
+  <!-- EN: The Lost -->
+  <BS_ZombieFaction.fixedName>Les perdus</BS_ZombieFaction.fixedName>
+  <!-- EN: leader -->
+  <BS_ZombieFaction.leaderTitle>chef</BS_ZombieFaction.leaderTitle>
+  <!-- EN: {0} from {1} are attacking your {2}. -->
+  <BS_ZombieFaction.messageDefendersAttacking>{0} de {1} attaquent votre {2}.</BS_ZombieFaction.messageDefendersAttacking>
+  <!-- EN: berserker -->
+  <BS_ZombieFaction.pawnSingular>berserker</BS_ZombieFaction.pawnSingular>
+  <!-- EN: berserkers -->
+  <BS_ZombieFaction.pawnsPlural>berserkers</BS_ZombieFaction.pawnsPlural>
+  
+</LanguageData>

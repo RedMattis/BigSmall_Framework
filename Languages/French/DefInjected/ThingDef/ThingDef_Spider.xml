@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: spider-person -->
+  <BS_SpiderPersonRace.label>homme-araignée</BS_SpiderPersonRace.label>
+  <!-- EN: A humanlike being with a spider-like abdomen. -->
+  <BS_SpiderPersonRace.description>Un être humanoïde avec un abdomen semblable à celui d’une araignée.</BS_SpiderPersonRace.description>
+  <!-- EN: left fist -->
+  <BS_SpiderPersonRace.tools.left_fist.label>Poing gauche</BS_SpiderPersonRace.tools.left_fist.label>
+  <!-- EN: fist -->
+  <BS_SpiderPersonRace.tools.left_fist.labelNoLocation>Poing</BS_SpiderPersonRace.tools.left_fist.labelNoLocation>
+  <!-- EN: right fist -->
+  <BS_SpiderPersonRace.tools.right_fist.label>Poing droit</BS_SpiderPersonRace.tools.right_fist.label>
+  <!-- EN: fist -->
+  <BS_SpiderPersonRace.tools.right_fist.labelNoLocation>Poing</BS_SpiderPersonRace.tools.right_fist.labelNoLocation>
+  <!-- EN: teeth -->
+  <BS_SpiderPersonRace.tools.teeth.label>Dents</BS_SpiderPersonRace.tools.teeth.label>
+  <!-- EN: head -->
+  <BS_SpiderPersonRace.tools.head.label>Tête</BS_SpiderPersonRace.tools.head.label>
+  
+</LanguageData>

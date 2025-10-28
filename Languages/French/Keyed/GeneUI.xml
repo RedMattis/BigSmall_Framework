@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  <!-- <BS_RacialFeatures>Morphology</BS_RacialFeatures> -->
+  <!-- EN: Mechanical Composition -->
+  <BS_RacialFeatures_Mech>Composition mécanique</BS_RacialFeatures_Mech>
+
+  <!-- EN: Core Systems -->
+  <BS_MechEndo>Systèmes centraux</BS_MechEndo>
+  
+  <!-- Hardware -->
+  <!-- <BS_MechExo>Xenomodulators</BS_MechExo> -->
+  <!-- EN: Mechanite Assemblies -->
+  <BS_MechXeno>Assemblages de mécanite</BS_MechXeno>
+
+  <!-- EN: Nature -->
+  <BS_VampEndo>Nature</BS_VampEndo>
+  <!-- EN: Bloodline -->
+  <BS_VampXeno>Lignée sanguine</BS_VampXeno>
+
+  <!-- <BS_SupernaturalEndo>Nature</BS_SupernaturalEndo> -->
+  <!-- EN: Origin -->
+  <BS_SupernaturalEndo>Origine</BS_SupernaturalEndo>
+  <!-- <BS_SupernaturalEndo>Transient traits</BS_SupernaturalEndo> -->
+  <!-- EN: Transient forces -->
+  <BS_FantasyXeno>Forces transitoires</BS_FantasyXeno>
+
+  <!-- EN: Viewing {0} -->
+  <BS_ViewGenetics>Consultation de {0}</BS_ViewGenetics>
+  
+  <!-- EN: Racial feature list -->
+  <BS_RacialFeatureDescription>Liste des caractéristiques raciales</BS_RacialFeatureDescription>
+  <!-- EN: Racial Traits -->
+  <BS_RacialTraits>Traits raciaux</BS_RacialTraits>
+</LanguageData>

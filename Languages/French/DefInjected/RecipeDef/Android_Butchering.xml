@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: shred robot -->
+  <BS_ShredRobot.label>déchiqueteur de robot</BS_ShredRobot.label>
+  <!-- EN: Shred a dead robot to try to salvage usable material. -->
+  <BS_ShredRobot.description>déchiquete un robot mort pour essayer de récupérer du matériel utilisable.</BS_ShredRobot.description>
+  <!-- EN: Shredding robot. -->
+  <BS_ShredRobot.jobString>déchiquetage de robot</BS_ShredRobot.jobString>
+  
+  <!-- EN: smash robot -->
+  <BS_SmashRobot.label>écraseur de robot</BS_SmashRobot.label>
+  <!-- EN: smash a dead robot to try to salvage usable material. -->
+  <BS_SmashRobot.description>écrase un robot mort pour essayer de récupérer du matériel utilisable.</BS_SmashRobot.description>
+  <!-- EN: Smashing mechanoid. -->
+  <BS_SmashRobot.jobString>écrasement de mécha</BS_SmashRobot.jobString>
+  
+</LanguageData>

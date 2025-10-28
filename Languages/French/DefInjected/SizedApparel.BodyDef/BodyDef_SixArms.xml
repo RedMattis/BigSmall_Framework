@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: six-armed human -->
+  <BS_SixArmedHuman.label>humain à six bras</BS_SixArmedHuman.label>
+  <!-- EN: left lung -->
+  <BS_SixArmedHuman.corePart.parts.left_lung.customLabel>Poumon gauche</BS_SixArmedHuman.corePart.parts.left_lung.customLabel>
+  <!-- EN: right lung -->
+  <BS_SixArmedHuman.corePart.parts.right_lung.customLabel>Poumon droit</BS_SixArmedHuman.corePart.parts.right_lung.customLabel>
+  <!-- EN: left kidney -->
+  <BS_SixArmedHuman.corePart.parts.left_kidney.customLabel>Rein gauche</BS_SixArmedHuman.corePart.parts.left_kidney.customLabel>
+  <!-- EN: right kidney -->
+  <BS_SixArmedHuman.corePart.parts.right_kidney.customLabel>Rein droit</BS_SixArmedHuman.corePart.parts.right_kidney.customLabel>
+  <!-- EN: left eye -->
+  <BS_SixArmedHuman.corePart.parts.Neck.parts.Head.parts.left_eye.customLabel>Œil gauche</BS_SixArmedHuman.corePart.parts.Neck.parts.Head.parts.left_eye.customLabel>
+  <!-- EN: right eye -->
+  <BS_SixArmedHuman.corePart.parts.Neck.parts.Head.parts.right_eye.customLabel>Œil droit</BS_SixArmedHuman.corePart.parts.Neck.parts.Head.parts.right_eye.customLabel>
+  <!-- EN: left ear -->
+  <BS_SixArmedHuman.corePart.parts.Neck.parts.Head.parts.left_ear.customLabel>Oreille gauche</BS_SixArmedHuman.corePart.parts.Neck.parts.Head.parts.left_ear.customLabel>
+  <!-- EN: right ear -->
+  <BS_SixArmedHuman.corePart.parts.Neck.parts.Head.parts.right_ear.customLabel>Oreille droite</BS_SixArmedHuman.corePart.parts.Neck.parts.Head.parts.right_ear.customLabel>
+  
+  <!-- Upper Left Arm -->
+  <BS_SixArmedHuman.corePart.parts.upper_left_shoulder.customLabel>Épaule supérieure gauche</BS_SixArmedHuman.corePart.parts.upper_left_shoulder.customLabel>
+  <BS_SixArmedHuman.corePart.parts.upper_left_shoulder.parts.upper_left_clavicle.customLabel>Clavicule supérieure gauche</BS_SixArmedHuman.corePart.parts.upper_left_shoulder.parts.upper_left_clavicle.customLabel>
+  <BS_SixArmedHuman.corePart.parts.upper_left_shoulder.parts.upper_left_arm.customLabel>Bra supérieur gauche</BS_SixArmedHuman.corePart.parts.upper_left_shoulder.parts.upper_left_arm.customLabel>
+  <BS_SixArmedHuman.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_humerus.customLabel>Humérus supérieur gauche</BS_SixArmedHuman.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_humerus.customLabel>
+  <BS_SixArmedHuman.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_radius.customLabel>Radius supérieur gauche</BS_SixArmedHuman.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_radius.customLabel>
+  <BS_SixArmedHuman.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.customLabel>Main supérieure gauche</BS_SixArmedHuman.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.customLabel>
+  <BS_SixArmedHuman.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.parts.upper_left_pinky.customLabel>Petit doigt supérieur gauche</BS_SixArmedHuman.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.parts.upper_left_pinky.customLabel>
+  <BS_SixArmedHuman.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.parts.upper_left_ring_finger.customLabel>Annulaire supérieur gauche</BS_SixArmedHuman.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.parts.upper_left_ring_finger.customLabel>
+  <BS_SixArmedHuman.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.parts.upper_left_middle_finger.customLabel>Doigt du milieu supérieur gauche</BS_SixArmedHuman.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.parts.upper_left_middle_finger.customLabel>
+  <BS_SixArmedHuman.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.parts.upper_left_index_finger.customLabel>Index supérieur gauche</BS_SixArmedHuman.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.parts.upper_left_index_finger.customLabel>
+  <BS_SixArmedHuman.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.parts.upper_left_thumb.customLabel>Pouce supérieur gauche</BS_SixArmedHuman.corePart.parts.upper_left_shoulder.parts.upper_left_arm.parts.upper_left_hand.parts.upper_left_thumb.customLabel>
+
+  <!-- Upper Right Arm -->
+  <BS_SixArmedHuman.corePart.parts.upper_right_shoulder.customLabel>Épaule supérieure droite</BS_SixArmedHuman.corePart.parts.upper_right_shoulder.customLabel>
+  <BS_SixArmedHuman.corePart.parts.upper_right_shoulder.parts.upper_right_clavicle.customLabel>Clavicule supérieure droite</BS_SixArmedHuman.corePart.parts.upper_right_shoulder.parts.upper_right_clavicle.customLabel>
+  <BS_SixArmedHuman.corePart.parts.upper_right_shoulder.parts.upper_right_arm.customLabel>Bra supérieur droit</BS_SixArmedHuman.corePart.parts.upper_right_shoulder.parts.upper_right_arm.customLabel>
+  <BS_SixArmedHuman.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_humerus.customLabel>Humérus supérieur droit</BS_SixArmedHuman.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_humerus.customLabel>
+  <BS_SixArmedHuman.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_radius.customLabel>Radius supérieur droit</BS_SixArmedHuman.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_radius.customLabel>
+  <BS_SixArmedHuman.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.customLabel>Main supérieure droite</BS_SixArmedHuman.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.customLabel>
+  <BS_SixArmedHuman.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.parts.upper_right_pinky.customLabel>Petit doigt supérieur droit</BS_SixArmedHuman.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.parts.upper_right_pinky.customLabel>
+  <BS_SixArmedHuman.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.parts.upper_right_ring_finger.customLabel>Annulaire supérieur droit</BS_SixArmedHuman.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.parts.upper_right_ring_finger.customLabel>
+  <BS_SixArmedHuman.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.parts.upper_right_middle_finger.customLabel>Doigt du milieu supérieur droit</BS_SixArmedHuman.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.parts.upper_right_middle_finger.customLabel>
+  <BS_SixArmedHuman.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.parts.upper_right_index_finger.customLabel>Index supérieur droit</BS_SixArmedHuman.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.parts.upper_right_index_finger.customLabel>
+  <BS_SixArmedHuman.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.parts.upper_right_thumb.customLabel>Pouce supérieur droit</BS_SixArmedHuman.corePart.parts.upper_right_shoulder.parts.upper_right_arm.parts.upper_right_hand.parts.upper_right_thumb.customLabel>
+
+  <!-- Lower Left Arm -->
+  <BS_SixArmedHuman.corePart.parts.lower_left_shoulder.customLabel>Épaule inférieure gauche</BS_SixArmedHuman.corePart.parts.lower_left_shoulder.customLabel>
+  <BS_SixArmedHuman.corePart.parts.lower_left_shoulder.parts.lower_left_clavicle.customLabel>Clavicule inférieure gauche</BS_SixArmedHuman.corePart.parts.lower_left_shoulder.parts.lower_left_clavicle.customLabel>
+  <BS_SixArmedHuman.corePart.parts.lower_left_shoulder.parts.lower_left_arm.customLabel>Bra inférieur gauche</BS_SixArmedHuman.corePart.parts.lower_left_shoulder.parts.lower_left_arm.customLabel>
+  <BS_SixArmedHuman.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_humerus.customLabel>Humérus inférieur gauche</BS_SixArmedHuman.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_humerus.customLabel>
+  <BS_SixArmedHuman.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_radius.customLabel>Radius inférieur gauche</BS_SixArmedHuman.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_radius.customLabel>
+  <BS_SixArmedHuman.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.customLabel>Main inférieure gauche</BS_SixArmedHuman.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.customLabel>
+  <BS_SixArmedHuman.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.parts.lower_left_pinky.customLabel>Petit doigt inférieur gauche</BS_SixArmedHuman.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.parts.lower_left_pinky.customLabel>
+  <BS_SixArmedHuman.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.parts.lower_left_ring_finger.customLabel>Annulaire inférieur gauche</BS_SixArmedHuman.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.parts.lower_left_ring_finger.customLabel>
+  <BS_SixArmedHuman.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.parts.lower_left_middle_finger.customLabel>Doigt du milieu inférieur gauche</BS_SixArmedHuman.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.parts.lower_left_middle_finger.customLabel>
+  <BS_SixArmedHuman.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.parts.lower_left_index_finger.customLabel>Index inférieur gauche</BS_SixArmedHuman.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.parts.lower_left_index_finger.customLabel>
+  <BS_SixArmedHuman.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.parts.lower_left_thumb.customLabel>Pouce inférieur gauche</BS_SixArmedHuman.corePart.parts.lower_left_shoulder.parts.lower_left_arm.parts.lower_left_hand.parts.lower_left_thumb.customLabel>
+
+  <!-- Lower Right Arm -->
+  <BS_SixArmedHuman.corePart.parts.lower_right_shoulder.customLabel>Épaule inférieure droite</BS_SixArmedHuman.corePart.parts.lower_right_shoulder.customLabel>
+  <BS_SixArmedHuman.corePart.parts.lower_right_shoulder.parts.lower_right_clavicle.customLabel>Clavicule inférieure droite</BS_SixArmedHuman.corePart.parts.lower_right_shoulder.parts.lower_right_clavicle.customLabel>
+  <BS_SixArmedHuman.corePart.parts.lower_right_shoulder.parts.lower_right_arm.customLabel>Bra inférieur droit</BS_SixArmedHuman.corePart.parts.lower_right_shoulder.parts.lower_right_arm.customLabel>
+  <BS_SixArmedHuman.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_humerus.customLabel>Humérus inférieur droit</BS_SixArmedHuman.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_humerus.customLabel>
+  <BS_SixArmedHuman.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_radius.customLabel>Radius inférieur droit</BS_SixArmedHuman.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_radius.customLabel>
+  <BS_SixArmedHuman.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.customLabel>Main inférieure droite</BS_SixArmedHuman.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.customLabel>
+  <BS_SixArmedHuman.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.parts.lower_right_pinky.customLabel>Petit doigt inférieur droit</BS_SixArmedHuman.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.parts.lower_right_pinky.customLabel>
+  <BS_SixArmedHuman.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.parts.lower_right_ring_finger.customLabel>Annulaire inférieur droit</BS_SixArmedHuman.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.parts.lower_right_ring_finger.customLabel>
+  <BS_SixArmedHuman.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.parts.lower_right_middle_finger.customLabel>Doigt du milieu inférieur droit</BS_SixArmedHuman.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.parts.lower_right_middle_finger.customLabel>
+  <BS_SixArmedHuman.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.parts.lower_right_index_finger.customLabel>Index inférieur droit</BS_SixArmedHuman.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.parts.lower_right_index_finger.customLabel>
+  <BS_SixArmedHuman.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.parts.lower_right_thumb.customLabel>Pouce inférieur droit</BS_SixArmedHuman.corePart.parts.lower_right_shoulder.parts.lower_right_arm.parts.lower_right_hand.parts.lower_right_thumb.customLabel>
+
+  <!-- Legs -->
+  <BS_SixArmedHuman.corePart.parts.left_leg.customLabel>Jambe gauche</BS_SixArmedHuman.corePart.parts.left_leg.customLabel>
+  <BS_SixArmedHuman.corePart.parts.left_leg.parts.left_femur.customLabel>Fémur gauche</BS_SixArmedHuman.corePart.parts.left_leg.parts.left_femur.customLabel>
+  <BS_SixArmedHuman.corePart.parts.left_leg.parts.left_tibia.customLabel>Tibia gauche</BS_SixArmedHuman.corePart.parts.left_leg.parts.left_tibia.customLabel>
+  <BS_SixArmedHuman.corePart.parts.left_leg.parts.left_foot.customLabel>Pied gauche</BS_SixArmedHuman.corePart.parts.left_leg.parts.left_foot.customLabel>
+  <BS_SixArmedHuman.corePart.parts.left_leg.parts.left_foot.parts.left_little_toe.customLabel>Petit orteil gauche</BS_SixArmedHuman.corePart.parts.left_leg.parts.left_foot.parts.left_little_toe.customLabel>
+  <BS_SixArmedHuman.corePart.parts.left_leg.parts.left_foot.parts.left_fourth_toe.customLabel>Quatrième orteil gauche</BS_SixArmedHuman.corePart.parts.left_leg.parts.left_foot.parts.left_fourth_toe.customLabel>
+  <BS_SixArmedHuman.corePart.parts.left_leg.parts.left_foot.parts.left_middle_toe.customLabel>Orteil du milieu gauche</BS_SixArmedHuman.corePart.parts.left_leg.parts.left_foot.parts.left_middle_toe.customLabel>
+  <BS_SixArmedHuman.corePart.parts.left_leg.parts.left_foot.parts.left_second_toe.customLabel>Deuxième orteil gauche</BS_SixArmedHuman.corePart.parts.left_leg.parts.left_foot.parts.left_second_toe.customLabel>
+  <BS_SixArmedHuman.corePart.parts.left_leg.parts.left_foot.parts.left_big_toe.customLabel>Gros orteil gauche</BS_SixArmedHuman.corePart.parts.left_leg.parts.left_foot.parts.left_big_toe.customLabel>
+
+  <BS_SixArmedHuman.corePart.parts.right_leg.customLabel>Jambe droite</BS_SixArmedHuman.corePart.parts.right_leg.customLabel>
+  <BS_SixArmedHuman.corePart.parts.right_leg.parts.right_femur.customLabel>Fémur droit</BS_SixArmedHuman.corePart.parts.right_leg.parts.right_femur.customLabel>
+  <BS_SixArmedHuman.corePart.parts.right_leg.parts.right_tibia.customLabel>Tibia droit</BS_SixArmedHuman.corePart.parts.right_leg.parts.right_tibia.customLabel>
+  <BS_SixArmedHuman.corePart.parts.right_leg.parts.right_foot.customLabel>Pied droit</BS_SixArmedHuman.corePart.parts.right_leg.parts.right_foot.customLabel>
+  <BS_SixArmedHuman.corePart.parts.right_leg.parts.right_foot.parts.right_little_toe.customLabel>Petit orteil droit</BS_SixArmedHuman.corePart.parts.right_leg.parts.right_foot.parts.right_little_toe.customLabel>
+  <BS_SixArmedHuman.corePart.parts.right_leg.parts.right_foot.parts.right_fourth_toe.customLabel>Quatrième orteil droit</BS_SixArmedHuman.corePart.parts.right_leg.parts.right_foot.parts.right_fourth_toe.customLabel>
+  <BS_SixArmedHuman.corePart.parts.right_leg.parts.right_foot.parts.right_middle_toe.customLabel>Orteil du milieu droit</BS_SixArmedHuman.corePart.parts.right_leg.parts.right_foot.parts.right_middle_toe.customLabel>
+  <BS_SixArmedHuman.corePart.parts.right_leg.parts.right_foot.parts.right_second_toe.customLabel>Deuxième orteil droit</BS_SixArmedHuman.corePart.parts.right_leg.parts.right_foot.parts.right_second_toe.customLabel>
+  <BS_SixArmedHuman.corePart.parts.right_leg.parts.right_foot.parts.right_big_toe.customLabel>Gros orteil droit</BS_SixArmedHuman.corePart.parts.right_leg.parts.right_foot.parts.right_big_toe.customLabel>
+
+</LanguageData>

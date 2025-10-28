@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: meat -->
+  <BS_MeatGeneric.label>viande</BS_MeatGeneric.label>
+  <!-- EN: Raw meat from a creature. -->
+  <BS_MeatGeneric.description>Viande crue provenant d’une créature.</BS_MeatGeneric.description>
+  
+</LanguageData>

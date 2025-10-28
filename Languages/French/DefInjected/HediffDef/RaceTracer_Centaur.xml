@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: centauroid -->
+  <BS_CentaurRace.label>centaure</BS_CentaurRace.label>
+  <!-- EN: This is a quadrupedeal creature with a humanoid torso. -->
+  <BS_CentaurRace.description>Ceci est une créature quadrupède avec un torse humanoïde.</BS_CentaurRace.description>
+  
+</LanguageData>

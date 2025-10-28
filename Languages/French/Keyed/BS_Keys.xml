@@ -1,0 +1,266 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  <!-- EN: Gene Prerequisites -->
+  <BP_GenePrerequisites>Prérequis de gène</BP_GenePrerequisites>
+  <!-- EN: prerequisites -->
+  <BP_PrerequisiteSet>prérequis</BP_PrerequisiteSet>
+  <!-- EN: Requires ANY of the listed -->
+  <BP_AnyOf>Un des éléments suivants est requis</BP_AnyOf>
+  <!-- EN: Requires ALL of the listed -->
+  <BP_AllOf>Tous les éléments suivants sont requis</BP_AllOf>
+  <!-- EN: Requires {0}% of the listed -->
+  <BP_AllOfPercent>Au moins {0}% des éléments suivants sont requis</BP_AllOfPercent>
+  <!-- EN: Must not have ANY of the listed -->
+  <BP_NoneOf>Ne doit avoir aucun des éléments suivants</BP_NoneOf>
+  <!-- EN: Can at most have {0}% of the listed -->
+  <BP_NoneOfPercent>Peut avoir au maximum {0}% des éléments suivants</BP_NoneOfPercent>
+  <!-- EN: Gene not active in your game -->
+  <BP_GeneNotFoundInGame>Gène inactif dans votre partie</BP_GeneNotFoundInGame>
+  <!-- EN: Genes Suppressed -->
+  <BP_GenesSuppressed>Gènes supprimés</BP_GenesSuppressed>
+  
+  <!-- EN: Conditions to Activate -->
+  <BP_ActiveOnCondition>Conditions d’activation</BP_ActiveOnCondition>
+  <!-- EN: activates if -->
+  <BS_ActiveIf>s’active si</BS_ActiveIf>
+  <!-- EN: Pick one of the listed genes to gain -->
+  <BS_PickAListedGene>Choisissez l’un des gènes énumérés à obtenir</BS_PickAListedGene>
+  <!-- EN: M -->
+  <BS_Metabolism>M</BS_Metabolism>
+  <!-- EN: Gene prevents equipping this. -->
+  <GenePreventsEquipping>Ce gène empêche l’équipement de cet objet.</GenePreventsEquipping>
+  <!-- EN: Pawn is not giant. -->
+  <BS_PawnIsNotAGiant>Ce pion n’est pas géant.</BS_PawnIsNotAGiant>
+
+  <!-- EN: Target lacks the Proliferation Gene. -->
+  <BS_TargetLacksSlimeProliferation>La cible ne possède pas le gène de prolifération.</BS_TargetLacksSlimeProliferation>
+  <!-- EN: Proliferation Successful. -->
+  <BS_ProliferationBirth>Prolifération réussie !</BS_ProliferationBirth>
+  <!-- EN: A new baby has been born. -->
+  <BS_ProliferationDescription>Un nouveau bébé est né.</BS_ProliferationDescription>
+  <!-- EN: There is a restless feeling in the air... -->
+  <BS_ZombieApocalypse>Un sentiment d’inquiétude flotte dans l’air…</BS_ZombieApocalypse>
+  <!-- EN: Returned from the dead -->
+  <BS_ZombieReason>Revenu d’entre les morts</BS_ZombieReason>
+
+  <!-- EN: Enter as Operator -->
+  <BS_EnterPilotable>Entrer en tant qu’opérateur</BS_EnterPilotable>
+  <!-- EN: is too large to pilot this -->
+  <BS_TooLargeToPilot>Trop grand pour piloter cet appareil</BS_TooLargeToPilot>
+  <!-- EN: Not enough space for operator -->
+  <BS_NotEnoughRoomForPilot>Pas assez de place pour un opérateur</BS_NotEnoughRoomForPilot>
+  <!-- EN: The maximum pilot capacity has been reached -->
+  <BS_PilotCapReached>Capacité maximale de pilotes atteinte</BS_PilotCapReached>
+  <!-- EN: Cannot pilot character of other factions unless downed and emptied. -->
+  <BS_CannotPilotNonDownedEnemy>Impossible de piloter un personnage d’une autre faction sauf s’il est à terre et vidé.</BS_CannotPilotNonDownedEnemy>
+  <!-- EN: Cannot enter character of other faction as operator -->
+  <BS_CannotEnterEnemyAsOperator>Impossible d’entrer dans un personnage d’une autre faction comme opérateur</BS_CannotEnterEnemyAsOperator>
+  <!-- EN: Consciousness from pilot -->
+  <BS_ConsciousnessFromPilot>Conscience transmise par le pilote</BS_ConsciousnessFromPilot>
+  <!-- EN: Eject Pilot(s) -->
+  <BS_EjectPilots>Éjecter le(s) pilote(s)</BS_EjectPilots>
+  <!-- EN: Contains:  -->
+  <BS_PilotedBy>Contient :</BS_PilotedBy>
+  <!-- EN: Non-functional; pilot ejection imminent... -->
+  <BS_PilotEjectCoutndown>Hors service ; éjection du pilote imminente…</BS_PilotEjectCoutndown>
+  <!-- EN: Alcohol (warm) -->
+  <BS_StatsReport_Warm>Alcool (échauffé)</BS_StatsReport_Warm>
+  <!-- EN: Alcohol (tipsy) -->
+  <BS_StatsReport_Tipsy>Alcool (éméché)</BS_StatsReport_Tipsy>
+  <!-- EN: Alcohol (drunk) -->
+  <BS_StatsReport_Drunk>Alcool (ivre)</BS_StatsReport_Drunk>
+
+  <!-- EN: Target is already undead. -->
+  <BS_TargetAlreadyUndead>La cible est déjà un mort-vivant.</BS_TargetAlreadyUndead>
+
+  <!-- EN: Mimicry went way past the limit (-15) and random xenogenes have been lost. -->
+  <MessageMimicryGenesRemoved>L’imitation a largement dépassé la limite (-15) et des xénogènes aléatoires ont été perdus.</MessageMimicryGenesRemoved>
+
+  <!-- EN: Size Offset by Age -->
+  <SizeOffsetByAge>Décalage de taille selon l’âge</SizeOffsetByAge>
+  <!-- EN: Size Offset at age -->
+  <SizeByAgeOffset>Décalage de taille à l’âge</SizeByAgeOffset>
+
+  <!-- EN: {0} was killed by fire. -->
+  <BS_ReturningSoul_FireTitle>{0} a été tué par le feu.</BS_ReturningSoul_FireTitle>
+  <!-- EN: {0} was prevented from ressurecting due to being killed by fire. This time it might be permanent. -->
+  <BS_ReturningSoul_Fire>{0} a été empêché de ressusciter en raison de sa mort par le feu. Cette fois, cela pourrait être définitif.</BS_ReturningSoul_Fire>
+  <!-- EN: {0} failed to find a suitable non-dessicated vessel to return to the world. Each failure increases the risk of disappearing forever. -->
+  <BS_ReturningSoul_Failed>{0} n’a pas trouvé de réceptacle non desséché pour revenir dans le monde. Chaque échec augmente le risque de disparaître à jamais.</BS_ReturningSoul_Failed>
+  <!-- EN: {0} failed to find a suitable vessel and has likely either decided to return in a faraway place or departed the world for good. -->
+  <BS_ReturningSoul_FailedPermanent>{0} n’a pas trouvé de réceptacle approprié et a probablement choisi de revenir ailleurs ou de quitter ce monde pour de bon.</BS_ReturningSoul_FailedPermanent>
+
+  <!-- EN: {0} was killed. -->
+  <BS_WasKilled_Title>{0} a été tué.</BS_WasKilled_Title>
+  <!-- EN: {0} was killed. Due to being soulless they will not be able to return. -->
+  <BS_WasKilledSoulless>{0} a été tué. Comme il est sans âme, il ne pourra pas revenir.</BS_WasKilledSoulless>
+  
+  <!-- EN: {0} has returned from the void. -->
+  <BS_ReturningSoul_Success>{0} est revenu du néant.</BS_ReturningSoul_Success>
+  <!-- EN: {0} has returned from the void by possessing the dead body of {1} -->
+  <BS_ReturningSoulCorpse_Success>{0} est revenu du néant en possédant le corps mort de {1}.</BS_ReturningSoulCorpse_Success>
+  <!-- EN: Cannot use on pawn without soul. -->
+  <BS_CannotUseOnSoulless>Impossible à utiliser sur un pion sans âme.</BS_CannotUseOnSoulless>
+  <!-- EN: {0}'s ability gained {1} xp in {2} from {3} -->
+  <BS_GainedSkillFromPawnAmount>La capacité de {0} a gagné {1} XP en {2} grâce à {3}.</BS_GainedSkillFromPawnAmount>
+  <!-- EN: {0}'s ability stole {1} xp in {2} from {3} -->
+  <BS_StoleSkillAmount>La capacité de {0} a volé {1} XP en {2} à {3}.</BS_StoleSkillAmount>
+  <!-- EN: {0}'s attack stole {1} xp in {2} from {3} -->
+  <BS_StoleSkillAmount_Attack>L’attaque de {0} a volé {1} XP en {2} à {3}.</BS_StoleSkillAmount_Attack>
+
+  <!-- EN: {0} lost {1} genes due to reaching the metabolism limit of {2} -->
+  <BS_GenesRemovedByOverLimit>{0} a perdu {1} gènes après avoir atteint la limite de métabolisme de {2}.</BS_GenesRemovedByOverLimit>
+
+  <!-- EN: The carrier produces {0} {1} every {2} days. More if they are larger than a baseline human. -->
+  <BS_ProductionTooltip>Le porteur produit {0} {1} tous les {2} jours. Davantage s’il est plus grand qu’un humain de référence.</BS_ProductionTooltip>
+
+  <!-- EN: Multiplier for body size change {0} -->
+  <BS_StatsReport_BodySize>Multiplicateur de taille corporelle : {0}</BS_StatsReport_BodySize>
+  <!-- EN: Sapient {0} -->
+  <BS_Sapient>{0} sapient</BS_Sapient>
+
+  <!-- EN: and -->
+  <BS_And>et</BS_And>
+  <!-- EN: with -->
+  <BS_With>avec</BS_With>
+  <!-- EN: right -->
+  <BS_Right>droit</BS_Right>
+  <!-- EN: left -->
+  <BS_Left>gauche</BS_Left>
+  <!-- EN: robotic -->
+  <BS_Mech>robotique</BS_Mech>
+
+  <!-- PatchExtensions -->
+  <!-- EN: applies -->
+  <BS_Applies>applique</BS_Applies>
+  <!-- EN: Effects -->
+  <BS_StatChangesDescriptions>Effets</BS_StatChangesDescriptions>
+  <!-- EN: Racial Features -->
+  <BS_RacialFeatures>Caractéristiques raciales</BS_RacialFeatures>
+  <!-- EN: {0} -->
+  <BS_ApplyBodyHediff>{0}</BS_ApplyBodyHediff>
+  <!-- EN: applies {0} to {1} -->
+  <BS_ApplyPartHediff>applique {0} à {1}</BS_ApplyPartHediff>
+  <!-- EN: applies race/hybrid race -->
+  <BS_ThingDefSwap>applique la race ou une race hybride</BS_ThingDefSwap>
+  <!-- EN: Apply {0} -->
+  <BS_ThingDefSwapDesc>Appliquer {0}</BS_ThingDefSwapDesc>
+  <!-- EN: is a drone (less affected by death, ...) -->
+  <BS_DroneDesc>est un drone (moins affecté par la mort, …)</BS_DroneDesc>
+  <!-- EN: no family relations -->
+  <BS_NoFamilyRelationsDesc>aucun lien familial</BS_NoFamilyRelationsDesc>
+  <!-- EN: unarmed fighter -->
+  <BS_ForceUnarmed>combattant non armé</BS_ForceUnarmed>
+  <!-- EN: uses bionic or unarmed melee attacks -->
+  <BS_ForceUnarmedDesc>utilise des attaques de mêlée bioniques ou à mains nues</BS_ForceUnarmedDesc>
+  <!-- EN: bleed rate -->
+  <BS_BleedRate>taux de saignement</BS_BleedRate>
+  <!-- EN: bleed rate {0} -->
+  <BS_BleedRateDesc>taux de saignement : {0}</BS_BleedRateDesc>
+  <!-- EN: soul accumulation falloff {0} -->
+  <BS_SoulPowerFalloffDesc>décroissance de l’accumulation d’âme : {0}</BS_SoulPowerFalloffDesc>
+  <!-- EN: consumes soul energy on kill -->
+  <BS_ConsumeSoulOnHit>consomme de l’énergie d’âme en tuant</BS_ConsumeSoulOnHit>
+  <!-- EN: efficiency {0} -->
+  <BS_ConsumeSoulOnHitDesc>efficacité : {0}</BS_ConsumeSoulOnHitDesc>
+  <!-- EN: pawn diet -->
+  <BS_PawnDiet>régime alimentaire du pion</BS_PawnDiet>
+  <!-- EN: considered unliving -->
+  <BS_UnlivingDesc>considéré comme non vivant</BS_UnlivingDesc>
+  <!-- EN: death-affinity -->
+  <BS_DeathlikeDesc>affinité avec la mort</BS_DeathlikeDesc>
+  <!-- EN: considered mechanical -->
+  <BS_MechanicalDesc>considéré comme mécanique</BS_MechanicalDesc>
+  <!-- EN: considered bloodfeeder -->
+  <BS_BloodfeederDesc>considéré comme buveur de sang</BS_BloodfeederDesc>
+  <!-- EN: considered amorphous -->
+  <BS_AmorphousDesc>considéré comme amorphe</BS_AmorphousDesc>
+  <!-- EN: alters apparel options -->
+  <BS_HasApparelRestrictions>modifie les options vestimentaires</BS_HasApparelRestrictions>
+  <!-- EN: disables thoughts -->
+  <BS_HasNullThoughts>désactive les pensées</BS_HasNullThoughts>
+  <!-- EN: thoughts disabled: {0} -->
+  <BS_HasNullThoughtsCount>pensées désactivées : {0}</BS_HasNullThoughtsCount>
+  <!-- EN: soul power soft-cap + {0}% -->
+  <SoulPowerFalloffStartDescription>plafond souple de puissance d’âme + {0}%</SoulPowerFalloffStartDescription>
+
+  <!-- EN: required conditions to activate -->
+  <BS_ConditionalDescription>conditions requises pour activer</BS_ConditionalDescription>
+  <!-- EN: Aptitudes -->
+  <BS_Aptitudes>Aptitudes</BS_Aptitudes>
+  <!-- EN: classification -->
+  <BS_CreatureTag>classification</BS_CreatureTag>
+  <!-- EN: romance compatibility -->
+  <BS_RomanceTags>compatibilité amoureuse</BS_RomanceTags>
+
+  <!-- EN: forced endogenes (immutable) -->
+  <BS_FocedEndoImmutable>endogènes forcés (immuables)</BS_FocedEndoImmutable>
+  <!-- EN: forced endogenes -->
+  <BS_FocedEndo>endogènes forcés</BS_FocedEndo>
+  <!-- EN: forced xenogene -->
+  <BS_FocedXeno>xénogène forcé</BS_FocedXeno>
+  <!-- EN: Size offset at age -->
+  <BS_SizeByAgeOffset>décalage de taille selon l’âge</BS_SizeByAgeOffset>
+  <!-- EN: Size multiplier at age -->
+  <BS_SizeMultiplayerByAge>multiplicateur de taille selon l’âge</BS_SizeMultiplayerByAge>
+  <!-- EN: Locked needs -->
+  <BS_LockedNeeds>besoins verrouillés</BS_LockedNeeds>
+
+  <!-- EN: prevents disfigurement -->
+  <BS_PreventDisfigurementDesc>empêche la mutilation</BS_PreventDisfigurementDesc>
+  <!-- EN: Insectoid creep -->
+  <BS_CanWalkOnCreep>substrat insectoïde</BS_CanWalkOnCreep>
+  <!-- EN: can walk full-speed on creep -->
+  <BS_CanWalkOnCreepDesc>peut se déplacer à pleine vitesse sur le substrat</BS_CanWalkOnCreepDesc>
+
+  <!-- EN: priority {0} -->
+  <BS_Priority>priorité : {0}</BS_Priority>
+
+  <!-- EN: may restrict apparel -->
+  <BS_Modified>peut restreindre les vêtements</BS_Modified>
+
+  <!-- EN: Corpse of {0} -->
+  <BS_CorpseOf>Cadavre de {0}</BS_CorpseOf>
+
+  <!-- EN: requirements for activation not met -->
+  <BS_RequirementNotMet>conditions d’activation non remplies</BS_RequirementNotMet>
+  <!-- EN: requirements not met: {0} -->
+  <BS_PrerequisitesNotMet>conditions non remplies : {0}</BS_PrerequisitesNotMet>
+  <!-- EN: lacks any of: {0} -->
+  <BS_PrerequisitesNotMetAnyOf>ne possède aucun des éléments suivants : {0}</BS_PrerequisitesNotMetAnyOf>
+  <!-- EN: requires all of: {0} -->
+  <BS_PrerequisitesNotMetAllOf>nécessite tous les éléments suivants : {0}</BS_PrerequisitesNotMetAllOf>
+  <!-- EN: blocked by: {0} -->
+  <BS_PrerequisitesNotMetNoneOf>bloqué par : {0}</BS_PrerequisitesNotMetNoneOf>
+
+  <!-- EN: activation conditions not met -->
+  <BS_ConditionForActivationNotMet>conditions d’activation non remplies</BS_ConditionForActivationNotMet>
+  <!-- EN: disabled by trait or health status -->
+  <BS_DisabledByHediff>désactivé par un trait ou un état de santé</BS_DisabledByHediff>
+  <!-- EN: gene type category disabled -->
+  <BS_DisabledByFilter>catégorie de gène désactivée</BS_DisabledByFilter>
+
+  <!-- EN: Not enough soul energy -->
+  <BS_NotEnoughSoulEnergy>pas assez d’énergie d’âme</BS_NotEnoughSoulEnergy>
+  <!-- EN: Stop {0} -->
+  <BS_StopSomething>Arrêter {0}</BS_StopSomething>
+  <!-- EN: Stops the active effect -->
+  <BS_StopActiveDesc>interrompt l’effet actif</BS_StopActiveDesc>
+  <!-- EN: Sapient Animal -->
+  <BS_SapientAnimal>Animal sapient</BS_SapientAnimal>
+  <!-- EN: Sapient Bug -->
+  <BS_Insect>Insecte sapient</BS_Insect>
+
+  <!-- EN: Auto-Combat -->
+  <BS_DraftHuntLabel>Combat automatique</BS_DraftHuntLabel>
+  <!-- EN: Track down and attack nearby foes. Any abilities on auto-cast (right-click) will be automatically used. -->
+  <BS_HuntDescription>Poursuit et attaque les ennemis proches. Toute capacité en auto-lancement (clic droit) sera utilisée automatiquement.</BS_HuntDescription>
+  <!-- EN: Auto-Cover -->
+  <BS_TakeCoverLabel>Couverte automatique</BS_TakeCoverLabel>
+  <!-- EN: Automatically try to move into cover while in combat. -->
+  <BS_TakeCoverDescription>Tente automatiquement de se mettre à couvert en combat.</BS_TakeCoverDescription>
+  <!-- EN: Long-Charge -->
+  <BS_MeleeChargeLabel>Charge longue</BS_MeleeChargeLabel>
+  <!-- EN: Charge a long distance to reach seen threats / Charge only a very short distance (when off). -->
+  <BS_MeleeChargeDescription>Charge sur une longue distance pour atteindre les menaces visibles / ne charge qu’à très courte distance (si désactivé).</BS_MeleeChargeDescription>
+</LanguageData>

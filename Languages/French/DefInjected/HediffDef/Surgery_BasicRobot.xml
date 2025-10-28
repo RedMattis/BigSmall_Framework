@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Vacuum Sealed Components -->
+  <BS_Vacuum_sealed.label>composants sous vide</BS_Vacuum_sealed.label>
+  <!-- EN: Modifications to secure components to vacuum exposure, this also decently insulates, but unfortunately decreases mobility somewhat. -->
+  <BS_Vacuum_sealed.description>Modifications pour protéger les composants de l’exposition au vide. Cela assure également une isolation correcte, mais réduit malheureusement un peu la mobilité.</BS_Vacuum_sealed.description>
+  
+</LanguageData>

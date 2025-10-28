@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: six-armed snake-person -->
+  <BS_Marlith.label>homme-serpent à six bras</BS_Marlith.label>
+  <!-- EN: A humanlike being with a six arms and a snake tail instead of legs. -->
+  <BS_Marlith.description>Un être humanoïde avec six bras et une queue de serpent à la place des jambes.</BS_Marlith.description>
+  <!-- EN: left fist -->
+  <BS_Marlith.tools.left_fist.label>Poing gauche</BS_Marlith.tools.left_fist.label>
+  <!-- EN: fist -->
+  <BS_Marlith.tools.left_fist.labelNoLocation>Poing</BS_Marlith.tools.left_fist.labelNoLocation>
+  <!-- EN: right fist -->
+  <BS_Marlith.tools.right_fist.label>Poing droit</BS_Marlith.tools.right_fist.label>
+  <!-- EN: fist -->
+  <BS_Marlith.tools.right_fist.labelNoLocation>Poing</BS_Marlith.tools.right_fist.labelNoLocation>
+  <!-- EN: teeth -->
+  <BS_Marlith.tools.teeth.label>Dents</BS_Marlith.tools.teeth.label>
+  <!-- EN: head -->
+  <BS_Marlith.tools.head.label>Tête</BS_Marlith.tools.head.label>
+  
+</LanguageData>

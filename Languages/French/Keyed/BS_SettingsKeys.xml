@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  <!-- Tabs -->
+  <!-- EN: General -->
+  <BS_General>Général</BS_General>
+  <!-- EN: Races -->
+  <BS_Races>Races</BS_Races>
+  <!-- EN: Size -->
+  <BS_Size>Taille</BS_Size>
+  <!-- EN: Auto-Combat -->
+  <BS_AutoCombat>Combat automatique</BS_AutoCombat>
+  <!-- EN: Mechanics -->
+  <BS_GameMechanics_Tab>Mécanismes de jeu</BS_GameMechanics_Tab>
+  <!-- EN: Extras -->
+  <BS_Extras>Extras</BS_Extras>
+  <!-- EN: Advanced -->
+  <BS_Advanced>Avancé</BS_Advanced>
+  <!-- EN: Developer -->
+  <BS_Developer>Développeur</BS_Developer>
+
+  <!-- General -->
+  <!-- EN: Big and Small -->
+  <BS_BigAndSmall>Petits &amp; Grands</BS_BigAndSmall>
+  <!-- EN: Clear and Regenerate Caches -->
+  <BS_ResetCache>Vider et régénérer les caches</BS_ResetCache>
+  <!-- EN: Reset Settings to Default -->
+  <BS_ResetSettings>Réinitialiser les paramètres par défaut</BS_ResetSettings>
+  <!-- EN: Reset to Recommended Settings -->
+  <BS_ResetToRecommendedSettings>Réinitialiser aux paramètres recommandés</BS_ResetToRecommendedSettings>
+
+  <!-- Races -->
+  <!-- EN: Toggle Content Features (Requires Restart) -->
+  <BS_ToggleFeatures>Activer/désactiver les fonctionnalités (redémarrage requis)</BS_ToggleFeatures>
+  <!-- EN: Bionics and Surgery -->
+  <BS_Surgery>Bioniques et chirurgie</BS_Surgery>
+  <!-- EN: Sapient Animal Settings -->
+  <BS_SapientSettings>Paramètres des animaux sapients</BS_SapientSettings>
+  <!-- EN: Sapient Animals (Forced ON by mods) -->
+  <BS_SapientAnimals_Forced>Animaux sapients (activé par les mods)</BS_SapientAnimals_Forced>
+  <!-- EN: Enable Sapient Animals (Restart Required) -->
+  <BS_SapientAnimals>Activer les animaux sapients (redémarrage requis)</BS_SapientAnimals>
+  <!-- EN: Smaller skill penalty from lack of hands -->
+  <BS_AnimalsNoSkillPenalty>Moindre pénalité de compétence pour absence de mains</BS_AnimalsNoSkillPenalty>
+  <!-- EN: All animals have hands  -->
+  <BS_AllAnimalsHaveHands>Tous les animaux ont des mains</BS_AllAnimalsHaveHands>
+  <!-- EN: Sapient animals can romance any sapient animals -->
+  <BS_SapientAnimalsCanRomanceAnySapientAnimals>Les animaux sapients peuvent entretenir une romance avec tout animal sapient</BS_SapientAnimalsCanRomanceAnySapientAnimals>
+  <!-- EN: Enable Sapient Mechanoids (Restart Required) -->
+  <BS_SapientMechanoids>Activer les mécanoïdes sapients (redémarrage requis)</BS_SapientMechanoids>
+
+  <!-- Size -->
+  <!-- EN: Apply Scaling and other behaviour to Animals -->
+  <BS_ScaleAnimals>Appliquer l'échelle et d'autres comportements aux animaux</BS_ScaleAnimals>
+  <!-- EN: The lowest of these two will be used as a bonus for melee attacks. -->
+  <BS_LowestUsed>Remarque : le plus petit nombre de dégâts multipliés et linéaires est utilisé pour chaque attaque</BS_LowestUsed>
+  <!-- EN: Multiplicative damage change from size. -->
+  <BS_MultDamageExplain>Modification multiplicative des dégâts en fonction de la taille : 0 = aucune augmentation ; 1 = augmentation linéaire</BS_MultDamageExplain>
+  <!-- EN: Flat bonus to all attacks per size-level. -->
+  <BS_FlatDMGExplain>Bonus fixe à toutes les attaques par niveau de taille</BS_FlatDMGExplain>
+  <!-- EN: Size effect on Hunger -->
+  <BS_HungerMultiplierField>Multiplicateur de la faim (par défaut 1)</BS_HungerMultiplierField>
+  <!-- EN: Rendering -->
+  <BS_Rendering>Rendu</BS_Rendering>
+  <!-- EN: Size offsets humanoids position -->
+  <BS_SizeOffsetPawn>Décalage de taille des colons</BS_SizeOffsetPawn>
+  <!-- EN: Size offsets animals position. -->
+  <BS_SizeOffsetAnimalPawn>Décalage de taille des animaux</BS_SizeOffsetAnimalPawn>
+  <!-- EN: Disable Texture Caching (fixes cropped pawns): -->
+  <BS_DisabeVFCachine>Désactiver le cache des textures VFE (corrige les colons rognés) :</BS_DisabeVFCachine>
+  <!-- EN: Scale Pawn. Default values are 1. -->
+  <BS_ScalePawnDefault>Échelle des colons. Valeur par défaut : 1</BS_ScalePawnDefault>
+  <!-- EN: Scale Larger Pawns -->
+  <BS_ScaleLargerPawns>Échelle des colons plus grands</BS_ScaleLargerPawns>
+  <!-- EN: Scale Smaller Pawns -->
+  <BS_ScaleSmallerPawns>Échelle des colons plus petits</BS_ScaleSmallerPawns>
+  <!-- EN: Head Size of large pawns. Higher Value = Large Head. -->
+  <BS_HeadSizeExplain>Taille de la tête des grands colons. Plus la valeur est élevée, plus la tête est grosse</BS_HeadSizeExplain>
+  <!-- EN: Head exponent larger -->
+  <BS_HeadExponentLargeField>Exponent de tête plus grand (par défaut 0,8)</BS_HeadExponentLargeField>
+  <!-- EN: Change head size of small pawns. Smaller Values = Larger Head. -->
+  <BS_HeadExponentSmallExplain>Modifier la taille de la tête des petits colons. Valeurs plus petites = tête plus grande</BS_HeadExponentSmallExplain>
+  <!-- EN: Head exponent smaller -->
+  <BS_HeadExponentSmalleField>Exponent de tête plus petit (par défaut 0,65)</BS_HeadExponentSmalleField>
+  <!-- EN: Normalize bodytype scale for Hulks and Fat (Recommended). -->
+  <BS_NormalizeBodyType>Normaliser l'échelle des types de corps pour Musclé et Gros (recommandé)</BS_NormalizeBodyType>
+
+  <!-- Game Mechanics -->
+  <!-- EN: Game Mechanics -->
+  <BS_GameMechanics>Mécanismes de jeu</BS_GameMechanics>
+  <!-- EN: Prevent random undead -->
+  <BS_PreventUndead>Empêcher les morts-vivants aléatoires</BS_PreventUndead>
+  <!-- EN: Chance of infiltrators -->
+  <BS_InflitratorChance>Chance d'infiltrateurs</BS_InflitratorChance>
+  <!-- EN: Chance of infiltrator raid -->
+  <BS_InflitratorRaidChance>Chance de raid d'infiltrateurs</BS_InflitratorRaidChance>
+  <!-- EN: Immortal return time factor (less means faster) -->
+  <BS_ImmortalReturnFactor>Facteur de retour des immortels (moins = plus rapide)</BS_ImmortalReturnFactor>
+  <!-- EN: Soul power falloff offset -->
+  <BS_SoulPowerFalloffOffset>Décalage de la diminution de puissance d'âme</BS_SoulPowerFalloffOffset>
+  <!-- EN: Soul power gain multiplier -->
+  <BS_SoulPowerGainMultiplier>Multiplicateur de gain de puissance d'âme</BS_SoulPowerGainMultiplier>
+
+  <!-- Extras -->
+  <!-- EN: Warning: extra UI elements are disabled. If relied on by mods this may cause issues. -->
+  <BS_ExtraUIForceDisabledWarning>Attention : les éléments UI supplémentaires sont désactivés. Si les mods y font référence, cela peut poser problème</BS_ExtraUIForceDisabledWarning>
+  <!-- EN: Force-disable extra UI buttons and widgets -->
+  <BS_ForceDisableExtraUIWidgets>Désactiver de force les boutons et widgets supplémentaires</BS_ForceDisableExtraUIWidgets>
+
+  <!-- EN: Show Color Palette button -->
+  <BS_ShowColorPaletteBtn>Afficher le bouton Palette de couleurs</BS_ShowColorPaletteBtn>
+  <!-- EN: Color Palette (Force-Enabled by Mods) -->
+  <BS_ShowColorPaletteBtn_Forced>Palette de couleurs (activée par les mods)</BS_ShowColorPaletteBtn_Forced>
+  <!-- EN: Show race button -->
+  <BS_ShowRaceBtn>Afficher le bouton Races</BS_ShowRaceBtn>
+  <!-- EN: Race Button (Force-Enabled by Mods) -->
+  <BS_ShowRaceBtn_Forced>Bouton Races (activé par les mods)</BS_ShowRaceBtn_Forced>
+
+  <!-- EN: Use Sci-Fi Names (restart required) -->
+  <BS_SciFiNames>Utiliser des noms SF (redémarrage requis)</BS_SciFiNames>
+  <!-- EN: Fantasy naming auto-patcher (restart required) -->
+  <BS_FantasyNames>Auto-correcteur de noms fantastiques (redémarrage requis)</BS_FantasyNames>
+  <!-- EN: Patch Player Faction -->
+  <BS_PatchPlayerFactions>Corriger la faction du joueur</BS_PatchPlayerFactions>
+
+  <!-- EN: Options for giving pawns partial autonomy in combat. -->
+  <BS_AutoCombatExplain>Options pour donner une autonomie partielle aux colons en combat</BS_AutoCombatExplain>
+  <!-- EN: Enable auto-combat button -->
+  <BS_EnabledDraftedJobs>Activer le bouton de combat automatique</BS_EnabledDraftedJobs>
+  <!-- EN: Disable auto-combat when undrafting that pawn -->
+  <BS_AutCombatResets>Désactiver le combat automatique lors de la démobilisation du pion</BS_AutCombatResets>
+
+  <!-- Advanced -->
+  <!-- EN: Enable Experimental -->
+  <BS_RecolourAnything>Activer l’expérimental</BS_RecolourAnything>
+  <!-- EN: Stop Experimental -->
+  <BS_RecolourAnythingDisable>Désactiver l’expérimental</BS_RecolourAnythingDisable>
+  <!-- EN: Patch to permit recoloring of most bionics and genes -->
+  <BS_MakeBionicsAndGenesRecolourable>Permettre de recolorer la plupart des bioniques et gènes</BS_MakeBionicsAndGenesRecolourable>
+  <!-- EN: Experimental Features (Requires Restart) -->
+  <BS_ActivateExperimental>Fonctionnalités expérimentales (redémarrage requis)</BS_ActivateExperimental>
+  <!-- EN: Big and Small Genes Settings -->
+  <BS_GenesSpecific>Paramètres Petits &amp; Grands des gènes</BS_GenesSpecific>
+  <!-- EN: Generate Xenotype Morph Genes -->
+  <BS_DoDefGeneration>Générer des gènes morphologiques du xénotype</BS_DoDefGeneration>
+
+  <!-- Developer -->
+  <!-- EN: Dev Options -->
+  <BS_DevSettings>Options développeur</BS_DevSettings>
+  <!-- EN: Max all needs -->
+  <BS_JesusMode>Maximiser tous les besoins</BS_JesusMode>
+  <!-- EN: Set B&S Dev-Spawned pawns to Player faction. -->
+  <BS_RecruitDevSpawned>Assigner les colons générés par le Dev B&amp;S à la faction du joueur</BS_RecruitDevSpawned>
+  <!-- EN: Hide non-BS Genes -->
+  <BS_HideNonBSGene>Masquer les gènes non-B&amp;S</BS_HideNonBSGene>
+</LanguageData>

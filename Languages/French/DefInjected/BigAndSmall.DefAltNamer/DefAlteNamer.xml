@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: stasis cycle -->
+  <BS_GeneRenamer.geneRenames.0.labelMechanoid>cycle de stase</BS_GeneRenamer.geneRenames.0.labelMechanoid>
+  <!-- EN: hyperspectral sensors -->
+  <BS_GeneRenamer.geneRenames.1.labelMechanoid>capteurs hyperspectraux</BS_GeneRenamer.geneRenames.1.labelMechanoid>
+  <!-- EN: glittertech optimizations -->
+  <BS_GeneRenamer.geneRenames.2.labelMechanoid>optimisations glittertech</BS_GeneRenamer.geneRenames.2.labelMechanoid>
+  <!-- EN: poor self-repair -->
+  <BS_GeneRenamer.geneRenames.3.labelMechanoid>mauvaise auto-réparation</BS_GeneRenamer.geneRenames.3.labelMechanoid>
+  <!-- EN: great self-repair -->
+  <BS_GeneRenamer.geneRenames.4.labelMechanoid>bonne auto-réparation</BS_GeneRenamer.geneRenames.4.labelMechanoid>
+  <!-- EN: amazing self-repair -->
+  <BS_GeneRenamer.geneRenames.5.labelMechanoid>excellente auto-réparation</BS_GeneRenamer.geneRenames.5.labelMechanoid>
+  <!-- EN: nanomachine drift -->
+  <BS_GeneRenamer.geneRenames.6.labelMechanoid>dérive des nanomachines</BS_GeneRenamer.geneRenames.6.labelMechanoid>
+  <!-- EN: desyncronized nanomachines -->
+  <BS_GeneRenamer.geneRenames.7.labelMechanoid>nanomachines désynchronisées</BS_GeneRenamer.geneRenames.7.labelMechanoid>
+  
+</LanguageData>

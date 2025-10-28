@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: android -->
+  <BS_StandardAndroid.label>androïde</BS_StandardAndroid.label>
+  <!-- EN: sternum -->
+  <BS_StandardAndroid.corePart.parts.sternum.customLabel>Sternum</BS_StandardAndroid.corePart.parts.sternum.customLabel>
+  <!-- EN: left air cooler -->
+  <BS_StandardAndroid.corePart.parts.left_air_cooler.customLabel>Refroidisseur gauche</BS_StandardAndroid.corePart.parts.left_air_cooler.customLabel>
+  <!-- EN: right air cooler -->
+  <BS_StandardAndroid.corePart.parts.right_air_cooler.customLabel>Refroidisseur droit</BS_StandardAndroid.corePart.parts.right_air_cooler.customLabel>
+  <!-- EN: left reprocessor -->
+  <BS_StandardAndroid.corePart.parts.left_reprocessor.customLabel>Reprocesseur gauche</BS_StandardAndroid.corePart.parts.left_reprocessor.customLabel>
+  <!-- EN: right reprocessor -->
+  <BS_StandardAndroid.corePart.parts.right_reprocessor.customLabel>Reprocesseur droit</BS_StandardAndroid.corePart.parts.right_reprocessor.customLabel>
+  <!-- EN: left eye -->
+  <BS_StandardAndroid.corePart.parts.BS_MechanicalNeck.parts.Head.parts.left_eye.customLabel>Œil gauche</BS_StandardAndroid.corePart.parts.BS_MechanicalNeck.parts.Head.parts.left_eye.customLabel>
+  <!-- EN: right eye -->
+  <BS_StandardAndroid.corePart.parts.BS_MechanicalNeck.parts.Head.parts.right_eye.customLabel>Œil droit</BS_StandardAndroid.corePart.parts.BS_MechanicalNeck.parts.Head.parts.right_eye.customLabel>
+  <!-- EN: left ear -->
+  <BS_StandardAndroid.corePart.parts.BS_MechanicalNeck.parts.Head.parts.left_ear.customLabel>Oreille gauche</BS_StandardAndroid.corePart.parts.BS_MechanicalNeck.parts.Head.parts.left_ear.customLabel>
+  <!-- EN: right ear -->
+  <BS_StandardAndroid.corePart.parts.BS_MechanicalNeck.parts.Head.parts.right_ear.customLabel>Oreille droite</BS_StandardAndroid.corePart.parts.BS_MechanicalNeck.parts.Head.parts.right_ear.customLabel>
+  <!-- EN: left shoulder -->
+  <BS_StandardAndroid.corePart.parts.left_shoulder.customLabel>Épaule gauche</BS_StandardAndroid.corePart.parts.left_shoulder.customLabel>
+  <!-- EN: left clavicle -->
+  <BS_StandardAndroid.corePart.parts.left_shoulder.parts.left_clavicle.customLabel>Clavicule gauche</BS_StandardAndroid.corePart.parts.left_shoulder.parts.left_clavicle.customLabel>
+  <!-- EN: left arm -->
+  <BS_StandardAndroid.corePart.parts.left_shoulder.parts.left_arm.customLabel>Bra gauche</BS_StandardAndroid.corePart.parts.left_shoulder.parts.left_arm.customLabel>
+  <!-- EN: left hand -->
+  <BS_StandardAndroid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.customLabel>Main gauche</BS_StandardAndroid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.customLabel>
+  <!-- EN: left pinky -->
+  <BS_StandardAndroid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_pinky.customLabel>Petit doigt gauche</BS_StandardAndroid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_pinky.customLabel>
+  <!-- EN: left ring finger -->
+  <BS_StandardAndroid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_ring_finger.customLabel>Annulaire gauche</BS_StandardAndroid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_ring_finger.customLabel>
+  <!-- EN: left middle finger -->
+  <BS_StandardAndroid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_middle_finger.customLabel>Doigt du milieu gauche</BS_StandardAndroid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_middle_finger.customLabel>
+  <!-- EN: left index finger -->
+  <BS_StandardAndroid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_index_finger.customLabel>Index gauche</BS_StandardAndroid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_index_finger.customLabel>
+  <!-- EN: left thumb -->
+  <BS_StandardAndroid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_thumb.customLabel>Pouce gauche</BS_StandardAndroid.corePart.parts.left_shoulder.parts.left_arm.parts.left_hand.parts.left_thumb.customLabel>
+  <!-- EN: right shoulder -->
+  <BS_StandardAndroid.corePart.parts.right_shoulder.customLabel>Épaule droite</BS_StandardAndroid.corePart.parts.right_shoulder.customLabel>
+  <!-- EN: right clavicle -->
+  <BS_StandardAndroid.corePart.parts.right_shoulder.parts.right_clavicle.customLabel>Clavicule droite</BS_StandardAndroid.corePart.parts.right_shoulder.parts.right_clavicle.customLabel>
+  <!-- EN: right arm -->
+  <BS_StandardAndroid.corePart.parts.right_shoulder.parts.right_arm.customLabel>Bra droit</BS_StandardAndroid.corePart.parts.right_shoulder.parts.right_arm.customLabel>
+  <!-- EN: right hand -->
+  <BS_StandardAndroid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.customLabel>Main droite</BS_StandardAndroid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.customLabel>
+  <!-- EN: right pinky -->
+  <BS_StandardAndroid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_pinky.customLabel>Petit doigt droit</BS_StandardAndroid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_pinky.customLabel>
+  <!-- EN: right ring finger -->
+  <BS_StandardAndroid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_ring_finger.customLabel>Annulaire droit</BS_StandardAndroid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_ring_finger.customLabel>
+  <!-- EN: right middle finger -->
+  <BS_StandardAndroid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_middle_finger.customLabel>Doigt du milieu droit</BS_StandardAndroid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_middle_finger.customLabel>
+  <!-- EN: right index finger -->
+  <BS_StandardAndroid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_index_finger.customLabel>Index droit</BS_StandardAndroid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_index_finger.customLabel>
+  <!-- EN: right thumb -->
+  <BS_StandardAndroid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_thumb.customLabel>Pouce droit</BS_StandardAndroid.corePart.parts.right_shoulder.parts.right_arm.parts.right_hand.parts.right_thumb.customLabel>
+  <!-- EN: left leg -->
+  <BS_StandardAndroid.corePart.parts.left_leg.customLabel>Jambe gauche</BS_StandardAndroid.corePart.parts.left_leg.customLabel>
+  <!-- EN: left foot -->
+  <BS_StandardAndroid.corePart.parts.left_leg.parts.left_foot.customLabel>Pied gauche</BS_StandardAndroid.corePart.parts.left_leg.parts.left_foot.customLabel>
+  <!-- EN: left little toe -->
+  <BS_StandardAndroid.corePart.parts.left_leg.parts.left_foot.parts.left_little_toe.customLabel>Petit orteil gauche</BS_StandardAndroid.corePart.parts.left_leg.parts.left_foot.parts.left_little_toe.customLabel>
+  <!-- EN: left fourth toe -->
+  <BS_StandardAndroid.corePart.parts.left_leg.parts.left_foot.parts.left_fourth_toe.customLabel>Quatrième orteil gauche</BS_StandardAndroid.corePart.parts.left_leg.parts.left_foot.parts.left_fourth_toe.customLabel>
+  <!-- EN: left middle toe -->
+  <BS_StandardAndroid.corePart.parts.left_leg.parts.left_foot.parts.left_middle_toe.customLabel>Orteil du milieu gauche</BS_StandardAndroid.corePart.parts.left_leg.parts.left_foot.parts.left_middle_toe.customLabel>
+  <!-- EN: left second toe -->
+  <BS_StandardAndroid.corePart.parts.left_leg.parts.left_foot.parts.left_second_toe.customLabel>Deuxième orteil gauche</BS_StandardAndroid.corePart.parts.left_leg.parts.left_foot.parts.left_second_toe.customLabel>
+  <!-- EN: left big toe -->
+  <BS_StandardAndroid.corePart.parts.left_leg.parts.left_foot.parts.left_big_toe.customLabel>Gros orteil gauche</BS_StandardAndroid.corePart.parts.left_leg.parts.left_foot.parts.left_big_toe.customLabel>
+  <!-- EN: right leg -->
+  <BS_StandardAndroid.corePart.parts.right_leg.customLabel>Jambe droite</BS_StandardAndroid.corePart.parts.right_leg.customLabel>
+  <!-- EN: right foot -->
+  <BS_StandardAndroid.corePart.parts.right_leg.parts.right_foot.customLabel>Pied droit</BS_StandardAndroid.corePart.parts.right_leg.parts.right_foot.customLabel>
+  <!-- EN: right little toe -->
+  <BS_StandardAndroid.corePart.parts.right_leg.parts.right_foot.parts.right_little_toe.customLabel>Petit orteil droit</BS_StandardAndroid.corePart.parts.right_leg.parts.right_foot.parts.right_little_toe.customLabel>
+  <!-- EN: right fourth toe -->
+  <BS_StandardAndroid.corePart.parts.right_leg.parts.right_foot.parts.right_fourth_toe.customLabel>Quatrième orteil droit</BS_StandardAndroid.corePart.parts.right_leg.parts.right_foot.parts.right_fourth_toe.customLabel>
+  <!-- EN: right middle toe -->
+  <BS_StandardAndroid.corePart.parts.right_leg.parts.right_foot.parts.right_middle_toe.customLabel>Orteil du milieu droit</BS_StandardAndroid.corePart.parts.right_leg.parts.right_foot.parts.right_middle_toe.customLabel>
+  <!-- EN: right second toe -->
+  <BS_StandardAndroid.corePart.parts.right_leg.parts.right_foot.parts.right_second_toe.customLabel>Deuxième orteil droit</BS_StandardAndroid.corePart.parts.right_leg.parts.right_foot.parts.right_second_toe.customLabel>
+  <!-- EN: right big toe -->
+  <BS_StandardAndroid.corePart.parts.right_leg.parts.right_foot.parts.right_big_toe.customLabel>Gros orteil droit</BS_StandardAndroid.corePart.parts.right_leg.parts.right_foot.parts.right_big_toe.customLabel>
+  
+</LanguageData>

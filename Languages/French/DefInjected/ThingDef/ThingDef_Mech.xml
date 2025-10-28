@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: mech -->
+  <BS_UrbMech.label>mecha</BS_UrbMech.label>
+  <!-- EN: This is a creature largely composed of highly ruggedized machinery. -->
+  <BS_UrbMech.description>Ceci est une créature principalement composée de machines très robustes.</BS_UrbMech.description>
+  <!-- EN: left fist -->
+  <BS_UrbMech.tools.left_fist.label>Poing gauche</BS_UrbMech.tools.left_fist.label>
+  <!-- EN: fist -->
+  <BS_UrbMech.tools.left_fist.labelNoLocation>Poing</BS_UrbMech.tools.left_fist.labelNoLocation>
+  <!-- EN: right fist -->
+  <BS_UrbMech.tools.right_fist.label>Poing droit</BS_UrbMech.tools.right_fist.label>
+  <!-- EN: fist -->
+  <BS_UrbMech.tools.right_fist.labelNoLocation>Poing</BS_UrbMech.tools.right_fist.labelNoLocation>
+  <!-- EN: teeth -->
+  <BS_UrbMech.tools.teeth.label>Dents</BS_UrbMech.tools.teeth.label>
+  <!-- EN: head -->
+  <BS_UrbMech.tools.head.label>Tête</BS_UrbMech.tools.head.label>
+  
+</LanguageData>

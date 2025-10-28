@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: Hair Color, Secondary -->
+  <BS_CustomHairB.label>Couleur de cheveux secondaire</BS_CustomHairB.label>
+  
+  <!-- EN: Hair Color, Tertiary -->
+  <BS_CustomHairC.label>Couleur de cheveux tertiaire</BS_CustomHairC.label>
+  
+  <!-- EN: Skin Color, Secondary -->
+  <BS_CustomSkinB.label>Couleur de peau secondaire</BS_CustomSkinB.label>
+  
+  <!-- EN: Skin Color, Tertiary -->
+  <BS_CustomSkinC.label>Couleur de peau tertiaire</BS_CustomSkinC.label>
+  
+</LanguageData>

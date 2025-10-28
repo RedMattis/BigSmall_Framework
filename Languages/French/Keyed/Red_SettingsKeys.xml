@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  <!-- EN: Red Health -->
+  <RED_Health>Santé rouge</RED_Health>
+  <!-- EN: Red Health -->
+  <RED_HealthSettings>Paramètres de la santé rouge</RED_HealthSettings>
+  
+  <!-- EN: Activate -->
+  <RED_HealthEnabledForAllPawns>Activer pour tous les colons</RED_HealthEnabledForAllPawns>
+  <!-- EN: Add health trackers for pawns missing them -->
+  <RED_AddTrackersToValidPawns>Ajouter des suivis de santé aux colons qui n’en ont pas</RED_AddTrackersToValidPawns>
+  <!-- EN: Remove all health trackers -->
+  <RED_RemoveAddTrackersToValidPawns>Supprimer tous les suivis de santé</RED_RemoveAddTrackersToValidPawns>
+  <!-- EN: Hide health tracker -->
+  <RED_HideHealthTracker>Masquer le suivi de santé</RED_HideHealthTracker>
+  <!-- EN: Force disable for all (including when forced via gene/hediff) -->
+  <RED_HealthDisableForAll>Désactiver pour tous (y compris si imposé via gène/hediff)</RED_HealthDisableForAll>
+
+  <!-- EN: Toggle specific aspects -->
+  <RED_SpecificTrackers>Activer/Désactiver des aspects spécifiques</RED_SpecificTrackers>
+
+  <!-- EN: Show percentages -->
+  <RED_ShowPercentages>Afficher les pourcentages</RED_ShowPercentages>
+
+  <!-- EN: Developer settings -->
+  <RED_DevSettings>Paramètres développeur</RED_DevSettings>
+  <!-- EN: Health event rate -->
+  <RED_DevTimeAcceleration>Vitesse des événements de santé</RED_DevTimeAcceleration>
+  <!-- EN: Activate Heavy Logging -->
+  <RED_Logging>Activer la journalisation détaillée</RED_Logging>
+  
+</LanguageData>

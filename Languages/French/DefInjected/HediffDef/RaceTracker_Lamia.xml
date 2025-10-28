@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: snake-person -->
+  <BS_Naga_Race.label>homme-serpent</BS_Naga_Race.label>
+  <!-- EN: Snake-like creature with a humanoid upper body -->
+  <BS_Naga_Race.description>Créature serpentiforme avec un torse humanoïde.</BS_Naga_Race.description>
+  
+</LanguageData>

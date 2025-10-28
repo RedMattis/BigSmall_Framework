@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: vacuum proof components -->
+  <BS_VacuumProof.label>composants étanches au vide</BS_VacuumProof.label>
+  <!-- EN: vacuum proof mechanical components for robots that require it. -->
+  <BS_VacuumProof.description>composants mécaniques étanches au vide pour les robots qui en ont besoin.</BS_VacuumProof.description>
+  <!-- EN: proofing components... -->
+  <BS_VacuumProof.jobString>étanchéification des composants…</BS_VacuumProof.jobString>
+  
+</LanguageData>
