@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using BigAndSmall.Utilities;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -167,6 +168,7 @@ namespace BigAndSmall
                     try { InheritPilotTraits(pilot); } catch (Exception e) { Log.Warning($"Failed to transfer pilot traits:\n{e.Message}\n{e.StackTrace}"); }
                     try { InheritRelationships(pilot, pawn); } catch (Exception e) { Log.Warning($"Failed to transfer pilot relationships:\n{e.Message}\n{e.StackTrace}"); }
                     try { ApplyXenotypeToTargetOnApply(pawn); } catch (Exception e) { Log.Warning($"Failed to apply xenotype:\n{e.Message}\n{e.StackTrace}"); }
+                    try { ApplyHediffs(pawn); } catch (Exception e) { Log.Warning($"Failed to apply hediffs:\n{e.Message}\n{e.StackTrace}"); }
                     startPilotTime = Find.TickManager.TicksGame;
                 }
             }
@@ -189,6 +191,21 @@ namespace BigAndSmall
             if (Props.xenotypeToApplyOnApply != null)
             {
                 target.genes.SetXenotype(Props.xenotypeToApplyOnApply);
+            }
+        }
+
+        public void ApplyHediffs(Pawn target)
+        {
+            if(Props.hediffsToApplyOnEnter.NullOrEmpty())
+                return;
+            
+            if (!pawn.Dead && !Props.hediffsToApplyOnEnter.NullOrEmpty())
+            {
+                foreach (HediffChance hediff in Props.hediffsToApplyOnEnter)
+                {
+                    if(Rand.Chance(hediff.chance))
+                        pawn.health.AddHediff(hediff.hediff);
+                }
             }
         }
 
@@ -485,6 +502,15 @@ namespace BigAndSmall
             {
                 DamageInfo damageInfo = new DamageInfo(DamageDefOf.ExecutionCut, 10000, 300, -1, null, null);
                 pawn.Kill(damageInfo, this);
+            }
+
+            if (!pawn.Dead && !Props.hediffsToApplyOnRemove.NullOrEmpty())
+            {
+                foreach (HediffChance hediff in Props.hediffsToApplyOnRemove)
+                {
+                    if(Rand.Chance(hediff.chance))
+                        pawn.health.AddHediff(hediff.hediff);
+                }
             }
             
             pilotEjectCountdown = -1; // Reset the eject countdown.

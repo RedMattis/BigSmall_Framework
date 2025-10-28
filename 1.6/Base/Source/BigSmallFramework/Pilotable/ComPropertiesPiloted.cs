@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using BigAndSmall.Utilities;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -33,6 +34,8 @@ namespace BigAndSmall
         public XenotypeDef xenotypeToApplyOnApply = null;
         public bool restoreXenotypeOnRemove = false;
         public XenotypeDef xenotypeToApplyOnRemove = null;
+        public List<HediffChance> hediffsToApplyOnEnter = null;
+        public List<HediffChance> hediffsToApplyOnRemove = null;
         
         public bool pilotInheritMentalTraitsOnRemove = false;
         
