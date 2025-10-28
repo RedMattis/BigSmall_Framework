@@ -478,11 +478,11 @@ namespace BigAndSmall
         public void ToggleAutoForAll(bool? force = null)
         {
             bool toggleOn = force is bool state ? state : autocastAbilities.Empty();
-            if (toggleOn && Pawn?.abilities?.abilities != null)
+            if (toggleOn && Pawn?.abilities?.AllAbilitiesForReading != null)
             {
-                foreach (var ability in Pawn.abilities.abilities)
+                foreach (var ability in Pawn.abilities.AllAbilitiesForReading)
                 {
-                    if (ability.def.aiCanUse)
+                    if (ability.def.aiCanUse || ability.def.ExtensionsOnDef<AutoCombatExtension, AbilityDef>().Any(x => x.canMassToggle))
                     {
                         autocastAbilities.Add(ability.def);
                     }

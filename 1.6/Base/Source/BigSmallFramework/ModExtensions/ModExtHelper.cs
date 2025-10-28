@@ -133,22 +133,14 @@ namespace BigAndSmall
             return pawn.story.traits.allTraits.Select(x => x.def).ToList().ExtensionsOnDefList<T, TraitDef>(parentWhitelist, parentBlacklist, doSort);
         }
 
-        // Private use by class.
-        public class ModExtWrapper<T>(T extension, Type sourceType, int priority) where T : DefModExtension
+        // Generic methods for getting any extensions.
+        public static List<T> ExtensionsOnDef<T, TDef>(this TDef def, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true)
+            where T : DefModExtension
+            where TDef : Def
         {
-            public T extension = extension;
-            public Type sourceType = sourceType;
-            public int priority = priority;
+            List<ModExtWrapper<T>> matches = GetAllMatchingExtensions<T>(def, def.GetType());
+            return GetFilteredResult(matches, parentWhitelist, parentBlacklist, doSort);
         }
-
-        //public static List<T> ExtensionsOnDefList<T>(this List<ThingDef> def, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true)
-        //    where T : DefModExtension => ExtensionsOnDefList<T>(def, parentWhitelist, parentBlacklist, doSort);
-
-        //public static List<T> ExtensionsOnDefList<T>(this List<HediffDef> def, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true)
-        //    where T : DefModExtension => ExtensionsOnDefList<T>(def, parentWhitelist, parentBlacklist, doSort);
-
-        //public static List<T> ExtensionsOnDefList<T>(this List<GeneDef> def, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true)
-        //    where T : DefModExtension => ExtensionsOnDefList<T>(def, parentWhitelist, parentBlacklist, doSort);
 
         public static List<T> ExtensionsOnDefList<T, TDef>(this List<TDef> def, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true)
             where T : DefModExtension
@@ -162,18 +154,12 @@ namespace BigAndSmall
             return extensions;
         }
 
-        //public static List<T> ExtensionsOnDef<T>(this HediffDef hediffDef, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true)
-        //    where T : DefModExtension => ExtensionsOnDef<T, HediffDef>(hediffDef, parentWhitelist, parentBlacklist, doSort);
-
-        //public static List<T> ExtensionsOnDef<T>(this GeneDef geneDef, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true)
-        //    where T : DefModExtension => ExtensionsOnDef<T, GeneDef>(geneDef, parentWhitelist, parentBlacklist, doSort);
-
-        public static List<T> ExtensionsOnDef<T, TDef>(this TDef def, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true)
-            where T : DefModExtension
-            where TDef : Def
+        // Private use by class.
+        public class ModExtWrapper<T>(T extension, Type sourceType, int priority) where T : DefModExtension
         {
-            List<ModExtWrapper<T>> matches = GetAllMatchingExtensions<T>(def, def.GetType());
-            return GetFilteredResult(matches, parentWhitelist, parentBlacklist, doSort);
+            public T extension = extension;
+            public Type sourceType = sourceType;
+            public int priority = priority;
         }
 
         private static List<T> GetFilteredResult<T>(List<ModExtWrapper<T>> matches, List<Type> parentWhitelist=null, List<Type> parentBlacklist = null, bool doSort=true)
