@@ -26,6 +26,7 @@ namespace BigAndSmall
         public bool removeIfNoPilot = false;
         public bool temporarilySwapIdeology = false;
         public bool temporarilySwapFaction = false;
+        public bool temporarilySwapName = false;
         public int? injuryOnRemoval = null;
         public bool canAutoEjectIfColonist = true;
         
@@ -34,6 +35,8 @@ namespace BigAndSmall
         public XenotypeDef xenotypeToApplyOnRemove = null;
         
         public bool pilotInheritMentalTraitsOnRemove = false;
+        
+        public bool killOnRemove = false;
         
 
         // Only works for a single pilot.
