@@ -468,9 +468,11 @@ namespace BigAndSmall
             {
                 pawn.genes.SetXenotype(cachedXenotype);
             }
+            cachedXenotype = null;
+            
             if (!pawn.DestroyedOrNull() && Props.xenotypeToApplyOnRemove != null)
             {
-                pawn.genes.SetXenotype(cachedXenotype);
+                pawn.genes.SetXenotype(Props.xenotypeToApplyOnRemove);
             }
 
             if (Props.temporarilySwapName && cachedName != null)
@@ -478,7 +480,6 @@ namespace BigAndSmall
                 pawn.Name = cachedName;
                 cachedName = null;
             }
-            cachedXenotype = null;
 
             if (!pawn.Dead && Props.killOnRemove)
             {
