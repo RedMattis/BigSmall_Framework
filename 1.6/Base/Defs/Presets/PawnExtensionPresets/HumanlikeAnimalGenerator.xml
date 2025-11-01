@@ -15,6 +15,26 @@
 
       <!-- By CompClasses -->
       <li>Verse.CompAttachBase</li>
+
+      <!-- From mods -->
+
+      <!-- VEF.Animals -->
+      <li>VEF.AnimalBehaviours.CompProperties_AutoNutrition</li>
+      <li>VEF.AnimalBehaviours.CompProperties_CauseIncident</li>
+      <li>VEF.AnimalBehaviours.CompProperties_Floating</li>
+      <li>VEF.AnimalBehaviours.CompProperties_Regeneration</li>
+      <li>VEF.AnimalBehaviours.CompProperties_FixedGender</li>
+      <li>VEF.AnimalBehaviours.CompProperties_AnimalProduct</li>
+      <li>VEF.AnimalBehaviours.CompProperties_DigWhenHungry</li>
+      <li>VEF.AnimalBehaviours.CompProperties_NearbyEffecter</li>
+      <li>VEF.AnimalBehaviours.CompProperties_CorpseDecayer</li>
+      <li>VEF.AnimalBehaviours.CompProperties_LightSustenance</li>
+
+      <!-- Might be best to migrate them to some custom comp instead. -->
+      <!-- <li>CompProperties_EggLayer</li> -->  <!--This is probably... unwise.-->
+      <!-- <li>RimWorld.CompProperties_Milkable</li>
+      <li>RimWorld.CompProperties_Shearable</li> -->
+
     </compWhitelist>
 
     <tabWhitelist>
@@ -97,6 +117,13 @@
       <li>Princess</li>
       <li>Emperor</li>
       <li>Empress</li>
+
+      <li>AA_Blizzarisk</li>
+      <li>AA_Dunealisk</li>
+      <li>AA_Feralisk</li>
+      <li>alisk</li>
+      <li>zarisk</li>
+      <li>gallatross</li>
     </hasHandsWildcards>
 
     <!-- Generally the category for creatures that can just barely hold something without using their mouth -->
@@ -366,13 +393,28 @@
           <li>tarantula</li>
           <li>arachnid</li>
           <li>arisk</li>
+          <li>scorpion</li>
+          <li>AA_Blizzarisk</li>
+          <li>AA_Dunealisk</li>
+          <li>AA_Feralisk</li>
+        </members>
+        <membersExact>
+          <li>ant</li>
+          <li>fly</li>
+        </membersExact>
+        <romanceTags>
+          <Arachnid>1.0</Arachnid>
+          <Insect>0.75</Insect>
+        </romanceTags>
+      </li>
+      <li>
+        <members>
           <li>insect</li>
           <li>bee</li>
           <li>wasp</li>
           <li>mosquito</li>
           <li>moth</li>
           <li>butterfly</li>
-          <li>scorpion</li>
         </members>
         <membersExact>
           <li>ant</li>
@@ -380,6 +422,7 @@
         </membersExact>
         <romanceTags>
           <Insect>1.0</Insect>
+          <Arachnid>0.75</Arachnid>
         </romanceTags>
       </li>
 

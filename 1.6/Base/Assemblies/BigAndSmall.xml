@@ -576,6 +576,11 @@
             For the sake of... consistency? Adds Roos Crushed Pelvis behaviour to giants as well.
             </summary>
         </member>
+        <member name="P:BigAndSmall.VanillaExpanded.VEActive">
+            <summary>
+            Checks if Vanlla Expanded is loaded.
+            </summary>
+        </member>
         <member name="F:BigAndSmall.Piloted.severity">
             <summary>
             To avoid recursion from setting it in a method that will trigger a refresh hitting that very same method.

@@ -3,32 +3,23 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Verse;
+using static BigAndSmall.VanillaExpanded;
 
 namespace BigAndSmall
 {
     public class VFEGeneExtensionWrapper
     {
-        private static bool? vfeLoaded = null;
         private static Type VFEGeneExtType = null;
         private static FieldInfo backgroundPathEndogenesInfo = null;
         private static FieldInfo backgroundPathXenogenesInfo = null;
         private static FieldInfo backgroundPathArchiteInfo = null;
         private static FieldInfo hideGeneInfo = null;
 
-        public static bool IsVFEActive
-        {
-            get
-            {
-                vfeLoaded ??= ModsConfig.ActiveModsInLoadOrder.Any(x => x.PackageIdPlayerFacing == "OskarPotocki.VanillaFactionsExpanded.Core");
-                return vfeLoaded.Value;
-            }
-        }
-
 
         public DefModExtension ext = null;
         public VFEGeneExtensionWrapper(DefModExtension existingInstance = null)
         {
-            if (IsVFEActive == false)
+            if (VEActive == false)
             {
                 Log.Warning("Attempted to load VFE Gene Extension Wrapper without VFE being active.");
                 return;

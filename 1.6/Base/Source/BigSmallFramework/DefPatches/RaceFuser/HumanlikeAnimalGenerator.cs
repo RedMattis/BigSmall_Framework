@@ -55,6 +55,7 @@ namespace BigAndSmall
 
     public static class HumanlikeAnimalGenerator
     {
+        public static bool HasHumanlikeAnimals { get; private set; }
         public static Dictionary<ThingDef, HumanlikeAnimal> humanlikeAnimals = [];
         public static Dictionary<ThingDef, HumanlikeAnimal> reverseLookupHumanlikeAnimals = [];
         public static HashSet<BodyDef> modifiedBodies = [];
@@ -63,6 +64,7 @@ namespace BigAndSmall
         {
             if (BigSmall.BSSapientAnimalsActive || BigSmall.BSSapientMechanoidsActive)  // Just replace this with the actual mod's name later.
             {
+                HasHumanlikeAnimals = true;
                 modifiedBodies.Clear();
                 HashSet<ThingDef> thingDefsGenerated = [];
 
@@ -269,6 +271,7 @@ namespace BigAndSmall
             newRace.animalType = humRace.animalType;
             newRace.fleshType = newRace.fleshType == FleshTypeDefOf.Mechanoid ? humRace.FleshType : newRace.FleshType;
             newRace.meatDef = humRace.meatDef;
+            //newRace.flightStartChanceOnJobStart = aniRace.flightStartChanceOnJobStart > 0 ? 1 : 0;
             if (aniRace.hasMeat)
             {
                 if (aniRace.specificMeatDef != null)
@@ -367,6 +370,17 @@ namespace BigAndSmall
                     defaultLabelColor = new Color(0.5f, 1, 1),
                     generated = true
                 };
+
+
+                if (VanillaExpanded.VEActive)
+                {
+                    var aniComps = aniThing.comps ?? [];
+                    foreach (var extraAbility in VEF_InitialAbility_Helper.TryGetAbilities(aniComps))
+                    {
+                        raceHediff.abilities ??= [];
+                        raceHediff.abilities.Add(extraAbility);
+                    }
+                }
 
                 raceHediff.comps ??= [];
                 raceHediff.comps.Add(new CompProperties_Race
@@ -682,7 +696,8 @@ namespace BigAndSmall
             newThing.SetStatBaseValue(StatDefOf.MeleeDodgeChance, (animalThing.GetStatValueAbstract(StatDefOf.MeleeDodgeChance) + humanThing.GetStatValueAbstract(StatDefOf.MeleeDodgeChance)) / 2);
             newThing.SetStatBaseValue(StatDefOf.FilthRate, animalThing.GetStatValueAbstract(StatDefOf.FilthRate) / 3 + (humanThing.GetStatValueAbstract(StatDefOf.FilthRate) / 3 * 2));
 
-            // Max
+            // Half
+            newThing.SetStatBaseValue(StatDefOf.FlightCooldown, animalThing.GetStatValueAbstract(StatDefOf.FlightCooldown)/2);
 
             if (fineManipulation < 0.99)
             {

@@ -155,15 +155,11 @@ namespace BigAndSmall
 				// Wait until def is swapped to transfer age.
 				newPawn.gender = aniPawn.gender == Gender.None ? newPawn.gender : aniPawn.gender;
 				newPawn.ageTracker.AgeChronologicalTicks = aniPawn.ageTracker.AgeChronologicalTicks;
-				if (aniPawn.ageTracker.AgeBiologicalYears < 3)
+                float percentOfLifespan = aniPawn.ageTracker.AgeBiologicalYears / aniPawn.RaceProps.lifeExpectancy;
+                newPawn.ageTracker.AgeBiologicalTicks = (long)(newPawn.RaceProps.lifeExpectancy * percentOfLifespan) * GenDate.TicksPerYear;
+                if (aniPawn.ageTracker.AgeBiologicalYears < 3)
 				{
 					newPawn.ageTracker.AgeBiologicalTicks = 3 * GenDate.TicksPerYear;
-				}
-				else
-				{
-					float percentOfLifespan = aniPawn.ageTracker.AgeBiologicalYears / aniPawn.RaceProps.lifeExpectancy;
-					newPawn.ageTracker.AgeBiologicalTicks = (long)(newPawn.RaceProps.lifeExpectancy * percentOfLifespan) * GenDate.TicksPerYear;
-					//newPawn.ageTracker.AgeBiologicalTicks = aniPawn.ageTracker.AgeBiologicalTicks;
 				}
 
 				if (shouldBeWildman)

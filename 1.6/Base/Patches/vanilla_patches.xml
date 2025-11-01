@@ -181,5 +181,13 @@
       <li>BS_SmashRobot</li>
     </value>
   </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <success>Always</success>
+    <xpath>/Defs/JobDef[defName="Goto"][not(tryStartFlying)]</xpath>
+    <value>
+      <tryStartFlying>true</tryStartFlying>
+    </value>
+  </Operation>
 	
 </Patch>

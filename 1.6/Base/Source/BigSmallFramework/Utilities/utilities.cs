@@ -10,7 +10,6 @@ namespace BigAndSmall
     public static partial class HarmonyPatches
     {
         private static bool HasSOS => ModsConfig.IsActive("kentington.saveourship2");
-        public static bool HasVFE => ModsConfig.IsActive("OskarPotocki.VanillaFactionsExpanded.Core");
 
         private static bool NotNull(params object[] input)
         {
