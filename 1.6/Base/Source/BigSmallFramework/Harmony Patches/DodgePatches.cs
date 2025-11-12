@@ -17,8 +17,8 @@ namespace BigAndSmall
             if (target.Thing is Pawn pawn && __result < 0.99f && pawn.GetCachePrepatched() is BSCache sizeCache)
             {
                 __result /= sizeCache.scaleMultiplier.linear;
-                if (__result >= 0.96)
-                    __result = 0.96f;
+                if (__result >= 0.98)
+                    __result = 0.98f;
             }
         }
     }

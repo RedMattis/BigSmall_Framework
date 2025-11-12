@@ -1,44 +1,35 @@
 ﻿using BigAndSmall;
 using RimWorld;
 using System;
+using System.Collections.Generic;
 using Verse;
 
 namespace BigAndSmall
 {
-    // Doesn't work because the method is abstract.
-    //[HarmonyPatch]
-    //public class HasGatherableBodyResourcePatch
-    //{
-    //    // Need to test performance on this.
-    //    [HarmonyPatch(typeof(CompHasGatherableBodyResource), "ResourceAmount", MethodType.Getter)]
-    //    [HarmonyPostfix]
-    //    public static void ResourceAmountPatch(ref int __result, ref CompHasGatherableBodyResource __instance)
-    //    {
-    //        if (__instance?.parent?.ParentHolder is Pawn pawn)
-    //        {
-    //            ProductionGene.ModifyProductionBasedOnSize(__result, pawn);
-    //        }
-    //    }
-    //}
-
     public class ProductionGeneSettings : DefModExtension
     {
+        public class SubProductionGeneSettings
+        {
+            public ThingDef product;
+            public int baseAmount = 10;
+        }
         public int baseAmount = 10;
         public float frequencyInDays = 1;
         public string progressName = "NameMissing"; // Currently Unused.
         public ThingDef product;
         public string saveKey = "SaveKeyMissing";
+        public List<SubProductionGeneSettings> extra = [];
     }
 
-    public class ProductionGene : TickdownGene //PGene
+    public class ProductionGene : TickdownGene
     {
-        ProductionGeneSettings props = null;
+        ProductionGeneSettings Props = null;
         const int ticksPerDay = 60000;
         protected float fullness;
 
-        protected int ResourceAmount => ModifyProductionBasedOnSize(props.baseAmount, pawn);
-        protected float GatherResourcesIntervalDays => props.frequencyInDays * ticksPerDay;
-        protected ThingDef ResourceDef => props.product;
+        protected int ResourceAmount => ModifyProductionBasedOnSize(Props.baseAmount, pawn);
+        protected float GatherResourcesIntervalDays => Props.frequencyInDays * ticksPerDay;
+        protected ThingDef ResourceDef => Props.product;
 
         protected virtual bool ProductionActive
         {
@@ -74,8 +65,8 @@ namespace BigAndSmall
         public override void ExposeData()
         {
             base.ExposeData();
-            props = def.GetModExtension<ProductionGeneSettings>();
-            Scribe_Values.Look(ref fullness, props.saveKey, 0f);
+            Props = def.GetModExtension<ProductionGeneSettings>();
+            Scribe_Values.Look(ref fullness, Props.saveKey, 0f);
         }
 
         const int tickFrequency = 1000;
@@ -91,16 +82,16 @@ namespace BigAndSmall
 
         public override void TickEvent()
         {
-            if (props == null)
+            if (Props == null)
             {
-                props = def.GetModExtension<ProductionGeneSettings>();
-                if (props == null)
+                Props = def.GetModExtension<ProductionGeneSettings>();
+                if (Props == null)
                 {
                     Log.Error("ProductionGeneSettings not found for " + def.defName);
                 }
             }
             // If full, produce resources and add to inventory.
-            if (props != null && ActiveAndFull)
+            if (Props != null && ActiveAndFull)
             {
                 if (pawn?.Dead != false || pawn.Deathresting)
                 {
@@ -111,17 +102,13 @@ namespace BigAndSmall
 
                 // Add to inventory.
                 var inventory = pawn.inventory;
-                var thing = ThingMaker.MakeThing(resourceToProduce);
-                thing.stackCount = amountToProduce;
+                Produce(resourceToProduce, amountToProduce, inventory);
 
-                // Add to inventory if the pawn is not spawned or on the map.
-                if (pawn.Map == null || pawn.Spawned == false)
+                foreach(var extra in Props.extra)
                 {
-                    inventory.innerContainer.TryAdd(thing);
-                }
-                else
-                {
-                    GenPlace.TryPlaceThing(thing, pawn.Position, pawn.Map, ThingPlaceMode.Near);
+                    var extraResourceToProduce = extra.product;
+                    var extraAmountToProduce = ModifyProductionBasedOnSize(extra.baseAmount, pawn);
+                    Produce(extraResourceToProduce, extraAmountToProduce, inventory);
                 }
 
                 // Reset progress.
@@ -142,6 +129,22 @@ namespace BigAndSmall
                 {
                     fullness = 1f;
                 }
+            }
+        }
+
+        private void Produce(ThingDef resourceToProduce, int amountToProduce, Pawn_InventoryTracker inventory)
+        {
+            var thing = ThingMaker.MakeThing(resourceToProduce);
+            thing.stackCount = amountToProduce;
+
+            // Add to inventory if the pawn is not spawned or on the map.
+            if (pawn.Map == null || pawn.Spawned == false)
+            {
+                inventory.innerContainer.TryAdd(thing);
+            }
+            else
+            {
+                GenPlace.TryPlaceThing(thing, pawn.Position, pawn.Map, ThingPlaceMode.Near);
             }
         }
 

@@ -159,28 +159,28 @@ namespace BigAndSmall
             newThing.defName = thingDefName;
 
             HashSet<string> compWhitelist = [];
-			HashSet<string> tabWhiteList = [];
-			HashSet<string> extWhiteList = [];
+            HashSet<string> tabWhiteList = [];
+            HashSet<string> extWhiteList = [];
             HashSet<RomanceTags> romanceTags = [];
             RomanceTags romanceOverride = null;
             foreach (var setting in HumanlikeAnimalSettings.AllHASettings)
             {
                 compWhitelist.AddRange(setting.compWhitelist);
-				tabWhiteList.AddRange(setting.tabWhitelist);
-				extWhiteList.AddRange(setting.modExtensionWhitelist);
+                tabWhiteList.AddRange(setting.tabWhitelist);
+                extWhiteList.AddRange(setting.modExtensionWhitelist);
                 romanceTags.AddRange(setting.animalFamilySettings
-                    .Where(x=>
-                        x.members.Any(x=>aniThing.defName.Contains(x, StringComparison.OrdinalIgnoreCase)) ||
+                    .Where(x =>
+                        x.members.Any(x => aniThing.defName.Contains(x, StringComparison.OrdinalIgnoreCase)) ||
                         x.membersExact.Any(x => aniThing.defName.Equals(x, StringComparison.OrdinalIgnoreCase)))
-                    .Select(x=>x.romanceTags));
+                    .Select(x => x.romanceTags));
             }
             if (romanceTags.Any())
             {
                 romanceOverride = romanceTags.GetMerged();
             }
-			
-			// Lowercase comparer
-			List<CompProperties> bothComps = [];
+
+            // Lowercase comparer
+            List<CompProperties> bothComps = [];
             if (aniThing.comps != null) { bothComps.AddRange(aniThing.comps); }
             foreach (var comp in humThing.comps)
             {
@@ -190,15 +190,15 @@ namespace BigAndSmall
                     bothComps.Add(comp);
                 }
             }
-			var filteredComps = bothComps
-				.Where(x =>
-					compWhitelist.Contains(x.GetType().ToString(), StringComparer.OrdinalIgnoreCase) ||
-					compWhitelist.Contains(x.compClass.ToString(), StringComparer.OrdinalIgnoreCase))
-				.Distinct()
-				.ToList();
+            var filteredComps = bothComps
+                .Where(x =>
+                    compWhitelist.Contains(x.GetType().ToString(), StringComparer.OrdinalIgnoreCase) ||
+                    compWhitelist.Contains(x.compClass.ToString(), StringComparer.OrdinalIgnoreCase))
+                .Distinct()
+                .ToList();
 
-			newThing.comps = filteredComps;
-			newThing.thingClass = aniThing.thingClass;
+            newThing.comps = filteredComps;
+            newThing.thingClass = aniThing.thingClass;
 
             // From Human
 
@@ -207,12 +207,12 @@ namespace BigAndSmall
             newThing.thingSetMakerTags = humThing.thingSetMakerTags != null ? [.. humThing.thingSetMakerTags] : null;
             newThing.virtualDefs = humThing.virtualDefs != null ? [.. humThing.virtualDefs] : null;
 
-			// From Animal
+            // From Animal
             newThing.modExtensions = [];  // Doubt we want to load ModExtensions from either.
-			if (aniThing.modExtensions?.Count > 0)
-			{
-				newThing.modExtensions.AddRange(aniThing.modExtensions.Where(x => extWhiteList.Contains(x.GetType().ToString(), StringComparer.OrdinalIgnoreCase)));
-			}
+            if (aniThing.modExtensions?.Count > 0)
+            {
+                newThing.modExtensions.AddRange(aniThing.modExtensions.Where(x => extWhiteList.Contains(x.GetType().ToString(), StringComparer.OrdinalIgnoreCase)));
+            }
 
             newThing.tools = aniThing.tools != null ? [.. aniThing.tools] : null;
             newThing.verbs = aniThing.verbs != null ? [.. aniThing.verbs] : null;
@@ -221,30 +221,30 @@ namespace BigAndSmall
             newThing.smeltProducts = ([.. (humThing.smeltProducts ?? []), .. (aniThing.smeltProducts ?? [])]);
             if (newThing.smeltProducts.Empty()) newThing.smeltProducts = null;
 
-			// From Both.
-			List<RecipeDef> recipes = new();
-			if (humThing.recipes != null)
-				recipes.AddRange(humThing.recipes);
+            // From Both.
+            List<RecipeDef> recipes = new();
+            if (humThing.recipes != null)
+                recipes.AddRange(humThing.recipes);
 
-			if (aniThing.recipes != null)
-				recipes.AddRange(aniThing.recipes);
+            if (aniThing.recipes != null)
+                recipes.AddRange(aniThing.recipes);
 
-			newThing.recipes = recipes.Distinct().ToList();
+            newThing.recipes = recipes.Distinct().ToList();
             newThing.tradeTags = ([.. (humThing.tradeTags ?? []), .. (aniThing.tradeTags ?? [])]);
 
 
-			// Transfer filtered inspector tabs from both human and animal.
-			List<Type> bothInspectTabs = [];
-			if (humThing.inspectorTabs != null)
-				bothInspectTabs.AddRange(humThing.inspectorTabs);
+            // Transfer filtered inspector tabs from both human and animal.
+            List<Type> bothInspectTabs = [];
+            if (humThing.inspectorTabs != null)
+                bothInspectTabs.AddRange(humThing.inspectorTabs);
 
-			if (aniThing.inspectorTabs != null)
-				bothInspectTabs.AddRange(aniThing.inspectorTabs);
+            if (aniThing.inspectorTabs != null)
+                bothInspectTabs.AddRange(aniThing.inspectorTabs);
 
-			newThing.inspectorTabs = bothInspectTabs
-				.Where(x => tabWhiteList.Contains(x.ToString(), StringComparer.OrdinalIgnoreCase))
-				.Distinct()
-				.ToList();
+            newThing.inspectorTabs = bothInspectTabs
+                .Where(x => tabWhiteList.Contains(x.ToString(), StringComparer.OrdinalIgnoreCase))
+                .Distinct()
+                .ToList();
 
 
             RaceFuser.CopyRaceProperties(aniRace, newRace);
@@ -317,14 +317,14 @@ namespace BigAndSmall
 
             string raceHediffName = $"HL_{aniThing.defName}_RaceHediff";    // This can be used to override the hediff of the race.
 
-			var raceHediff = raceHediffName.TryGetExistingDef<HediffDef>();
-			PawnExtension racePawnExtension = raceHediff?.GetAllPawnExtensionsOnHediff().FirstOrDefault();
+            var raceHediff = raceHediffName.TryGetExistingDef<HediffDef>();
+            PawnExtension racePawnExtension = raceHediff?.GetAllPawnExtensionsOnHediff().FirstOrDefault();
             float fineManipulation = racePawnExtension?.animalFineManipulation ?? 0f;
             if (raceHediff == null)
             {
-				bool hasHands = false;
+                bool hasHands = false;
 
-				List<string> manipulatorBlackList = ["Mouth", "Jaw", "Beak", "Leg"];
+                List<string> manipulatorBlackList = ["Mouth", "Jaw", "Beak", "Leg"];
                 var allParts = newRace.body.corePart.GetAllBodyPartsRecursive();
 
                 if (HumanlikeAnimalSettings.AllHASettings.Any(x => x.hasHandsWildcards.Any(wc => aniThing.defName.Contains(wc, StringComparison.OrdinalIgnoreCase))))
@@ -387,6 +387,7 @@ namespace BigAndSmall
                 {
                     canSwapAwayFrom = false,
                 });
+
                 var pawnExt = new PawnExtension();
                 PawnExtensionDef targetAnimalBase = fineManipulation > 0.75f ? BSDefs.BS_DefaultAnimal : fineManipulation > 0.35f ? BSDefs.BS_DefaultAnimal_PoorHands : BSDefs.BS_DefaultAnimal_NoHands;
                 if (targetAnimalBase.pawnExtension.animalFineManipulation != null)
@@ -446,13 +447,15 @@ namespace BigAndSmall
                 pawnExt.animalFineManipulation = fineManipulation;
                 pawnExt.romanceTags = romanceOverride;
                 raceHediff.modExtensions = [pawnExt];
-				racePawnExtension = pawnExt;
-			}
+                racePawnExtension = pawnExt;
+            }
 
-			// At this point if racePawnExtension didn't exist then we have now created it.
-			// Same goes for raceHediff.
-			fineManipulation = racePawnExtension.animalFineManipulation ?? fineManipulation;
-			if ((racePawnExtension.traitIcon == null || racePawnExtension.traitIcon == "BS_Traits/robot") &&
+            GenerateProductionCompsFromAnimal(aniThing, raceHediff);
+
+            // At this point if racePawnExtension didn't exist then we have now created it.
+            // Same goes for raceHediff.
+            fineManipulation = racePawnExtension.animalFineManipulation ?? fineManipulation;
+            if ((racePawnExtension.traitIcon == null || racePawnExtension.traitIcon == "BS_Traits/robot") &&
                 aniPawnKind.lifeStages?.Any() == true)
             {
                 racePawnExtension.traitIcon = GetTraitIcon(aniPawnKind);
@@ -466,9 +469,9 @@ namespace BigAndSmall
             var allUncoveredThoughts = DefDatabase<ThoughtDef>.AllDefs.Where(x => x.defName.Contains("uncovered", StringComparison.OrdinalIgnoreCase));
             var allSweatThoughts = DefDatabase<ThoughtDef>.AllDefs.Where(x => x.defName.Contains("sweat", StringComparison.OrdinalIgnoreCase));
             var tableThoughts = DefDatabase<ThoughtDef>.AllDefs.Where(x => x.defName.Contains("table", StringComparison.OrdinalIgnoreCase));
-            racePawnExtension.nullsThoughts.AddRange(allUncoveredThoughts);
-            racePawnExtension.nullsThoughts.AddRange(allSweatThoughts);
-            racePawnExtension.nullsThoughts.AddRange(tableThoughts);
+            racePawnExtension.nullsThoughts.AddDistinctRange(allUncoveredThoughts);
+            racePawnExtension.nullsThoughts.AddDistinctRange(allSweatThoughts);
+            racePawnExtension.nullsThoughts.AddDistinctRange(tableThoughts);
 
             if (aniPawnKind.abilities != null)
             {
@@ -515,6 +518,104 @@ namespace BigAndSmall
             {
                 return aniPawnKind.lifeStages.Last().bodyGraphicData.texPath + "_east";
             }
+        }
+
+        private static void GenerateProductionCompsFromAnimal(ThingDef aniThing, HediffDef raceHediff)
+        {
+            if (raceHediff.comps?.Any(x=>x is ProductionHediffSettings) == true)
+            {
+                // User has likely defined their own production hediffs, so don't auto-generate any.
+                return;
+            }
+            foreach (var mComp in aniThing.comps?.Where(x => x is CompProperties_Milkable) ?? [])
+            {
+                var milkComp = (CompProperties_Milkable)mComp;
+                var product = milkComp.milkDef;
+                var quantity = milkComp.milkAmount;
+                var frequency = milkComp.milkIntervalDays;
+                bool femaleOnly = milkComp.milkFemaleOnly;
+                GenerateProductionComp(raceHediff, product, quantity, frequency, femaleOnly: femaleOnly);
+            }
+            foreach (var sComp in aniThing.comps?.Where(x => x is CompProperties_Shearable) ?? [])
+            {
+                var shearComp = (CompProperties_Shearable)sComp;
+                var product = shearComp.woolDef;
+                var quantity = shearComp.woolAmount;
+                var frequency = shearComp.shearIntervalDays;
+                GenerateProductionComp(raceHediff, product, quantity, frequency);
+            }
+            foreach (var eComp in aniThing.comps?.Where(x => x is CompProperties_EggLayer) ?? [])
+            {
+                var eggComp = (CompProperties_EggLayer)eComp;
+                var product = eggComp.eggUnfertilizedDef; // >_>;;
+                var quantity = Mathf.CeilToInt(eggComp.eggCountRange.Average);
+                var frequency = Mathf.CeilToInt(eggComp.eggLayIntervalDays);
+                bool femaleOnly = eggComp.eggLayFemaleOnly;
+                GenerateProductionComp(raceHediff, product, quantity, frequency, femaleOnly: femaleOnly);
+            }
+            foreach (var apComp in aniThing.comps.Where(x => x.GetType().Name == "CompProperties_AnimalProduct"))
+            {
+                var productField = apComp.GetType().GetField("resourceDef");
+                var amountField = apComp.GetType().GetField("resourceAmount");
+                var intervalField = apComp.GetType().GetField("gatheringIntervalDays");
+                if (productField != null && amountField != null && intervalField != null)
+                {
+                    var quantity = (int)amountField.GetValue(apComp);
+                    var frequency = (int)intervalField.GetValue(apComp);
+                    if (productField.GetValue(apComp) is ThingDef product)
+                    {
+                        GenerateProductionComp(raceHediff, product, quantity, frequency);
+                    }
+
+                    var ramdomItems = apComp.GetType().GetField("randomItems");
+                    if (ramdomItems?.GetValue(apComp) is List<string> itemList)
+                    {
+                        var listLength = itemList.Count;
+                        List<ThingDef> possibleProducts = [.. itemList.Select(DefDatabase<ThingDef>.GetNamedSilentFail).Where(def => def != null)];
+                        if (possibleProducts.Count == 0) continue;
+
+                        GenerateProductionComp(raceHediff, null, quantity, frequency, rngOptions: possibleProducts);
+                    }
+                }
+            }
+        }
+
+        private static void GenerateProductionComp(HediffDef raceHediff, ThingDef product, int quantity, int frequency, bool femaleOnly=false, List<ThingDef> rngOptions = null, float chance=1)
+        {
+            rngOptions ??= [];
+
+            string saveKeyEnd = product != null ? product.defName : "RandomProduct";
+
+            ProductionHediffSettings pSettings = new()
+            {
+                frequencyInDays = frequency,
+                progressName = "ResourceGrowth",
+                saveKey = $"{raceHediff.defName}_ResourceGrowth_{saveKeyEnd}",
+                activationAge = 13,
+                chance = chance,
+                femaleOnly = femaleOnly,
+                products =
+                [
+                    new()
+                    {
+                        product = product,
+                        randomProduct = rngOptions,
+                        baseAmount = quantity,
+                    }
+                ],
+            };
+            while (raceHediff.comps.Any(x=>x.compClass == pSettings.compClass))
+            {
+                Type compClass = pSettings.NextFromThis();
+                pSettings.compClass = compClass;
+                if (pSettings == null)
+                {
+                    Log.Warning($"Could not add production hediff for {product?.defName} to {raceHediff?.defName} due to too many comp class name collisions.");
+                    return;
+                }
+            }
+
+            raceHediff.comps.Add(pSettings);
         }
 
         private static void SetRenderTree(PawnKindDef aniPawnKind, ThingDef aniThing, RaceProperties aniRace, RaceProperties humRace, RaceProperties newRace)

@@ -642,6 +642,12 @@
             <param name="permitFusion"></param>
             <param name="clearHediffsToReapply"></param>
         </member>
+        <member name="M:BigAndSmall.RaceTracker.PostTickInterval(System.Int32)">
+            <summary>
+            Note: This is the ONLY tick event that runs on a race-tracker.
+            Others are skipepd for performance reasons.
+            </summary>
+        </member>
         <member name="M:BigAndSmall.RaceViewUIManager.DrawFeature(BigAndSmall.IRacialFeature,BigAndSmall.BSCache,UnityEngine.Rect,System.Boolean,System.Boolean)">
             <summary>
             Draw Race Feature

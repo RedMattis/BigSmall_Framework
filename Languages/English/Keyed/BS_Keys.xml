@@ -104,6 +104,9 @@
   <BS_HasNullThoughts>disables thoughts</BS_HasNullThoughts>
   <BS_HasNullThoughtsCount>thoughts disabled: {0}</BS_HasNullThoughtsCount>
   <SoulPowerFalloffStartDescription>soul power soft-cap + {0}%</SoulPowerFalloffStartDescription>
+  <BS_Produces>produces</BS_Produces>
+  <BS_Production>production</BS_Production>
+  <BS_Progress>progress</BS_Progress>
 
   <BS_ConditionalDescription>required conditions to activate</BS_ConditionalDescription>
   <BS_Aptitudes>Aptitudes</BS_Aptitudes>

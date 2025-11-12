@@ -11,6 +11,8 @@
       <li>RimWorld.CompProperties_EffecterOnDeath</li>
       <li>RimWorld.CompProperties_AttachPoints</li>
       <li>RimWorld.CompProperties_ProducesBioferrite</li>
+      <li>RimWorld.CompProperties_Spawner</li>
+      
       <li>Verse.CompProperties_HeatPusher</li>
 
       <!-- By CompClasses -->

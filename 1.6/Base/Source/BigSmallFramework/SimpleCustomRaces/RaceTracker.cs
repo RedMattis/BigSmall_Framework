@@ -26,6 +26,15 @@ namespace BigAndSmall
         public override void Tick() { }
         public override void Tended(float quality, float maxQuality, int batchPosition = 0) { }
 
+        /// <summary>
+        /// Note: This is the ONLY tick event that runs on a race-tracker.
+        /// Others are skipepd for performance reasons.
+        /// </summary>
+        public override void PostTickInterval(int interval)
+        {
+            base.PostTickInterval(interval);
+        }
+
         public override float PainOffset { get { return 0; } }
     }
 
