@@ -16,6 +16,12 @@ namespace BigAndSmall
         private HashSet<BSCache> scribedCache = [];
         public static bool regenerationAttempted = false;
         public Game game;
+        /// <summary>
+        /// Increments by one every time a new game is started.
+        /// 
+        /// Starts at 1 so thread caches will be invalid from the start.
+        /// </summary>
+        public static int gameInt = 1;
 
         public static Queue<Pawn> refreshQueue = new();
 
@@ -64,6 +70,7 @@ namespace BigAndSmall
             Scribe_Collections.Look<BSCache>(ref scribedCache, saveDestroyedThings: false, "BS_scribedCache", LookMode.Deep);
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
+                gameInt++;
                 queuedJobs.Clear();
                 schedulePostUpdate.Clear();
                 scheduleFullUpdate.Clear();

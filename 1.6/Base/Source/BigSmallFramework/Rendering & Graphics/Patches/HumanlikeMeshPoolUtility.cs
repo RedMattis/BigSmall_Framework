@@ -50,7 +50,6 @@ namespace BigAndSmall
         {
             public Pawn pawn;
             public BSCache cache;
-            public bool approxNoChange;
             public bool cachingDisabled;
             public bool doOffset;
             public bool doComplexBodyOffset;
@@ -77,20 +76,18 @@ namespace BigAndSmall
             {
                 threadStaticCache.cache = ___pawn.GetCachePrepatchedThreaded();
                 threadStaticCache.pawn = ___pawn;
-                threadStaticCache.approxNoChange = threadStaticCache.cache.approximatelyNoChange;
-                if (!threadStaticCache.approxNoChange)
+                if (!threadStaticCache.cache.approximatelyNoChange)
                 {
                     threadStaticCache.spawned = SpawnedOrVisible(___pawn);
                 }
             }
-            if (threadStaticCache.approxNoChange || !threadStaticCache.spawned)
+            if (threadStaticCache.cache.approximatelyNoChange || !threadStaticCache.spawned)
             {
                 return;
             }
             var rotInt = ___pawn.rotationInt;
             if (requestNewCache || BS.Tick10 != threadStaticCache.tick10 || threadStaticCache.rotation != rotInt)
             {
-                threadStaticCache.approxNoChange = threadStaticCache.cache.approximatelyNoChange;
                 threadStaticCache.tick10 = BS.Tick10;
                 threadStaticCache.cachingDisabled = (!disableCache && BigSmallMod.settings.disableTextureCaching) &&
                     (threadStaticCache.cache.totalSizeOffset > 0 || threadStaticCache.cache.scaleMultiplier.linear > 1 || threadStaticCache.cache.renderCacheOff);

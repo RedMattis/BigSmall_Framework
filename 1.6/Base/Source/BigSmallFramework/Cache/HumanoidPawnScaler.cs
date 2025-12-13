@@ -29,24 +29,26 @@ namespace BigAndSmall
             public bool properCache;
         }
         [ThreadStatic]
-        static bool threadInit = false;
-        [ThreadStatic]
         static PerThreadMiniCache _tCache;
         [ThreadStatic]
         static Dictionary<int, BSCache> _tDictCache;
         [ThreadStatic]
         static int tick10 = 0;
+        [ThreadStatic]
+        static int threadGameInt = 0;
 
         public static BSCache GetCacheUltraSpeed(Pawn pawn, bool canRegenerate = false)
         {
+            if (threadGameInt != BigAndSmallCache.gameInt)
+            {
+                _tDictCache?.Clear();
+                threadGameInt = BigAndSmallCache.gameInt;
+                _tDictCache = [];
+            }
+
             if (_tCache.pawn != pawn || !_tCache.properCache)
             {
                 _tCache.pawn = pawn;
-                if (!threadInit)
-                {
-                    _tDictCache = [];
-                    threadInit = true;
-                }
                 if (_tDictCache.TryGetValue(pawn.thingIDNumber, out BSCache cache))
                 {
                     _tCache.cache = cache;
@@ -211,6 +213,22 @@ namespace BigAndSmall
         }
 
         public static bool regenerationInProgress = false;
+
+        public bool RefreshOwnerId(Pawn pawn)
+        {
+            if (pawn == null) return false;
+            if (pawn != this.pawn)
+            {
+                Log.ErrorOnce($"Tried to refresh BSCache owner ID, but the pawn provided ({pawn})" +
+                    $"does not match the cache's pawn ({this.pawn}).", 94561234);
+            }
+            if (id != pawn.ThingID)
+            {
+                id = pawn.ThingID;
+                return true;
+            }
+            return false;
+        }
 
         public bool RegenerateCache()
         {

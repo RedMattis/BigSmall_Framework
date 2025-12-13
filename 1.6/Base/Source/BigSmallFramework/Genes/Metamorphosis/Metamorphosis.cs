@@ -1,4 +1,5 @@
 ﻿using BigAndSmall;
+using BigAndSmall.FilteredLists;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,138 +7,188 @@ using Verse;
 
 namespace BigAndSmall
 {
+    public class MorphSettings
+    {
+        public bool isRetromorph = false;
+        protected bool requiresFrequentChecks = false;
+        /// <summary>
+        /// Requires the conditional stat effector to evaluate to true for the morph to be allowed.
+        /// </summary>
+        public List<ConditionalStatAffecter> conditionals = null;
+        public List<HediffDef> requiredHediffs = null;
+        public List<HediffDef> disallowedHediffs = null;
+
+        public List<GeneDef> requiredGenes = null;
+        public List<GeneDef> disallowedGenes = null;
+
+        public FilterListSet<ThingDef> raceFilter = null;
+
+        public int? morphOverAge = null;
+        public int? morphUnderAge = null;
+        public bool morphIfPregnant = false;
+        public bool morphIfNight = false;
+        public bool morphIfDay = false;
+
+        public bool RequiresFrequentChecks => requiresFrequentChecks || morphIfDay || morphIfNight;
+
+        public bool CanMorph(Pawn pawn)
+        {
+            if (morphOverAge != null)
+                if (pawn.ageTracker.AgeBiologicalYears < morphOverAge)
+                    return false;
+
+            if (morphUnderAge != null)
+                if (pawn.ageTracker.AgeBiologicalYears >= morphUnderAge)
+                    return false;
+
+            if (morphIfPregnant)
+                if (!pawn.health.hediffSet.HasHediff(HediffDefOf.PregnantHuman))
+                    return false;
+
+            if (morphIfDay)
+                if (pawn.Map.skyManager.CurSkyGlow < 0.3f)
+                    return false;
+
+            if (morphIfNight)
+                if (pawn.Map.skyManager.CurSkyGlow > 0.3f)
+                    return false;
+
+            if (conditionals != null)
+                if (!ConditionalManager.TestConditionals(pawn, conditionals))
+                    return false;
+            
+            if (requiredHediffs != null)
+                foreach (var hediff in requiredHediffs)
+                    if (!pawn.health.hediffSet.HasHediff(hediff))
+                        return false;
+                
+            if (disallowedHediffs != null)
+                foreach (var hediff in disallowedHediffs)
+                    if (pawn.health.hediffSet.HasHediff(hediff))
+                        return false;
+                
+            var activeGenes = GeneHelpers.GetAllActiveGeneDefs(pawn); ;
+                if (requiredGenes != null)
+                foreach (var gene in requiredGenes)
+                    if (!activeGenes.Contains(gene))
+                        return false;  
+                
+            if (disallowedGenes != null)
+                foreach (var gene in disallowedGenes)
+                    if (activeGenes.Contains(gene))
+                        return false;
+            
+            if (raceFilter != null)
+                if (raceFilter.GetFilterResult(pawn.def).Denied())
+                    return false;
+                
+            return true;
+        }
+    }
+
     public static class Metamorphosis
     {
-        public class MorphManager
+        public static bool ValidToMorph(List<PawnExtension> pawnExtensions)
         {
-            private readonly List<XenotypeDef> upstreamXenos = [];
-            private readonly List<XenotypeDef> downstreamXenos = [];
-
-            public readonly bool canEverMorphUp = false;
-            public readonly bool canEverMorphDown = false;
-
-            public int? morphUpRequiresAge = null;
-            public int? morphDownRequiresAge = null;
-            public bool morphUpRequiresPreg = false;
-            public bool morphUpRequiresDay = false;
-            public bool morphUpRequiresNight = false;
-
-            public static bool ValidToMorph(List<PawnExtension> geneExts)
-            {
-                return geneExts.Any(x => x.CanMorphAtAll);
-            }
-
-            public XenotypeDef GetMorphTarget(Pawn pawn)
-            {
-                XenotypeDef result = null;
-                var pawnAge = pawn.ageTracker.AgeBiologicalYears;
-                
-                if (canEverMorphUp && upstreamXenos.Count > 0)
-                {
-                    bool ageCheck = morphUpRequiresAge == null || pawnAge >= morphUpRequiresAge;
-                    bool pregnantCheck = !morphUpRequiresPreg || pawn.health.hediffSet.HasHediff(HediffDefOf.PregnantHuman);
-                    bool dayCheck = !morphUpRequiresDay || pawn.Map.skyManager.CurSkyGlow > 0.3f;
-                    bool nightCheck = !morphUpRequiresNight || pawn.Map.skyManager.CurSkyGlow < 0.3f;
-
-                    //Log.Message($"{pawn}: MorphChain: Checking if pawn can morph up. Old Enough: {ageCheck}, Pregnancy Check: {pregnantCheck}");
-                    if (ageCheck && pregnantCheck && dayCheck && nightCheck)
-                    {
-
-                        var pickList = TryFilterByGender(pawn?.gender, upstreamXenos);
-                        //Log.Message($"[DEBUG]: {pawn}: MorphChain: Morphing up to {pickList.Count} possible morphs. Total Weight of {pickList.Sum(x => x.GetMorphWeight())}");
-                        result = pickList.RandomElementByWeight(x=> x.GetMorphWeight());
-                        //Log.Message($"{pawn}: MorphChain: Morphing up to {result.LabelCap}");
-                        return result;
-                    }
-                }
-                if (canEverMorphDown && downstreamXenos.Count > 0)
-                {
-                    bool ageCheck = morphDownRequiresAge == null || pawnAge < morphDownRequiresAge;
-                    if (ageCheck)
-                    {
-                        var pickList = TryFilterByGender(pawn?.gender, downstreamXenos);
-                        result = pickList.RandomElementByWeight(x => x.GetMorphWeight());
-                        return result;
-                    }
-                }
-                return result;
-            }
-
-            private List<XenotypeDef> TryFilterByGender(Gender? gender, List<XenotypeDef> defs)
-            {
-
-                var femaleXenos = defs.Where(x => x.genes.Any(x => x == BSDefs.Body_FemaleOnly || x.defName == "AG_Female") ||
-                    (x.modExtensions?.Any(mx => mx is XenotypeExtension ex && ex.morphIgnoreGender)) == true).ToList();
-                var maleXenos = defs.Where(x => x.genes.Any(x => x == BSDefs.Body_MaleOnly || x.defName == "AG_Male") ||
-                    (x.modExtensions?.Any(mx => mx is XenotypeExtension ex && ex.morphIgnoreGender)) == true).ToList();
-
-                var femaleLegal = defs.Except(maleXenos);
-                var maleLegal = defs.Except(femaleXenos);
-
-                if (gender == Gender.Female && femaleLegal.Count() > 0)
-                {
-                    return femaleLegal.ToList();
-                }
-                else if (gender == Gender.Male && maleLegal.Count() > 0)
-                {
-                    return maleLegal.ToList();
-                }
-                return defs;
-            }
-
-            public MorphManager(List<PawnExtension> geneExts)
-            {
-                upstreamXenos = geneExts.Where(x => x.metamorphTarget != null)?.Select(x => x.metamorphTarget).ToList();
-                downstreamXenos = geneExts.Where(x => x.retromorphTarget != null)?.Select(x => x.retromorphTarget).ToList();
-                canEverMorphDown = geneExts.Where(x => x.CanMorphDown).Any();
-                canEverMorphUp = geneExts.Where(x => x.CanMorphUp).Any();
-                morphUpRequiresAge = geneExts.Where(x => x.metamorphAtAge != null).Max(x => x.metamorphAtAge);
-                morphDownRequiresAge = geneExts.Where(x => x.retromorphUnderAge != null).Min(x => x.retromorphUnderAge);
-                morphUpRequiresPreg = geneExts.Where(x => x.metamorphIfPregnant).Any();
-                morphUpRequiresDay = geneExts.Where(x => x.metamorphIfDay).Any();
-                morphUpRequiresNight = geneExts.Where(x => x.metamorphIfNight).Any();
-            }
+            return pawnExtensions.Any(x => x.morphSettings != null);
         }
-        private static MorphManager GetMorphChain(Pawn pawn, List<PawnExtension> geneExts)
-        {
-            var pawnGT = pawn.genes;
 
-            if (MorphManager.ValidToMorph(geneExts))
+        public static XenotypeDef TryGetMorphTarget(Pawn pawn, IEnumerable<MorphSettings> triggers)
+        {
+            bool? metamorphValid = null;
+            bool? retromorphValid = null;
+            foreach (var trigger in triggers)
             {
-                return new MorphManager(geneExts);
+                var result = trigger.CanMorph(pawn);
+                {
+                    if (trigger.isRetromorph)
+                    {
+                        retromorphValid ??= true;
+                        retromorphValid &= result;
+                    }
+                    else
+                    {
+                        metamorphValid ??= true;
+                        metamorphValid &= result;
+                    }
+                }
+            }
+            if (metamorphValid == null && retromorphValid == null)
+            {
+                return null;
+            }
+            var allPawnExts = pawn.GetAllPawnExtensions();
+            if (metamorphValid == true)
+            {
+                var metamorphTargets = allPawnExts.Where(x=>x.metamorphTarget != null).Select(x => x.metamorphTarget).ToList();
+                if (metamorphTargets.Count != 0)
+                {
+                    var pickList = TryFilterByGender(pawn?.gender, metamorphTargets);
+                    var result = pickList.RandomElementByWeight(x=> x.GetMorphWeight());
+                    return result;
+                }
+            }
+            if (retromorphValid == true)
+            {
+                var retroMorphTargets = allPawnExts.Where(x => x.retromorphTarget != null).Select(x => x.retromorphTarget).ToList();
+                if (retroMorphTargets.Count != 0)
+                {
+                    var pickList = TryFilterByGender(pawn?.gender, retroMorphTargets);
+                    var result = pickList.RandomElementByWeight(x => x.GetMorphWeight());
+                    return result;
+                }
             }
             return null;
         }
 
-        public static HashSet<Pawn> pawnsQueuedForMorphing = [];
-        public static void HandleMetamorph(Pawn pawn, List<PawnExtension> geneExts)
+        private static List<XenotypeDef> TryFilterByGender(Gender? gender, List<XenotypeDef> defs)
         {
-            if (geneExts.Count == 0 || pawnsQueuedForMorphing.Contains(pawn))
+
+            var femaleXenos = defs.Where(x => x.genes.Any(x => x == BSDefs.Body_FemaleOnly || x.defName == "AG_Female") ||
+                (x.modExtensions?.Any(mx => mx is XenotypeExtension ex && ex.morphIgnoreGender)) == true).ToList();
+            var maleXenos = defs.Where(x => x.genes.Any(x => x == BSDefs.Body_MaleOnly || x.defName == "AG_Male") ||
+                (x.modExtensions?.Any(mx => mx is XenotypeExtension ex && ex.morphIgnoreGender)) == true).ToList();
+
+            var femaleLegal = defs.Except(maleXenos);
+            var maleLegal = defs.Except(femaleXenos);
+
+            if (gender == Gender.Female && femaleLegal.Count() > 0)
+            {
+                return femaleLegal.ToList();
+            }
+            else if (gender == Gender.Male && maleLegal.Count() > 0)
+            {
+                return maleLegal.ToList();
+            }
+            return defs;
+        }
+        
+
+        public static HashSet<Pawn> pawnsQueuedForMorphing = [];
+        public static void HandleMetamorph(Pawn pawn, List<PawnExtension> pawnExts)
+        {
+            if (pawnExts.Count == 0 || pawnsQueuedForMorphing.Contains(pawn))
             {
                 return;
             }
+            
+            var withMorphTriggers = pawnExts.Where(x => x.morphSettings != null);
 
-            // Filter to morph-related genes.
-            geneExts = geneExts.Where(x => x.MorphRelated).ToList();
-
-            if (geneExts.Any(x => x.metamorphTarget != null || x.retromorphTarget != null))
+            if (withMorphTriggers.Any())
             {
-                var mp = GetMorphChain(pawn, geneExts);
-                if (mp == null)
+                var triggers = withMorphTriggers.Select(x => x.morphSettings);
+                var metamorphTarget = TryGetMorphTarget(pawn, triggers);
+                if (metamorphTarget == null)
                 {
                     return;
                 }
-                var metamorphTarget = mp.GetMorphTarget(pawn);
-                if (metamorphTarget != null)
+                pawnsQueuedForMorphing.Add(pawn);
+                void morphAction()
                 {
-                    pawnsQueuedForMorphing.Add(pawn);
-                    void morphAction()
-                    {
-                        GeneHelpers.ChangeXenotypeFast(pawn, metamorphTarget);
-                        pawnsQueuedForMorphing.Remove(pawn);
-                    }
-                    BigAndSmallCache.queuedJobs.Enqueue(morphAction);
+                    GeneHelpers.ChangeXenotypeFast(pawn, metamorphTarget);
+                    pawnsQueuedForMorphing.Remove(pawn);
                 }
+                BigAndSmallCache.queuedJobs.Enqueue(morphAction);
             }
         }
 

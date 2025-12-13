@@ -62,6 +62,13 @@
             The threaded version of GetCache is for use on rendering threads where we DON'T want to regenerate the cache.
             </summary>
         </member>
+        <member name="F:BigAndSmall.BigAndSmallCache.gameInt">
+            <summary>
+            Increments by one every time a new game is started.
+            
+            Starts at 1 so thread caches will be invalid from the start.
+            </summary>
+        </member>
         <member name="T:BigAndSmall.DictCache`2">
             <summary>
             A quick method for making a cache without having to rewrite the same verbose code over and over.
@@ -161,6 +168,11 @@
             This is some old questionable method to clean up broken pawns.
             
             Probably best to leave it alone for now... It doesn't seem to break anything and might still fix something important.
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.MorphSettings.conditionals">
+            <summary>
+            Requires the conditional stat effector to evaluate to true for the morph to be allowed.
             </summary>
         </member>
         <member name="T:BigAndSmall.CompAbilityEffect_DraculBite">

@@ -45,13 +45,14 @@ namespace BigAndSmall
 		}
 
         public static void RunBeforeGenerateImpliedDefs(bool hotReload)
-		{
-			DebugLog.Message("Generate Defs.");
+        {
+            DebugLog.Message("Generate Defs.");
 
-			if (!hotReload)
+            if (!hotReload)
             {
                 GlobalSettings.Initialize();
             }
+            UpdateLegacyPawnExts();
             ConditionalGraphic.ResetStaticData();
             DefAltNamer.Initialize();
             HARCompat.SetupHARThingsIfHARIsActive();
@@ -62,7 +63,27 @@ namespace BigAndSmall
             HumanlikeAnimalGenerator.GenerateHumanlikeAnimals(hotReload);
             FlagStringData.Setup(force: true); // For hotreload.
             DebugLog.Message("Generate defs complete.");
-		}
+        }
+
+        private static void UpdateLegacyPawnExts()
+        {
+            try
+            {
+                var varAllGeneDefs = DefDatabase<GeneDef>.AllDefs;
+                foreach (var geneDef in varAllGeneDefs)
+                {
+                    var pawnExtensions = geneDef.GetAllPawnExtensionsOnGene();
+                    foreach (var ext in pawnExtensions)
+                    {
+                        ext.UpdateLegacy();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Warning($"[Big and Small] Exception while updating legacy pawn extensions: {e}. Some legacy data may not work as expected.\n\n{e.StackTrace}");
+            }
+        }
 
         public static void RunDuringGenerateImpliedDefs(bool hotReload)
 		{

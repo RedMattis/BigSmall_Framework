@@ -133,12 +133,6 @@ namespace BigAndSmall
                 }
                 CacheAndRemoveHediffs(aniPawn);
                 newPawn.health.hediffSet.hediffs.Clear();
-                //foreach (var hediff in pawn.health.hediffSet.hediffs)
-                //{
-                //    var h = newPawn.health.AddHediff(hediff.def, hediff.Part, null);
-                //    h.Severity = hediff.Severity;
-                //}
-
 
                 // Spawn into the same position as the old pawn.
                 if (aniPawn.Spawned)
@@ -150,7 +144,7 @@ namespace BigAndSmall
 					newPawn.overrideGraphicIndex = index;
 
 				SwapThingDef(newPawn, targetDef, true, forcePriority, force: true, permitFusion: false, clearHediffsToReapply: false);
-                RestoreMatchingHediffs(newPawn, targetDef, aniPawn);
+                RestoreMatchingHediffs(newPawn, targetDef, aniPawn, blacklist: ["pregnancy", "pregnant"]);
 
 				// Wait until def is swapped to transfer age.
 				newPawn.gender = aniPawn.gender == Gender.None ? newPawn.gender : aniPawn.gender;
@@ -203,14 +197,7 @@ namespace BigAndSmall
 
                 aniPawn.Destroy(DestroyMode.Vanish);
                 oldPawnDestroyed = true;
-
-				//TEST
-				//Log.Message($"DEBUG for {newPawn} {newPawn.def}");
-				//Log.Message($"ACTIVE COMPS: {string.Join("\n", newPawn.AllComps.Select(x => x.GetType() + " " + x.ToString()))}");
-				//Log.Message($"DEF PROPS: {string.Join("\n", newPawn.def.comps.Select(x => x.GetType().ToString() + " " + x.compClass.ToString()))}");
-
-
-				return newPawn;
+                return newPawn;
             }
             catch (Exception e)
             {
@@ -450,6 +437,7 @@ namespace BigAndSmall
                         ResurrectionUtility.TryResurrect(pawn);
                         pawn.VerbTracker.InitVerbsFromZero();
                     }
+                    cache.RefreshOwnerId(pawn);
                 }
             }
             catch (Exception e)
@@ -616,16 +604,21 @@ namespace BigAndSmall
             }
         }
 
-        public static void RestoreMatchingHediffs(Pawn pawn, ThingDef targetThingDef, Pawn source = null)
+        public static void RestoreMatchingHediffs(Pawn pawn, ThingDef targetThingDef, Pawn source = null, List<string> blacklist = null)
         {
             List<BodyPartRecord> currentParts = targetThingDef.race.body.AllParts.Select(x => x).ToList();
             source ??= pawn;
+            blacklist ??= [];
             // Go over the savedHediffs and check if any of them can attach to the current bodyparts.
             if (hediffsToReapply[source].Count > 0)
             {
                 for (int idx = hediffsToReapply[source].Count - 1; idx >= 0; idx--)
                 {
                     Hediff hediff = hediffsToReapply[source][idx];
+                    if (blacklist.Any(x => x.Equals(hediff.def.defName, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        continue;
+                    }
                     float severity = hediff.Severity;
 
                     bool canAttach = hediff.Part == null || currentParts.Any(x => x.def.defName == hediff.Part.def.defName || x.customLabel == hediff.Part.customLabel);

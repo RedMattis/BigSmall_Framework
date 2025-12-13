@@ -25,6 +25,11 @@ namespace BigAndSmall
 
     public class PawnExtension : SmartExtension
     {
+        public void UpdateLegacy()
+        {
+            UpdateLegacyMorph();
+        }
+
         // Used for race-defaults.
         public static PawnExtension defaultPawnExtension = new();
 
@@ -353,20 +358,63 @@ namespace BigAndSmall
         /// E.g. Queens giving birth to drones.
         /// </summary>
         public XenotypeDef retromorphTarget = null;
+
+        public MorphSettings morphSettings = null;
+
         /// <summary>
         /// Trigger Metamorph at this age.
         /// </summary>
+        [Obsolete($"Use {nameof(morphSettings)} instead.")]
         public int? metamorphAtAge = null;
         /// <summary>
         /// Trigger Retromorph if less than this age.
         /// </summary>
+        [Obsolete($"Use {nameof(morphSettings)} instead.")]
         public int? retromorphUnderAge = null;
+        [Obsolete($"Use {nameof(morphSettings)} instead.")]
         public bool metamorphIfPregnant = false;
+        [Obsolete($"Use {nameof(morphSettings)} instead.")]
         public bool metamorphIfNight = false;
+        [Obsolete($"Use {nameof(morphSettings)} instead.")]
         public bool metamorphIfDay = false;
 
-        public bool MorphFrequent => metamorphIfDay || metamorphIfNight;
+        #pragma warning disable CS0618 // Type or member is obsolete
+        private bool AnyLegacyMetamorphConditions() =>
+            metamorphAtAge != null || metamorphIfPregnant || metamorphIfNight || metamorphIfDay;
+        //public bool MorphFrequent => metamorphIfDay || metamorphIfNight;
+        public void UpdateLegacyMorph()
+        {
+            if (AnyLegacyMetamorphConditions())
+            {
+                if (morphSettings == null)
+                {
+                    morphSettings = new MorphSettings
+                    {
+                        morphOverAge = metamorphAtAge,
+                        morphUnderAge = retromorphUnderAge,
+                        morphIfPregnant = metamorphIfPregnant,
+                        morphIfNight = metamorphIfNight,
+                        morphIfDay = metamorphIfDay
+                    };
+                }
+            }
+            if (retromorphUnderAge != null)
+            {
+                if (morphSettings == null)
+                {
+                    morphSettings = new MorphSettings
+                    {
+                        isRetromorph = true,
+                        morphUnderAge = retromorphUnderAge
+                    };
+                }
+            }
+            
+        }
+        #pragma warning restore CS0618
         #endregion
+
+
 
         #region Rendering
         /// <summary>
@@ -517,7 +565,7 @@ namespace BigAndSmall
 		/// Returns true if frequent update is true in xml, time-based morphing, locked needs, conditional genes or active gene filters.
 		/// </summary>
 		public bool FrequentUpdate => frequentUpdate
-            || MorphFrequent 
+            || morphSettings?.RequiresFrequentChecks == true
             || HasActiveGeneFilters
             || !lockedNeeds.NullOrEmpty()
             || !conditionals.NullOrEmpty();
@@ -538,12 +586,6 @@ namespace BigAndSmall
             if (age == null) return 1;
             return sizeByAgeMult.Evaluate(age.Value);
         }
-
-        public bool CanMorphDown => retromorphUnderAge != null;
-        public bool CanMorphUp => metamorphAtAge != null || metamorphIfPregnant || metamorphIfNight || metamorphIfDay;
-        public bool CanMorphAtAll => CanMorphDown || CanMorphUp;
-        public bool HasMorphTarget => metamorphTarget != null || retromorphTarget != null;
-        public bool MorphRelated => CanMorphAtAll || HasMorphTarget;
 
         public bool RequiresCacheRefresh()
         {

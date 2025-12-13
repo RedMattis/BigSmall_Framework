@@ -464,6 +464,13 @@ namespace BigAndSmall
             {
                 racePawnExtension.canWieldThings = false;
             }
+            racePawnExtension.bodyTypes.Add(
+                new GenderBodyType()
+                {
+                    bodyType = BSDefs.BS_AnimalBodyType,
+                    isDefault = true,
+                }
+            );
 
             racePawnExtension.nullsThoughts ??= [];
             var allUncoveredThoughts = DefDatabase<ThoughtDef>.AllDefs.Where(x => x.defName.Contains("uncovered", StringComparison.OrdinalIgnoreCase));

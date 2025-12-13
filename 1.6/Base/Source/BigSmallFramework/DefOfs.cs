@@ -158,6 +158,9 @@ namespace BigAndSmall
         // PawnRelationDef
         public static PawnRelationDef BS_Creator;
 
+        // BodyTypeDef
+        public static BodyTypeDef BS_AnimalBodyType;
+
         // BodyPartGroupDefs
         public static BodyPartGroupDef Feet;
 
