@@ -175,6 +175,11 @@
             Requires the conditional stat effector to evaluate to true for the morph to be allowed.
             </summary>
         </member>
+        <member name="M:BigAndSmall.Metamorphosis.TryFilterByGender(System.Nullable{Verse.Gender},System.Collections.Generic.List{RimWorld.XenotypeDef})">
+            <summary>
+            Tries to filter the options based on gender. E.g. females will prioritise xenotypes with forced-female.
+            </summary>
+        </member>
         <member name="T:BigAndSmall.CompAbilityEffect_DraculBite">
             <summary>
             Bite and apply Vampirism

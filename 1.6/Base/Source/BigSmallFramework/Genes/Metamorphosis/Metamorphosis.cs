@@ -141,24 +141,39 @@ namespace BigAndSmall
             return null;
         }
 
+        /// <summary>
+        /// Tries to filter the options based on gender. E.g. females will prioritise xenotypes with forced-female.
+        /// </summary>
         private static List<XenotypeDef> TryFilterByGender(Gender? gender, List<XenotypeDef> defs)
         {
+            // If a Xenotype has a forced-gender gene, prioritise picking those automatically.
+            var femalePrio = defs.Where(x => x.genes.Any(x => x == BSDefs.Body_FemaleOnly || x.defName == "AG_Female"));
+            var malePrio = defs.Where(x => x.genes.Any(x => x == BSDefs.Body_MaleOnly || x.defName == "AG_Male"));
 
-            var femaleXenos = defs.Where(x => x.genes.Any(x => x == BSDefs.Body_FemaleOnly || x.defName == "AG_Female") ||
-                (x.modExtensions?.Any(mx => mx is XenotypeExtension ex && ex.morphIgnoreGender)) == true).ToList();
-            var maleXenos = defs.Where(x => x.genes.Any(x => x == BSDefs.Body_MaleOnly || x.defName == "AG_Male") ||
-                (x.modExtensions?.Any(mx => mx is XenotypeExtension ex && ex.morphIgnoreGender)) == true).ToList();
+            // If a Xenotype has a mod extension to ignore the above behaivour, add those back in.
+            var allGenders = defs.Where(x => x.modExtensions?.Any(mx => mx is XenotypeExtension ex && ex.morphIgnoreGender) == true);
+            var femaleOptions = femalePrio.Union(allGenders);
+            var maleOptions = malePrio.Union(allGenders);
 
-            var femaleLegal = defs.Except(maleXenos);
-            var maleLegal = defs.Except(femaleXenos);
+            // If there are prioritised options return only those.
+            if (gender == Gender.Female && femaleOptions.Count() > 0)
+                return[..femaleOptions];
+            else if (gender == Gender.Male && maleOptions.Count() > 0)
+                return [.. maleOptions];
 
-            if (gender == Gender.Female && femaleLegal.Count() > 0)
+            // For cases where there are not gender-prioritsed options for one gender, but there are for the other.
+            // Simply exclude those prioritised for the opposite
+            else if (gender == Gender.Female && malePrio.Count() > 0)
             {
-                return femaleLegal.ToList();
+                var femaleFallback = defs.Except(malePrio);
+                if (femaleFallback.Any())
+                    return [.. femaleFallback];
             }
-            else if (gender == Gender.Male && maleLegal.Count() > 0)
+            else if (gender == Gender.Male && femalePrio.Count() > 0)
             {
-                return maleLegal.ToList();
+                var maleFallback = defs.Except(femalePrio);
+                if (maleFallback.Any())
+                    return [.. maleFallback];
             }
             return defs;
         }
