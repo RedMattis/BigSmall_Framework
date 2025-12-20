@@ -21,6 +21,7 @@ namespace BigAndSmall
         // Targeting priority type/settings
         public bool isRetromorph = false;
         public Gender? preferredGenders = null;
+        public bool ignoreGender = false;
         public float morphWeight = 1f;
 
         public void ExecuteMorph(Pawn pawn)
@@ -70,15 +71,15 @@ namespace BigAndSmall
         {
             if (xenotype != null)
             {
-                var both = xenotype.modExtensions?.Any(mx => mx is XenotypeExtension ex && ex.morphIgnoreGender) == true;
+                var both = ignoreGender || xenotype.modExtensions?.Any(mx => mx is XenotypeExtension ex && ex.morphIgnoreGender) == true;
                 if (both)
                     return Gender.Male | Gender.Female;
 
                 var xenoGenes = xenotype.genes;
-                var femalePrio = xenotype.genes.Any(x => x == BSDefs.Body_FemaleOnly || x.defName == "AG_Female");
+                var femalePrio = preferredGenders == Gender.Female || xenotype.genes.Any(x => x == BSDefs.Body_FemaleOnly || x.defName == "AG_Female");
                 if (femalePrio)
                     return Gender.Female;
-                var malePrio = xenotype.genes.Any(x => x == BSDefs.Body_MaleOnly || x.defName == "AG_Male");
+                var malePrio = preferredGenders == Gender.Male || xenotype.genes.Any(x => x == BSDefs.Body_MaleOnly || x.defName == "AG_Male");
                 if (malePrio)
                     return Gender.Male;
             }
