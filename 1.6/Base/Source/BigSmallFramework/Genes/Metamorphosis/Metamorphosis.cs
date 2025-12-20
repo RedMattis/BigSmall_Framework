@@ -11,12 +11,29 @@ namespace BigAndSmall
 {
     public class MorphTarget
     {
+        public class HediffToBodypart
+        {
+            public HediffDef hediff;
+            public List<BodyPartDef> bodyparts = [];
+        }
+
+        // --------------------------------------------------------------------------------------
+        // IMPORTANT NOTE
+        // Xenotype morphs typically rely on the new xenotype not containing the MorphTarget.
+        // If not using Xenotypes makes sure you remove the target to avoid infinite loops.
+        // --------------------------------------------------------------------------------------
+
         // Morph result settings
         public ThingDef raceThingDef = null;
         public XenotypeDef xenotype;
-        public List<HediffDef> hediffDefs;
+        public List<HediffDef> hediffs;
+        public List<HediffToBodypart> hediffsToParts;
         public List<GeneDef> endoGenes;
         public List<GeneDef> xenoGenes;
+        public List<GeneDef> removeGenes;
+        public List<HediffDef> removeHediffs;
+        public List<TraitDef> addTraits;
+        public List<TraitDef> removeTraits;
 
         // Targeting priority type/settings
         public bool isRetromorph = false;
@@ -48,11 +65,52 @@ namespace BigAndSmall
                     pawn.genes.AddGene(gene, true);
                 }
             }
-            if (hediffDefs != null)
+            if (removeGenes != null)
             {
-                foreach (var hediffDef in hediffDefs)
+                foreach (var geneDef in removeGenes)
+                {
+                    var gene = pawn.genes.GenesListForReading.FirstOrDefault(g => g.def == geneDef);
+                    if (gene != null)
+                        pawn.genes.RemoveGene(gene);
+                }
+            }
+            if (hediffs != null)
+            {
+                foreach (var hediffDef in hediffs)
                 {
                     pawn.health.AddHediff(hediffDef);
+                }
+            }
+            if (hediffsToParts != null)
+            {
+                HashSet<BodyPartRecord> notMissingParts = [.. pawn.health.hediffSet.GetNotMissingParts()];
+                foreach ((var hediffDef, var parts) in hediffsToParts.Select(h => (h.hediff, h.bodyparts)))
+                {
+                    hediffDef.TryAddToAllMatchingParts(pawn, parts, notMissingParts);
+                }
+            }
+            if (removeHediffs != null)
+            {
+                foreach (var hediffDef in removeHediffs)
+                {
+                    hediffDef.TryRemoveAllOfType(pawn);
+                }
+            }
+            
+            if (addTraits != null)
+            {
+                foreach (var traitDef in addTraits)
+                {
+                    pawn.story.traits.GainTrait(new Trait(traitDef));
+                }
+            }
+            if (removeTraits != null)
+            {
+                foreach (var traitDef in removeTraits)
+                {
+                    var trait = pawn.story.traits.allTraits.FirstOrDefault(t => t.def == traitDef);
+                    if (trait != null)
+                        pawn.story.traits.RemoveTrait(trait);
                 }
             }
         }
