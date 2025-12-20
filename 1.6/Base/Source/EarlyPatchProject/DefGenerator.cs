@@ -98,7 +98,7 @@ namespace BigAndSmall
                     {
                         var geneExt = new PawnExtension
                         {
-                            metamorphTarget = xeno,
+                            morphTargets = [new() { xenotype = xeno }],
                             hideInGenePicker = false
                         };
 
@@ -109,7 +109,7 @@ namespace BigAndSmall
                     {
                         var geneExtTarget = new PawnExtension
                         {
-                            retromorphTarget = xeno,
+                            morphTargets = [new() { xenotype = xeno, isRetromorph = true }],
                             hideInGenePicker = false
                         };
 

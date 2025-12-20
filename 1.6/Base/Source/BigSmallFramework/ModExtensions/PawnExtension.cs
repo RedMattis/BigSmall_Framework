@@ -352,12 +352,16 @@ namespace BigAndSmall
         /// <summary>
         /// Target to (possibly) morph to.
         /// </summary>
-        public XenotypeDef metamorphTarget = null;
-        /// <summary>
-        /// Same as above, but for morphing "backwards". Currently only used for juvenlie forms based on age.
-        /// E.g. Queens giving birth to drones.
-        /// </summary>
-        public XenotypeDef retromorphTarget = null;
+        public List<MorphTarget> morphTargets = [];
+        ///// <summary>
+        ///// Target to (possibly) morph to.
+        ///// </summary>
+        //public MorphTarget metamorphTarget = null;
+        ///// <summary>
+        ///// Same as above, but for morphing "backwards". Currently only used for juvenlie forms based on age.
+        ///// E.g. Queens giving birth to drones.
+        ///// </summary>
+        //public MorphTarget retromorphTarget = null;
 
         public MorphSettings morphSettings = null;
 

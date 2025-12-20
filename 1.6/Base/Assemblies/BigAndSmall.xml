@@ -175,7 +175,7 @@
             Requires the conditional stat effector to evaluate to true for the morph to be allowed.
             </summary>
         </member>
-        <member name="M:BigAndSmall.Metamorphosis.TryFilterByGender(System.Nullable{Verse.Gender},System.Collections.Generic.List{RimWorld.XenotypeDef})">
+        <member name="M:BigAndSmall.Metamorphosis.TryFilterByGender(System.Nullable{Verse.Gender},System.Collections.Generic.List{BigAndSmall.MorphTarget})">
             <summary>
             Tries to filter the options based on gender. E.g. females will prioritise xenotypes with forced-female.
             </summary>
@@ -436,15 +436,9 @@
             How fast pregnancy progresses. 1 is normal, 0.5 is half speed, 2 is double speed.
             </summary>
         </member>
-        <member name="F:BigAndSmall.PawnExtension.metamorphTarget">
+        <member name="F:BigAndSmall.PawnExtension.morphTargets">
             <summary>
             Target to (possibly) morph to.
-            </summary>
-        </member>
-        <member name="F:BigAndSmall.PawnExtension.retromorphTarget">
-            <summary>
-            Same as above, but for morphing "backwards". Currently only used for juvenlie forms based on age.
-            E.g. Queens giving birth to drones.
             </summary>
         </member>
         <member name="F:BigAndSmall.PawnExtension.metamorphAtAge">

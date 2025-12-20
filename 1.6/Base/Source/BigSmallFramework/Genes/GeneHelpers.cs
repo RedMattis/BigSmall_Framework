@@ -505,7 +505,12 @@ namespace BigAndSmall
 
             // If a gene targeting the CURRENT xenotype exists, remove it.
             var allGenes = pawn.genes.GenesListForReading.ToList();
-            var genesToRemove = allGenes.Where(x => x.def.modExtensions != null && x.def.modExtensions.Any(y => y is PawnExtension && (y as PawnExtension).metamorphTarget == pawn.genes.Xenotype)).ToList();
+            var genesToRemove = allGenes
+                .Where(x => x.def.modExtensions != null && x.def.modExtensions
+                .Any(y => y is PawnExtension && (y as PawnExtension).morphTargets
+                .Any(x=>x.xenotype == pawn.genes.Xenotype)))
+                .ToList();
+
             foreach (var gene in genesToRemove)
             {
                 pawn.genes.RemoveGene(gene);

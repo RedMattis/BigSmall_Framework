@@ -3,12 +3,92 @@ using BigAndSmall.FilteredLists;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using UnityEngine;
 using Verse;
 
 namespace BigAndSmall
 {
+    public class MorphTarget
+    {
+        // Morph result settings
+        public ThingDef raceThingDef = null;
+        public XenotypeDef xenotype;
+        public List<HediffDef> hediffDefs;
+        public List<GeneDef> endoGenes;
+        public List<GeneDef> xenoGenes;
+
+        // Targeting priority type/settings
+        public bool isRetromorph = false;
+        public Gender? preferredGenders = null;
+        public float morphWeight = 1f;
+
+        public void ExecuteMorph(Pawn pawn)
+        {
+            if (xenotype != null)
+            {
+                GeneHelpers.ChangeXenotypeFast(pawn, xenotype);
+            }
+            if (raceThingDef != null)
+            {
+                RaceMorpher.SwapThingDef(pawn, raceThingDef, true, RaceMorpher.withoutSourcePriority, force: true);
+            }
+            if (endoGenes != null)
+            {
+                foreach (var gene in endoGenes)
+                {
+                    pawn.genes.AddGene(gene, false);
+                }
+            }
+            if (xenoGenes != null)
+            {
+                foreach (var gene in xenoGenes)
+                {
+                    pawn.genes.AddGene(gene, true);
+                }
+            }
+            if (hediffDefs != null)
+            {
+                foreach (var hediffDef in hediffDefs)
+                {
+                    pawn.health.AddHediff(hediffDef);
+                }
+            }
+        }
+
+        public float GetMorphWeight()
+        {
+            float weight = morphWeight;
+            if (xenotype != null)
+            {
+                weight += xenotype.GetMorphWeight();
+            }
+            return weight;
+        }
+
+        public Gender GetPrefferedGender()
+        {
+            if (xenotype != null)
+            {
+                var both = xenotype.modExtensions?.Any(mx => mx is XenotypeExtension ex && ex.morphIgnoreGender) == true;
+                if (both)
+                    return Gender.Male | Gender.Female;
+
+                var xenoGenes = xenotype.genes;
+                var femalePrio = xenotype.genes.Any(x => x == BSDefs.Body_FemaleOnly || x.defName == "AG_Female");
+                if (femalePrio)
+                    return Gender.Female;
+                var malePrio = xenotype.genes.Any(x => x == BSDefs.Body_MaleOnly || x.defName == "AG_Male");
+                if (malePrio)
+                    return Gender.Male;
+            }
+            return Gender.None;
+        }
+        
+    }
     public class MorphSettings
     {
+        #region Standard Morph Settings
         public bool isRetromorph = false;
         protected bool requiresFrequentChecks = false;
         /// <summary>
@@ -28,6 +108,7 @@ namespace BigAndSmall
         public bool morphIfPregnant = false;
         public bool morphIfNight = false;
         public bool morphIfDay = false;
+        #endregion
 
         public bool RequiresFrequentChecks => requiresFrequentChecks || morphIfDay || morphIfNight;
 
@@ -93,15 +174,16 @@ namespace BigAndSmall
             return pawnExtensions.Any(x => x.morphSettings != null);
         }
 
-        public static XenotypeDef TryGetMorphTarget(Pawn pawn, IEnumerable<MorphSettings> triggers)
+        public static MorphTarget TryGetMorphTarget(Pawn pawn, IEnumerable<MorphSettings> triggers)
         {
             bool? metamorphValid = null;
             bool? retromorphValid = null;
+            List<MorphSettings> customMorphs = [];
             foreach (var trigger in triggers)
             {
                 var result = trigger.CanMorph(pawn);
                 {
-                    if (trigger.isRetromorph)
+                    if (trigger.isRetromorph == true)
                     {
                         retromorphValid ??= true;
                         retromorphValid &= result;
@@ -118,19 +200,20 @@ namespace BigAndSmall
                 return null;
             }
             var allPawnExts = pawn.GetAllPawnExtensions();
+            var allMetaMorphs = allPawnExts.Where(x => x.morphTargets != null).SelectMany(x => x.morphTargets).ToList();
             if (metamorphValid == true)
             {
-                var metamorphTargets = allPawnExts.Where(x=>x.metamorphTarget != null).Select(x => x.metamorphTarget).ToList();
+                var metamorphTargets = allMetaMorphs.Where(x => !x.isRetromorph).ToList();
                 if (metamorphTargets.Count != 0)
                 {
-                    var pickList = TryFilterByGender(pawn?.gender, metamorphTargets);
+                    var pickList = TryFilterByGender(pawn?.gender, metamorphTargets).ToList();
                     var result = pickList.RandomElementByWeight(x=> x.GetMorphWeight());
                     return result;
                 }
             }
             if (retromorphValid == true)
             {
-                var retroMorphTargets = allPawnExts.Where(x => x.retromorphTarget != null).Select(x => x.retromorphTarget).ToList();
+                var retroMorphTargets = allMetaMorphs.Where(x => x.isRetromorph).ToList();
                 if (retroMorphTargets.Count != 0)
                 {
                     var pickList = TryFilterByGender(pawn?.gender, retroMorphTargets);
@@ -144,16 +227,15 @@ namespace BigAndSmall
         /// <summary>
         /// Tries to filter the options based on gender. E.g. females will prioritise xenotypes with forced-female.
         /// </summary>
-        private static List<XenotypeDef> TryFilterByGender(Gender? gender, List<XenotypeDef> defs)
+        private static List<MorphTarget> TryFilterByGender(Gender? gender, List<MorphTarget> defs)
         {
-            // If a Xenotype has a forced-gender gene, prioritise picking those automatically.
-            var femalePrio = defs.Where(x => x.genes.Any(x => x == BSDefs.Body_FemaleOnly || x.defName == "AG_Female"));
-            var malePrio = defs.Where(x => x.genes.Any(x => x == BSDefs.Body_MaleOnly || x.defName == "AG_Male"));
+            var byPrefferedGenderDict = defs.GroupBy(x => x.GetPrefferedGender()).ToDictionary(x => x.Key, x => x.ToList());
+            var femalePrio = byPrefferedGenderDict.TryGetValue(Gender.Female, out var fList) ? fList : [];
+            var malePrio = byPrefferedGenderDict.TryGetValue(Gender.Male, out var mList) ? mList : [];
+            var ignoresPrio = byPrefferedGenderDict.TryGetValue(Gender.Male | Gender.Female, out var iList) ? iList : [];
 
-            // If a Xenotype has a mod extension to ignore the above behaivour, add those back in.
-            var allGenders = defs.Where(x => x.modExtensions?.Any(mx => mx is XenotypeExtension ex && ex.morphIgnoreGender) == true);
-            var femaleOptions = femalePrio.Union(allGenders);
-            var maleOptions = malePrio.Union(allGenders);
+            var femaleOptions = femalePrio.Union(ignoresPrio);
+            var maleOptions = malePrio.Union(ignoresPrio);
 
             // If there are prioritised options return only those.
             if (gender == Gender.Female && femaleOptions.Count() > 0)
@@ -200,8 +282,8 @@ namespace BigAndSmall
                 pawnsQueuedForMorphing.Add(pawn);
                 void morphAction()
                 {
-                    GeneHelpers.ChangeXenotypeFast(pawn, metamorphTarget);
                     pawnsQueuedForMorphing.Remove(pawn);
+                    metamorphTarget.ExecuteMorph(pawn);
                 }
                 BigAndSmallCache.queuedJobs.Enqueue(morphAction);
             }
