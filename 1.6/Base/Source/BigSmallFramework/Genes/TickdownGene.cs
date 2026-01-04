@@ -26,5 +26,10 @@ namespace BigAndSmall
         public abstract void TickEvent();
 
         public abstract void ResetCountdown();
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.Look(ref tickDown, "tickDown");
+        }
     }
 }
