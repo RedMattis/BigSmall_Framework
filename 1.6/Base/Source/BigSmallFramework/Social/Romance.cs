@@ -73,7 +73,7 @@ namespace BigAndSmall
         [HarmonyPriority(Priority.Low)]
         public static void CompatibilityWith_Postfix(ref float __result, Pawn_RelationsTracker __instance, Pawn otherPawn, Pawn ___pawn)
         {
-            if (___pawn.TryGetCompatibilityWith(out float result, otherPawn, reductionScale: 0.5f, 1.0f))
+            if (___pawn.TryGetCompatibilityWith(out float result, otherPawn, reductionScale: 0.5f, __result))
             {
                 __result = result;
             }
@@ -129,7 +129,7 @@ namespace BigAndSmall
                 }
                 else
                 {
-                    if (initiator.TryGetCompatibilityWith(out float compatiblity, target, reductionScale: 1.0f, oldValue: 1))
+                    if (initiator.TryGetCompatibilityWith(out float compatiblity, target))
                     { 
                         if (compatiblity <= 0)
                         {
