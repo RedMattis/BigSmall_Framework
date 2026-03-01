@@ -60,6 +60,9 @@
   <BS_StoleSkillAmount>{0}'s ability stole {1} xp in {2} from {3}</BS_StoleSkillAmount>
   <BS_StoleSkillAmount_Influence>{0}'s ability gained {1} xp in {2} by swaying the heart of {3}</BS_StoleSkillAmount_Influence>
   <BS_StoleSkillAmount_Attack>{0}'s attack stole {1} xp in {2} from {3}</BS_StoleSkillAmount_Attack>
+  <BS_LovinnBloodfeed>{0}'s fed from their partner {1} during lovin'</BS_LovinnBloodfeed>
+  <BS_LovinSoulFeed>{0}'s siphoned a bit of soul from their partner {1} during lovin' ({2})</BS_LovinSoulFeed>
+  <BS_LowPsyfocusTarget>{0}'s got very little power from {1} probably because of {1}'s' low psychic sensitivity. (this warning will not repeat)</BS_LowPsyfocusTarget>
 
   <BS_UseAndroidCharger>use charger</BS_UseAndroidCharger>
   <BS_InsufficientBatteryPower>insufficient battery power</BS_InsufficientBatteryPower>
@@ -95,11 +98,16 @@
   <BS_BleedRateDesc>bleed rate {0}</BS_BleedRateDesc>
   <BS_SoulPower>soul power</BS_SoulPower>
   <BS_SiphonSoul>siphon</BS_SiphonSoul>
-  <BS_SoulPowerFalloffDesc>soul accumulation falloff {0}</BS_SoulPowerFalloffDesc>
+  <BS_SoulPowerFalloffDesc>soul siphon soft-limit {0}</BS_SoulPowerFalloffDesc>
   <BS_SiphonSoulOffsetDesc>soul siphon factor {0}</BS_SiphonSoulOffsetDesc>
   <BS_SiphonSkillOffsetDesc>skill siphon factor {0}</BS_SiphonSkillOffsetDesc>
   <BS_ConsumeSoulOnHit>siphon soul energy on kill</BS_ConsumeSoulOnHit>
+  <BS_SiphonSoul>consume soul</BS_SiphonSoul>
+  <BS_SiphonSoulOnHit>consume soul (on killing-blow)</BS_SiphonSoulOnHit>
   <BS_SiphonInfluence>soul energy from recruitment</BS_SiphonInfluence>
+  <BS_SiphonLovin>siphon energy from lovin'</BS_SiphonLovin>
+  <BS_SiphonCustom>can gain soul energy by some method</BS_SiphonCustom>
+  <BS_SiphonUnknown>soul energy from undefined</BS_SiphonUnknown>
   <BS_ConsumeSoulOnHitDesc>efficiency {0}</BS_ConsumeSoulOnHitDesc>
   <BS_PawnDiet>pawn diet</BS_PawnDiet>
   <BS_UnlivingDesc>considered unliving</BS_UnlivingDesc>

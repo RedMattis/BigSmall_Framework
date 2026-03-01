@@ -24,6 +24,8 @@
         <socialFightChanceFactor>0</socialFightChanceFactor>
         <statFactors>
           <PsychicSensitivity>0</PsychicSensitivity>
+          <RestFallRateFactor>0.6</RestFallRateFactor>
+          <RestRateMultiplier>2</RestRateMultiplier>
           <GlobalLearningFactor>0</GlobalLearningFactor>
           <SlaveSuppressionFallRate MayRequire="Ludeon.RimWorld.Ideology">-1.00</SlaveSuppressionFallRate>
         </statFactors>
@@ -56,7 +58,7 @@
   <HediffDef>
     <defName>BS_SoulCollector</defName>
     <label>Soul Power Stockpile</label>
-    <description>Siritual power of strange origins.</description>
+    <description>Spiritual power of strange origins.</description>
     <isBad>false</isBad>
     <everCurableByItem>false</everCurableByItem>
     <initialSeverity>0</initialSeverity>

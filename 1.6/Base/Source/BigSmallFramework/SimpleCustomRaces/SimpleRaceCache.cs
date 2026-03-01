@@ -1,5 +1,6 @@
 ﻿using BigAndSmall.FilteredLists;
 using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -175,7 +176,16 @@ namespace BigAndSmall
             {
                 foreach (var htb in toBodyAdd)
                 {
-                    pawn.health.GetOrAddHediff(htb.hediff);
+                    if (htb.hediff == null)
+                        continue;
+                    try
+                    {
+                        pawn.health.GetOrAddHediff(htb.hediff);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Message($"Encountered exception when running {nameof(Pawn_HealthTracker.GetOrAddHediff)} for {htb?.hediff}:\n{e.Message}\n{e.StackTrace}");
+                    }
                 }
             }
             if (toBodyRemove.Count > 0)

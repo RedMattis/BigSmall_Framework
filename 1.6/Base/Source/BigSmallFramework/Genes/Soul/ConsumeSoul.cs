@@ -28,9 +28,7 @@ namespace BigAndSmall
 
     public class CompProperties_ConsumeSoul : CompProperties_AbilityEffect
     {
-        public float gainMultiplier = 1;
-        public float? gainSkillMultiplier = null;
-        public float exponentialFalloff = 2.5f;
+        public SiphonSoul siphonSoul = new();
         public bool doKill = true;
         public bool doEnslave = false;
 
@@ -125,14 +123,7 @@ namespace BigAndSmall
             // Check if the attacker has Soul Collector hediff.
 
             SoulCollector soulCollector = MakeGetSoulCollectorHediff(attacker);
-            SiphonSoul parms = new SiphonSoul
-            {
-                type = 0,
-                gainMultiplier = Props.gainMultiplier,
-                exponentialFalloff = Props.exponentialFalloff,
-                gainSkillMultiplier = Props.gainSkillMultiplier
-            };
-            soulCollector.AddPawnSoul(victim, parms);
+            soulCollector.AddPawnSoul(victim, Props.siphonSoul);
 
             // Remove 50 goodwill from the victim's faction. faction.
             victim.Faction?.TryAffectGoodwillWith(attacker.Faction, -35); // statOffsetsBySeverity
@@ -185,95 +176,107 @@ namespace BigAndSmall
             Severity += amount;
         }
 
-        public void AddPawnSoul(Pawn target, SiphonSoul parms, bool verbose=false, float limitPerTrigger=2)
-            //SiphonType gainMethod, float baseAmount = 0, float multiplier = 1, float exponentialFalloff=2.5f, float? gainSkillMultiplier = null)
+        private static int WarnedAboutLowPsyFocusCount;
+
+        public float AddPawnSoul(Pawn target, SiphonSoul parms, bool verbose=false)
         {
-            const float tuneSPGain = 0.25f;
-            const float tunePSGain = 0.25f;
-            const float skillGainCap = 0.5f;
+            // Mostly so we get values like "1" instead of 0.01, 0.00001, etc. and other not-very-human-readable XML.
+            const float asPercent = 0.01f;
+
+            int architeGeneCount = target.genes?.GenesListForReading.Sum(x => x.def.biostatArc) ?? 0;
+            float architeGeneFactor = (architeGeneCount) switch
+            {
+                0 => 1,
+                1 => 1.4f,
+                2 => 1.6f,
+                3 => 1.75f,
+                4 => 1.9f,
+                _ => 2,
+            };
+            architeGeneFactor = Mathf.Lerp(1, architeGeneFactor, parms.architeGeneFactor);
+
+            // TargetPsyFocusOffset default to -0.85. We want to make targeting high psychic sensitivity important.
+            float psyFocusOffset = parms.targetPsyFocusOffset;
+            if (psyFocusOffset < 0)
+            {
+                psyFocusOffset /= 1 + architeGeneCount;
+            }
 
             // Get psychic sensitivity of the pawn.
-            float gainPS = target.GetStatValue(StatDefOf.PsychicSensitivity) - 0.85f; // We mostly care about sensitivity ab1ove 1.
-            float originalAmount = gainPS;
-
-            gainPS = Mathf.Max(0.1f, gainPS) * parms.gainMultiplier;
-
-            float postCap = gainPS;
+            float moddedPsyfocus = target.GetStatValue(StatDefOf.PsychicSensitivity) + psyFocusOffset; 
+            moddedPsyfocus = Mathf.Max(parms.minimumBaseGain, moddedPsyfocus);
+            moddedPsyfocus = Mathf.Min(parms.fromTargetPsyfocusFactor_Max, moddedPsyfocus);
+            moddedPsyfocus += parms.gainOffset * asPercent;
+            moddedPsyfocus *= asPercent;
+            float gainPS = moddedPsyfocus;
 
             if (target?.RaceProps?.Animal == true) { gainPS /= 5; }
 
-            int? architeGeneCount = target.genes?.GenesListForReading.Sum(x=>x.def.biostatArc);
-
-            switch (architeGeneCount)
-            {
-                case 0:
-                    gainPS /= 4f;
-                    break;
-                case 1:
-                    gainPS /= 3f;
-                    break;
-                case 2:
-                    gainPS /= 2f;
-                    break;
-                default:
-                    //gainOffset /= 1.0f;
-                    break;
-            }
-            gainPS *= tunePSGain;
-
-            float gainFromSoulPower = target.GetStatValue(BSDefs.BS_SoulPower) * tuneSPGain;
+            gainPS *= architeGeneFactor;
+            gainPS *= parms.fromTargetPsyfocusFactor;
 
             float falloffStartOffset = pawn.GetAllPawnExtensions().Sum(x => x.soulFalloffStart);
             float siphonFactor = 1 + pawn.GetAllPawnExtensions().Sum(x => x.siphonFactorOffset);
+            
+            // Skill
             float siphonSkillMult = 1 + pawn.GetAllPawnExtensions().Sum(x => x.siphonSkillFactorOffset);
+            float skillGainFactor = siphonSkillMult * parms.gainSkill;
+            float skillGainBase = moddedPsyfocus;
 
-            float preFalloffTotalGain = (gainPS + gainFromSoulPower + parms.baseAmount)* siphonFactor;
+            // Soul
+            float gainFromSoulPower = target.GetStatValue(BSDefs.BS_SoulPower) * parms.fromTargetSoulFactor;
+            gainFromSoulPower *= asPercent;
 
-
-            if (preFalloffTotalGain > limitPerTrigger)
-            {
-                // Clamp, but avoid being too obvious about it.
-                preFalloffTotalGain = Mathf.Clamp(Mathf.Lerp(preFalloffTotalGain, limitPerTrigger, 0.95f), 0, limitPerTrigger + 0.1f);
-            }
+            float preFalloffTotalGain = (gainPS + gainFromSoulPower) * parms.gainFactor * siphonFactor;
 
             if (Resource != null)
             {
                 Resource.Value += preFalloffTotalGain * 50;
             }
-            
 
+            preFalloffTotalGain *= BigSmallMod.settings.soulPowerGainMultiplier;
+
+            if (WarnedAboutLowPsyFocusCount < 1 && parms.type == SiphonType.ConsumeSoul && pawn.Faction == Faction.OfPlayerSilentFail && preFalloffTotalGain <= 0.011f)
+            {
+                WarnedAboutLowPsyFocusCount++;
+                Messages.Message("BS_LowPsyfocusTarget".Translate(pawn.Name.ToStringShort, target.Name.ToStringShort),
+                                pawn, MessageTypeDefOf.NeutralEvent);
+            }
 
             float actualGain = 0;
-            const int itrrCount = 10;
-            float softCapMod = pawn.GetStatValue(BSDefs.BS_SoulPower) - Severity; // Soul power 
+            const int itrrCount = 20;
+            float softCapMod = 0.0f; // So basically at 100% we start getting falloff.
             softCapMod += falloffStartOffset;
             softCapMod += BigSmallMod.settings.soulPowerFalloffOffset;
-            float adjustedV = Severity - softCapMod;
+
+            float severity = Severity;
+            float adjustedV = severity - softCapMod;
             // This is really just and ugly-looking way to make sure the falloff gets applied reasonably if adding a huge amount at the same time.
             for (int i = 0; i < itrrCount; i++)
             {
-                float itrrGain = gainPS / itrrCount;
-                if (adjustedV > 1) { itrrGain /= (Mathf.Pow(adjustedV + actualGain, parms.exponentialFalloff)); }
+                float itrrGain = preFalloffTotalGain / itrrCount;
+                if (adjustedV > 1) { itrrGain /= Mathf.Pow(adjustedV + actualGain, 2); }
                 actualGain += itrrGain;
             }
-            float finalResult = actualGain * BigSmallMod.settings.soulPowerGainMultiplier;
-            Severity += finalResult;
+            Severity += actualGain;
 
-            if (pawn.needs?.TryGetNeed<Need_KillThirst>() is Need_KillThirst killThirst)
+            if (pawn.needs?.TryGetNeed<Need_KillThirst>() is Need_KillThirst killThirst && (parms.type == SiphonType.KillingBlow || parms.type == SiphonType.ConsumeSoul))
             {
                 killThirst.CurLevelPercentage = 1;
             }
-            target.psychicEntropy?.OffsetPsyfocusDirectly(0.6f);
+            target.psychicEntropy?.OffsetPsyfocusDirectly(moddedPsyfocus*2);
 
             if (verbose || actualGain > 0.2f)
             {
-                Messages.Message("BS_GainedSoulPower".Translate(pawn.Name.ToStringShort, ($"{finalResult*100:f0}%"), BSDefs.BS_SoulPower.LabelCap, target.Name.ToStringShort), pawn, MessageTypeDefOf.PositiveEvent); 
+                Messages.Message("BS_GainedSoulPower".Translate(pawn.Name.ToStringShort, ($"{actualGain * 100:f1}%"), BSDefs.BS_SoulPower.LabelCap, target.Name.ToStringShort), pawn, MessageTypeDefOf.PositiveEvent); 
             }
 
-            if (parms.gainSkillMultiplier != null && target.skills != null)
+            if (skillGainFactor > 0 && target.skills != null)
             {
-                float sGainMult = parms.gainSkillMultiplier.Value * siphonSkillMult * Mathf.Min(skillGainCap, preFalloffTotalGain);
-                SkillDef philophagySkillAndXpTransfer = PsychicRitualUtility.GetPhilophagySkillAndXpTransfer(pawn, target, sGainMult, out float xpTransfer);
+                float percentTransfer = skillGainBase * skillGainFactor;
+                percentTransfer = Mathf.Min(percentTransfer, parms.maxXpDrainPercent);
+                SkillDef philophagySkillAndXpTransfer = PsychicRitualUtility.GetPhilophagySkillAndXpTransfer(pawn, target, percentTransfer, out float xpTransfer);
+                xpTransfer = Mathf.Min(xpTransfer, parms.maxXPDrain * siphonSkillMult);
                 if (philophagySkillAndXpTransfer == null)
                 {
                     Log.Warning("Could not find a skill to transfer xp to.");
@@ -281,8 +284,11 @@ namespace BigAndSmall
                 else
                 {
                     SkillRecord skill = pawn.skills.GetSkill(philophagySkillAndXpTransfer);
-                    skill?.Learn(xpTransfer);
-                    if (xpTransfer > 3000)
+                    skill?.Learn(xpTransfer, direct:false, ignoreLearnRate:true);
+
+                    SkillRecord skill2 = target.skills.GetSkill(philophagySkillAndXpTransfer);
+                    skill2?.Learn(-xpTransfer, direct: true, ignoreLearnRate: true);
+                    if (verbose || xpTransfer >= 2500)
                     {
                         if (parms.type == SiphonType.KillingBlow)
                         {
@@ -303,9 +309,7 @@ namespace BigAndSmall
                 }
             }
 
-            if (Severity > 10) { Severity = 10; }
-
-            if (target.Spawned && (parms.type == SiphonType.KillingBlow || parms.type == SiphonType.None))
+            if (target.Spawned && (parms.type == SiphonType.KillingBlow || parms.type == SiphonType.ConsumeSoul))
             {
                 for (int i = 0; i < 5; i++)
                 {
@@ -316,6 +320,7 @@ namespace BigAndSmall
                     }
                 }
             }
+            return actualGain;
         }
 
         public override string LabelInBrackets

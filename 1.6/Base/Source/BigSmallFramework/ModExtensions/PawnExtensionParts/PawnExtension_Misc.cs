@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
@@ -19,64 +18,6 @@ namespace BigAndSmall
         public string eyeballName = "NOT_";
         public string mouthName = "NOT_";
         public string browName = "NOT_";
-    }
-
-    public enum SiphonType
-    {
-        None = 0,
-        KillingBlow,
-        Influence,
-    }
-    public record SiphonSoul
-    {
-        public SiphonType type;
-        public float baseAmount = 0;
-        public float gainMultiplier = 1;
-        public float? gainSkillMultiplier = null;
-        public float exponentialFalloff = 2.5f;
-
-        public string SiphonSoulDescription
-        {
-            get
-            {
-                StringBuilder builder = new();
-                string typeStr = type switch {
-                    SiphonType.KillingBlow => "BS_ConsumeSoulOnHitDesc",
-                    SiphonType.Influence => "BS_SiphonInfluence",
-                    _ => "BS_SihponUnknown"
-                };
-                builder.AppendLine(typeStr.Translate().CapitalizeFirst());
-                return builder.ToString();
-            }
-        }
-        public string PrintAll() => $"Type: {type},\n" +
-            $"BaseAmount: {baseAmount},\n" +
-            $"GainMultiplier: {gainMultiplier}\n" +
-            $"GainSkillMultiplier: {gainSkillMultiplier},\n" +
-            $"ExponentialFalloff: {exponentialFalloff}";
-
-        public SiphonSoul FuseWith(SiphonSoul other) => this with
-        {
-            baseAmount = baseAmount + other.baseAmount,
-            gainMultiplier = gainMultiplier * other.gainMultiplier,
-            gainSkillMultiplier = (gainSkillMultiplier ?? 0) + (other.gainSkillMultiplier ?? 0),
-            exponentialFalloff = (exponentialFalloff + other.exponentialFalloff) / 2f
-        };
-    }
-    public static class  SiphonSoulExtension
-    {
-        extension(IEnumerable<SiphonSoul> siphons)
-        {
-            public SiphonSoul FuseAll(SiphonType type)
-            {
-                SiphonSoul result = new() { type = type };
-                foreach (var soul in siphons)
-                {
-                    result = result.FuseWith(soul);
-                }
-                return result;
-            }
-        }
     }
 
     public class HediffToBody

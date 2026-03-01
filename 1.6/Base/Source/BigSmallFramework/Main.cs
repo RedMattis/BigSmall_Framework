@@ -40,8 +40,9 @@ namespace BigAndSmall
 			{
 				NalsToggles.ApplyNLPatches(harmony);
 			}
+            VanillaExpanded.PatchVanillaExpanded(harmony);
 
-			DebugLog.Message("Finished harmony patching.");
+            DebugLog.Message("Finished harmony patching.");
 		}
 
         public static void RunBeforeGenerateImpliedDefs(bool hotReload)
