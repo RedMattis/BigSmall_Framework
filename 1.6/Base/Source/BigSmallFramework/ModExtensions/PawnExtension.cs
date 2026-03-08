@@ -354,6 +354,10 @@ namespace BigAndSmall
         /// How fast pregnancy progresses. 1 is normal, 0.5 is half speed, 2 is double speed.
         /// </summary>
         public float pregnancySpeedMultiplier = 1;
+        /// <summary>
+        /// Added to pregnancy quality. If sum is above 0.5 (from all sources) then pregnancy outcome index will be set to a minimum of 0.
+        /// </summary>
+        public float pregnancyQuality = 0; 
         #endregion
 
         #region Metamorph

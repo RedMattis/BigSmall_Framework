@@ -3,6 +3,7 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Verse;
 
 namespace BigAndSmall
@@ -65,9 +66,24 @@ namespace BigAndSmall
             if (babyCountList != null)
             {
                 babiesToSpawn = babyCountList.RandomElement();
+                babiesToSpawn = Mathf.Max(babiesToSpawn, 1);
             }
 
             disableBirthPatch = true;
+
+
+            float extraQuality = pawnExtensions.Sum(x => x.pregnancyQuality);
+            // The mother has a chance to die in still-birth. If generating multiple babies this would compound, which is unwanted.
+            // For that reason we lerp it towards 100% based on baby count so the probability remains fairly constant.
+            float adjustedQuality = Mathf.Pow(quality, 1f / babiesToSpawn);
+
+            adjustedQuality = Mathf.Min(extraQuality + adjustedQuality, 1);
+            adjustedQuality = Mathf.Max(quality, adjustedQuality);
+            if (adjustedQuality >= 0.5f && outcome != null && outcome.positivityIndex < 0)
+            {
+                outcome.positivityIndex = 0;
+            }
+
             bool success = false;
             try
             {
@@ -83,7 +99,7 @@ namespace BigAndSmall
                             // Invoke the "BGInheritance.BGI_HarmonyPatches.GetChildGenes" method which gives us new genes.
                             newBabyGenes = (List<GeneDef>)AccessTools.Method("BGInheritance.External:GetChildGenes").Invoke(null, [geneticMother, father]);
                         }
-                        PregnancyUtility.ApplyBirthOutcome(outcome, quality, ritual, genes, geneticMother, birtherThing, father, doctor, lordJobRitual, assignments, preventLetter);
+                        PregnancyUtility.ApplyBirthOutcome(outcome, adjustedQuality, ritual, genes, geneticMother, birtherThing, father, doctor, lordJobRitual, assignments, preventLetter);
                         newBabyGenes = null;
                     }
                 }

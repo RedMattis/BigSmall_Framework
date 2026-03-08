@@ -43,7 +43,7 @@ namespace BigAndSmall
                         && x?.genes?.GenesListForReading?.Any() == true
                         && x.genes.GenesListForReading.Count > 3
                         && (canHaveArchiteFather || !x.genes.GenesListForReading.Any(x=>x.def.biostatArc > 1))) // Okay, ONE archite point is fine.
-                    .RandomElement();
+                    .RandomElementByWeight(x=>x.genes?.xenotype == XenotypeDefOf.Baseliner ? 0.001f : x.genes?.hybrid == true ? 0.1f : 1);
                 if (fakeFather == null)
                 {
                     Log.Message($"[AutoPregnancy] Could not find a valid random father for {pawn.Name}");
