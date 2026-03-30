@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -15,9 +16,10 @@ namespace BigAndSmall
             public int incrementBy = 0;
         }
 
-        public class AppendGeneGroup
+        public class FeatureAppendData
         {
             public float chance = 1f;
+            public HashSet<string> exclusionTags = [];
             public string modID = null;
             public List<GeneDef> appendGenes = null;
             public bool appendAsXenogenes = true;
@@ -44,7 +46,11 @@ namespace BigAndSmall
             public string requiredTag = null;
             
         }
+        // Trigger varts
+        public HashSet<string> exclusionTags = [];
+        public float chance = 1f;
 
+        // Settings.
         public SimpleCurve ageCurve = null;
         public SimpleCurve ageCurveChronological = null;
         public SimpleCurve psylinkLevels = null;
@@ -56,7 +62,9 @@ namespace BigAndSmall
         public List<SkillPassion> forcedPassions = null;
 
         public List<GeneDef> appendGenes = [];
-        public List<AppendGeneGroup> ifModAppendGenes = [];
+        [Obsolete($"Use {nameof(subExtensions)} instead")]
+        public List<FeatureAppendData> ifModAppendGenes = [];
+        public List<PawnKindExtension> subExtensions = [];
         public bool appendAsXenogenes = false;
         public bool removeOverlappingGenes = true;
         public float animalSapienceChance = 0;
@@ -92,7 +100,7 @@ namespace BigAndSmall
             ApplyPsylink(pawn);
             ApplyAgeCurve(pawn);
             ModifySkills(pawn);
-
+            DoFeatureSets(pawn);
             return pawn;
         }
 
@@ -100,13 +108,33 @@ namespace BigAndSmall
         {
             SetFakeXenotype(pawn, xenotypeIconDef, customXenotypeName, customXenotypeNameFemale);
             AppendGenes(pawn, appendGenes, appendAsXenogenes, removeOverlappingGenes);
+            HashSet<string> exclusionTags = [];
             foreach (var modAppend in ifModAppendGenes)
             {
+                // Not sure if this is needed anymore. I think Ludeon fixed the MayRequires. Best keep it around for legacy though.
                 if (modAppend.modID == null || ModLister.GetActiveModWithIdentifier(modAppend.modID) != null)
                 {
+                    if (!Rand.Chance(modAppend.chance))
+                        continue;
+                    if (modAppend.exclusionTags.Intersect(exclusionTags).Any())
+                        continue;
                     SetFakeXenotype(pawn, modAppend.xenotypeIconDef, modAppend.customXenotypeName, modAppend.customXenotypeNameFemale);
                     AppendGenes(pawn, modAppend.appendGenes, modAppend.appendAsXenogenes, modAppend.removeOverlappingGenes);
+                    exclusionTags.AddRange(modAppend.exclusionTags);
                 }
+            }
+
+        }
+        private void DoFeatureSets(Pawn pawn)
+        {
+            HashSet<string> exclusionTags = [];
+            foreach (var modAppend in subExtensions)
+            {
+                if (!Rand.Chance(modAppend.chance))
+                    continue;
+                if (modAppend.exclusionTags.Intersect(exclusionTags).Any())
+                    continue;
+                modAppend.Execute(pawn);
             }
         }
 

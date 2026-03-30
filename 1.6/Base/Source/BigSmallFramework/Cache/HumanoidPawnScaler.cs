@@ -235,7 +235,7 @@ namespace BigAndSmall
             if (pawn == null) { throw new Exception("Big & Small: Cannot regenerate Pawn Cache because the Pawn is null."); }
             if (regenerationInProgress)
             {
-                HumanoidPawnScaler.GetCache(pawn, scheduleForce: 10);
+                HumanoidPawnScaler.GetCache(pawn, canRegenerate:false, scheduleForce: 10);
                 return false;
             }
             regenerationInProgress = true;

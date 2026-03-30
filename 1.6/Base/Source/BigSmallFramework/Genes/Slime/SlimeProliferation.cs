@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using HarmonyLib;
+using RimWorld;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
@@ -53,7 +54,7 @@ namespace BigAndSmall
 
         public static void DoProliferate(Pawn parentA, Pawn parentB)
         {
-            var geneSetA = GeneHelpers.GetAllActiveGenes(parentA).Select(x=>x.def).ToList();
+            var geneSetA = GeneHelpers.GetAllActiveGenes(parentA).Select(x => x.def).ToList();
             var geneSetB = GeneHelpers.GetAllActiveGenes(parentB).Select(x => x.def).ToList();
 
             var sharedGenes = geneSetA.Intersect(geneSetB).ToList();
@@ -61,7 +62,7 @@ namespace BigAndSmall
             int parentBGeneCount = geneSetB.Count();
 
             // 20% to 100% of ParentA's Genes:
-            int numberOfGenesToTransfer = Rand.RangeInclusive((int)(parentBGeneCount * 0.1), parentBGeneCount-1);
+            int numberOfGenesToTransfer = Rand.RangeInclusive((int)(parentBGeneCount * 0.1), parentBGeneCount - 1);
 
             // Generate a baby pawn
             var babyKind = parentA.kindDef;
@@ -72,77 +73,25 @@ namespace BigAndSmall
             };
             Pawn babyPawn = PawnGenerator.GeneratePawn(request);
 
-            // Remove all genes from the baby pawn
             babyPawn.genes.Reset();
-
-            // Add all genes from parentA to the baby pawn
-            foreach (var gene in geneSetA)
+            if (parentB == null || parentB == parentA)
             {
-                babyPawn.genes.AddGene(gene, false);
+                babyPawn.genes.SetXenotype(parentA.genes.Xenotype);
             }
-            int endoMet = GeneHelpers.GetAllActiveEndoGenes(babyPawn).Sum(x => x.def.biostatMet);
-
-            // If the baby has any gene not from the mother delete it. It is probably a hair or skin gene that the 
-            // game pulled out of a magic hat.
-            foreach(var gene in babyPawn.genes.GenesListForReading.Where(x => !geneSetA.Contains(x.def)).ToList())
+            else if (ModsConfig.IsActive("RedMattis.BetterGeneInheritance"))
             {
-                babyPawn.genes.RemoveGene(gene);
-            }
-
-            if (parentA != parentB)
-            {
-                // Add 25-75% of genes from father to the baby pawn as xenogenes
-                int count = 0;
-                var bGenes = new List<GeneDef>();
-                while (count < numberOfGenesToTransfer && geneSetB.Count > 0)
+                var newBabyGenes = (List<GeneDef>)AccessTools.Method("BGInheritance.External:GetChildGenes").Invoke(null, [parentA, parentB]);
+                foreach(var gene in newBabyGenes)
                 {
-                    var gene = geneSetB.RandomElement();
-                    geneSetB.Remove(gene);
-                    if (!babyPawn.genes.GenesListForReading.Select(x=>x.def).Contains(gene))
-                    {
-                        bGenes.Add(gene);
-                    }
-                    count++;
+                    babyPawn.genes.AddGene(gene, false);
                 }
-
-                //Discombobulator.RemoveRandomToMetabolism(0, bGenes, minMet: -5);
-
-                foreach (var gene in bGenes)
-                {
-                    babyPawn.genes.AddGene(gene, true);
-                }
-
-                GeneHelpers.GetAllActiveGenes(babyPawn).Sum(x => x.def.biostatMet);
-
-                var finalXegenes = babyPawn.genes.Xenogenes.Select(x=>x.def).ToList();
-
-                
-
-                babyPawn.genes.Xenogenes.Clear();
-
-                foreach (var gene in finalXegenes)
-                {
-                    babyPawn.genes.AddGene(gene, true);
-                }
-
-                // Remove all overriden genes from the baby pawn
-                foreach (var gene in babyPawn.genes.GenesListForReading.Where(x => x.Overridden).ToList())
-                {
-                    babyPawn.genes.RemoveGene(gene);
-                }
-
-                GeneHelpers.RemoveRandomToMetabolism(0, babyPawn.genes, minMet: -5, exclusionList: sharedGenes);
-                GeneHelpers.RemoveRandomToMetabolism(0, babyPawn.genes, minMet: -5);
-
-                // Integrate all the Xenogenes, turning them into Endogenes.
-                Discombobulator.IntegrateGenes(babyPawn);
-
                 babyPawn.genes.xenotypeName = "Hybrid".Translate();
             }
             else
             {
-                parentB = null;
+                SetProliferateGenes(parentA, parentB, geneSetA, geneSetB, sharedGenes, numberOfGenesToTransfer, babyPawn);
             }
+            Discombobulator.IntegrateGenes(babyPawn);
 
             if (PawnUtility.TrySpawnHatchedOrBornPawn(babyPawn, parentA))
             {
@@ -179,16 +128,80 @@ namespace BigAndSmall
             choiceLetter_BabyBirth.Start();
             Find.LetterStack.ReceiveLetter(choiceLetter_BabyBirth);
 
-            
+
 
             // Check if the baby has the Early Maturity Gene.
-            int babyStartAge = ModExtHelper.GetAllExtensions<PawnExtension>(babyPawn).FirstOrDefault(x=>x.babyStartAge != null)?.babyStartAge ?? 3;
+            int babyStartAge = ModExtHelper.GetAllExtensions<PawnExtension>(babyPawn).FirstOrDefault(x => x.babyStartAge != null)?.babyStartAge ?? 3;
 
 
             // Age baby up to 3 years
             babyPawn.ageTracker.AgeBiologicalTicks = babyStartAge * GenDate.TicksPerYear;
             //Find.QuestManager.Notify_PawnBorn(babyPawn, parentA, parentA, parentB);
 
+        }
+
+        private static void SetProliferateGenes(Pawn parentA, Pawn parentB, List<GeneDef> geneSetA, List<GeneDef> geneSetB, List<GeneDef> sharedGenes, int numberOfGenesToTransfer, Pawn babyPawn)
+        {
+            // Add all genes from parentA to the baby pawn
+            foreach (var gene in geneSetA)
+            {
+                babyPawn.genes.AddGene(gene, false);
+            }
+            int endoMet = GeneHelpers.GetAllActiveEndoGenes(babyPawn).Sum(x => x.def.biostatMet);
+
+            // If the baby has any gene not from the mother delete it. It is probably a hair or skin gene that the 
+            // game pulled out of a magic hat.
+            foreach (var gene in babyPawn.genes.GenesListForReading.Where(x => !geneSetA.Contains(x.def)).ToList())
+            {
+                babyPawn.genes.RemoveGene(gene);
+            }
+
+            if (parentA != parentB)
+            {
+                // Add 25-75% of genes from father to the baby pawn as xenogenes
+                int count = 0;
+                var bGenes = new List<GeneDef>();
+                while (count < numberOfGenesToTransfer && geneSetB.Count > 0)
+                {
+                    var gene = geneSetB.RandomElement();
+                    geneSetB.Remove(gene);
+                    if (!babyPawn.genes.GenesListForReading.Select(x => x.def).Contains(gene))
+                    {
+                        bGenes.Add(gene);
+                    }
+                    count++;
+                }
+
+                //Discombobulator.RemoveRandomToMetabolism(0, bGenes, minMet: -5);
+
+                foreach (var gene in bGenes)
+                {
+                    babyPawn.genes.AddGene(gene, true);
+                }
+
+                GeneHelpers.GetAllActiveGenes(babyPawn).Sum(x => x.def.biostatMet);
+
+                var finalXegenes = babyPawn.genes.Xenogenes.Select(x => x.def).ToList();
+
+
+
+                babyPawn.genes.Xenogenes.Clear();
+
+                foreach (var gene in finalXegenes)
+                {
+                    babyPawn.genes.AddGene(gene, true);
+                }
+
+                // Remove all overriden genes from the baby pawn
+                foreach (var gene in babyPawn.genes.GenesListForReading.Where(x => x.Overridden).ToList())
+                {
+                    babyPawn.genes.RemoveGene(gene);
+                }
+
+                GeneHelpers.RemoveRandomToMetabolism(0, babyPawn.genes, minMet: -5, exclusionList: sharedGenes);
+                GeneHelpers.RemoveRandomToMetabolism(0, babyPawn.genes, minMet: -5);
+                babyPawn.genes.xenotypeName = "Hybrid".Translate();
+            }
         }
     }
 }

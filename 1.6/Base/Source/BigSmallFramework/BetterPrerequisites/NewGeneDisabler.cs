@@ -83,27 +83,30 @@ namespace BigAndSmall
                     GeneCache.globalCache[gene] = geneCache = new GeneCache(gene);
                 }
 
-                string failReason = GeneShouldBeActive(gene, geneEntry.extensions, hediffPawnExts, allPawnExts);
-                if (failReason != "")
+                if ((gene.Overridden == false) || gene.overriddenByGene == GeneCache.DummyGene)
                 {
-                    if (!geneCache.isOverriden) genesDeactivated.Add(gene);
-                    geneCache.isOverriden = true;
-                    if (gene.Active)
+                    string failReason = GeneShouldBeActive(gene, geneEntry.extensions, hediffPawnExts, allPawnExts);
+                    if (failReason != "")
                     {
-                        // In case it wasn't already disabled, just do it here.
-                        gene.OverrideBy(GeneCache.DummyGene);
-                        change = true;
+                        if (!geneCache.isOverriden) genesDeactivated.Add(gene);
+                        geneCache.isOverriden = true;
+                        if (gene.Active)
+                        {
+                            // In case it wasn't already disabled, just do it here.
+                            gene.OverrideBy(GeneCache.DummyGene);
+                            change = true;
+                        }
                     }
-                }
-                else
-                {
-                    
-                    if (geneCache.isOverriden)
+                    else
                     {
-                        geneCache.isOverriden = false;
-                        genesActivated.Add(gene);
-                        gene.OverrideBy(null);
-                        change = true;
+
+                        if (geneCache.isOverriden)
+                        {
+                            geneCache.isOverriden = false;
+                            genesActivated.Add(gene);
+                            gene.OverrideBy(null);
+                            change = true;
+                        }
                     }
                 }
             }
@@ -124,9 +127,21 @@ namespace BigAndSmall
         //private static Gene dummyGeneRace = null;
         public static Gene MakeDummyGene()
         {
+            GeneDef def = MakeDummyGeneDef();
             dummyGene ??= new Gene
             {
-                def = new GeneDef()
+                def = def
+            };
+            return dummyGene;
+        }
+
+        public static GeneDef MakeDummyGeneDef()
+        {
+            if (BigAndSmallCache.DummyGeneDefScribed != null)
+                return BigAndSmallCache.DummyGeneDefScribed;
+            else
+            {
+                return BigAndSmallCache.DummyGeneDefScribed = new GeneDef()
                 {
                     defName = "BS_PDummyGene",
                     label = "BS_RequirementNotMet".Translate().CapitalizeFirst(),
@@ -135,10 +150,10 @@ namespace BigAndSmall
                     canGenerateInGeneSet = false,
                     selectionWeight = 0,
                     selectionWeightCultist = 0,
-                }
-            };
-            return dummyGene;
+                };
+            }
         }
+
         public static Gene DummyGene => dummyGene ??= MakeDummyGene();
         public GeneCache(Gene gene)
         {
