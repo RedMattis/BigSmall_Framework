@@ -14,7 +14,6 @@ namespace BigAndSmall
         public static Dictionary<Gene, bool?> frequentUpdateGenes = [];
 
         private HashSet<BSCache> scribedCache = [];
-        private GeneDef dummyGeneDefScribed;
         public static bool regenerationAttempted = false;
         public Game game;
         /// <summary>
@@ -35,7 +34,6 @@ namespace BigAndSmall
         public static float globalRandNum = 1;
 
         public static HashSet<BSCache> ScribedCache { get => instance.scribedCache; set => instance.scribedCache = value; }
-        public static GeneDef DummyGeneDefScribed { get => instance.dummyGeneDefScribed; set => instance.dummyGeneDefScribed = value; }
 
 
         public BigAndSmallCache(Game game)
@@ -72,7 +70,6 @@ namespace BigAndSmall
         public override void ExposeData()
         {
             Scribe_Collections.Look<BSCache>(ref scribedCache, saveDestroyedThings: false, "BS_scribedCache", LookMode.Deep);
-            Scribe_Defs.Look(ref dummyGeneDefScribed, "BS_DummyGeneDef");  // REQUIRES TESTING.
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 gameInt++;

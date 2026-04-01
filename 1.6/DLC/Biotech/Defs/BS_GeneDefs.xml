@@ -43,7 +43,21 @@
     </modExtensions>
   </GeneDef>
 
-  
+    <GeneDef>
+    <defName>BS_OverrideDummyGene</defName>
+    <label>requirements for activation not met</label>
+    <description>This is a system gene. Applying it to a character does nothing.\n\nIt is hidden by default and has 0% spawn rate, so if you're seeing this you're likely either in dev-mode or it is due to a mod.</description>
+    <iconPath>BS_ModIcon</iconPath>
+    <biostatCpx>0</biostatCpx>
+    <canGenerateInGeneSet>false</canGenerateInGeneSet>
+    <selectionWeight>0</selectionWeight>
+    <modExtensions>
+			<li Class="BigAndSmall.PawnExtension">
+        <hideInGenePicker>true</hideInGenePicker>
+      </li>
+		</modExtensions>
+  </GeneDef>
+
 
 
   

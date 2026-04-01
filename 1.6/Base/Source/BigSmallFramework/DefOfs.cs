@@ -59,6 +59,8 @@ namespace BigAndSmall
 
         // Genes
         [MayRequire("Ludeon.Rimworld.Biotech")]
+        public static GeneDef BS_OverrideDummyGene;
+        [MayRequire("Ludeon.Rimworld.Biotech")]
         public static GeneDef Robust;
         [MayRequire("Ludeon.Rimworld.Biotech")]
         public static GeneDef DiseaseFree;

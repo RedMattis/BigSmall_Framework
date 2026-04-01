@@ -127,31 +127,8 @@ namespace BigAndSmall
         //private static Gene dummyGeneRace = null;
         public static Gene MakeDummyGene()
         {
-            GeneDef def = MakeDummyGeneDef();
-            dummyGene ??= new Gene
-            {
-                def = def
-            };
+            dummyGene ??= new Gene { def = BSDefs.BS_OverrideDummyGene };
             return dummyGene;
-        }
-
-        public static GeneDef MakeDummyGeneDef()
-        {
-            if (BigAndSmallCache.DummyGeneDefScribed != null)
-                return BigAndSmallCache.DummyGeneDefScribed;
-            else
-            {
-                return BigAndSmallCache.DummyGeneDefScribed = new GeneDef()
-                {
-                    defName = "BS_PDummyGene",
-                    label = "BS_RequirementNotMet".Translate().CapitalizeFirst(),
-                    description = "System gene.",
-                    displayCategory = GeneCategoryDefOf.Miscellaneous,
-                    canGenerateInGeneSet = false,
-                    selectionWeight = 0,
-                    selectionWeightCultist = 0,
-                };
-            }
         }
 
         public static Gene DummyGene => dummyGene ??= MakeDummyGene();
