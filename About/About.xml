@@ -10,10 +10,6 @@
 	<modVersion>3.0.0.0</modVersion>
 	<modIconPath IgnoreIfNoMatchingField="True">BS_ModIcon</modIconPath>
 	<modDependencies>
-		<!-- <li>
-			<packageId>Ludeon.RimWorld.Biotech</packageId>
-			<displayName>Biotech</displayName>
-		</li> -->
 		<li>
 			<packageId>brrainz.harmony</packageId>
 			<displayName>Harmony</displayName>

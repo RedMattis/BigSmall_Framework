@@ -243,7 +243,7 @@ namespace BigAndSmall
 
             if (inRect.width < 400f) inRect.width = 400f;
 
-            if (Find.Selector.NumSelected == 1 && Find.Selector.SingleSelectedThing is Pawn somePawn)
+            if (Find.UIRoot is UIRoot_Play uiRoot && uiRoot.mapUI != null &&  Find.Selector.NumSelected == 1 && Find.Selector.SingleSelectedThing is Pawn somePawn)
             {
                 if (somePawn != pawn)
                 {

@@ -154,7 +154,9 @@ namespace BigAndSmall
         public string savedHeadDef = null;
         public string savedBeardDef = null;
         public string savedHairDef = null;
+        
         // Picked
+        // This probably should be a list instead. In case of werewolf robots etc.
         public Color? overridenSkinColor = null;
         public Color? overridenHairColor = null;
         public FurDef overridenFurSkin = null;
@@ -162,6 +164,7 @@ namespace BigAndSmall
         public HeadTypeDef overridenHeadDef = null;
         public BeardDef overridenBeardDef = null;
         public HairDef overridenHairDef = null;
+
 
 
         public int? randomPickSkinColor = null;

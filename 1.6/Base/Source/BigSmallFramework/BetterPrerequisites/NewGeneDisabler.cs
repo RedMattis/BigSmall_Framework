@@ -72,7 +72,7 @@ namespace BigAndSmall
             var orderedGenes = allGenes.Select(gene => (gene, extensions: gene.def.GetAllPawnExtensionsOnGene()))
                 .OrderByDescending(gene => gene.extensions.Count > 0 
 					? gene.extensions.Max(x => x.priority + (x.HasGeneFilters ? 0.5f : 0))
-					: 0);
+					: -1);
 
             var hediffPawnExts = pawn.GetHediffExtensions<PawnExtension>();
             foreach (var geneEntry in orderedGenes)
@@ -83,29 +83,35 @@ namespace BigAndSmall
                     GeneCache.globalCache[gene] = geneCache = new GeneCache(gene);
                 }
 
-                if ((gene.Overridden == false) || gene.overriddenByGene == GeneCache.DummyGene)
+                bool overridenByDummy = gene.overriddenByGene == GeneCache.DummyGene;
+                if ((gene.Overridden == false) || overridenByDummy)
                 {
                     string failReason = GeneShouldBeActive(gene, geneEntry.extensions, hediffPawnExts, allPawnExts);
+                    bool activeState = gene.Active;
                     if (failReason != "")
                     {
                         if (!geneCache.isOverriden) genesDeactivated.Add(gene);
                         geneCache.isOverriden = true;
-                        if (gene.Active)
+                        if (activeState)
                         {
-                            // In case it wasn't already disabled, just do it here.
                             gene.OverrideBy(GeneCache.DummyGene);
                             change = true;
                         }
                     }
                     else
                     {
-
-                        if (geneCache.isOverriden)
+                        if (geneCache.isOverriden || overridenByDummy)
                         {
-                            geneCache.isOverriden = false;
-                            genesActivated.Add(gene);
-                            gene.OverrideBy(null);
-                            change = true;
+                            if (geneCache.isOverriden)
+                            {
+                                geneCache.isOverriden = false;
+                                genesActivated.Add(gene);
+                            }
+                            if (activeState == false)
+                            {
+                                gene.OverrideBy(null);
+                                change |= gene.Active;
+                            }
                         }
                     }
                 }
@@ -114,9 +120,24 @@ namespace BigAndSmall
         }
     }
 
+    public class DummyGeneClass : Gene
+    {
+        public override string Label => "BS_RequirementNotMet".Translate().CapitalizeFirst();
+        public override void PostAdd() { }
+        public override void PostRemove() { }
+        public override void TickInterval(int delta) { }
+        public override void Notify_PawnDied(DamageInfo? dinfo, Hediff culprit = null) { }
+        public override void ExposeData() { }
+        public override bool Active => true;
+    }
+
     public class GeneCache
     {
         public static Dictionary<Gene, GeneCache> globalCache = [];
+        public static void ClearCaches()
+        {
+            globalCache.Clear();
+        }
 
         public bool initialized = false;
         public bool isOverriden = false;
@@ -135,9 +156,7 @@ namespace BigAndSmall
         public GeneCache(Gene gene)
         {
             MakeDummyGene(); // Make sure it is set up.
-
             this.gene = gene;
-            globalCache.Add(gene, this);
         }
 
         public Gene OverridenBy()

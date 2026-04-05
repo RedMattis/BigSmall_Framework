@@ -171,7 +171,12 @@ namespace BigAndSmall
 
         public void AddSoulPowerDirect(float amount, float exponentialFalloff = 2.5f)
         {
-            if (Severity >= 1) { amount /= (Mathf.Pow(Severity, exponentialFalloff)); }
+            float falloffStartOffset = pawn.GetAllPawnExtensions().Sum(x => x.soulFalloffStart);
+            float softCapMod = 0.0f; // So basically at 100% we start getting falloff.
+            softCapMod += falloffStartOffset;
+            softCapMod += BigSmallMod.settings.soulPowerFalloffOffset;
+            float adjustedV = Severity - softCapMod;
+            if (adjustedV >= 1) { amount /= (Mathf.Pow(adjustedV, exponentialFalloff)); }
 
             Severity += amount;
         }
@@ -243,21 +248,14 @@ namespace BigAndSmall
                                 pawn, MessageTypeDefOf.NeutralEvent);
             }
 
-            float actualGain = 0;
-            const int itrrCount = 20;
+            float actualGain = preFalloffTotalGain;
             float softCapMod = 0.0f; // So basically at 100% we start getting falloff.
             softCapMod += falloffStartOffset;
             softCapMod += BigSmallMod.settings.soulPowerFalloffOffset;
 
             float severity = Severity;
             float adjustedV = severity - softCapMod;
-            // This is really just and ugly-looking way to make sure the falloff gets applied reasonably if adding a huge amount at the same time.
-            for (int i = 0; i < itrrCount; i++)
-            {
-                float itrrGain = preFalloffTotalGain / itrrCount;
-                if (adjustedV > 1) { itrrGain /= Mathf.Pow(adjustedV + actualGain, 2); }
-                actualGain += itrrGain;
-            }
+            if (adjustedV >= 1) { actualGain /= (Mathf.Pow(adjustedV, 2.5f)); }
             Severity += actualGain;
 
             if (pawn.needs?.TryGetNeed<Need_KillThirst>() is Need_KillThirst killThirst && (parms.type == SiphonType.KillingBlow || parms.type == SiphonType.ConsumeSoul))

@@ -58,17 +58,16 @@ namespace BigAndSmall
         {
             base.CompPostMake();
             Pawn pawn = parent?.pawn;
-            
             if (FastAcccess.GetCache(pawn) is BSCache cache)
             {
                 if (pawn.story != null)
                 {
-                    cache.savedSkinColor = pawn.story?.SkinColor;
-                    cache.savedHairColor = pawn.story?.HairColor;
-                    cache.savedFurSkin = pawn.story?.furDef?.defName;
-                    cache.savedBodyDef = pawn.story?.bodyType?.defName;
-                    cache.savedHeadDef = pawn.story?.headType?.defName;
-                    cache.savedBeardDef = pawn.style?.beardDef?.defName;
+                    cache.savedSkinColor ??= pawn.story?.SkinColor ?? Color.white;
+                    cache.savedHairColor ??= pawn.story?.HairColor;
+                    cache.savedFurSkin ??= pawn.story?.furDef?.defName;
+                    cache.savedBodyDef ??= pawn.story?.bodyType?.defName;
+                    cache.savedHeadDef ??= pawn.story?.headType?.defName;
+                    cache.savedBeardDef ??= pawn.style?.beardDef?.defName;
                 }
                 var targetGender = cache.GetApparentGender();
                 if (CRProps.HairColorOverride != null)
@@ -132,6 +131,7 @@ namespace BigAndSmall
                 {
                     pawn.story.hairDef = cache.overridenHairDef = HairDefOf.Bald;
                 }
+
             }
         }
 
@@ -168,6 +168,27 @@ namespace BigAndSmall
                         pawn.story.headType = headDef;
                         cache.savedHeadDef = null;
                     }
+                    if (cache.overridenSkinColor is Color oSClr && CRProps.SkinColorOverride is {} sco && sco.Contains(oSClr))
+                    {
+                        cache.overridenHairColor = null;
+                    }
+                    if (cache.overridenHairColor is Color ohClr && CRProps.HairColorOverride is {} hco && hco.Contains(ohClr))
+                    {
+                        cache.overridenHairColor = null;
+                    }
+                    if (CRProps.skinIsHairColor)
+                    {
+                        cache.overridenSkinColor = null;
+                    }
+
+                    
+                    if (cache.overridenFurSkin is { } ofs && ofs == CRProps.furskinOverride)
+                        cache.overridenFurSkin = null;
+                    if (cache.overridenBodyDef is { } obd && CRProps.BodyTypeDefs(pawn.gender) is { } btd && btd.Contains(obd))
+                        cache.overridenBodyDef = null;
+                    if (cache.overridenHeadDef is { } ohd && CRProps.HeadTypeDefs(pawn.gender) is { } htd && htd.Contains(ohd))
+                        cache.overridenHeadDef = null;
+
                     if (CRProps.disableFacialAnims)
                     {
                         cache.facialAnimationDisabled_Transform = false;

@@ -41,9 +41,7 @@ namespace BigAndSmall
         {
             if (threadGameInt != BigAndSmallCache.gameInt)
             {
-                _tDictCache?.Clear();
-                threadGameInt = BigAndSmallCache.gameInt;
-                _tDictCache = [];
+                ClearSessionData();
             }
 
             if (_tCache.pawn != pawn || !_tCache.properCache)
@@ -64,6 +62,14 @@ namespace BigAndSmall
                 return _tCache.cache;
             }
             else return _tCache.cache;
+        }
+
+        private static void ClearSessionData()
+        {
+            _tDictCache?.Clear();
+            threadGameInt = BigAndSmallCache.gameInt;
+            _tDictCache = [];
+            GeneCache.ClearCaches();
         }
 
         /// <summary>

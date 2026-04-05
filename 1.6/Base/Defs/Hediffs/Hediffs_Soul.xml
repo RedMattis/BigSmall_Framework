@@ -63,7 +63,7 @@
     <everCurableByItem>false</everCurableByItem>
     <initialSeverity>0</initialSeverity>
     <keepOnBodyPartRestoration>true</keepOnBodyPartRestoration>
-    <maxSeverity>6</maxSeverity>
+    <maxSeverity>10</maxSeverity>
     <stages>
       <li>
         <statOffsetsBySeverity>
