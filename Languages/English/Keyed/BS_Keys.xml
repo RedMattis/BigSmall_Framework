@@ -97,7 +97,6 @@
   <BS_BleedRate>bleed rate</BS_BleedRate>
   <BS_BleedRateDesc>bleed rate {0}</BS_BleedRateDesc>
   <BS_SoulPower>soul power</BS_SoulPower>
-  <BS_SiphonSoul>siphon</BS_SiphonSoul>
   <BS_SoulPowerFalloffDesc>soul siphon soft-limit {0}</BS_SoulPowerFalloffDesc>
   <BS_SiphonSoulOffsetDesc>soul siphon factor {0}</BS_SiphonSoulOffsetDesc>
   <BS_SiphonSkillOffsetDesc>skill siphon factor {0}</BS_SiphonSkillOffsetDesc>

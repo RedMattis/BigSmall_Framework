@@ -23,7 +23,8 @@ namespace BigAndSmall
                 result = [.. GetHediffExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
                     .. GetAllGeneExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
                     .. GetAllTraitExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
-                    .. pawn.kindDef.GetAllPawnExtensions(parentWhitelist, parentBlacklist, doSort)
+                    .. pawn.kindDef.GetAllPawnExtensions(parentWhitelist, parentBlacklist, doSort),
+                    .. pawn.def.GetAllPawnExtensions(parentWhitelist, parentBlacklist, doSort)
                 ];
             }
             else
@@ -31,7 +32,8 @@ namespace BigAndSmall
                 result = [.. GetHediffExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
                     .. GetActiveGeneExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
                     .. GetAllActiveTraitExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
-                    .. pawn.kindDef.GetAllPawnExtensions(parentWhitelist, parentBlacklist, doSort)
+                    .. pawn.kindDef.GetAllPawnExtensions(parentWhitelist, parentBlacklist, doSort),
+                    .. pawn.def.GetAllPawnExtensions(parentWhitelist, parentBlacklist, doSort)
                     ];
             }
             if (checkForExclusionTags)

@@ -95,6 +95,12 @@ namespace BigAndSmall
                     return;
                 }
 
+                bool hasHarExtendedGraphics = HARCompat.IsHarRaceWithExtendedBodyGraphics(pawn?.def);
+                if (hasHarExtendedGraphics)
+                {
+                    return;
+                }
+
                 if (femaleBody && bodyNakedGraphicPath != null && !bodyNakedGraphicPath.Contains("_Female") &&
                     (bodyNakedGraphicPath.Contains("_Thin") || bodyNakedGraphicPath.Contains("_Fat") || bodyNakedGraphicPath.Contains("_Hulk")))
                 {
@@ -223,16 +229,18 @@ namespace BigAndSmall
                 headNeedsChange = false;
             }
 
-            if (updateBody && harLegalBodies == null)
+            if (updateBody)
             {
                 bool adult = pawn.IsAdult();
                 var currentBody = pawn.story?.bodyType;
                 if (TryGetBodyTypeOverride(cache, pawn, apparentGender, out BodyTypeDef body))
                 {
-                    pawn.story.bodyType = body;
-                    goto Head;
+                    if (harLegalBodies == null || harLegalBodies.Contains(body))
+                    {
+                        pawn.story.bodyType = body;
+                        goto Head;
+                    }
                 }
-
                 if (currentBody != null && !VanillaBodyTypesPlus.Contains(currentBody))
                 {
                     // Skip. We don't want to change the bodytype if it's is from an unkown source and not forced.
@@ -246,18 +254,18 @@ namespace BigAndSmall
                     }
                     else if (bodyType == null) // Shouldn't happen, but just in case.
                     {
-                        TrySetMissingBodytype(pawn, apparentGender);
+                        TrySetMissingBodytype(pawn, apparentGender, harLegalBodies);
                     }
                 }
                 else
                 {
                     if (currentBody.IsBodyStandard())
                     {
-                        if (apparentGender == Gender.Female)
+                        if (apparentGender == Gender.Female && harLegalBodies?.Contains(BodyTypeDefOf.Female) != false)
                         {
                             pawn.story.bodyType = BodyTypeDefOf.Female;
                         }
-                        else if (apparentGender == Gender.Male)
+                        else if (apparentGender == Gender.Male && harLegalBodies?.Contains(BodyTypeDefOf.Female) != false)
                         {
                             pawn.story.bodyType = BodyTypeDefOf.Male;
                         }
@@ -266,16 +274,21 @@ namespace BigAndSmall
                     {
                         if (pawn.story?.Adulthood != null)
                         {
-                            pawn.story.bodyType = pawn.story.Adulthood.BodyTypeFor(apparentGender);
+                            var storyBody = pawn.story.Adulthood.BodyTypeFor(apparentGender);
+                            if (harLegalBodies?.Contains(storyBody) != false)
+                            {
+                                pawn.story.bodyType = storyBody;
+                            }
                         }
                         else if (pawn.story.bodyType == null)
                         {
-                            TrySetMissingBodytype(pawn, apparentGender);
+                            TrySetMissingBodytype(pawn, apparentGender, harLegalBodies);
                         }
                     }
                 }
             }
             pawn.story.bodyType ??= PawnGenerator.GetBodyTypeFor(pawn);
+            
 
         Head:
             if (headNeedsChange)
@@ -337,7 +350,7 @@ namespace BigAndSmall
             }
         }
 
-        private static void TrySetMissingBodytype(Pawn pawn, Gender gender)
+        private static void TrySetMissingBodytype(Pawn pawn, Gender gender, List<BodyTypeDef> harWhitelist)
         {
             if (HumanoidPawnScaler.GetCache(pawn) is BSCache cache && cache.overridenBodyDef != null)
             {
@@ -347,19 +360,33 @@ namespace BigAndSmall
             if (pawn?.story == null) return;
             if (pawn.story.Adulthood != null)
             {
-                pawn.story.bodyType = pawn.story.Adulthood.BodyTypeFor(gender);
-                pawn.story.bodyType ??= pawn.story.Adulthood.BodyTypeFor(pawn.gender);
+                if (pawn.story.Adulthood.BodyTypeFor(gender) is BodyTypeDef bDef && harWhitelist?.Contains(bDef) != false)
+                {
+                    pawn.story.bodyType = pawn.story.Adulthood.BodyTypeFor(gender);
+                }
+                else if (pawn.story.Adulthood.BodyTypeFor(pawn.gender) is BodyTypeDef bDef2 && harWhitelist?.Contains(bDef2) != false)
+                {
+                    pawn.story.bodyType ??= pawn.story.Adulthood.BodyTypeFor(pawn.gender);
+                }
             }
             if (pawn.story.bodyType == null && ModsConfig.BiotechActive && pawn.DevelopmentalStage.Juvenile())
             {
-                if (pawn.DevelopmentalStage == DevelopmentalStage.Baby)
+                if (pawn.DevelopmentalStage == DevelopmentalStage.Baby && harWhitelist?.Contains(BodyTypeDefOf.Baby) != false)
                 {
                     pawn.story.bodyType = BodyTypeDefOf.Baby;
                 }
-                else { pawn.story.bodyType = BodyTypeDefOf.Child; }
+                else if (harWhitelist?.Contains(BodyTypeDefOf.Child) != false)
+                {
+                    pawn.story.bodyType = BodyTypeDefOf.Child;
+                }
             }
             if (pawn.story.bodyType == null)
             {
+                if (harWhitelist?.Count != 0)
+                {
+                    // Yeah okay, I'm not touching this anymore if we got all the way here while HAR is active.
+                    return;
+                }
                 PawnGenerator.GetBodyTypeFor(pawn);
             }
         }

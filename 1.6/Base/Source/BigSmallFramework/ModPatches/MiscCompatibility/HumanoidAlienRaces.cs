@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -35,6 +36,15 @@ namespace BigAndSmall
             }
         }
 
+        public static HARThingDefWrapper TryGetHarWrapper(ThingDef thingDef)
+        {
+            if (HARActive && harThings.TryGetValue(thingDef, out var harWrap) && harWrap is not null)
+            {
+                return harWrap;
+            }
+            return null;
+        }
+
         public static List<BodyTypeDef> TryGetHarBodiesForThingdef(ThingDef thingDef)
         {
             if (HARActive && harThings.TryGetValue(thingDef, out var harWrap) && harWrap.HasBodyDefs)
@@ -43,6 +53,15 @@ namespace BigAndSmall
             }
             return null;
         }
+
+        public static bool IsHarRaceWithExtendedBodyGraphics(ThingDef thingDef)
+        {
+            if (HARActive && harThings.TryGetValue(thingDef, out var harWrap) && harWrap.hasExtendedBodyGraphics)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 
     public class HARThingDefWrapper
@@ -50,12 +69,14 @@ namespace BigAndSmall
         public ThingDef HARThingDef;
 
         public List<BodyTypeDef> bodyDefs = null;
+        public bool hasExtendedBodyGraphics = false;
 
         public bool HasBodyDefs => bodyDefs != null && bodyDefs.Count > 0;
         public HARThingDefWrapper(ThingDef harThingDef)
         {
             HARThingDef = harThingDef;
             bodyDefs = GetBodyTypes(harThingDef);
+            hasExtendedBodyGraphics = HasExtendedBodyGraphics(harThingDef);
         }
 
         private List<BodyTypeDef> GetBodyTypes(ThingDef harThingDef)
@@ -116,6 +137,75 @@ namespace BigAndSmall
                 Log.Error($"Exception occurred while retrieving bodyTypes:\n{e.Message}\n{e.StackTrace}");
                 return null;
             }
+        }
+
+        private bool HasExtendedBodyGraphics(ThingDef harThingDef)
+        {
+            try
+            {
+                // Navigate to alienRace
+                var alienRaceField = harThingDef.GetType().GetField("alienRace", BindingFlags.Public | BindingFlags.Instance);
+                if (alienRaceField == null)
+                {
+                    return false;
+                }
+
+                var alienRaceInstance = alienRaceField.GetValue(harThingDef);
+                if (alienRaceInstance == null)
+                {
+                    return false;
+                }
+
+                var graphicPaths = alienRaceInstance.GetType().GetField("graphicPaths", BindingFlags.Public | BindingFlags.Instance);
+                if (graphicPaths == null)
+                {
+                    return false;
+                }
+
+                var graphicPathsInstance = graphicPaths.GetValue(alienRaceInstance);
+                if (graphicPathsInstance == null)
+                {
+                    return false;
+                }
+
+                var bodyField = graphicPathsInstance.GetType().GetField("body", BindingFlags.Public | BindingFlags.Instance);
+                if (bodyField == null)
+                {
+                    return false;
+                }
+
+                var bodyInstance = bodyField.GetValue(graphicPathsInstance);
+                if (bodyInstance == null)
+                {
+                    return false;
+                }
+
+                var extendedGraphicsField = bodyInstance.GetType().GetField("extendedGraphics", BindingFlags.Public | BindingFlags.Instance);
+                if (extendedGraphicsField == null)
+                {
+                    return false;
+                }
+                var extendedGraphicsInstance = extendedGraphicsField.GetValue(bodyInstance);
+                var extendedGraphicsList = extendedGraphicsInstance as IList;
+                foreach (var entry in extendedGraphicsList)
+                {
+                    var conditionsField = entry.GetType().GetField("conditions");
+                    var conditionInstance = conditionsField.GetValue(entry);
+                    if (conditionInstance is IList conditionInstList)
+                    {
+                        foreach (var condition in conditionInstList)
+                        {
+                            if (condition?.GetType()?.Name?.ToLower().Contains("conditionbodytype") == true)
+                                return true;
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Exception occurred while checking for HasExtendedBodyGraphics:\n{e.Message}\n{e.StackTrace}");
+            }
+            return false;
         }
 
     }

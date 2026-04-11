@@ -16,12 +16,9 @@ namespace BigAndSmall
         public bool exceptNudistFriendly = false;
         public FilterListSet<string> tags = null;
 
-        /// <summary>
-        /// Obsoleted because it had issues with cases where ApparelProperties were used with no access to the thing.
-        /// </summary>
-        [Obsolete]
+        [Obsolete("Obsoleted because it had issues with cases where ApparelProperties were used with no access to the thing.")]
         public FilterListSet<ThingDef> thingDefs = null;
-        
+
         /// <summary>
         /// OnSkin, Shell, Middle, etc.
         /// </summary>
@@ -67,6 +64,13 @@ namespace BigAndSmall
                     result = tags.GetFilterResultFromItemList(apparelTags).Fuse(result);
                     if (err == "" && result.Denied()) err = "BS_CannotWearTag".Translate();
                 }
+            }
+            if (thingDefs != null && thingDefs.AnyItems())
+            {
+                Log.WarningOnce($"{nameof(ApparelRestrictions)} Via {nameof(thingDefs)} is obsoleted.\n" +
+                    $"This is due to issues with the ThingDef sometimes being unavailablw when Ludeon runs checks.\n" +
+                    $"Use {nameof(tags)} instead.\n" +
+                    $"Tags can be patched onto any apparel via regular xml PatchOps.", 158733299);
             }
 
             if (NoApparel && !result.ForceAllowed())
