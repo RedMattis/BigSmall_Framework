@@ -24,8 +24,17 @@ namespace BigAndSmall
                     .. GetAllGeneExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
                     .. GetAllTraitExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
                     .. pawn.kindDef.GetAllPawnExtensions(parentWhitelist, parentBlacklist, doSort),
-                    .. pawn.def.GetAllPawnExtensions(parentWhitelist, parentBlacklist, doSort)
+                    .. pawn.def.GetAllPawnExtensions(parentWhitelist, parentBlacklist, doSort),
                 ];
+                if (pawn.royalty?.AllTitlesInEffectForReading is { } titles)
+                {
+                    foreach(var title in titles)
+                    {
+                        var pawnExts = title.def.GetAllPawnExtensions(parentWhitelist, parentBlacklist, doSort);
+                        if (pawnExts.Any())
+                            result.AddRange(pawnExts);
+                    }
+                }
             }
             else
             {
@@ -35,6 +44,15 @@ namespace BigAndSmall
                     .. pawn.kindDef.GetAllPawnExtensions(parentWhitelist, parentBlacklist, doSort),
                     .. pawn.def.GetAllPawnExtensions(parentWhitelist, parentBlacklist, doSort)
                     ];
+                if (pawn.royalty?.AllTitlesInEffectForReading is { } titles)
+                {
+                    foreach (var title in titles)
+                    {
+                        var pawnExts = title.def.GetAllPawnExtensions(parentWhitelist, parentBlacklist, doSort);
+                        if (pawnExts.Any())
+                            result.AddRange(pawnExts);
+                    }
+                }
             }
             if (checkForExclusionTags)
             {

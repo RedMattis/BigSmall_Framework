@@ -198,7 +198,7 @@ namespace BigAndSmall
             Pawn pawn = cache.pawn;
 
             Gender apparentGender = cache.GetApparentGender();
-            if (apparentGender == Gender.None)
+            if (apparentGender == Gender.None || pawn?.story == null)
             {
                 return;
             }
@@ -209,7 +209,7 @@ namespace BigAndSmall
             var activeGenes = GeneHelpers.GetAllActiveGenes(pawn);
             var activeGeneDefs = activeGenes.Select(x => x.def).ToList();
             // Set body type.
-            bool updateBody = pawn?.story.bodyType == null ||
+            bool updateBody = pawn.story.bodyType == null ||
                 pawn.story.bodyType.IsBodyStandard() ||
                 cache.bodyTypeOverride != null ||
                 apparentGender != pawn?.gender ||

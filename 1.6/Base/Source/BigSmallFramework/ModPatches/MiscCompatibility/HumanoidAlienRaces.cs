@@ -76,7 +76,7 @@ namespace BigAndSmall
         {
             HARThingDef = harThingDef;
             bodyDefs = GetBodyTypes(harThingDef);
-            hasExtendedBodyGraphics = HasExtendedBodyGraphics(harThingDef);
+            hasExtendedBodyGraphics = HasCustomBody(harThingDef);
         }
 
         private List<BodyTypeDef> GetBodyTypes(ThingDef harThingDef)
@@ -96,7 +96,6 @@ namespace BigAndSmall
                     return null;
                 }
 
-                // Navigate to generalSettings
                 var generalSettingsField = alienRaceInstance.GetType().GetField("generalSettings", BindingFlags.Public | BindingFlags.Instance);
                 if (generalSettingsField == null)
                 {
@@ -112,7 +111,6 @@ namespace BigAndSmall
                 var alienPartGeneratorField = generalSettingsInstance.GetType().GetField("alienPartGenerator", BindingFlags.Public | BindingFlags.Instance);
                 if (alienPartGeneratorField == null)
                 {
-                    // alienPartGenerator field is missing; assume default behavior
                     return null;
                 }
 
@@ -122,7 +120,6 @@ namespace BigAndSmall
                     return null;
                 }
 
-                // Navigate to bodyTypes
                 var bodyTypesField = alienPartGeneratorInstance.GetType().GetField("bodyTypes", BindingFlags.Public | BindingFlags.Instance);
                 if (bodyTypesField == null)
                 {
@@ -139,7 +136,7 @@ namespace BigAndSmall
             }
         }
 
-        private bool HasExtendedBodyGraphics(ThingDef harThingDef)
+        private bool HasCustomBody(ThingDef harThingDef)
         {
             try
             {
@@ -155,55 +152,112 @@ namespace BigAndSmall
                 {
                     return false;
                 }
+                if (HasExtendedBodyGraphicss(alienRaceInstance))
+                    return true;
 
-                var graphicPaths = alienRaceInstance.GetType().GetField("graphicPaths", BindingFlags.Public | BindingFlags.Instance);
-                if (graphicPaths == null)
-                {
-                    return false;
-                }
-
-                var graphicPathsInstance = graphicPaths.GetValue(alienRaceInstance);
-                if (graphicPathsInstance == null)
-                {
-                    return false;
-                }
-
-                var bodyField = graphicPathsInstance.GetType().GetField("body", BindingFlags.Public | BindingFlags.Instance);
-                if (bodyField == null)
-                {
-                    return false;
-                }
-
-                var bodyInstance = bodyField.GetValue(graphicPathsInstance);
-                if (bodyInstance == null)
-                {
-                    return false;
-                }
-
-                var extendedGraphicsField = bodyInstance.GetType().GetField("extendedGraphics", BindingFlags.Public | BindingFlags.Instance);
-                if (extendedGraphicsField == null)
-                {
-                    return false;
-                }
-                var extendedGraphicsInstance = extendedGraphicsField.GetValue(bodyInstance);
-                var extendedGraphicsList = extendedGraphicsInstance as IList;
-                foreach (var entry in extendedGraphicsList)
-                {
-                    var conditionsField = entry.GetType().GetField("conditions");
-                    var conditionInstance = conditionsField.GetValue(entry);
-                    if (conditionInstance is IList conditionInstList)
-                    {
-                        foreach (var condition in conditionInstList)
-                        {
-                            if (condition?.GetType()?.Name?.ToLower().Contains("conditionbodytype") == true)
-                                return true;
-                        }
-                    }
-                }
+                if (HasBodyAddons(alienRaceInstance))
+                    return true;
+                
             }
             catch (Exception e)
             {
                 Log.Error($"Exception occurred while checking for HasExtendedBodyGraphics:\n{e.Message}\n{e.StackTrace}");
+                return true;
+            }
+            return false;
+        }
+
+        public bool HasBodyAddons(object alienRaceInstance)
+        {
+            var generalSettingsField = alienRaceInstance.GetType().GetField("generalSettings", BindingFlags.Public | BindingFlags.Instance);
+            if (generalSettingsField == null)
+            {
+                return false;
+            }
+
+            var generalSettingsInstance = generalSettingsField.GetValue(alienRaceInstance);
+            if (generalSettingsInstance == null)
+            {
+                return false;
+            }
+
+            var alienPartGeneratorField = generalSettingsInstance.GetType().GetField("alienPartGenerator", BindingFlags.Public | BindingFlags.Instance);
+            if (alienPartGeneratorField == null)
+            {
+                return false;
+            }
+
+            var alienPartGeneratorInstance = alienPartGeneratorField.GetValue(generalSettingsInstance);
+            if (alienPartGeneratorInstance == null)
+            {
+                return false;
+            }
+
+            var bodyAddonsField = alienPartGeneratorInstance.GetType().GetField("bodyAddons", BindingFlags.Public | BindingFlags.Instance);
+            if (bodyAddonsField == null)
+            {
+                return false;
+            }
+            var bodyAddonsInstance = bodyAddonsField.GetValue(alienPartGeneratorInstance);
+            if (bodyAddonsInstance is IList bodyAddonList)
+            {
+                if (bodyAddonList.Count !=0)
+                    return true;
+            }
+
+            return false;
+        }
+
+        public bool HasExtendedBodyGraphicss(object alienRaceInstance)
+        {
+            var graphicPaths = alienRaceInstance.GetType().GetField("graphicPaths", BindingFlags.Public | BindingFlags.Instance);
+            if (graphicPaths == null)
+            {
+                return false;
+            }
+
+            var graphicPathsInstance = graphicPaths.GetValue(alienRaceInstance);
+            if (graphicPathsInstance == null)
+            {
+                return false;
+            }
+
+            var bodyField = graphicPathsInstance.GetType().GetField("body", BindingFlags.Public | BindingFlags.Instance);
+            if (bodyField == null)
+            {
+                return false;
+            }
+
+            var bodyInstance = bodyField.GetValue(graphicPathsInstance);
+            if (bodyInstance == null)
+            {
+                return false;
+            }
+
+            var extendedGraphicsField = bodyInstance.GetType().GetField("extendedGraphics", BindingFlags.Public | BindingFlags.Instance);
+            if (extendedGraphicsField == null)
+            {
+                return false;
+            }
+            var extendedGraphicsInstance = extendedGraphicsField.GetValue(bodyInstance);
+            var extendedGraphicsList = extendedGraphicsInstance as IList;
+            foreach (var entry in extendedGraphicsList)
+            {
+                var conditionsField = entry.GetType().GetField("conditions");
+                var conditionInstance = conditionsField.GetValue(entry);
+                if (conditionInstance is IList conditionInstList)
+                {
+                    foreach (var condition in conditionInstList)
+                    {
+                        if (condition?.GetType()?.Name?.ToLower().Contains("conditionbodytype") == true)
+                            return true;
+
+                        if (condition?.GetType()?.Name?.ToLower().Contains("conditionbodypart") == true)
+                            return true;
+
+
+                    }
+                }
             }
             return false;
         }
