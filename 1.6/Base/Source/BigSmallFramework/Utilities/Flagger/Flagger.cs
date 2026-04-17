@@ -33,6 +33,16 @@ namespace BigAndSmall
 
 			result.AddRange(ModExtHelper.GetAllExtensionsOnBackStories<Flagger>(pawn));
 
+            if (pawn.royalty?.AllTitlesInEffectForReading is { } titles)
+            {
+                foreach (var title in titles)
+                {
+                    var extsOnTitle = title.def.ExtensionsOnDef<Flagger, RoyalTitleDef>(doSort: false);
+                    if (extsOnTitle.Any())
+                        result.AddRange(extsOnTitle);
+                }
+            }
+
             if (result.Count > 0)
             {
                 return result.OrderByDescending(x => x.priority).SelectMany(x => x.flags).ToList();
