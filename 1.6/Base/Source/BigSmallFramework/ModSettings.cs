@@ -116,7 +116,6 @@ namespace BigAndSmall
             }
             if (listStd.ButtonText("BS_ResetToRecommendedSettings".Translate()))
             {
-                settings.ResetToDefault();
                 settings.ResetToRecommended();
             }
             listStd.GapLine();
