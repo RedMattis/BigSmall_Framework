@@ -94,10 +94,9 @@ namespace BigAndSmall
                 {
                     for (int i = 0; i < babiesToSpawn; i++)
                     {
-                        if (ModsConfig.IsActive("RedMattis.BetterGeneInheritance") && i > 0)
+                        if (BSInheritanceWrapper.ModActive == true && i > 0)
                         {
-                            // Invoke the "BGInheritance.BGI_HarmonyPatches.GetChildGenes" method which gives us new genes.
-                            newBabyGenes = (List<GeneDef>)AccessTools.Method("BGInheritance.External:GetChildGenes").Invoke(null, [geneticMother, father]);
+                            newBabyGenes = BSInheritanceWrapper.GetChildGenes(geneticMother, father);
                         }
                         PregnancyUtility.ApplyBirthOutcome(outcome, adjustedQuality, ritual, genes, geneticMother, birtherThing, father, doctor, lordJobRitual, assignments, preventLetter);
                         newBabyGenes = null;
@@ -157,26 +156,33 @@ namespace BigAndSmall
             }
             if (parents.Count > 0)
             {
-                List<(Pawn pawn, float score)> parentScores = [];
-                foreach (var parent in parents.Where(x => x.genes?.Xenotype != null))
+                if (BSInheritanceWrapper.ModActive == true)
                 {
-                    var babyGeneDefs = baby.genes.GenesListForReading.Select(x => x.def);
-                    var parentXeno = parent.genes.Xenotype;
-                    var parentGenes = parentXeno.genes;
-                    bool xenoGenes = parentXeno.inheritable;
-                    // Check is baby has all of the parent's xenotype genes.
-                    float score = parentGenes.Sum(x => babyGeneDefs.Contains(x) ? 1 : 0) / (float)parentGenes.Count;
-                    parentScores.Add((parent, score));
+                    BSInheritanceWrapper.TrySetXenotypeBasedOnParents(baby, parents);
                 }
-                if (parentScores.Count > 0)
+                else
                 {
-                    var (parent, score) = parentScores.OrderByDescending(x => x.score).First();
-                    if (score > 0.8f)
+                    List<(Pawn pawn, float score)> parentScores = [];
+                    foreach (var parent in parents.Where(x => x.genes?.Xenotype != null))
                     {
-                        baby.genes.SetXenotypeDirect(parent.genes.Xenotype);
+                        var babyGeneDefs = baby.genes.GenesListForReading.Select(x => x.def);
+                        var parentXeno = parent.genes.Xenotype;
+                        var parentGenes = parentXeno.genes;
+                        bool xenoGenes = parentXeno.inheritable;
+                        // Check is baby has all of the parent's xenotype genes.
+                        float score = parentGenes.Sum(x => babyGeneDefs.Contains(x) ? 1 : 0) / (float)parentGenes.Count;
+                        parentScores.Add((parent, score));
+                    }
+                    if (parentScores.Count > 0)
+                    {
+                        var (parent, score) = parentScores.OrderByDescending(x => x.score).First();
+                        if (score > 0.8f)
+                        {
+                            baby.genes.SetXenotypeDirect(parent.genes.Xenotype);
 
-                        // This sometimes doesn't help because Rimworld forces that "HYBRID" xenotype on them.
-                        //Log.Message($"[PregnancyPatches DEBUG] Set baby's xenotype to {parent.genes.Xenotype.LabelCap} with a score of {score}");
+                            // This sometimes doesn't help because Rimworld forces that "HYBRID" xenotype on them.
+                            //Log.Message($"[PregnancyPatches DEBUG] Set baby's xenotype to {parent.genes.Xenotype.LabelCap} with a score of {score}");
+                        }
                     }
                 }
             }

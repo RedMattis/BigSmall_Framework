@@ -26,6 +26,7 @@
   <BS_AllAnimalsHaveHands>All animals have hands </BS_AllAnimalsHaveHands>
   <BS_SapientAnimalsCanRomanceAnySapientAnimals>Sapient animals can romance any sapient animals</BS_SapientAnimalsCanRomanceAnySapientAnimals>
   <BS_SapientMechanoids>Enable Sapient Mechanoids (Restart Required)</BS_SapientMechanoids>
+  <BS_SapientMechsMinAge>Sapient mechanoids aged up to minimum age</BS_SapientMechsMinAge>
 
   <!-- Size -->
   <BS_ScaleAnimals>Apply Scaling and other behaviour to Animals</BS_ScaleAnimals>
@@ -54,6 +55,7 @@
   <BS_ImmortalReturnFactor>Immortal return time factor (less means faster)</BS_ImmortalReturnFactor>
   <BS_SoulPowerFalloffOffset>Soul power falloff offset</BS_SoulPowerFalloffOffset>
   <BS_SoulPowerGainMultiplier>Soul power gain multiplier</BS_SoulPowerGainMultiplier>
+  <BS_MetabolismLimitOffset>Incorporate (etc.) metabolism limit offset</BS_MetabolismLimitOffset>
 
   <!-- Extras -->
   <BS_ExtraUIForceDisabledWarning>Warning: extra UI elements are disabled. If relied on by mods this may cause issues.</BS_ExtraUIForceDisabledWarning>

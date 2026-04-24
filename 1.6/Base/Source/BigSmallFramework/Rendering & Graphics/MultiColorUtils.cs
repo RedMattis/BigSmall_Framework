@@ -19,19 +19,19 @@ namespace BigAndSmall
         {
             var shaderParameter1 = new ShaderParameter();
             var traverse = Traverse.Create(shaderParameter1);
-            traverse.Field("name").SetValue("_DrawColor");
+            traverse.Field("name").SetValue("_Color");
             traverse.Field("type").SetValue(1);
             traverse.Field("value").SetValue(new Vector4(colorOne.r, colorOne.g, colorOne.b, colorOne.a));
 
             var shaderParameter2 = new ShaderParameter();
             traverse = Traverse.Create(shaderParameter2);
-            traverse.Field("name").SetValue("_DrawColorTwo");
+            traverse.Field("name").SetValue("_ColorTwo");
             traverse.Field("type").SetValue(1);
             traverse.Field("value").SetValue(new Vector4(colorTwo.r, colorTwo.g, colorTwo.b, colorTwo.a));
 
             var shaderParameter3 = new ShaderParameter();
             traverse = Traverse.Create(shaderParameter3);
-            traverse.Field("name").SetValue("_DrawColorThree");
+            traverse.Field("name").SetValue("_ColorThree");
             traverse.Field("type").SetValue(1);
             traverse.Field("value").SetValue(new Vector4(colorThree.r, colorThree.g, colorThree.b, colorThree.a));
 

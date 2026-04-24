@@ -208,7 +208,7 @@ namespace BigAndSmall
             newThing.virtualDefs = humThing.virtualDefs != null ? [.. humThing.virtualDefs] : null;
 
             // From Animal
-            newThing.modExtensions = [];  // Doubt we want to load ModExtensions from either.
+            newThing.modExtensions = [];
             if (aniThing.modExtensions?.Count > 0)
             {
                 newThing.modExtensions.AddRange(aniThing.modExtensions.Where(x => extWhiteList.Contains(x.GetType().ToString(), StringComparer.OrdinalIgnoreCase)));

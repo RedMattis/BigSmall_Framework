@@ -4,9 +4,9 @@ Shader "BS_CutoutThreeColor"
   {
 		_MainTex ("Texture", 2D) = "white" {}
 		_MaskTex ("Texture", 2D) = "black" {}
-		_DrawColor ("DrawColor", Vector) = (1,0,0,1)
-		_DrawColorTwo ("DrawColorTwo", Vector) = (0,1,0,1)
-		_DrawColorThree ("DrawColorThree", Vector) = (0,0,1,1)
+		_Color ("_Color", Vector) = (1,0,0,1)
+		_ColorTwo ("_ColorTwo", Vector) = (0,1,0,1)
+		_ColorThree ("_ColorThree", Vector) = (0,0,1,1)
 	}
   SubShader
   {
@@ -34,9 +34,9 @@ Shader "BS_CutoutThreeColor"
 			sampler2D _MainTex;
 			sampler2D _MaskTex;
 
-        float4 _DrawColor;
-        float4 _DrawColorTwo;
-        float4 _DrawColorThree;
+        float4 _Color;
+        float4 _ColorTwo;
+        float4 _ColorThree;
 
 			v2f vert(appdata v)
 			{
@@ -61,7 +61,7 @@ Shader "BS_CutoutThreeColor"
         
         float total_clr = r + g + b;
         total_clr = max(total_clr, 1.0);
-        float3 masked_clr = (( _DrawColor.rgb * r + _DrawColorTwo.rgb * g + _DrawColorThree.rgb * b) / total_clr) * col_lumen;
+        float3 masked_clr = (( _Color.rgb * r + _ColorTwo.rgb * g + _ColorThree.rgb * b) / total_clr) * col_lumen;
         col.rgb = lerp(col.rgb, masked_clr, mask_alpha);
 
         clip(col.a - 0.5f);

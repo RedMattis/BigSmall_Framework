@@ -3,7 +3,7 @@ Shader "BS_EnergyShader"
 	Properties
   {
 		_MainTex ("Texture", 2D) = "white" {}
-		_DrawColor ("DrawColor", Vector) = (1,0,1,1)
+		_Color ("_Color", Vector) = (1,0,1,1)
 	}
   SubShader
   {
@@ -33,7 +33,7 @@ Shader "BS_EnergyShader"
 
 			sampler2D _MainTex;
 
-      float4 _DrawColor;
+      float4 _Color;
 
 			v2f vert(appdata v)
 			{
@@ -70,13 +70,13 @@ Shader "BS_EnergyShader"
         float4 distort_color = tex2D(_MainTex, uv_ripples);
 				float4 main_color = tex2D(_MainTex, uv_main);
         main_color.a *= 0.85;
-        main_color.rgb *= main_color.a * _DrawColor.a; // Pre-multiply alpha
-        distort_color.a *= distortDistanceFactor * _DrawColor.a;
+        main_color.rgb *= main_color.a * _Color.a; // Pre-multiply alpha
+        distort_color.a *= distortDistanceFactor * _Color.a;
         distort_color.rgb *= distort_color.a; // Pre-multiply alpha
         
         float4 fused_col = max(main_color, distort_color);
         clip (fused_col.a - 0.001);
-        fused_col.rgb *= _DrawColor.rgb;
+        fused_col.rgb *= _Color.rgb;
 				return fused_col;
 			}
 			ENDCG

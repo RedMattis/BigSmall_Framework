@@ -241,12 +241,14 @@ namespace BigAndSmall
             {
                 target.Thing?.Destroy();
             }
-            RemoveGenesOverLimit(parent.pawn, -9);
+            const int baseLimit = -9;
+            RemoveGenesOverLimit(parent.pawn, baseLimit);
         }
 
         // Patched by Keyz, don't rename or change parameters.
         public static bool RemoveGenesOverLimit(Pawn pawn, int limit)
         {
+            limit -= BS.Settings.MetabolismLimit;
             var xGenes = pawn.genes.Xenogenes;
             bool removed = false;
 

@@ -56,7 +56,7 @@ namespace BigAndSmall
             UpdateLegacyPawnExts();
             ConditionalGraphic.ResetStaticData();
             DefAltNamer.Initialize();
-            HARCompat.SetupHARThingsIfHARIsActive();
+            //HARCompat.SetupHARThingsIfHARIsActive();
             NewFoodCategory.SetupFoodCategories();
             HumanPatcher.MechanicalSetup();
             RaceFuser.PreHotreload();
@@ -64,6 +64,7 @@ namespace BigAndSmall
             HumanlikeAnimalGenerator.GenerateHumanlikeAnimals(hotReload);
             FlagStringData.Setup(force: true); // For hotreload.
             DebugLog.Message("Generate defs complete.");
+            BSInheritanceWrapper.TrySetup();
         }
 
         private static void UpdateLegacyPawnExts()

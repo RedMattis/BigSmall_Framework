@@ -1,5 +1,4 @@
-﻿using HarmonyLib;
-using RimWorld;
+﻿using RimWorld;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
@@ -52,6 +51,9 @@ namespace BigAndSmall
             return true;
         }
 
+        
+
+
         public static void DoProliferate(Pawn parentA, Pawn parentB)
         {
             var geneSetA = GeneHelpers.GetAllActiveGenes(parentA).Select(x => x.def).ToList();
@@ -80,12 +82,12 @@ namespace BigAndSmall
             }
             else if (ModsConfig.IsActive("RedMattis.BetterGeneInheritance"))
             {
-                var newBabyGenes = (List<GeneDef>)AccessTools.Method("BGInheritance.External:GetChildGenes").Invoke(null, [parentA, parentB]);
+                var newBabyGenes = BSInheritanceWrapper.GetChildGenes(parentA, parentB);
                 foreach(var gene in newBabyGenes)
                 {
                     babyPawn.genes.AddGene(gene, false);
                 }
-                babyPawn.genes.xenotypeName = "Hybrid".Translate();
+                BSInheritanceWrapper.TrySetXenotypeBasedOnParents(babyPawn, [parentA, parentB]);
             }
             else
             {
@@ -128,11 +130,8 @@ namespace BigAndSmall
             choiceLetter_BabyBirth.Start();
             Find.LetterStack.ReceiveLetter(choiceLetter_BabyBirth);
 
-
-
             // Check if the baby has the Early Maturity Gene.
             int babyStartAge = ModExtHelper.GetAllExtensions<PawnExtension>(babyPawn).FirstOrDefault(x => x.babyStartAge != null)?.babyStartAge ?? 3;
-
 
             // Age baby up to 3 years
             babyPawn.ageTracker.AgeBiologicalTicks = babyStartAge * GenDate.TicksPerYear;

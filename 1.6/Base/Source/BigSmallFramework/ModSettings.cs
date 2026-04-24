@@ -116,6 +116,7 @@ namespace BigAndSmall
             }
             if (listStd.ButtonText("BS_ResetToRecommendedSettings".Translate()))
             {
+                settings.ResetToDefault();
                 settings.ResetToRecommended();
             }
             listStd.GapLine();
@@ -129,6 +130,8 @@ namespace BigAndSmall
             listStd.GapLine();
             CreateSettingsSlider(listStd, "BS_SoulPowerFalloffOffset".Translate(), ref settings.soulPowerFalloffOffset, 0, 20f, (f) => $"{f:F1}");
             CreateSettingsSlider(listStd, "BS_SoulPowerGainMultiplier".Translate(), ref settings.soulPowerGainMultiplier, 0.5f, 5f, (f) => $"{f * 100:F1}%");
+            listStd.GapLine();
+            CreateSettingsSlider(listStd, "BS_MetabolismLimitOffset".Translate(), ref settings.metabolismLimits, 0, 500, (f) => $"{f:F0}");
 
             listStd.End();
             EndScrollArea();
@@ -162,6 +165,9 @@ namespace BigAndSmall
             CreateSettingCheckbox(listStd, "BS_AllAnimalsHaveHands".Translate(), ref settings.allAnimalsHaveHands);
             CreateSettingCheckbox(listStd, "BS_SapientAnimalsCanRomanceAnySapientAnimals".Translate(), ref settings.animalOnAnimal);
             CreateSettingCheckbox(listStd, "BS_SapientMechanoids".Translate(), ref settings.sapientMechanoids);
+            CreateSettingsSlider(listStd, "BS_SapientMechsMinAge".Translate(), ref settings.minAgeSapientMechs, 3, 20, (f) => $"{f:F0}");
+
+            
 
             listStd.End();
             EndScrollArea();
@@ -373,6 +379,9 @@ namespace BigAndSmall
         private static readonly bool defaultSapientMechanoids = false;
         public bool sapientMechanoids = defaultSapientMechanoids;
 
+        public static readonly float minAgeSapientMechsDefault = 13;
+        public float minAgeSapientMechs = minAgeSapientMechsDefault;
+
         // 2. Races Tab
         private static readonly bool defaultSurgeryAndBionics = true;
         public bool surgeryAndBionics = defaultSurgeryAndBionics;
@@ -442,6 +451,10 @@ namespace BigAndSmall
 
         public static readonly float soulPowerFalloffOffsetDefault = 0f;
         public float soulPowerFalloffOffset = soulPowerFalloffOffsetDefault;
+
+        public static readonly float metabolismLimitDefault = 0f;
+        public float metabolismLimits = metabolismLimitDefault;
+        public int MetabolismLimit => Mathf.RoundToInt(metabolismLimits);
 
         public static readonly float soulPowerGainMultiplierDefault = 1f;
         public float soulPowerGainMultiplier = soulPowerGainMultiplierDefault;
@@ -514,12 +527,14 @@ namespace BigAndSmall
             Scribe_Values.Look(ref immortalReturnTimeFactor, "immortalReturnTimeFactor", immortalReturnTimeFactorDefault);
             Scribe_Values.Look(ref soulPowerFalloffOffset, "soulPowerFalloffOffset", soulPowerFalloffOffsetDefault);
             Scribe_Values.Look(ref soulPowerGainMultiplier, "soulPowerGainMultiplier", soulPowerGainMultiplierDefault);
+            Scribe_Values.Look(ref metabolismLimits, "metabolismLimits", metabolismLimitDefault);
 
             // 2. Races Tab
             Scribe_Values.Look(ref surgeryAndBionics, "surgeryAndBionics", defaultSurgeryAndBionics);
             Scribe_Values.Look(ref sapientAnimals, "sapientAnimals", defaultSapientAnimals);
             Scribe_Values.Look(ref sapientAnimalsChance, "sapientAnimalsChance", defaultSapientAnimalsChance);
             Scribe_Values.Look(ref sapientMechanoids, "sapientMechanoids", defaultSapientMechanoids);
+            Scribe_Values.Look(ref minAgeSapientMechs, "sapientMechanoidsMinAge", minAgeSapientMechsDefault);
             Scribe_Values.Look(ref allAnimalsHaveHands, "allAnimalsHaveHands", defaultAllAnimalsHaveHands);
             Scribe_Values.Look(ref animalOnAnimal, "sapientAnimalsCanRomanceAnySapientAnimals", defaultAnimalOnAnimal);
             Scribe_Values.Look(ref animalsLowSkillPenalty, "animalsNoSkillPenalty", defaultAnimalsLowSkillPenalty);
@@ -581,12 +596,14 @@ namespace BigAndSmall
             immortalReturnTimeFactor = immortalReturnTimeFactorDefault;
             soulPowerFalloffOffset = soulPowerFalloffOffsetDefault;
             soulPowerGainMultiplier = soulPowerGainMultiplierDefault;
+            metabolismLimits = metabolismLimitDefault;
 
             // 2. Races Tab
             surgeryAndBionics = defaultSurgeryAndBionics;
             sapientAnimals = defaultSapientAnimals;
             sapientAnimalsChance = defaultSapientAnimalsChance;
             sapientMechanoids = defaultSapientMechanoids;
+            minAgeSapientMechs = minAgeSapientMechsDefault;
             allAnimalsHaveHands = defaultAllAnimalsHaveHands;
             animalOnAnimal = defaultAnimalOnAnimal;
             animalsLowSkillPenalty = defaultAnimalsLowSkillPenalty;

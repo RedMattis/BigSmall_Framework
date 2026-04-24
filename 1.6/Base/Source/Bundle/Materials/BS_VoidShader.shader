@@ -3,7 +3,7 @@ Shader "BS_VoidShader"
 	Properties
   {
 		_MainTex ("Texture", 2D) = "white" {}
-		_DrawColor ("DrawColor", Vector) = (1,0,1,1)
+		_Color ("_Color", Vector) = (1,0,1,1)
 	}
   SubShader
   {
@@ -36,7 +36,7 @@ Shader "BS_VoidShader"
 
 			sampler2D _MainTex;
 
-      float4 _DrawColor;
+      float4 _Color;
 
 			v2f vert(appdata v)
 			{
@@ -85,12 +85,12 @@ Shader "BS_VoidShader"
         // main_color.a += saturate(distort_color.a*0.06); // Give hint of overlap.
         
         // Pre-multiply alpha
-        main_color.rgb *= main_color.a * _DrawColor.a; 
-        distort_color.rgb *= distort_color.a * _DrawColor.a;
+        main_color.rgb *= main_color.a * _Color.a; 
+        distort_color.rgb *= distort_color.a * _Color.a;
         
         float4 fused_col = max(main_color, distort_color);
         clip (fused_col.a - 0.0005);
-        fused_col *= _DrawColor;
+        fused_col *= _Color;
         fused_col.rgb = lerp(float3(1,1,1), fused_col.rgb, fused_col.a);
 				return fused_col;
 			}

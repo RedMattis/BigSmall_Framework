@@ -3,7 +3,7 @@ Shader "BS_FlatTransparentOverlay"
 	Properties
   {
 		_MainTex ("Texture", 2D) = "white" {}
-		_DrawColor ("DrawColor", Vector) = (1,0,1,1)
+		_Color ("_Color", Vector) = (1,0,1,1)
 	}
   SubShader
   {
@@ -32,7 +32,7 @@ Shader "BS_FlatTransparentOverlay"
 
 			sampler2D _MainTex;
 
-      float4 _DrawColor;
+      float4 _Color;
 
 			v2f vert(appdata v)
 			{
@@ -50,10 +50,10 @@ Shader "BS_FlatTransparentOverlay"
 
         // We only want to overlay "lit" areas, so black/dark areas are also treated as transparent.
         float col_lumen = dot(col.rgb, float3(0.299, 0.587, 0.114));
-        float overlayAlpha = col_lumen * col.a * _DrawColor.a;
+        float overlayAlpha = col_lumen * col.a * _Color.a;
         clip (overlayAlpha - 0.001);
 
-        col.rgb = _DrawColor.rgb;
+        col.rgb = _Color.rgb;
         col.a = overlayAlpha;
 				return col;
 			}

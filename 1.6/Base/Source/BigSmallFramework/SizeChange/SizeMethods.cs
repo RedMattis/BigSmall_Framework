@@ -121,28 +121,20 @@ namespace BigAndSmall
 
         private float CalculateHeadOffset(float headPosMultiplier)
         {
-            
-
-            float headPos = Mathf.Lerp(bodyRenderSize, headRenderSize, 0.8f);
-            headPos *= headPosMultiplier;
-            headPos = Mathf.Max(bodyRenderSize, headRenderSize);
+            float headPos = Mathf.Max(bodyRenderSize, headRenderSize);
             if (headPos < 1) { headPos = Mathf.Pow(headPos, 0.96f); }
 
-            if (preventHeadScaling || bodyConstantHeadScale || (bodyConstantHeadScaleBigOnly && bodyRenderSize > 1))
+            float multC = pawn.def.GetStatValueAbstract(BSDefs.SM_Cosmetic_BodySizeMultiplier);
+            float mult = pawn.def.GetStatValueAbstract(BSDefs.SM_BodySizeMultiplier);
+            float baseRenderSize = mult + multC - 1f;
+            //baseRenderSize = baseRenderSize < 1 ? 1 : baseRenderSize;
+            if (preventHeadScaling || bodyConstantHeadScale || (bodyConstantHeadScaleBigOnly && bodyRenderSize+0.001f > baseRenderSize))
             {
                 float hPos = bodyRenderSize;
                 hPos *= headPosMultiplier;
                 return Mathf.Lerp(headPos, hPos, preventHeadOffsetFactor);
             }
             return headPos;
-
-            //var headPos = Mathf.Lerp(bodyRenderSize, headRenderSize, 0.8f);
-            //headPos *= headPosMultiplier;
-            ////var headPos = Mathf.Max(bodySize, headSize);
-
-            //// Move up the head for dwarves etc. so they don't end up a walking head.
-            //if (headPos < 1) { headPos = Mathf.Pow(headPos, 0.96f); }
-            //headPositionMultiplier = headPos;
         }
 
         private void SetWorldOffset()

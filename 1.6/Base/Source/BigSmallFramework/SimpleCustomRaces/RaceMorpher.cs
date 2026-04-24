@@ -146,14 +146,32 @@ namespace BigAndSmall
 				SwapThingDef(newPawn, targetDef, true, forcePriority, force: true, permitFusion: false, clearHediffsToReapply: false);
                 RestoreMatchingHediffs(newPawn, targetDef, aniPawn, blacklist: ["pregnancy", "pregnant"]);
 
-				// Wait until def is swapped to transfer age.
-				newPawn.gender = aniPawn.gender == Gender.None ? newPawn.gender : aniPawn.gender;
+                bool isMech = aniPawn.RaceProps.IsMechanoid;
+
+                // Wait until def is swapped to transfer age.
+                const int toddler = 3;
+                const int teen = 13;
+
+                int ageNow = aniPawn.ageTracker.AgeBiologicalYears;
+                
+                float percentLifeSpanNow = ageNow / aniPawn.RaceProps.lifeExpectancy;
+                float percentLifeSpanOther = ageNow / newPawn.RaceProps.lifeExpectancy;
+                int ageOther = Mathf.RoundToInt(percentLifeSpanNow * newPawn.RaceProps.lifeExpectancy);
+
+
+                // Never reduce below teenage if either would map to teenage. Avoids turning horses into toddlers, etc.
+                int highestAge = Mathf.Max(ageNow, ageOther);
+                // Mechanoids shouldn't be turned into toddlers.
+                if (isMech && highestAge < BS.Settings.minAgeSapientMechs)
+                    highestAge = 13;
+                int minimumAge = Mathf.Max(toddler, Mathf.Min(teen, highestAge));
+
+                newPawn.gender = aniPawn.gender == Gender.None ? newPawn.gender : aniPawn.gender;
 				newPawn.ageTracker.AgeChronologicalTicks = aniPawn.ageTracker.AgeChronologicalTicks;
-                float percentOfLifespan = aniPawn.ageTracker.AgeBiologicalYears / aniPawn.RaceProps.lifeExpectancy;
-                newPawn.ageTracker.AgeBiologicalTicks = (long)(newPawn.RaceProps.lifeExpectancy * percentOfLifespan) * GenDate.TicksPerYear;
-                if (aniPawn.ageTracker.AgeBiologicalYears < 3)
+                newPawn.ageTracker.AgeBiologicalTicks = ((long)(newPawn.RaceProps.lifeExpectancy * percentLifeSpanNow)) * GenDate.TicksPerYear;
+                if (aniPawn.ageTracker.AgeBiologicalYears < minimumAge)
 				{
-					newPawn.ageTracker.AgeBiologicalTicks = 3 * GenDate.TicksPerYear;
+					newPawn.ageTracker.AgeBiologicalTicks = minimumAge * GenDate.TicksPerYear;
 				}
 
 				if (shouldBeWildman)
@@ -165,7 +183,7 @@ namespace BigAndSmall
                     newPawn.ChangeKind(PawnKindDefOf.WildMan);
                     newPawn.jobs.StopAll();
                 }
-                if (aniPawn.RaceProps.IsMechanoid && aniPawn.kindDef?.weaponTags?.Any() == true)
+                if (isMech && aniPawn.kindDef?.weaponTags?.Any() == true)
                 {
                     try
                     {

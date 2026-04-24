@@ -47,10 +47,10 @@ namespace BigAndSmall
         {
             try
             {
-                if (gene.prerequisite is GeneDef prerequsiteGene && !GeneHelpers.GetAllActiveGenes(pawn).Any(x => x.def == prerequsiteGene))
-                {
-                    return "BS_PrerequisitesNotMetAnyOf".Translate($"{string.Join(", ", prerequsiteGene.LabelCap)}");
-                }
+                //if (gene.prerequisite is GeneDef prerequsiteGene && !GeneHelpers.GetAllActiveGenes(pawn).Any(x => x.def == prerequsiteGene))
+                //{
+                //    return "BS_PrerequisitesNotMetAnyOf".Translate($"{string.Join(", ", prerequsiteGene.LabelCap)}");
+                //}
 
                 if (gene.HasModExtension<GenePrerequisites>())
                 {
