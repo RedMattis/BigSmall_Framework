@@ -357,24 +357,17 @@ namespace BigAndSmall
         /// <summary>
         /// Added to pregnancy quality. If sum is above 0.5 (from all sources) then pregnancy outcome index will be set to a minimum of 0.
         /// </summary>
-        public float pregnancyQuality = 0; 
+        public float pregnancyQuality = 0;
         #endregion
 
         #region Metamorph
         /// <summary>
-        /// Target to (possibly) morph to.
+        /// Modifies the pawn if the <see cref="morphSettings"/> requirements are met
         /// </summary>
         public List<MorphTarget> morphTargets = [];
-        ///// <summary>
-        ///// Target to (possibly) morph to.
-        ///// </summary>
-        //public MorphTarget metamorphTarget = null;
-        ///// <summary>
-        ///// Same as above, but for morphing "backwards". Currently only used for juvenlie forms based on age.
-        ///// E.g. Queens giving birth to drones.
-        ///// </summary>
-        //public MorphTarget retromorphTarget = null;
-
+        /// <summary>
+        /// Requirements to attempt to morph to the <see cref="morphTargets"/>
+        /// </summary>
         public MorphSettings morphSettings = null;
 
         /// <summary>

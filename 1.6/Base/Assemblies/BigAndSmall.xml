@@ -170,6 +170,11 @@
             Probably best to leave it alone for now... It doesn't seem to break anything and might still fix something important.
             </summary>
         </member>
+        <member name="T:BigAndSmall.Gene_AutoTending">
+            <summary>
+             Basically improved version of auto-clotting.
+            </summary>
+        </member>
         <member name="F:BigAndSmall.MorphSettings.conditionals">
             <summary>
             Requires the conditional stat effector to evaluate to true for the morph to be allowed.
@@ -438,7 +443,12 @@
         </member>
         <member name="F:BigAndSmall.PawnExtension.morphTargets">
             <summary>
-            Target to (possibly) morph to.
+            Modifies the pawn if the <see cref="F:BigAndSmall.PawnExtension.morphSettings"/> requirements are met
+            </summary>
+        </member>
+        <member name="F:BigAndSmall.PawnExtension.morphSettings">
+            <summary>
+            Requirements to attempt to morph to the <see cref="F:BigAndSmall.PawnExtension.morphTargets"/>
             </summary>
         </member>
         <member name="F:BigAndSmall.PawnExtension.metamorphAtAge">

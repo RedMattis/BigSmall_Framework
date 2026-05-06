@@ -3,7 +3,9 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Verse;
+using static UnityEngine.Networking.UnityWebRequest;
 
 namespace BigAndSmall
 {
@@ -18,6 +20,7 @@ namespace BigAndSmall
     {
         private bool? _isFemale = null;
         protected bool IsFemale => _isFemale ??= pawn.gender != Gender.Male;
+        protected bool autoPregDisabled = false;
 
         public override void ResetCountdown()
         {
@@ -26,6 +29,8 @@ namespace BigAndSmall
 
         public override void TickEvent()
         {
+            if (autoPregDisabled) return;
+
             var settings = def.GetModExtension<AutoPregnancySettings>();
             var heSet = pawn.health.hediffSet;
             if (pawn?.ageTracker.Adult != true || pawn.GetStatValue(StatDefOf.Fertility) <= 0 || !IsFemale || heSet.HasHediff(HediffDefOf.Lactating))
@@ -61,6 +66,28 @@ namespace BigAndSmall
         {
             tickDown = Rand.Range(10000, 60000);
             base.PostAdd();
+        }
+
+        public void ToggleAutoPregnancy()
+        {
+            autoPregDisabled = !autoPregDisabled;
+        }
+
+        public override IEnumerable<Gizmo> GetGizmos()
+        {
+            yield return new Command_Action()
+            {
+                defaultLabel = autoPregDisabled ? "BS_RestoreAutoPregnancy".Translate() : "BS_EnoughAutoPregnancy".Translate(),
+                defaultDesc = autoPregDisabled ? "BS_RestoreAutoPregnancyDesc" : "BS_EnoughAutoPregnancyDesc".Translate(),
+                icon = ContentFinder<Texture2D>.Get(autoPregDisabled ? "GeneIcons/BS_AutoPregnancyGizmo" : "GeneIcons/BS_AutoPregnancyGizmo_STHAP", true),
+                action = ToggleAutoPregnancy
+            };
+        }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.Look(ref autoPregDisabled, "BS_AutoPregDisabled");
         }
     }
 

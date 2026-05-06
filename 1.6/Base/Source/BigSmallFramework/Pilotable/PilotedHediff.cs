@@ -9,6 +9,7 @@ using UnityEngine;
 using Verse;
 using Verse.AI;
 using static UnityEngine.GraphicsBuffer;
+using RimWorld.Planet;
 
 namespace BigAndSmall
 {
@@ -427,6 +428,19 @@ namespace BigAndSmall
             }
         }
 
+        public static void TryEjectFromPawn(Thing thing, Pawn parentPawn)
+        {
+            if (parentPawn.MapHeld != null)
+            {
+                GenPlace.TryPlaceThing(thing, parentPawn.Position, parentPawn.MapHeld, ThingPlaceMode.Near);
+            }
+            else if (parentPawn.IsCaravanMember() && parentPawn.GetCaravan() is Caravan car)
+                car.AddPawnOrItem(thing, addCarriedPawnToWorldPawnsIfAny: true);
+            else if (thing.Spawned == false && thing is Pawn pilotThing)
+            {
+                Find.WorldPawns.PassToWorld(pilotThing, PawnDiscardDecideMode.Decide);
+            }
+        }
 
         public void RemovePilots(bool mayRemoveHediff = true)
         {
@@ -467,8 +481,7 @@ namespace BigAndSmall
             {
                 Thing thing = content[i];
                 TryLearnSkill(thing);
-
-                GenPlace.TryPlaceThing(thing, pawn.Position, pawn.MapHeld, ThingPlaceMode.Near);
+                TryEjectFromPawn(thing, pawn);
             }
 
             if (!pawn.Dead && Props.temporarilySwapIdeology && cachedIdeology != null)

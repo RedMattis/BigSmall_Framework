@@ -31,7 +31,10 @@ namespace BigAndSmall
                 {
                     parent.pawn.genes.SetXenotype(Props.xenotype);
                 }
-                RaceMorpher.SwapThingDef(parent.pawn, Props.swapTarget, true, force: true, targetPriority: 100);
+                if (Props.swapTarget != null)
+                {
+                    RaceMorpher.SwapThingDef(parent.pawn, Props.swapTarget, true, force: true, targetPriority: 100);
+                }
             }));
             
         }
@@ -163,7 +166,7 @@ namespace BigAndSmall
                 int highestAge = Mathf.Max(ageNow, ageOther);
                 // Mechanoids shouldn't be turned into toddlers.
                 if (isMech && highestAge < BS.Settings.minAgeSapientMechs)
-                    highestAge = 13;
+                    highestAge = Mathf.RoundToInt(BS.Settings.minAgeSapientMechs);
                 int minimumAge = Mathf.Max(toddler, Mathf.Min(teen, highestAge));
 
                 newPawn.gender = aniPawn.gender == Gender.None ? newPawn.gender : aniPawn.gender;

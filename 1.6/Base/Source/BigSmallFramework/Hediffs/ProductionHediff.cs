@@ -189,7 +189,7 @@ namespace BigAndSmall
             }
             else
             {
-                GenPlace.TryPlaceThing(thing, pawn.Position, pawn.Map, ThingPlaceMode.Near);
+                Piloted.TryEjectFromPawn(thing, pawn);
             }
         }
 

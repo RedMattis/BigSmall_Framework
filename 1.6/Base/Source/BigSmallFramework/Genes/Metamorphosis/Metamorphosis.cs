@@ -26,6 +26,7 @@ namespace BigAndSmall
         // Morph result settings
         public ThingDef raceThingDef = null;
         public XenotypeDef xenotype;
+        public XenotypeDef fakeXenotype;
         public List<HediffDef> hediffs;
         public List<HediffToBodypart> hediffsToParts;
         public List<GeneDef> endoGenes;
@@ -113,6 +114,10 @@ namespace BigAndSmall
                         pawn.story.traits.RemoveTrait(trait);
                 }
             }
+            if (fakeXenotype != null)
+            {
+                pawn.genes.SetXenotypeDirect(fakeXenotype);
+            }
         }
 
         public float GetMorphWeight()
@@ -149,6 +154,7 @@ namespace BigAndSmall
     {
         #region Standard Morph Settings
         public bool isRetromorph = false;
+        public bool isStandalone = false;
         protected bool requiresFrequentChecks = false;
         /// <summary>
         /// Requires the conditional stat effector to evaluate to true for the morph to be allowed.
@@ -233,7 +239,7 @@ namespace BigAndSmall
             return pawnExtensions.Any(x => x.morphSettings != null);
         }
 
-        public static MorphTarget TryGetMorphTarget(Pawn pawn, IEnumerable<MorphSettings> triggers)
+        public static MorphTarget TryGetMorphTarget(Pawn pawn, IEnumerable<MorphSettings> triggers, List<PawnExtension> morphTargets)
         {
             bool? metamorphValid = null;
             bool? retromorphValid = null;
@@ -258,8 +264,7 @@ namespace BigAndSmall
             {
                 return null;
             }
-            var allPawnExts = pawn.GetAllPawnExtensions();
-            var allMetaMorphs = allPawnExts.Where(x => x.morphTargets != null).SelectMany(x => x.morphTargets).ToList();
+            var allMetaMorphs = morphTargets.Where(x => x.morphTargets != null).SelectMany(x => x.morphTargets).ToList();
             if (metamorphValid == true)
             {
                 var metamorphTargets = allMetaMorphs.Where(x => !x.isRetromorph).ToList();
@@ -328,13 +333,34 @@ namespace BigAndSmall
                 return;
             }
             
-            var withMorphTriggers = pawnExts.Where(x => x.morphSettings != null);
+            var withMorphSettings = pawnExts.Where(x => x.morphSettings != null);
 
-            if (withMorphTriggers.Any())
+            if (withMorphSettings.Any())
             {
-                var triggers = withMorphTriggers.Select(x => x.morphSettings);
-                var metamorphTarget = TryGetMorphTarget(pawn, triggers);
-                if (metamorphTarget == null)
+                MorphTarget target = null;
+                foreach(var morph in withMorphSettings)
+                {
+                    if (morph.morphSettings.isStandalone == true)
+                    {
+                        if (morph.morphTargets.NullOrEmpty())
+                        {
+                            Log.ErrorOnce($"{pawn} had morph settings set to standalone, but lacked targets", 92349231);
+                            continue;
+                        }
+                        if( TryGetMorphTarget(pawn, [morph.morphSettings], [morph]) is MorphTarget standaloneTarget)
+                        {
+                            target = standaloneTarget;
+                            break;
+                        }
+                    }
+                }
+                if (target == null)
+                {
+                    var triggers = withMorphSettings.Select(x => x.morphSettings);
+                    var allPawnExts = pawn.GetAllPawnExtensions();
+                    target = TryGetMorphTarget(pawn, triggers, allPawnExts);
+                }
+                if (target == null)
                 {
                     return;
                 }
@@ -342,7 +368,7 @@ namespace BigAndSmall
                 void morphAction()
                 {
                     pawnsQueuedForMorphing.Remove(pawn);
-                    metamorphTarget.ExecuteMorph(pawn);
+                    target.ExecuteMorph(pawn);
                 }
                 BigAndSmallCache.queuedJobs.Enqueue(morphAction);
             }

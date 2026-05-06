@@ -179,7 +179,7 @@ namespace BigAndSmall
             for (int i = contents.Count - 1; i >= 0; i--)
             {
                 Thing thing = contents[i];
-                GenPlace.TryPlaceThing(thing, pawn.Position, pawn.MapHeld, ThingPlaceMode.Near);
+                Piloted.TryEjectFromPawn(thing, pawn);
             }
         }
 
@@ -192,7 +192,7 @@ namespace BigAndSmall
             for (int i = content.Count - 1; i >= 0; i--)
             {
                 Thing thing = content[i];
-                GenPlace.TryPlaceThing(thing, pawn.Position, pawn.MapHeld, ThingPlaceMode.Near);
+                Piloted.TryEjectFromPawn(thing, pawn);
             }
             // Remove the hediff that tracks the total mass of the contents
             try { pawn.health.RemoveHediff(EnchumberanceHediff); }
@@ -349,7 +349,7 @@ namespace BigAndSmall
                     innerContainer.Remove(toRemove[i]);
                     if (pawn.Spawned)
                     {
-                        GenPlace.TryPlaceThing(toRemove[i], pawn.Position, pawn.Map, ThingPlaceMode.Near);
+                        Piloted.TryEjectFromPawn(toRemove[i], pawn);
                     }
                 }
             }

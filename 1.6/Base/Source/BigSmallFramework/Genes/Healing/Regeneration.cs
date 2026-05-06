@@ -13,6 +13,7 @@ namespace BigAndSmall
         const float baseHealingPerDayForSize1 = 8;
         const int tickFq = 1000;
         const float healingPerEvent = baseHealingPerDayForSize1 / GenDate.TicksPerDay * tickFq;
+        private static readonly FloatRange TendingQualityRange = new(0.4f, 1.0f);
 
         public override void ResetCountdown()
         {
@@ -35,6 +36,19 @@ namespace BigAndSmall
                     float healing = healingAmount * ((injury.Part.coverageAbsWithChildren + 0.0001f) / totalCoverage) * Rand.Range(0.5f, 1.5f);
                     injury.Heal(healing);
                     totalHealing += healing;
+
+                    try
+                    {
+                        if (injury.TendableNow())
+                        {
+                            injury.Tended(TendingQualityRange.RandomInRange, TendingQualityRange.TrueMax, 1);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Log.ErrorOnce($"Unhandled exception trying to tend wound {e.Message}\n{e.StackTrace}", 346722245);
+                    }
+                    
                 }
             }
             else

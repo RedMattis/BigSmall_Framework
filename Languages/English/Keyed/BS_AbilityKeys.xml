@@ -10,4 +10,8 @@
   <BS_NotEnoughRoom>Not enough space left.</BS_NotEnoughRoom>
   <BS_EngulfedVomit>{0} threw up due to internal damage, pain, or reduced digestive ability.</BS_EngulfedVomit>
   <BS_EngulfedColonist>{0} swallowed {1}! {1} will try to fight their way out as long as they are not downed. Pain or injuries to {0}'s stomach and torso will free them.</BS_EngulfedColonist>
+  <BS_RestoreAutoPregnancy>Enable auto-pregnancy</BS_RestoreAutoPregnancy>
+  <BS_RestoreAutoPregnancyDesc>Enable auto-pregnancy, letting random pregnancies occur again.</BS_RestoreAutoPregnancyDesc>
+  <BS_EnoughAutoPregnancy>Disable auto-pregnancy</BS_EnoughAutoPregnancy>
+  <BS_EnoughAutoPregnancyDesc>Disable randomly getting auto-pregnancies. Does not affect ongoing pregnancy</BS_EnoughAutoPregnancyDesc>
 </LanguageData>
