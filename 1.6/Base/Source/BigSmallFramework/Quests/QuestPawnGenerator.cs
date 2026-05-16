@@ -48,15 +48,10 @@ namespace BigAndSmall
             Faction faction = this.faction.GetValue(slate);
             var forcedTraits = this.forcedTraits.GetValue(slate);
             var rngForcedTrait = forceOneTraitOf.GetValue(slate)?.RandomElement();
-            //if (rngForcedTrait != null)
-            //{
-            //    forcedTraits.AddItem(rngForcedTrait);
-            //}
             if (playerFaction.GetValue(slate))
             {
                 faction = Faction.OfPlayer;
             }
-            //Faction ofPlayer = Faction.OfPlayer;
             PawnGenerationRequest request = new PawnGenerationRequest(
                 kindDef.GetValue(slate),
                 faction: faction,

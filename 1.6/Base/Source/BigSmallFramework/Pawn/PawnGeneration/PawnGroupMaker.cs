@@ -163,6 +163,7 @@ namespace BigAndSmall
 
         private static void TrySetInfiltrator(Pawn member)
         {
+            if (Faction.OfPlayerSilentFail == null) return;
             if (HumanlikeAnimals.IsHumanlikeAnimal(member?.def) == true)
             {
                 // Don't set infiltrators for humanlike animals.

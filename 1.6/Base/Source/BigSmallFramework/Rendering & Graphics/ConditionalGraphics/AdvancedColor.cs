@@ -559,12 +559,12 @@ namespace BigAndSmall
                     finalClr.Add(neutralClr);
                     didSet = true;
                 }
-                else if (pawn.HostileTo(Faction.OfPlayer))
+                else if (pawn.HostileTo(Faction.OfPlayerSilentFail))
                 {
                     finalClr.Add(enemyClr);
                     didSet = true;
                 }
-                else if (pawn.Faction != Faction.OfPlayer)
+                else if (pawn.Faction != Faction.OfPlayerSilentFail)
                 {
                     finalClr.Add(playerClr);
                     didSet = true;

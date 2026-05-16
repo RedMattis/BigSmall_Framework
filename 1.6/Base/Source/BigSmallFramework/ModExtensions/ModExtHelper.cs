@@ -21,6 +21,7 @@ namespace BigAndSmall
             if (includeInactive)
             {
                 result = [.. GetHediffExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
+                    .. GetApparelEtcExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
                     .. GetAllGeneExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
                     .. GetAllTraitExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
                     .. pawn.kindDef.GetAllPawnExtensions(parentWhitelist, parentBlacklist, doSort),
@@ -39,6 +40,7 @@ namespace BigAndSmall
             else
             {
                 result = [.. GetHediffExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
+                    .. GetApparelEtcExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
                     .. GetActiveGeneExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
                     .. GetAllActiveTraitExtensions<PawnExtension>(pawn, parentWhitelist, parentBlacklist, doSort),
                     .. pawn.kindDef.GetAllPawnExtensions(parentWhitelist, parentBlacklist, doSort),
@@ -124,6 +126,12 @@ namespace BigAndSmall
             return GetFilteredResult(matches, parentWhitelist, parentBlacklist, doSort);
         }
 
+        public static List<T> GetApparelEtcExtensions<T>(this Pawn pawn, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) where T : DefModExtension
+        {
+            List<ModExtWrapper<T>> matches = GetAllMatchingExtensionsFromApparelEtc<T>(pawn);
+            return GetFilteredResult(matches, parentWhitelist, parentBlacklist, doSort);
+        }
+
         public static List<T> GetActiveGeneExtensions<T>(this Pawn pawn, List<Type> parentWhitelist = null, List<Type> parentBlacklist = null, bool doSort = true) where T : DefModExtension
         {
             List<ModExtWrapper<T>> matches = GetAllMatchingExtensionsFromGenes<T>(pawn, true);
@@ -202,6 +210,22 @@ namespace BigAndSmall
             }
             return extensions;
         }
+
+        private static List<ModExtWrapper<T>> GetAllMatchingExtensionsFromApparelEtc<T>(Pawn pawn) where T : DefModExtension
+        {
+            List<ModExtWrapper<T>> extensions = [];
+            if (pawn.equipment is { } equipmentTracker && equipmentTracker.Primary is { } primaryEq )
+            {
+                extensions.AddRange(GetAllMatchingExtensions<T>(primaryEq.def, primaryEq.GetType()));
+            }
+            if (pawn.apparel?.WornApparel == null) return extensions;
+            foreach (var apparel in pawn.apparel.WornApparel)
+            {
+                extensions.AddRange(GetAllMatchingExtensions<T>(apparel.def, apparel.GetType()));
+            }
+            return extensions;
+        }
+
         private static List<ModExtWrapper<T>> GetAllMatchingExtensionsFromHediffSetWithSource<T>(Pawn pawn) where T : DefModExtension
         {
             List<ModExtWrapper<T>> extensions = [];

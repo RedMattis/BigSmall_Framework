@@ -230,8 +230,8 @@ namespace BigAndSmall
         {
             var corpses = map.listerThings.ThingsInGroup(ThingRequestGroup.Corpse).OfType<Corpse>().InRandomOrder().ToList();
 
-            if (pawn.Faction != Faction.OfPlayer)
-                pawn.SetFaction(Faction.OfPlayer);
+            if (pawn.Faction != Faction.OfPlayerSilentFail && Faction.OfPlayerSilentFail != null)
+                pawn.SetFaction(Faction.OfPlayerSilentFail);
 
             if (!corpseReturn)
             {

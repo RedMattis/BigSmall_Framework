@@ -61,7 +61,7 @@ namespace BigAndSmall
 
         public override bool ValidateTarget(LocalTargetInfo target, bool showMessages = true)
         {
-            if (PropsE.playerOwnedOnly && target.Thing.Faction != Faction.OfPlayer)
+            if (PropsE.playerOwnedOnly && target.Thing.Faction != Faction.OfPlayerSilentFail)
             {
                 if (showMessages)
                 {

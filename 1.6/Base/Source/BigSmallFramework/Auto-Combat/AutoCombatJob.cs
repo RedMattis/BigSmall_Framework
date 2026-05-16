@@ -370,7 +370,7 @@ namespace BigAndSmall
 
             pawn.mindState.enemyTarget = thing;
             Pawn enemy;
-            if ((enemy = thing as Pawn) != null && thing.Faction == Faction.OfPlayer && pawn.Position.InHorDistOf(thing.Position, 40f) && !enemy.IsShambler && !pawn.IsPsychologicallyInvisible())
+            if ((enemy = thing as Pawn) != null && thing.Faction == Faction.OfPlayerSilentFail && pawn.Position.InHorDistOf(thing.Position, 40f) && !enemy.IsShambler && !pawn.IsPsychologicallyInvisible())
             {
                 Find.TickManager.slower.SignalForceNormalSpeed();
             }

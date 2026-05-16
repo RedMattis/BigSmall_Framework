@@ -172,7 +172,7 @@ namespace BigAndSmall
                                 pawn.SetFaction(zombieFaction);
 
                                 // Check if pawn belongs to the player's faction
-                                if (pawn.Faction == Faction.OfPlayer)
+                                if (pawn.Faction == Faction.OfPlayerSilentFail && Faction.OfPlayerSilentFail != null)
                                 {
                                     if (pawn?.guest?.resistance != null)
                                     {

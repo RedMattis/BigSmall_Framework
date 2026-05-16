@@ -121,7 +121,8 @@ namespace BigAndSmall
         {
             try
             {
-                var playerFaction = Faction.OfPlayer;
+                var playerFaction = Faction.OfPlayerSilentFail;
+                if (playerFaction == null) return true;
                 FactionExtension factionExtension = playerFaction.def.GetModExtension<FactionExtension>();
                 if (factionExtension != null &&
                     factionExtension.pawnKindSwaps

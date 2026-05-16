@@ -288,13 +288,13 @@ namespace BigAndSmall
             Thing customTarget = apparel ?? (Thing)pawn;
             return Triggers.All(x => x switch
             {
-                AltTrigger.Colonist => pawn.Faction == Faction.OfPlayer,
-                AltTrigger.SlaveOfColony => pawn.HostFaction == Faction.OfPlayer && pawn.IsSlave,
+                AltTrigger.Colonist => pawn.Faction == Faction.OfPlayerSilentFail && Faction.OfPlayerSilentFail != null,
+                AltTrigger.SlaveOfColony => pawn.HostFaction == Faction.OfPlayerSilentFail && pawn.IsSlave,
                 AltTrigger.Male => pawn.gender == Gender.Male,
                 AltTrigger.Female => pawn.gender == Gender.Female,
-                AltTrigger.PrisonerOfColony => pawn.HostFaction == Faction.OfPlayer && pawn.IsPrisoner,
+                AltTrigger.PrisonerOfColony => pawn.HostFaction == Faction.OfPlayerSilentFail && pawn.IsPrisoner,
                 AltTrigger.SlaveOrPrisoner => pawn.IsSlave || pawn.IsPrisoner,
-                AltTrigger.OfColony => pawn.HostFaction == Faction.OfPlayer || pawn.Faction == Faction.OfPlayer,
+                AltTrigger.OfColony => pawn.HostFaction == Faction.OfPlayerSilentFail || pawn.Faction == Faction.OfPlayerSilentFail,
                 AltTrigger.Unconcious => pawn.Downed && !pawn.health.CanCrawl,
                 AltTrigger.Dead => pawn.Dead,
                 AltTrigger.Rotted => pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Rotting,

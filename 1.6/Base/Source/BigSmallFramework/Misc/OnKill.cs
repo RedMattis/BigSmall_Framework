@@ -149,7 +149,7 @@ namespace BigAndSmall
                 }
 
                 // 10% chance of reanimation if Colonist
-                if (__instance.Faction == Faction.OfPlayer && (ModsConfig.IsActive("RedMattis.Undead") || ModsConfig.IsActive("RedMattis.Undead.ZombieApoc")) && !BigSmallMod.settings.preventUndead)
+                if (__instance.Faction == Faction.OfPlayerSilentFail && (ModsConfig.IsActive("RedMattis.Undead") || ModsConfig.IsActive("RedMattis.Undead.ZombieApoc")) && !BigSmallMod.settings.preventUndead)
                 {
                     if (Rand.Chance(VUReturning.ReturnChanceColonist))
                     {

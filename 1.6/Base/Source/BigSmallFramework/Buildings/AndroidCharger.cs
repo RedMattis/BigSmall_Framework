@@ -146,7 +146,7 @@ namespace BigAndSmall
             {
                 yield return floatMenuOption2;
             }
-            if (selPawn.Faction == Faction.OfPlayer && CanUseChargers(selPawn) && selPawn.CanReach(this, PathEndMode.Touch, Danger.Deadly))
+            if (selPawn.Faction == Faction.OfPlayerSilentFail && CanUseChargers(selPawn) && selPawn.CanReach(this, PathEndMode.Touch, Danger.Deadly))
             {
                 if (user == null)
                 {

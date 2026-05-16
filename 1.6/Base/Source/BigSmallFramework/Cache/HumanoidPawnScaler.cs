@@ -1039,7 +1039,7 @@ namespace BigAndSmall
                             try
                             {
                                 // If colonist, or prisoner
-                                if (pawn.Faction == Faction.OfPlayer || pawn.IsPrisonerOfColony)
+                                if (pawn.Faction == Faction.OfPlayerSilentFail || pawn.IsPrisonerOfColony)
                                 {
                                     // Drop the item if it's not allowed.
                                     pawn.apparel.TryDrop(apItem);
