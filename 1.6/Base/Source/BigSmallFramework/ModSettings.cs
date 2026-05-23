@@ -83,6 +83,13 @@ namespace BigAndSmall
             Widgets.EndScrollView();
         }
 
+        private string inflitratorChanceStr;
+        private string inflitratorRaidChanceStr;
+        private string immortalReturnFactorStr;
+        private string soulPowerFalloffOffsetStr;
+        private string soulPowerGainMultiplierStr;
+        private string metabolismLimitOffsetStr;
+
         private void DrawGeneralTab(Rect inRect)
         {
             Listing_Standard listStd = new()
@@ -122,19 +129,21 @@ namespace BigAndSmall
             listStd.Label("BS_GameMechanics".Translate().AsTipTitle());
             listStd.GapLine();
             CreateSettingCheckbox(listStd, "BS_PreventUndead".Translate(), ref settings.preventUndead);
-            CreateSettingsSlider(listStd, "BS_InflitratorChance".Translate(), ref settings.inflitratorChance, 0f, 1f, (f) => $"{f * 100:F1}%");
-            CreateSettingsSlider(listStd, "BS_InflitratorRaidChance".Translate(), ref settings.inflitratorRaidChance, 0f, 1f, (f) => $"{f * 100:F1}%");
+            CreateSettingsSlider(listStd, "BS_InflitratorChance".Translate(), ref settings.inflitratorChance, ref inflitratorChanceStr, 0f, 1f, (f) => $"{f * 100:F1}%");
+            CreateSettingsSlider(listStd, "BS_InflitratorRaidChance".Translate(), ref settings.inflitratorRaidChance, ref inflitratorRaidChanceStr, 0f, 1f, (f) => $"{f * 100:F1}%");
             listStd.GapLine();
-            CreateSettingsSlider(listStd, "BS_ImmortalReturnFactor".Translate(), ref settings.immortalReturnTimeFactor, 0.01f, 5f, (f) => $"{f * 100:F1}%");
+            CreateSettingsSlider(listStd, "BS_ImmortalReturnFactor".Translate(), ref settings.immortalReturnTimeFactor, ref immortalReturnFactorStr, 0.01f, 5f, (f) => $"{f * 100:F1}%");
             listStd.GapLine();
-            CreateSettingsSlider(listStd, "BS_SoulPowerFalloffOffset".Translate(), ref settings.soulPowerFalloffOffset, 0, 20f, (f) => $"{f:F1}");
-            CreateSettingsSlider(listStd, "BS_SoulPowerGainMultiplier".Translate(), ref settings.soulPowerGainMultiplier, 0.5f, 5f, (f) => $"{f * 100:F1}%");
+            CreateSettingsSlider(listStd, "BS_SoulPowerFalloffOffset".Translate(), ref settings.soulPowerFalloffOffset, ref soulPowerFalloffOffsetStr, 0, 20f, (f) => $"{f:F1}");
+            CreateSettingsSlider(listStd, "BS_SoulPowerGainMultiplier".Translate(), ref settings.soulPowerGainMultiplier, ref soulPowerGainMultiplierStr, 0.5f, 5f, (f) => $"{f * 100:F1}%");
             listStd.GapLine();
-            CreateSettingsSlider(listStd, "BS_MetabolismLimitOffset".Translate(), ref settings.metabolismLimits, 0, 500, (f) => $"{f:F0}");
+            CreateSettingsSlider(listStd, "BS_MetabolismLimitOffset".Translate(), ref settings.metabolismLimits, ref metabolismLimitOffsetStr, 0, 500, (f) => $"{f:F0}");
 
             listStd.End();
             EndScrollArea();
         }
+
+        private string sapientMechsMinAgeStr;
 
         private void DrawRacesTab(Rect inRect)
         {
@@ -164,14 +173,21 @@ namespace BigAndSmall
             CreateSettingCheckbox(listStd, "BS_AllAnimalsHaveHands".Translate(), ref settings.allAnimalsHaveHands);
             CreateSettingCheckbox(listStd, "BS_SapientAnimalsCanRomanceAnySapientAnimals".Translate(), ref settings.animalOnAnimal);
             CreateSettingCheckbox(listStd, "BS_SapientMechanoids".Translate(), ref settings.sapientMechanoids);
-            CreateSettingsSlider(listStd, "BS_SapientMechsMinAge".Translate(), ref settings.minAgeSapientMechs, 3, 20, (f) => $"{f:F0}");
+            CreateSettingsSlider(listStd, "BS_SapientMechsMinAge".Translate(), ref settings.minAgeSapientMechs, ref sapientMechsMinAgeStr, 3, 20, (f) => $"{f:F0}");
 
-            
+
 
             listStd.End();
             EndScrollArea();
         }
 
+        private string dmgExpontentStr;
+        private string flatDmtStr;
+        private string hungerMultStr;
+        private string visualLargerMultStr;
+        private string visualSmallerMultStr;
+        private string headPowLargeStr;
+        private string headPowSmallStr;
         private void DrawSizeTab(Rect inRect)
         {
             Listing_Standard listStd = new()
@@ -186,11 +202,11 @@ namespace BigAndSmall
             listStd.GapLine();
             listStd.Label("BS_LowestUsed".Translate());
 
-            CreateSettingsSlider(listStd, "BS_MultDamageExplain".Translate(), ref settings.dmgExponent, min: 0, max: 2, valueFormatter: (f) => $"{f * 100:F2}%");
-            CreateSettingsSlider(listStd, "BS_FlatDMGExplain".Translate(), ref settings.flatDamageIncrease, 1f, 20f, (f) => $"{f:F0}");
+            CreateSettingsSlider(listStd, "BS_MultDamageExplain".Translate(), ref settings.dmgExponent, ref dmgExpontentStr, min: 0, max: 2, valueFormatter: (f) => $"{f * 100:F2}%");
+            CreateSettingsSlider(listStd, "BS_FlatDMGExplain".Translate(), ref settings.flatDamageIncrease, ref flatDmtStr, 1f, 20f, (f) => $"{f:F0}");
 
             listStd.GapLine();
-            CreateSettingsSlider(listStd, "BS_HungerMultiplierField".Translate(), ref settings.hungerRate, 0f, 1, (f) => $"{f * 100:F0}%");
+            CreateSettingsSlider(listStd, "BS_HungerMultiplierField".Translate(), ref settings.hungerRate, ref hungerMultStr, 0f, 1, (f) => $"{f * 100:F0}%");
             listStd.GapLine();
 
             listStd.Label("BS_Rendering".Translate().AsTipTitle());
@@ -198,31 +214,19 @@ namespace BigAndSmall
             CreateSettingCheckbox(listStd, "BS_SizeOffsetAnimalPawn".Translate(), ref settings.offsetAnimalBodyPos);
             CreateSettingCheckbox(listStd, "BS_DisabeVFCachine".Translate(), ref settings.disableTextureCaching);
             listStd.Label("BS_ScalePawnDefault".Translate());
-            CreateSettingsSlider(listStd, "BS_ScaleLargerPawns".Translate(), ref settings.visualLargerMult, min: 0.05f, max: 20f, (f) => $"{f:F2}");
-            CreateSettingsSlider(listStd, "BS_ScaleSmallerPawns".Translate(), ref settings.visualSmallerMult, min: 0.05f, max: 1f, (f) => $"{f:F2}");
+            CreateSettingsSlider(listStd, "BS_ScaleLargerPawns".Translate(), ref settings.visualLargerMult, ref visualLargerMultStr, min: 0.05f, max: 20f, (f) => $"{f:F2}");
+            CreateSettingsSlider(listStd, "BS_ScaleSmallerPawns".Translate(), ref settings.visualSmallerMult, ref visualSmallerMultStr, min: 0.05f, max: 1f, (f) => $"{f:F2}");
             listStd.GapLine();
             listStd.Label("BS_HeadSizeExplain".Translate());
-            CreateSettingsSlider(listStd, "BS_HeadExponentLargeField".Translate(), ref settings.headPowLarge, min: -2.00f, max: 2f, (f) => $"{f:F2}");
+            CreateSettingsSlider(listStd, "BS_HeadExponentLargeField".Translate(), ref settings.headPowLarge, ref headPowLargeStr, min: -2.00f, max: 2f, (f) => $"{f:F2}");
             listStd.Label("BS_HeadExponentSmallExplain".Translate());
-            CreateSettingsSlider(listStd, "BS_HeadExponentSmalleField".Translate(), ref settings.headPowSmall, min: -1.00f, max: 2f, (f) => $"{f:F2}");
+            CreateSettingsSlider(listStd, "BS_HeadExponentSmalleField".Translate(), ref settings.headPowSmall, ref headPowSmallStr, min: -1.00f, max: 2f, (f) => $"{f:F2}");
             listStd.GapLine();
             CreateSettingCheckbox(listStd, "BS_NormalizeBodyType".Translate(), ref settings.scaleBodyTypes);
 
             listStd.End();
             EndScrollArea();
         }
-
-        //private void DrawGameMechanicsTab(Rect inRect)
-        //{
-        //    Listing_Standard listStd = new Listing_Standard();
-        //    BeginScrollArea(inRect, ref scrollPosition, out Rect viewRect, 300f);
-        //    listStd.Begin(viewRect);
-
-
-
-        //    listStd.End();
-        //    EndScrollArea();
-        //}
 
         private void DrawAutoCombat(Rect inRect)
         {

@@ -81,7 +81,34 @@ namespace BigAndSmall
 
 
 
-        public static void CreateSettingsSlider(Listing_Standard listingStandard, string labelName, ref float value, float min = 0, float max = 10, Func<float, string> valueFormatter = null)
+        //public static void CreateSettingsSlider(Listing_Standard listingStandard, string labelName, ref float value, float min = 0, float max = 10, Func<float, string> valueFormatter = null)
+        //{
+        //    // Define a total rect for one row of slider and label
+        //    Rect fullRow = listingStandard.GetRect(Text.LineHeight);
+
+        //    // Divide the row into segments for the label, the slider, and the value text
+        //    float labelWidth = fullRow.width * 0.46f;
+        //    float sliderWidth = fullRow.width * 0.45f;
+        //    float valueWidth = fullRow.width * 0.09f;
+
+        //    Rect labelRect = new(fullRow.x, fullRow.y, labelWidth, fullRow.height);
+        //    Rect sliderRect = new(labelRect.xMax, fullRow.y, sliderWidth, fullRow.height);
+        //    Rect valueRect = new(sliderRect.xMax, fullRow.y, valueWidth, fullRow.height);
+
+        //    // Draw the label, slider, and value on the respective Rects
+        //    Widgets.Label(labelRect, labelName);
+        //    value = Widgets.HorizontalSlider(sliderRect, value, min, max, true);
+        //    if (valueFormatter != null)
+        //    {
+        //        Widgets.Label(valueRect, valueFormatter(value));
+        //    }
+        //    else
+        //    {
+        //        Widgets.Label(valueRect, $"{value:F1}");
+        //    }
+        //}
+
+        public static void CreateSettingsSlider(Listing_Standard listingStandard, string labelName, ref float value, ref string buffer, float min = 0, float max = 10, Func<float, string> valueFormatter = null)
         {
             // Define a total rect for one row of slider and label
             Rect fullRow = listingStandard.GetRect(Text.LineHeight);
@@ -95,17 +122,57 @@ namespace BigAndSmall
             Rect sliderRect = new(labelRect.xMax, fullRow.y, sliderWidth, fullRow.height);
             Rect valueRect = new(sliderRect.xMax, fullRow.y, valueWidth, fullRow.height);
 
-            // Draw the label, slider, and value on the respective Rects
             Widgets.Label(labelRect, labelName);
             value = Widgets.HorizontalSlider(sliderRect, value, min, max, true);
-            if (valueFormatter != null)
+            TextFieldNumericFloat(valueRect, ref value, ref buffer, min: min, max: max, valueFormatter: valueFormatter);
+        }
+
+        public static void TextFieldNumericFloat(Rect rect, ref float val, ref string buffer, float min = 0f, float max = 1E+09f, Func<float, string> valueFormatter = null)
+        {
+            static string SetBufferFromValue(float value, Func<float, string> valueFormatter) =>
+                valueFormatter != null ? valueFormatter(value) : value.ToString("F1");
+            buffer ??= val.ToString();
+            GUI.SetNextControlName("TextField" + rect.y.ToString("F0") + rect.x.ToString("F0"));
+
+            if (!float.TryParse(buffer, out float parsedValue1) || !NearlyEquals(parsedValue1, val))
+                buffer = val.ToString("F2");
+            string displayText = SetBufferFromValue(val, valueFormatter);
+            bool percent = displayText.EndsWith('%');
+            string editText = TextField(rect, displayText);
+            string cleanText = editText.Replace("%", "");
+
+            if (cleanText != buffer && float.TryParse(buffer, out float parsedValue))
             {
-                Widgets.Label(valueRect, valueFormatter(value));
+                buffer = cleanText;
+                ResolveParseNow(cleanText, ref val, ref buffer, percent, min, max);
             }
-            else
+
+            static void ResolveParseNow(string edited, ref float val, ref string buffer, bool percent, float min, float max)
             {
-                Widgets.Label(valueRect, $"{value:F1}");
+                if (edited.NullOrEmpty())
+                {
+                    ResetValue(edited, ref val, ref buffer, min, max);
+                }
+                else if (float.TryParse(edited, out var result2))
+                {
+                    if (percent) result2 = result2 /= 100f;
+                    val = Mathf.Clamp(result2, min, max);
+                    buffer = val.ToString();
+                }
             }
+            static void ResetValue(string edited, ref float val, ref string buffer, float min, float max)
+            {
+                val = default;
+                if (min > 0f) val = Mathf.RoundToInt(min);
+                if (max < 0f) val = Mathf.RoundToInt(max);
+                buffer = val.ToString();
+            }
+        }
+
+        public static string TextField(Rect rect, string text)
+        {
+            text ??= "";
+            return GUI.TextField(rect, text, Text.CurTextFieldStyle);
         }
 
         public static void CreateSettingCheckbox(Listing_Standard listingStandard, string labelName, ref bool value, bool disabled=false)

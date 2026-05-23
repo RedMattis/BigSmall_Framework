@@ -175,6 +175,10 @@ namespace BigAndSmall
                 chance = Mathf.Min(chance * Rand.Range(1f, 10f), 1f - (1f - chance) / 2);
             }
             bool soloInfiltrator = Rand.Chance(BigSmallMod.settings.inflitratorChance);
+            if (member?.ageTracker?.AgeBiologicalYears < 3)
+            {
+                return;
+            }
 
             // It can only be an infiltrator raid if it is hostile.
             bool infiltratorRaid = member?.Faction.HostileTo(Faction.OfPlayerSilentFail) == true

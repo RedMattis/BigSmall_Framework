@@ -126,6 +126,7 @@ namespace BigAndSmall
                     EjectCorpse();
                     // Check for faction of def BS_ZombieFaction. If it exists, we may want to set the pawn to that faction.
                     Faction zombieFaction = Find.FactionManager.AllFactions.FirstOrDefault(x => x.def.defName == "BS_ZombieFaction");
+                    HediffDef animalReturnedHediff = null;
 
                     if (pawn.RaceProps.Humanlike)
                     {
@@ -149,11 +150,15 @@ namespace BigAndSmall
                     }
                     else
                     {
-                        pawn.health.AddHediff(GetAnimalReturnedHediff(pawn));
+                        animalReturnedHediff = GetAnimalReturnedHediff(pawn);
                     }
 
                     // Reanimate
                     GameUtils.UnhealingRessurection(pawn);
+                    if (animalReturnedHediff != null)
+                    {
+                        pawn.health.AddHediff(animalReturnedHediff);
+                    }
 
                     // 33% chance of entering berserk mental state
                     if (!zombieApocalypseMode && Rand.Chance(BerserkChance) || zombieApocalypseMode && Rand.Chance(BerserkChanceApoc))

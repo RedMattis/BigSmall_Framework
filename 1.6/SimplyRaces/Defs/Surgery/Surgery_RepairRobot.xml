@@ -93,6 +93,7 @@
     <descriptionHyperlinks><ThingDef>ComponentIndustrial</ThingDef></descriptionHyperlinks>
     <jobString>Restoring part.</jobString>
     <deathOnFailedSurgeryChance>0</deathOnFailedSurgeryChance>
+    <surgerySuccessChanceFactor>1.5</surgerySuccessChanceFactor>
     <researchPrerequisite>
       <li>Prosthetics</li>
     </researchPrerequisite>
@@ -139,6 +140,7 @@
     <descriptionHyperlinks><ThingDef>ComponentIndustrial</ThingDef></descriptionHyperlinks>
     <jobString>Restoring part.</jobString>
     <deathOnFailedSurgeryChance>0</deathOnFailedSurgeryChance>
+    <surgerySuccessChanceFactor>1.75</surgerySuccessChanceFactor>
     <researchPrerequisite>
       <li>Bionics</li>
     </researchPrerequisite>
@@ -189,6 +191,7 @@
     <descriptionHyperlinks><ThingDef>Plasteel</ThingDef></descriptionHyperlinks>
     <jobString>Restoring part.</jobString>
     <deathOnFailedSurgeryChance>0</deathOnFailedSurgeryChance>
+    <surgerySuccessChanceFactor>2</surgerySuccessChanceFactor>
     <researchPrerequisite>
       <li>Machining</li>
     </researchPrerequisite>
@@ -243,6 +246,7 @@
     <descriptionHyperlinks><ThingDef>Plasteel</ThingDef></descriptionHyperlinks>
     <jobString>Restoring part.</jobString>
     <deathOnFailedSurgeryChance>0</deathOnFailedSurgeryChance>
+    <surgerySuccessChanceFactor>2.5</surgerySuccessChanceFactor>
     <researchPrerequisite>
       <li>Electricity</li>
     </researchPrerequisite>
