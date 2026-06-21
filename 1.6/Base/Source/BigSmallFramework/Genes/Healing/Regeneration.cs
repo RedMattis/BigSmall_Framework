@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using Mono.Security.Cryptography;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +9,28 @@ using Verse;
 
 namespace BigAndSmall
 {
+    public class Regeneration_TendOnlyIfSuperclotting : Regeneration
+    {
+        bool hasSuperClotting = false;
+        protected override bool TendsInjuries => hasSuperClotting;
+        protected override FloatRange TendingQualityRange { get; set; } = new(0.5f, 1.3f);
+        public override void TickEvent()
+        {
+            if (pawn?.genes is Pawn_GeneTracker genes && genes.HasActiveGene(BSDefs.Superclotting))
+            {
+                hasSuperClotting = true;
+            }
+            base.TickEvent();
+        }
+    }
+
     public class Regeneration : TickdownGene
     {
         const float baseHealingPerDayForSize1 = 8;
         const int tickFq = 1000;
         const float healingPerEvent = baseHealingPerDayForSize1 / GenDate.TicksPerDay * tickFq;
-        private static readonly FloatRange TendingQualityRange = new(0.4f, 1.0f);
+        protected virtual FloatRange TendingQualityRange { get; set; } = new(0.5f, 1.3f);
+        protected virtual bool TendsInjuries => true;
 
         public override void ResetCountdown()
         {
@@ -25,8 +42,7 @@ namespace BigAndSmall
             {
                 return;
             }
-            var allInjuries = HealthHelpers.GetAllInjuries(pawn);
-            if (allInjuries.Any())
+            if (HealthHelpers.GetAllInjuries(pawn) is var allInjuries && allInjuries.Any())
             {
                 float healingAmount = GetHealingAmount() * healingPerEvent;
                 float totalCoverage = allInjuries.Sum(x => x.Part.coverageAbsWithChildren + 0.0001f);
@@ -39,9 +55,16 @@ namespace BigAndSmall
 
                     try
                     {
-                        if (injury.TendableNow())
+                        if (TendsInjuries)
                         {
-                            injury.Tended(TendingQualityRange.RandomInRange, TendingQualityRange.TrueMax, 1);
+                            if (TendsInjuries && injury.TendableNow())
+                            {
+                                injury.Tended(TendingQualityRange.RandomInRange, TendingQualityRange.TrueMax, 1);
+                            }
+                            else if (injury.TryGetComp<HediffComp_TendDuration>() is var currentTend & currentTend.tendQuality < 0.5f)
+                            {
+                                currentTend.tendQuality = TendingQualityRange.RandomInRange;
+                            }
                         }
                     }
                     catch (Exception e)

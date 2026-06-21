@@ -70,6 +70,8 @@ namespace BigAndSmall
         public static GeneDef Body_MaleOnly;
         [MayRequire("Ludeon.Rimworld.Biotech")]
         public static GeneDef Body_FemaleOnly;
+        [MayRequire("Ludeon.Rimworld.Biotech")]
+        public static GeneDef Superclotting;
         [MayRequire("RedMattis.BigSmall.Core")]
         public static GeneDef BS_ReturningSoul;
         [MayRequire("RedMattis.BigSmall.Core")]
@@ -78,6 +80,7 @@ namespace BigAndSmall
         public static GeneDef BS_AlienApperanceStandards;
         [MayRequire("RedMattis.BigSmall.Core")]
         public static GeneDef BS_AlienApperanceStandards_Lesser;
+        
 
         // Hediffs
         public static HediffDef BS_NoHands;

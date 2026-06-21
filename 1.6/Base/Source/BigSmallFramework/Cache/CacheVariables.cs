@@ -113,7 +113,7 @@ namespace BigAndSmall
         public HashSet<RacialFeatureDef> racialFeaturesAuto = [];
 
         /// <summary>
-        /// Banns addictions that are not whitelisted or better.
+        /// Bans addictions that are not whitelisted or better.
         /// </summary>
         public bool banAddictions = false;
         public bool partsCanBeHarvested = true;

@@ -160,6 +160,7 @@ namespace BigAndSmall
         /// E.g. able to use guns. Highest value will be used. E.g. a bionic with 1.0 will make the pawn always avoid penalties.
         /// </summary>
         public float? animalFineManipulation = null;
+        public float animalFineManipulationOffset = 0;
 
         /// <summary>
         /// Transforms the pawn into a specific xenotype under some conditions.
@@ -532,6 +533,15 @@ namespace BigAndSmall
         /// Force-adds these traits.
         /// </summary>
         public List<TraitDef> forcedTraits = [];
+        public List<GeneticTraitData> forcedTraitDegrees = [];
+        public record struct TraitDegreeData(TraitDef Def, int Degree);
+        public IEnumerable<TraitDegreeData> GetForcedTraits()
+        {
+            foreach (var t in forcedTraits)
+                yield return new(t, 0);
+            foreach (var td in forcedTraitDegrees)
+                yield return new(td.def, td.degree);
+        }
 
         public List<TraitDef> traitsDependentOnRace = [];
         /// <summary>

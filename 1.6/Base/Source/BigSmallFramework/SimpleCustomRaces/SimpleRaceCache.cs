@@ -19,7 +19,7 @@ namespace BigAndSmall
             UpdateFrequentUpdateGeneList();
             Metamorphosis.HandleMetamorph(pawn, allExt);
             ProcessRaceGeneRequirements(raceExts);
-            ProcessRaceTraitRequirements(raceExts);
+            HandleTraitRequirements(raceExts);
             ProcessForcedHediffs(allExt);
             ProcessRaceHediffRequirements(raceExts);
             ProcessHediffsToRemove(allExt);
@@ -110,13 +110,14 @@ namespace BigAndSmall
             }
         }
 
-        private void ProcessRaceTraitRequirements(List<PawnExtension> raceExts)
+        private void HandleTraitRequirements(List<PawnExtension> raceExts)
         {
             if (pawn.story?.traits is TraitSet traits)
             {
-                var forcedTraits = raceExts.SelectMany(ext => ext.forcedTraits?.Where(t => !traits.HasTrait(t))).ToList();
+                var allForcedTraits = raceExts.SelectMany(ext => ext.GetForcedTraits()).ToList();
+                var missingTraits = allForcedTraits.Where(ft => traits.GetTrait(ft.Def) is not Trait t || t.Degree != ft.Degree).Distinct().ToList();
                 FilterListSet <TraitDef> traitFilter = raceExts.Where(x => x.traitFilters != null).Select(x => x.traitFilters).MergeFilters();
-                var traitsToRemove = traits.allTraits.Where(t => traitFilter != null && !forcedTraits.Any(ft => ft == t.def) && traitFilter.GetFilterResult(t.def).Denied()).ToList();
+                var traitsToRemove = traits.allTraits.Where(t => traitFilter != null && !allForcedTraits.Any(ft => ft.Def == t.def && ft.Degree == t.Degree) && traitFilter.GetFilterResult(t.def).Denied()).ToList();
                 if (traitsToRemove.Count > 0)
                 {
                     for (int idx = traitsToRemove.Count - 1; idx >= 0; idx--)
@@ -127,9 +128,12 @@ namespace BigAndSmall
                     }
                 }
 
-                if (forcedTraits.Count > 0)
+                if (missingTraits.Count > 0)
                 {
-                    forcedTraits.Where(t => !traits.HasTrait(t)).ToList().ForEach(t => traits.GainTrait(new Trait(t, 0, true)));
+                    foreach(var traitToAdd in missingTraits)
+                    {
+                        traits.GetTrait(traitToAdd.Def, traitToAdd.Degree);
+                    }
                 }
             }
         }

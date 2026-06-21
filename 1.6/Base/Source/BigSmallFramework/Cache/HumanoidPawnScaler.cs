@@ -340,6 +340,7 @@ namespace BigAndSmall
                     if (allPawnExt.Any(x => x.animalFineManipulation != null))
                     {
                         fineManipulation = allPawnExt.Where(x => x.animalFineManipulation != null).Max(x => x.animalFineManipulation.Value);
+                        fineManipulation += allPawnExt.Sum(x => x.animalFineManipulationOffset);
                     }
 
                     canWield = allPawnExt.Any(x => x.canWieldThings == true) || !allPawnExt.Any(x => x.canWieldThings == false);

@@ -26,7 +26,7 @@
         </member>
         <member name="F:BigAndSmall.BSCache.banAddictions">
             <summary>
-            Banns addictions that are not whitelisted or better.
+            Bans addictions that are not whitelisted or better.
             </summary>
         </member>
         <member name="M:BigAndSmall.BSCache.DelayedUpdate">

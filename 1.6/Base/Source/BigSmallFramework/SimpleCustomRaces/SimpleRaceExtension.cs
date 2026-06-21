@@ -217,14 +217,13 @@ namespace BigAndSmall
                         pawn.genes.RemoveGene(pawn.genes.GenesListForReading.First(g => g.def == gene));
                     }
                 }
-                if (ext.forcedTraits != null)
+
+                var forcedTraits = ext.GetForcedTraits().Select(x=>x.Def).ToList();
+                foreach (var trait in forcedTraits.Where(traitsThatCanBeRemoved.Contains))
                 {
-                    foreach (var trait in ext.forcedTraits.Where(traitsThatCanBeRemoved.Contains))
+                    if (pawn.story.traits.HasTrait(trait))
                     {
-                        if (pawn.story.traits.HasTrait(trait))
-                        {
-                            pawn.story.traits.allTraits.Remove(pawn.story.traits.GetTrait(trait));
-                        }
+                        pawn.story.traits.allTraits.Remove(pawn.story.traits.GetTrait(trait));
                     }
                 }
             }

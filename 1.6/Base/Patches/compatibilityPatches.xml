@@ -34,7 +34,7 @@
     </match>
   </Operation>
 
-  <Operation Class="PatchOperationFindMod">
+  <!-- <Operation Class="PatchOperationFindMod">
     <mods>
       <li>Vanilla Nutrient Paste Expanded</li>
     </mods>
@@ -44,7 +44,7 @@
         <maxOutputStackSize>10</maxOutputStackSize>
       </value>
     </match>
-  </Operation>
+  </Operation> -->
 
   <Operation Class="PatchOperationFindMod">
     <mods>
