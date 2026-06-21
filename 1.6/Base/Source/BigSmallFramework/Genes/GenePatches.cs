@@ -30,26 +30,31 @@ namespace BigAndSmall
         }
 
         [HarmonyPatch(typeof(Gene), nameof(Gene.OverrideBy))]
-        [HarmonyPostfix]
+        [HarmonyPrefix]
         public static void Gene_OverrideBy_Patch(Gene __instance, Gene overriddenBy)
         {
             if (!BigSmall.performScaleCalculations) return;
-            bool overriden = overriddenBy != null;
-            Gene gene = __instance;
-            if (gene != null && gene.pawn != null && gene.pawn.Spawned)
-            {
-                GeneEffectManager.GainOrRemovePassion(overriden, gene);
 
-                GeneEffectManager.GainOrRemoveAbilities(overriden, gene);
+			// If the gene overridden is changed, and either is null, then it either became active, or suppressed.
+			if (overriddenBy != __instance.overriddenByGene && (overriddenBy == null || __instance.overriddenByGene == null))
+			{
+				bool overriden = overriddenBy != null;
+				Gene gene = __instance;
+				if (gene != null && gene.pawn != null && gene.pawn.Spawned)
+				{
+					GeneEffectManager.GainOrRemovePassion(overriden, gene);
 
-                GeneEffectManager.ApplyForcedTraits(overriden, gene);
+					GeneEffectManager.GainOrRemoveAbilities(overriden, gene);
+
+					GeneEffectManager.ApplyForcedTraits(overriden, gene);
 
 
-                if (gene?.pawn != null)
-                {
-                    HumanoidPawnScaler.GetCache(gene.pawn, scheduleForce: 1);
-                }
-            }
+					if (gene?.pawn != null)
+					{
+						HumanoidPawnScaler.GetCache(gene.pawn, scheduleForce: 1);
+					}
+				}
+			}
         }
 
         [HarmonyPatch(typeof(Gene), "PostRemove")]
