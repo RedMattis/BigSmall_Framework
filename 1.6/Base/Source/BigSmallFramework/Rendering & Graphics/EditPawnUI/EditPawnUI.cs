@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Verse;
 using Verse.Sound;
 
@@ -109,41 +110,17 @@ namespace BigAndSmall
             AddEditable(null, WindowTab.Thing);
             if (pawn != null)
             {
-                var wornApparel = pawn.apparel?.WornApparel is List<Apparel> apparel ? apparel: [] ;
-                foreach (var item in wornApparel)
+                var items = pawn.EquippedWornOrInventoryThings;
+                //var wornApparel = pawn.apparel?.WornApparel is List<Apparel> apparel ? apparel: [] ;
+                foreach (var item in items)
                 {
-                    var customGfx = item.def.ExtensionsOnDef<HasCustomizableGraphics, ThingDef>();
-                    if (ModsConfig.IdeologyActive && item.def.CanBeStyled())
+                    if (item is Apparel app)
                     {
-                        List<ThingStyleDef> styles = [];
-                        foreach (var styleCatDef in DefDatabase<StyleCategoryDef>.AllDefs)
-                        {
-                            foreach (var thingStyleDef in styleCatDef.thingDefStyles)
-                            {
-                                if (thingStyleDef.ThingDef == item.def)
-                                {
-                                    styles.Add(thingStyleDef.StyleDef);
-                                }
-                            }
-                        }
-                        if (styles.Count != 0)
-                        {
-                            apparelStyles[item] = styles;
-                        }
-                    }
-                    if (customGfx.Count != 0)
-                    {
-                        HasCustomizableGraphics first = customGfx[0];
-                        AddEditable(customGfx, WindowTab.Apparel, item);
-                    }
-                    else if (item.WornGraphicPath != null)
-                    {
-                        AddEditable(null, WindowTab.Apparel, item);
-                        tabsWithContent.Add(WindowTab.Apparel);
+                        AddWornItem(app);
                     }
                     else
                     {
-                        Log.Message($"[BigAndSmall] Tried to edit apparel {item} but it has no graphics extension or worn graphic path.");
+                        AddWornItem(item);
                     }
                 }
 
@@ -170,6 +147,49 @@ namespace BigAndSmall
             
             tabsWithContent = [.. tabsWithContent.Distinct()];
             CustomSections = CSectionBuilder.Values.GroupBy(x => x.flag.CustomCategory ?? NONE).ToDictionary(g => g.Key, g => g.ToList());
+        }
+
+        private void AddWornItem(Thing item)
+        {
+            var customGfx = item.def.ExtensionsOnDef<HasCustomizableGraphics, ThingDef>();
+            //if (ModsConfig.IdeologyActive && item.def.CanBeStyled()) // Not sure if this is DLC locked anymore?
+            if (item.def.CanBeStyled())
+            {
+                List<ThingStyleDef> styles = [];
+                foreach (var styleCatDef in DefDatabase<StyleCategoryDef>.AllDefs)
+                {
+                    foreach (var thingStyleDef in styleCatDef.thingDefStyles)
+                    {
+                        if (thingStyleDef.ThingDef == item.def)
+                        {
+                            styles.Add(thingStyleDef.StyleDef);
+                        }
+                    }
+                }
+                if (styles.Count != 0)
+                {
+                    apparelStyles[item] = styles;
+                }
+            }
+            if (customGfx.Count != 0)
+            {
+                HasCustomizableGraphics first = customGfx[0];
+                AddEditable(customGfx, WindowTab.Apparel, item);
+            }
+            else if (item is Apparel app && app.WornGraphicPath != null)
+            {
+                AddEditable(null, WindowTab.Apparel, item);
+                tabsWithContent.Add(WindowTab.Apparel);
+            }
+            else if (item is ThingWithComps twc && twc.AllComps.Any(x=>x is CompStyleable))
+            {
+                AddEditable(null, WindowTab.Apparel, item);
+                tabsWithContent.Add(WindowTab.Apparel);
+            }
+            else
+            {
+                Log.Message($"[BigAndSmall] Tried to edit apparel {item} but it has no graphics extension or worn graphic path.");
+            }
         }
 
         private void AddEditable(List<HasCustomizableGraphics> cgList, WindowTab defaultMode, Thing overrideThing=null)
@@ -446,12 +466,17 @@ namespace BigAndSmall
             {
                 curY = PawnDefaulSection(rect, curY, thing);
             }
-            else if (thing is Apparel apparel && tab == WindowTab.Apparel)
+            else if (tab == WindowTab.Apparel)
             {
-                DrawApparelIcon(apparel, rect, ref curY, apparel.DrawColor);
-                if (apparelStyles.TryGetValue(apparel, out var styleList))
+                DrawApparelIcon(thing, rect, ref curY, thing.DrawColor);
+                if (apparelStyles.TryGetValue(thing, out var styleList))
                 {
-                    string styleLabel = apparel.StyleDef?.LabelCap ?? "BS_Default".Translate();
+                    string styleLabel = thing.StyleDef?.LabelCap ?? "BS_Default".Translate();
+                    if (styleLabel.IsWhiteSpace() && thing.StyleDef != null)
+                    {
+                        int skipIdx = -1;
+                        styleLabel = GetStyleName(thing, ref skipIdx, thing.StyleDef);
+                    }
                     var styleRect = new Rect(rect.x, curY, ButtonSize.x + 20, 32f);
                     int nameLessStyleIdx = 2;
                     if (Widgets.ButtonText(styleRect, styleLabel))
@@ -459,19 +484,15 @@ namespace BigAndSmall
                         List<FloatMenuOption> options = [];
                         options.Add(new FloatMenuOption("BS_Reset".Translate(), () =>
                         {
-                            apparel.SetStyleDef(null);
+                            thing.SetStyleDef(null);
                             queuedUpdate = true;
                         }));
                         foreach (var style in styleList)
                         {
-                            if (style.overrideLabel is string styleName == false)
-                            {
-                                styleName = $"{apparel.LabelCap} {nameLessStyleIdx}";
-                                nameLessStyleIdx++;
-                            }
+                            string styleName = GetStyleName(thing, ref nameLessStyleIdx, style);
                             options.Add(new FloatMenuOption(styleName, () =>
                             {
-                                apparel.SetStyleDef(style);
+                                thing.SetStyleDef(style);
                                 queuedUpdate = true;
                             }));
                         }
@@ -524,7 +545,7 @@ namespace BigAndSmall
                             $"{"BS_Color".Translate()} {"BS_Primary".Translate()}");
                     }
                 }
-                else
+                else if (isBaseColorable)
                 {
                     DrawColorPicker(inThing.DrawColor, rect, ref curY, (Color col) => inThing.DrawColor = col);
                 }
@@ -573,6 +594,29 @@ namespace BigAndSmall
                 }
 
                 return curY;
+            }
+
+            static string GetStyleName(Thing thing, ref int nameLessStyleIdx, ThingStyleDef style)
+            {
+                string styleName = style.overrideLabel;
+                if (styleName == null)
+                {
+                    if (style.Category?.LabelCap is TaggedString categoryLbl)
+                    {
+                        styleName = categoryLbl.ToString();
+                    }
+                    else if (nameLessStyleIdx > -1)
+                    {
+                        styleName = $"{thing.LabelCap}, Style {nameLessStyleIdx}";
+                        nameLessStyleIdx++;
+                    }
+                    else
+                    {
+                        styleName = $"{thing.LabelCap}";
+                    }
+                }
+
+                return styleName;
             }
         }
 
@@ -675,18 +719,18 @@ namespace BigAndSmall
             curY += titleRect.height;
         }
 
-        private void DrawApparelIcon(Apparel apparel, Rect rect, ref float curY, Color color)
+        private void DrawApparelIcon(Thing item, Rect rect, ref float curY, Color color)
         {
             GUI.color = color;
             const int size = 64;
             var iconRect = new Rect(rect.x, curY, size, size);
 
             var scaledIconRect = new Rect(iconRect);
-            if (apparel.Graphic?.drawSize != null)
+            if (item.Graphic?.drawSize != null)
             {
-                scaledIconRect = scaledIconRect.ExpandedBy(0.5f * size * (apparel.Graphic.drawSize.x - 1.0f));
+                scaledIconRect = scaledIconRect.ExpandedBy(0.5f * size * (item.Graphic.drawSize.x - 1.0f));
             }
-            Widgets.DrawTextureFitted(scaledIconRect, apparel.Graphic.MatSouth.mainTexture, 1f);
+            Widgets.DrawTextureFitted(scaledIconRect, item.Graphic.MatSouth.mainTexture, 1f);
 
             // Looks super-fancy, but it doesn't stay inside the window.
             //Widgets.DrawTextureFitted(scaledIconRect, apparel.Graphic.MatSouth.mainTexture, 1f, apparel.Graphic.MatSouth, alpha:1);
