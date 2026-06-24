@@ -1,8 +1,8 @@
-﻿using BigAndSmall;
-using RimWorld;
+﻿using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Verse;
 using static BigAndSmall.TransitioningHediffProps;
 
@@ -21,6 +21,7 @@ namespace BigAndSmall
             public XenotypeDef xenoTypeToReplace = null;
             public bool resurrect = false;
             public bool perfectResurrect = false; // Fixes missing parts too.
+            public bool tryRestoreOriginal = false;
         }
 
         public class ConditionalTrigger
@@ -35,23 +36,45 @@ namespace BigAndSmall
             public Trigger trigger;
         }
 
+        public class GizmoTrigger
+        {
+            public string label;
+            public string description;
+            public string icon;
+            public int cooldown = 300;
+            public Trigger trigger;
+        }
+
         public Trigger onHediffAdded = null;
         public Trigger onHediffRemoved = null;
         public List<SeverityTrigger> onSeverity = null;
         public ConditionalTrigger onStat = null;
         public ConditionalTrigger onStatRemoved = null;
+        public GizmoTrigger onGizmo = null;
+        public bool restoreOnRemove = false;
     }
 
     public class TransitioningHediff : HediffWithComps
     {
         public TransitioningHediffProps properties = null;
         bool? statWasActive = null;
+        public XenotypeDef originalXenotypeDef = null;
+        public List<GeneDef> originalXenoGenes = null;
+        public List<GeneDef> originalEndoGenes = null;
+        
+
+        public int cooldownEndsOnTick = -1;
 
         private List<SeverityTrigger> SeverityTriggers { get; set; } = [];
 
         public override void ExposeData()
         {
             Scribe_Values.Look(ref statWasActive, "TransitioningHediffProps_StatWasActive");
+            Scribe_Values.Look(ref cooldownEndsOnTick, "TransitioningHediffProps_CooldownEndsOnTick");
+            Scribe_Defs.Look(ref originalXenotypeDef, "TransitioningHediffProps_OriginalXenotypeDef");
+            Scribe_Collections.Look(ref originalXenoGenes, "TransitioningHediffProps_OriginalXenoGenes");
+            Scribe_Collections.Look(ref originalEndoGenes, "TransitioningHediffProps_OriginalEndoGenes");
+            
             base.ExposeData();
 
             TrySetup();
@@ -76,6 +99,8 @@ namespace BigAndSmall
             {
                 DoEffects(hAdded);
             }
+
+            SaveOriginal();
 
         }
 
@@ -110,6 +135,34 @@ namespace BigAndSmall
             if (properties.onHediffAdded != null)
             {
                 DoEffects(hRemoved);
+            }
+            if (properties.restoreOnRemove) TryRestoreOriginal();
+        }
+
+        public virtual void SaveOriginal()
+        {
+            originalXenotypeDef = pawn.genes.Xenotype;
+            originalEndoGenes = pawn.genes.Endogenes.Select(g => g.def).ToList();
+            originalXenoGenes = pawn.genes.Xenogenes.Select(g => g.def).ToList();
+        }
+
+        public virtual void TryRestoreOriginal()
+        {
+            if(originalXenotypeDef != null) pawn.genes.SetXenotype(originalXenotypeDef);
+            if (!originalXenoGenes.NullOrEmpty())
+            {
+                foreach (GeneDef originalXenoGene in originalXenoGenes)
+                {
+                    pawn.genes.AddGene(originalXenoGene, true);
+                }
+            }
+
+            if (!originalEndoGenes.NullOrEmpty())
+            {
+                foreach (GeneDef originalEndoGene in originalEndoGenes)
+                {
+                    pawn.genes.AddGene(originalEndoGene, false);
+                }
             }
         }
 
@@ -157,9 +210,42 @@ namespace BigAndSmall
             }
         }
 
+        public override IEnumerable<Gizmo> GetGizmos()
+        {
+            foreach (Gizmo gizmo in base.GetGizmos()) yield return gizmo;
+            
+            if(properties.onGizmo == null) yield break;
+            
+            yield return new Command_ActionWithCooldown
+            {
+                defaultLabel = properties.onGizmo.label,
+                defaultDesc = properties.onGizmo.description,
+                icon = ContentFinder<Texture2D>.Get(properties.onGizmo.icon),
+                action = () =>
+                {
+                    cooldownEndsOnTick = Find.TickManager.TicksGame + properties.onGizmo.cooldown;
+                    DoEffects(properties.onGizmo.trigger);
+                },
+                cooldownPercentGetter = () =>
+                {
+                    int remainingTicks = cooldownEndsOnTick - Find.TickManager.TicksGame;
+
+                    if (properties.onGizmo.cooldown <= 0 || cooldownEndsOnTick < 0 || remainingTicks <= 0)
+                        return 1f;
+
+                    float progress = 1f - (remainingTicks / (float)properties.onGizmo.cooldown);
+                    return Mathf.Clamp01(progress);
+                },
+            };
+        }
+
         private void DoEffects(Trigger trigger)
         {
-            if(trigger.perfectResurrect)
+            if (trigger.tryRestoreOriginal)
+            {
+                TryRestoreOriginal();
+                return; // so we don't trigger the other effects
+            }else if(trigger.perfectResurrect)
             {
                 ResurrectionUtility.TryResurrect(pawn, new ResurrectionParams
                 {
