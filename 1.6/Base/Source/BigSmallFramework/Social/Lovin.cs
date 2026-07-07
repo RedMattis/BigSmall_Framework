@@ -39,7 +39,7 @@ namespace BigAndSmall
             try
             {
                 var pawn = __instance.pawn;
-                var partner = (Pawn)__instance.job.GetTarget(___PartnerInd);
+                var partner = (Pawn)__instance.job?.GetTarget(___PartnerInd);
                 if (pawn != null && partner != null)
                 {
                     __result = LovinSoulfeed(__result, pawn, partner);
