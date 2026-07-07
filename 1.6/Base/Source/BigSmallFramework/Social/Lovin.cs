@@ -39,7 +39,7 @@ namespace BigAndSmall
             try
             {
                 var pawn = __instance.pawn;
-                var partner = (Pawn)__instance.job?.GetTarget(___PartnerInd);
+                var partner = (Pawn)__instance.job.GetTarget(___PartnerInd);
                 if (pawn != null && partner != null)
                 {
                     __result = LovinSoulfeed(__result, pawn, partner);
@@ -68,12 +68,13 @@ namespace BigAndSmall
                 var fused = siphons.FuseAll(SiphonType.Lovin);
                 SoulCollector soulCollector = Soul.GetOrAddSoulCollector(initiator);
                 float amount = soulCollector.AddPawnSoul(target, fused, verbose: false);
-                Messages.Message(new Message($"BS_LovinSoulFeed".Translate(initiator.NameShortColored, target.NameShortColored, $"{amount * 100:f1}%"), MessageTypeDefOf.NeutralEvent));
+                Messages.Message(new Message($"BS_LovinSoulFeed".Translate(initiator.NameShortColored, target.NameShortColored, $"{amount*100:f1}%"), MessageTypeDefOf.NeutralEvent));
             }
         }
 
         public static IEnumerable<Toil> LovinSoulfeed(IEnumerable<Toil> __result, Pawn initiator, Pawn target)
         {
+            
             var pawnExts = initiator.GetAllPawnExtensions();
             var siphons = pawnExts
                 .Select(x => x.siphonSoul)
@@ -129,8 +130,7 @@ namespace BigAndSmall
                     newToil.FailOn(partner.IsBloodfeeder);
                     newToil.AddFinishAction(delegate
                     {
-                        Feedin(pawn, partner, hemogenTriggerLevel, bite);
-                    });
+                        Feedin(pawn, partner, hemogenTriggerLevel, bite);                    });
                     __result = __result.AddItem(newToil);
                 }
             }
