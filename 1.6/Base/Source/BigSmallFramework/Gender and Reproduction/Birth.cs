@@ -42,7 +42,7 @@ namespace BigAndSmall
                 typeof(bool)
             }), prefix: new HarmonyMethod(typeof(PregnancyPatches), nameof(ApplyBirthOutcome_Prefix)));
         }
-        public static bool ApplyBirthOutcome_Prefix(RitualOutcomePossibility outcome, float quality, Precept_Ritual ritual, List<GeneDef> genes, Pawn geneticMother, Thing birtherThing, Pawn father, Pawn doctor, LordJob_Ritual lordJobRitual, RitualRoleAssignments assignments, bool preventLetter)
+        public static bool ApplyBirthOutcome_Prefix(ref Thing __result, RitualOutcomePossibility outcome, float quality, Precept_Ritual ritual, List<GeneDef> genes, Pawn geneticMother, Thing birtherThing, Pawn father, Pawn doctor, LordJob_Ritual lordJobRitual, RitualRoleAssignments assignments, bool preventLetter)
         {
             // Check if the pawn has genes. If not, just let the regular method run.
             if (disableBirthPatch || geneticMother?.genes == null)
@@ -83,7 +83,7 @@ namespace BigAndSmall
                             // Invoke the "BGInheritance.BGI_HarmonyPatches.GetChildGenes" method which gives us new genes.
                             newBabyGenes = (List<GeneDef>)AccessTools.Method("BGInheritance.External:GetChildGenes").Invoke(null, [geneticMother, father]);
                         }
-                        PregnancyUtility.ApplyBirthOutcome(outcome, quality, ritual, genes, geneticMother, birtherThing, father, doctor, lordJobRitual, assignments, preventLetter);
+						__result = PregnancyUtility.ApplyBirthOutcome(outcome, quality, ritual, genes, geneticMother, birtherThing, father, doctor, lordJobRitual, assignments, preventLetter);
                         newBabyGenes = null;
                     }
                 }
@@ -107,7 +107,7 @@ namespace BigAndSmall
                         "correctly, or prevent the likes of litterbirth genes from working.");
                 }
             }
-            return false;
+			return false;
         }
 
         [HarmonyPatch(
