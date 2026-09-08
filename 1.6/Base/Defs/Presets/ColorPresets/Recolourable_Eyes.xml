@@ -1,0 +1,36 @@
+<Defs>
+  <BigAndSmall.ColorSettingDef>
+    <defName>BS_ColorableEyesA</defName>
+    <color>
+      <customTagGraphicIsSet>
+        <tag><BS_CustomEyeA Label="Eye Color A"/></tag>
+        <colorA>true</colorA>
+      </customTagGraphicIsSet>
+      <customClrTagA><BS_CustomEyeA/></customClrTagA>
+    </color>
+  </BigAndSmall.ColorSettingDef>
+
+  <BigAndSmall.ColorSettingDef>
+    <defName>BS_ColorableEyesB</defName>
+    <color>
+      <customTagGraphicIsSet>
+        <tag><BS_CustomEyeB Label="Eye Color B"/></tag>
+        <colorB>true</colorB>
+      </customTagGraphicIsSet>
+      <customClrTagB><BS_CustomEyeB/></customClrTagB>
+    </color>
+  </BigAndSmall.ColorSettingDef>
+
+  <BigAndSmall.ColorSettingDef>
+    <defName>BS_ColorableEyesC</defName>
+    <color>
+      <customTagGraphicIsSet>
+        <tag><BS_CustomEyeC Label="Eye Color C"/></tag>
+        <colorC>true</colorC>
+      </customTagGraphicIsSet>
+      <customClrTagC><BS_CustomEyeC/></customClrTagC>
+    </color>
+  </BigAndSmall.ColorSettingDef>
+
+
+</Defs>

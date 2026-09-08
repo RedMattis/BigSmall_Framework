@@ -202,13 +202,12 @@ namespace BigAndSmall
 
         public List<string> DisabledWorkTypeDescription => disabledWorkTypes?.Select(x => x.gerundLabel.CapitalizeFirst()).ToList();
 
+        public Gender? forceGender = null;
         /// <summary>
         /// Makes the pawn consider the pawn female for rendering purposes.
         /// Useful for compatibility. Despite the name, it also affects the head.
         /// </summary>
-        public Gender? forceGender = null;
         protected bool forceFemaleBody = false;
-
         public bool ignoreForceGender = false;
 
         /// <summary>

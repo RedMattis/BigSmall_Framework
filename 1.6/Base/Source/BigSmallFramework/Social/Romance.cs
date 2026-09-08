@@ -15,34 +15,6 @@ namespace BigAndSmall
     [HarmonyPatch]
     public static class RomancePatches
     {
-        //[HarmonyPatch(typeof(InteractionWorker_RomanceAttempt), nameof(InteractionWorker_RomanceAttempt.RandomSelectionWeight), MethodType.Normal)]
-        //[HarmonyPostfix]
-        //public static void RomanceAttemptPostfix(ref float __result, Pawn initiator, Pawn recipient)
-        //{
-        //    if (initiator == null || recipient == null)
-        //    {
-        //        return;
-        //    }
-        //    if (initiator != null
-        //        && initiator.needs != null)
-        //    {
-        //        var cache = HumanoidPawnScaler.GetCache(initiator);
-        //        if (cache != null && cache.succubusUnbonded)
-        //        {
-        //            __result *= 20;
-        //        }
-        //    }
-        //    float compatibility = initiator.GetCompatibilityWith(recipient, reductionScale: 1.0f, oldValue: 1.0f);
-
-
-        //    // If recipient has no flirt chance, set result to 0. They are probably something that cannot be romanced.
-        //    if (recipient.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks:1000) == 0)
-        //    {
-        //        __result = 0;
-        //    }
-
-        //    __result *= initiator.GetStatValue(BSDefs.SM_FlirtChance, cacheStaleAfterTicks: 1000) * compatibility;
-        //}
 
         [HarmonyPatch(typeof(InteractionWorker_MarriageProposal), nameof(InteractionWorker_MarriageProposal.RandomSelectionWeight), MethodType.Normal)]
         [HarmonyPrefix]
@@ -129,9 +101,9 @@ namespace BigAndSmall
                 }
                 else
                 {
-                    if (initiator.TryGetCompatibilityWith(out float compatiblity, target))
+                    if (initiator.TryGetCompatibilityWith(out float compatiblity, target, forRomance:true))
                     { 
-                        if (compatiblity <= 0)
+                        if (compatiblity <= 9)
                         {
                             __result = new AcceptanceReport("CantRomanceTargetZeroChance".Translate(initiator.LabelShort, target.LabelShort));
                         }
@@ -181,7 +153,7 @@ namespace BigAndSmall
 
         }
 
-        public static bool TryGetCompatibilityWith(this Pawn pawn, out float result, Pawn otherPawn, float reductionScale=1f, float oldValue = 0)
+        public static bool TryGetCompatibilityWith(this Pawn pawn, out float result, Pawn otherPawn, float reductionScale=1f, float oldValue = 0, bool forRomance=false)
         {
             float ConstantPerPawnsPairCompatibilityOffset(int otherPawnID)
             {
@@ -223,6 +195,10 @@ namespace BigAndSmall
                 else
                 {
                     result = Mathf.Max((num + num2) * compatibility.Value, oldValue);
+                }
+                if (forRomance && result <= 0)
+                {
+                    result = -10;
                 }
                 return true;
             }
