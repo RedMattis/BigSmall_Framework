@@ -166,6 +166,9 @@ namespace BigAndSmall
         // BodyTypeDef
         public static BodyTypeDef BS_AnimalBodyType;
 
+        // LifestageDef
+        public static LifeStageDef HumanlikeTeenager;
+
         // BodyPartGroupDefs
         public static BodyPartGroupDef Feet;
 

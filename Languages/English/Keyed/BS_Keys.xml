@@ -16,6 +16,8 @@
   <BS_Metabolism>M</BS_Metabolism>
   <GenePreventsEquipping>Gene prevents equipping this.</GenePreventsEquipping>
   <BS_PawnIsNotAGiant>Pawn is not giant.</BS_PawnIsNotAGiant>
+  <BS_UserTooYoung>User is too young.</BS_UserTooYoung>
+  <BS_TargetTooYoung>Target is too young.</BS_TargetTooYoung>
 
   <BS_TargetLacksSlimeProliferation>Target lacks the Proliferation Gene.</BS_TargetLacksSlimeProliferation>
   <BS_ProliferationBirth>Proliferation Successful.</BS_ProliferationBirth>

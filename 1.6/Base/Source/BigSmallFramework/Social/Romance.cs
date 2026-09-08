@@ -103,7 +103,7 @@ namespace BigAndSmall
                 {
                     if (initiator.TryGetCompatibilityWith(out float compatiblity, target, forRomance:true))
                     { 
-                        if (compatiblity <= 9)
+                        if (compatiblity <= -9)
                         {
                             __result = new AcceptanceReport("CantRomanceTargetZeroChance".Translate(initiator.LabelShort, target.LabelShort));
                         }
@@ -196,9 +196,14 @@ namespace BigAndSmall
                 {
                     result = Mathf.Max((num + num2) * compatibility.Value, oldValue);
                 }
-                if (forRomance && result <= 0)
+                
+                if (forRomance)
                 {
-                    result = -10;
+                    // Ensure nothing will happen if there is 0% or less tag compatibility.
+                    if (compatibility <= 0)
+                    {
+                        result = -10;
+                    }
                 }
                 return true;
             }

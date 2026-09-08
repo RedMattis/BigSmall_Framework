@@ -337,7 +337,7 @@
             Works about the same as Rimworld's aptitudes. Let's you add skill-offsets to genes/hediffs/races.
             </summary>
         </member>
-        <member name="F:BigAndSmall.PawnExtension.forceGender">
+        <member name="F:BigAndSmall.PawnExtension.forceFemaleBody">
             <summary>
             Makes the pawn consider the pawn female for rendering purposes.
             Useful for compatibility. Despite the name, it also affects the head.

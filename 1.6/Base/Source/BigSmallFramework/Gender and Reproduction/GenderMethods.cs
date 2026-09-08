@@ -146,7 +146,7 @@ namespace BigAndSmall
                 if (newBody == null) return false;
                 else return true;
             }
-            if (cache.pawn.IsAdult())
+            if (cache.pawn.IsTeenOrAdult())
             {
                 if (IsBodyStandard(bodyType))
                 {
@@ -186,10 +186,10 @@ namespace BigAndSmall
             }
         }
 
-        public static bool IsAdult(this Pawn pawn)
-        {
-            return pawn?.DevelopmentalStage == null || pawn.DevelopmentalStage > DevelopmentalStage.Child;
-        }
+        //public static bool IsAdult(this Pawn pawn)
+        //{
+        //    
+        //}
 
 
         //private static HashSet<BodyTypeDef> vanillaBodytypes = [];
@@ -231,7 +231,7 @@ namespace BigAndSmall
 
             if (updateBody)
             {
-                bool adult = pawn.IsAdult();
+                bool adult = pawn.IsTeenOrAdult();
                 var currentBody = pawn.story?.bodyType;
                 if (TryGetBodyTypeOverride(cache, pawn, apparentGender, out BodyTypeDef body))
                 {
