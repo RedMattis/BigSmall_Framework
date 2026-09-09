@@ -330,3 +330,7 @@ Section 8 -- Interpretation.
      processes of any jurisdiction or authority.
 
 =======================================================================
+
+The Big & Small Framework is intended to be a stable and widely compatible framework/toolkit for modders and players to use across the workshop without caveats or gotchas. You should not perform modifications or distribute derivatives if it can be expected to cause grief such as by locking out users or modders utilizing this framework from parts of the modding ecosystems or introduce incompatibilities/conflicts with major mods.
+
+The Big & Small Framework is made first and foremost to be enjoyed by players and modders alike. The licence is just a copy-pasted crutch to facilitate that, and you should keep that in mind when reading the terms.
