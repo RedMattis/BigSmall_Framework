@@ -132,7 +132,12 @@ namespace BigAndSmall
                 {
                     foreach(var traitToAdd in missingTraits)
                     {
-                        traits.GetTrait(traitToAdd.Def, traitToAdd.Degree);
+                        if (traits.GetTrait(traitToAdd.Def, traitToAdd.Degree) != null)
+                        {
+                            continue;
+                        }
+                        Trait newTrait = new(traitToAdd.Def, traitToAdd.Degree, forced: true);
+                        traits.GainTrait(newTrait);
                     }
                 }
             }

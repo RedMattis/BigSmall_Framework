@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using UnityEngine;
 using Verse;
+using static UnityEngine.ParticleSystem;
 
 namespace BigAndSmall
 {
@@ -34,7 +35,20 @@ namespace BigAndSmall
         public List<GeneDef> removeGenes;
         public List<HediffDef> removeHediffs;
         public List<TraitDef> addTraits;
+        public List<GeneticTraitData> addTraitsDegree;
         public List<TraitDef> removeTraits;
+
+        
+        public record struct TraitDegreeData(TraitDef Def, int Degree);
+        public IEnumerable<TraitDegreeData> GetAddTraits()
+        {
+            if (addTraits != null)
+                foreach (var t in addTraits)
+                    yield return new(t, 0);
+            if (addTraitsDegree != null)
+                foreach (var td in addTraitsDegree)
+                    yield return new(td.def, td.degree);
+        }
 
         // Targeting priority type/settings
         public bool isRetromorph = false;
@@ -97,21 +111,28 @@ namespace BigAndSmall
                     hediffDef.TryRemoveAllOfType(pawn);
                 }
             }
-            
-            if (addTraits != null)
+            if (pawn.story?.traits is TraitSet traitSet)
             {
-                foreach (var traitDef in addTraits)
+                if (GetAddTraits() is var addTraits && addTraits.Any())
                 {
-                    pawn.story.traits.GainTrait(new Trait(traitDef));
+                    foreach (var traitDef in addTraits)
+                    {
+                        if (traitSet.GetTrait(traitDef.Def, traitDef.Degree) != null)
+                        {
+                            continue;
+                        }
+                        Trait newTrait = new(traitDef.Def, traitDef.Degree, forced: false);
+                        traitSet.GainTrait(newTrait);
+                    }
                 }
-            }
-            if (removeTraits != null)
-            {
-                foreach (var traitDef in removeTraits)
+                if (removeTraits != null)
                 {
-                    var trait = pawn.story.traits.allTraits.FirstOrDefault(t => t.def == traitDef);
-                    if (trait != null)
-                        pawn.story.traits.RemoveTrait(trait);
+                    foreach (var traitDef in removeTraits)
+                    {
+                        var trait = traitSet.allTraits.FirstOrDefault(t => t.def == traitDef);
+                        if (trait != null)
+                            traitSet.RemoveTrait(trait);
+                    }
                 }
             }
             if (fakeXenotype != null)
