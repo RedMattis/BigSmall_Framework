@@ -12,7 +12,7 @@ namespace BigAndSmall
     [HarmonyPatch(typeof(Hediff_Injury), nameof(Hediff_Injury.BleedRate), MethodType.Getter)]
     public class BleedRatePatch
     {
-        public static void Postfix(ref float __result, ref Pawn_HealthTracker __instance, ref Pawn ___pawn)
+        public static void Postfix(ref float __result, Pawn ___pawn)
         {
             // If the bleed rate is above 0. Check if the pawn has the Gene_NoBlood gene. If so set it to 0.
             __result = SetBleedRate(__result, ___pawn);
@@ -43,7 +43,7 @@ namespace BigAndSmall
     [HarmonyPatch(typeof(Hediff_MissingPart), nameof(Hediff_MissingPart.BleedRate), MethodType.Getter)]
     public class BleedRate_Missing_Patch
     {
-        public static void Postfix(ref float __result, ref Pawn_HealthTracker __instance, ref Pawn ___pawn)
+        public static void Postfix(ref float __result, Pawn ___pawn)
         {
             // If the bleed rate is above 0. Check if the pawn has the Gene_NoBlood gene. If so set it to 0.
             __result = BleedRatePatch.SetBleedRate(__result, ___pawn);
@@ -54,7 +54,7 @@ namespace BigAndSmall
     [HarmonyPatch(typeof(HediffSet), "CalculateBleedRate")]
     public class CalculateBleedRatePatch
     {
-        public static void Postfix(ref float __result, ref HediffSet __instance)
+        public static void Postfix(ref float __result, HediffSet __instance)
         {
             if (__result > 0)
             {
