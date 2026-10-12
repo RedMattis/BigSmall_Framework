@@ -288,9 +288,8 @@
             biological snake-people, etc. If in doubt, leave this as false.
             </summary>
         </member>
-        <member name="F:BigAndSmall.PawnExtension.hiddenGenes">
+        <member name="F:BigAndSmall.PawnExtension.bundledGenes">
             <summary>
-            Used by Genes. A bit of a miseleading name.
             The listed genes will be added to the pawn when this gene is added.
             When removed the genes will be removed as well.
             

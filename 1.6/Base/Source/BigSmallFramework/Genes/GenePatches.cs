@@ -76,7 +76,7 @@ namespace BigAndSmall
                     bool lastActiveOfDef = !pawn.genes.GenesListForReading.Any(x => x.def == __instance.def && x != __instance);
                     if (lastActiveOfDef)
                     {
-                        foreach (var geneDef in geneExt.Where(x => x.hiddenGenes != null).SelectMany(x => x.hiddenGenes))
+                        foreach (var geneDef in geneExt.Where(x => x.bundledGenes != null).SelectMany(x => x.bundledGenes))
                         {
                             // Remove all genes matching def
                             var matchingGenes = pawn.genes.GenesListForReading.Where(x => x.def == geneDef).ToList(); ;
@@ -103,7 +103,7 @@ namespace BigAndSmall
                 bool needsReevaluation = false;
                 var geneExt = __instance.def.ExtensionsOnDef<PawnExtension, GeneDef>();
                 bool xenoGene = pawn.genes.Xenogenes.Any(x => x == __instance);
-                foreach (var geneDef in geneExt.SelectMany(x => x.hiddenGenes))
+                foreach (var geneDef in geneExt.SelectMany(x => x.bundledGenes))
                 {
                     pawn.genes.AddGene(geneDef, xenoGene);
                 }

@@ -134,14 +134,12 @@ namespace BigAndSmall
         public bool forceThingDefSwap = false;
 
         /// <summary>
-        /// Used by Genes. A bit of a miseleading name.
         /// The listed genes will be added to the pawn when this gene is added.
         /// When removed the genes will be removed as well.
         /// 
         /// It was originally used to make genes with multiple sets of graphics, but it can be used nowadays to "bundle" genes.
         /// </summary>
-        [Obsolete("Will be renamed in 1.7")]
-        public List<GeneDef> hiddenGenes = [];
+        public List<GeneDef> bundledGenes = [];
         /// <summary>
         /// All the listed thoughts will be nulled.
         /// 
