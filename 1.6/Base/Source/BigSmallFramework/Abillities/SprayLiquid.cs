@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -184,7 +185,9 @@ namespace BigAndSmall
     {
         public ThingDef projectileDef;
         public int maxDistance = 10;
+        [Obsolete("Mispelling")]
         public int minDistnace = 0;
+        public int minDistance = 0;
         public int maxAngle = 90;
         public int minAngle = 90;
         public int maxConeLength = 9999;
@@ -205,6 +208,7 @@ namespace BigAndSmall
         private Pawn Pawn => parent.pawn;
 
         public int GetMaxDistance() => (int)Props.scaling.ApplyScaling(Props.maxDistance, "MaxRange", Pawn);
+        public int GetMinDistance() => (int)Props.scaling.ApplyScaling(Mathf.Max(Props.minDistance, Props.minDistnace), "MinDistance", Pawn);
 
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
@@ -247,12 +251,16 @@ namespace BigAndSmall
             Vector3 startPosition = Pawn.Position.ToVector3Shifted();
             var originalStartPosition = startPosition;
 
+            var minDistance = GetMinDistance();
+            var maxDistance = GetMaxDistance();
+
             // If the targetPos is closer than the min distance, push it out to that distance.
-            if ((targetPos - startPosition).magnitude < GetMaxDistance())
+            if ((targetPos - startPosition).magnitude < minDistance)
             {
-                targetPos = startPosition + (targetPos - startPosition).normalized * Props.minDistnace;
+                targetPos = startPosition + (targetPos - startPosition).normalized * minDistance;
             }
             // If the distance between the targetPos and startPos is longer than the MaxConeLength push out the startPos to that distance.
+            // Basically I'm making the cone origin be pushed out.
             if ((targetPos - startPosition).magnitude > Props.maxConeLength)
             {
                 startPosition = targetPos - (targetPos - startPosition).normalized * Props.maxConeLength;
@@ -261,7 +269,7 @@ namespace BigAndSmall
             float distanceToTarget = (targetPos - startPosition).magnitude;
             float distanceToTargetFromOriginal = (targetPos - originalStartPosition).magnitude;
 
-            float percentOfMaxDistnace = distanceToTargetFromOriginal / Props.maxDistance;
+            float percentOfMaxDistnace = distanceToTargetFromOriginal / maxDistance;
 
             float angleAtDistance = Mathf.Lerp(Props.maxAngle, Props.minAngle, percentOfMaxDistnace);
 
@@ -291,8 +299,7 @@ namespace BigAndSmall
                     affectedCells.Add(cell);
                 }
             }
-            // Removed duplicates
-            affectedCells = affectedCells.Distinct().ToList();
+            affectedCells = [.. affectedCells.Distinct()];
             return affectedCells;
         }
     }

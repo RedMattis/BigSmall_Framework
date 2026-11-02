@@ -61,7 +61,7 @@ namespace BigAndSmall
                             {
                                 injury.Tended(TendingQualityRange.RandomInRange, TendingQualityRange.TrueMax, 1);
                             }
-                            else if (injury.TryGetComp<HediffComp_TendDuration>() is var currentTend & currentTend.tendQuality < 0.5f)
+                            else if (injury?.TryGetComp<HediffComp_TendDuration>() is var currentTend & currentTend.tendQuality < 0.5f)
                             {
                                 currentTend.tendQuality = TendingQualityRange.RandomInRange;
                             }

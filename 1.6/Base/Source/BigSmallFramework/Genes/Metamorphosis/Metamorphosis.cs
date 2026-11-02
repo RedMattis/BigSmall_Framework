@@ -1,15 +1,44 @@
-﻿using BigAndSmall;
-using BigAndSmall.FilteredLists;
+﻿using BigAndSmall.FilteredLists;
 using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using UnityEngine;
 using Verse;
-using static UnityEngine.ParticleSystem;
 
 namespace BigAndSmall
 {
+    [Flags]
+    public enum GenderFlag
+    {
+        NO_GENDER_FLAG = 0,
+        None = 0 << 1,
+        Female = 1 << 1,
+        Male = 1 << 2,
+    }
+    public static class GenderFlagEtx
+    {
+        extension(Gender gf)
+        {
+            public GenderFlag ToGenderFlag() => gf switch {
+                Gender.None => GenderFlag.None,
+                Gender.Male => GenderFlag.Male,
+                Gender.Female => GenderFlag.Female,
+                _ => GenderFlag.None
+            };
+        }
+    }
+
+    public class HediffSeverityLevel
+    {
+        public HediffDef hediffDef = null;
+        public float severity;
+    }
+    public class HediffSeverityRange
+    {
+        public HediffDef hediffDef = null;
+        public FloatRange severityRange;
+    }
+
     public class MorphTarget
     {
         public class HediffToBodypart
@@ -29,6 +58,7 @@ namespace BigAndSmall
         public XenotypeDef xenotype;
         public XenotypeDef fakeXenotype;
         public List<HediffDef> hediffs;
+        public List<HediffSeverityLevel> hediffsWithSeverity;
         public List<HediffToBodypart> hediffsToParts;
         public List<GeneDef> endoGenes;
         public List<GeneDef> xenoGenes;
@@ -94,6 +124,16 @@ namespace BigAndSmall
                 foreach (var hediffDef in hediffs)
                 {
                     pawn.health.AddHediff(hediffDef);
+                }
+            }
+            if (hediffsWithSeverity != null)
+            {
+                foreach (var hediffLvl in hediffsWithSeverity)
+                {
+                    if (pawn.health.GetOrAddHediff(hediffLvl.hediffDef) is Hediff result)
+                    {
+                        result.Severity = hediffLvl.severity;
+                    }
                 }
             }
             if (hediffsToParts != null)
@@ -169,8 +209,10 @@ namespace BigAndSmall
             }
             return Gender.None;
         }
-        
     }
+
+    
+
     public class MorphSettings
     {
         #region Standard Morph Settings
@@ -184,16 +226,25 @@ namespace BigAndSmall
         public List<HediffDef> requiredHediffs = null;
         public List<HediffDef> disallowedHediffs = null;
 
+        public List<HediffSeverityRange> requiredHediffLevels = null;
+        public List<HediffSeverityRange> disallowedHediffLevels = null;
+
         public List<GeneDef> requiredGenes = null;
         public List<GeneDef> disallowedGenes = null;
+        public bool disallowedGenesChecksOnlyActiveGenes;
 
+        /// <summary>
+        /// Determines the order the TRIGGERS are checked.
+        /// This is only relevant for Custom Morphs. <see cref="isStandalone"/> which have 
+        /// </summary>
+        public float weight = 1;
         public FilterListSet<ThingDef> raceFilter = null;
-
         public int? morphOverAge = null;
         public int? morphUnderAge = null;
         public bool morphIfPregnant = false;
         public bool morphIfNight = false;
         public bool morphIfDay = false;
+        public GenderFlag morphIfGender = 0;
         #endregion
 
         public bool RequiresFrequentChecks => requiresFrequentChecks || morphIfDay || morphIfNight;
@@ -220,6 +271,13 @@ namespace BigAndSmall
                 if (pawn.Map.skyManager.CurSkyGlow > 0.3f)
                     return false;
 
+            if (morphIfGender != 0)
+            {
+                var gf = pawn.gender.ToGenderFlag();
+                if ((morphIfGender & gf) == 0)
+                    return false;
+            }
+
             if (conditionals != null)
                 if (!ConditionalManager.TestConditionals(pawn, conditionals))
                     return false;
@@ -233,16 +291,35 @@ namespace BigAndSmall
                 foreach (var hediff in disallowedHediffs)
                     if (pawn.health.hediffSet.HasHediff(hediff))
                         return false;
-                
+
+            if (requiredHediffLevels != null)
+            {
+                foreach (var hediffLvl in requiredHediffLevels)
+                {
+                    if (!pawn.health.hediffSet.TryGetHediff(hediffLvl.hediffDef, out var h) || !hediffLvl.severityRange.Includes(h.Severity))
+                        return false;
+                }
+            }
+
+            if (disallowedHediffLevels != null)
+            {
+                foreach (var hediffLvl in disallowedHediffLevels)
+                {
+                    if (pawn.health.hediffSet.TryGetHediff(hediffLvl.hediffDef, out var h) && hediffLvl.severityRange.Includes(h.Severity))
+                        return false;
+                }
+            }
+
             var activeGenes = GeneHelpers.GetAllActiveGeneDefs(pawn); ;
-                if (requiredGenes != null)
+            if (requiredGenes != null)
                 foreach (var gene in requiredGenes)
                     if (!activeGenes.Contains(gene))
-                        return false;  
-                
+                        return false;
+
+            var disallowedCheckList = disallowedGenesChecksOnlyActiveGenes ? activeGenes : GeneHelpers.GetAllGeneDefs(pawn);
             if (disallowedGenes != null)
-                foreach (var gene in disallowedGenes)
-                    if (activeGenes.Contains(gene))
+                foreach (var gene in disallowedCheckList)
+                    if (disallowedCheckList.Contains(gene))
                         return false;
             
             if (raceFilter != null)
@@ -359,7 +436,8 @@ namespace BigAndSmall
             if (withMorphSettings.Any())
             {
                 MorphTarget target = null;
-                foreach(var morph in withMorphSettings)
+                var orderedRandomly = withMorphSettings.OrderByDescending(x => x.morphSettings.weight * Rand.Value);
+                foreach(var morph in orderedRandomly)
                 {
                     if (morph.morphSettings.isStandalone == true)
                     {

@@ -202,6 +202,18 @@ namespace BigAndSmall
             return genes;
         }
 
+        public static HashSet<GeneDef> GetAllGeneDefs(Pawn pawn)
+        {
+            HashSet<GeneDef> result = [];
+            var genes = pawn?.genes?.GenesListForReading;
+            if (genes == null) return result;
+            for (int i = 0; i < genes.Count; i++)
+            {
+                result.Add(genes[i].def);
+            }
+            return result;
+        }
+
         public static HashSet<GeneDef> GetAllActiveGeneDefs(Pawn pawn)
         {
             HashSet<GeneDef> result = [];

@@ -180,6 +180,12 @@
             Requires the conditional stat effector to evaluate to true for the morph to be allowed.
             </summary>
         </member>
+        <member name="F:BigAndSmall.MorphSettings.weight">
+            <summary>
+            Determines the order the TRIGGERS are checked.
+            This is only relevant for Custom Morphs. <see cref="F:BigAndSmall.MorphSettings.isStandalone"/> which have 
+            </summary>
+        </member>
         <member name="M:BigAndSmall.Metamorphosis.TryFilterByGender(System.Nullable{Verse.Gender},System.Collections.Generic.List{BigAndSmall.MorphTarget})">
             <summary>
             Tries to filter the options based on gender. E.g. females will prioritise xenotypes with forced-female.

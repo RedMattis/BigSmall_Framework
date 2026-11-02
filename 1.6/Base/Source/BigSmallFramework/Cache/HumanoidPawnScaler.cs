@@ -319,7 +319,7 @@ namespace BigAndSmall
                     ApparelRestrictions appRestrict = new();
                     bool canWieldGiant = pawn.story.traits.allTraits.Any(x =>
                            x.def == BSDefs.BS_Giant
-                        || x.def.defName.ToLower().Contains("AG_ToughSinews")
+                        || x.def.defName.ToLower().Contains("ag_toughsinews")
                         || x.def.defName.ToLower().Contains("warcasket"))
                         || this.totalSize > 1.99f;
 
