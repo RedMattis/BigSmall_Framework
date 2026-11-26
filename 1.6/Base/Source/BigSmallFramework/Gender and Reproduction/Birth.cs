@@ -43,7 +43,7 @@ namespace BigAndSmall
                 typeof(bool)
             }), prefix: new HarmonyMethod(typeof(PregnancyPatches), nameof(ApplyBirthOutcome_Prefix)));
         }
-        public static bool ApplyBirthOutcome_Prefix(RitualOutcomePossibility outcome, float quality, Precept_Ritual ritual, List<GeneDef> genes, Pawn geneticMother, Thing birtherThing, Pawn father, Pawn doctor, LordJob_Ritual lordJobRitual, RitualRoleAssignments assignments, bool preventLetter)
+        public static bool ApplyBirthOutcome_Prefix(RitualOutcomePossibility outcome, float quality, Precept_Ritual ritual, List<GeneDef> genes, Pawn geneticMother, Thing birtherThing, Pawn father, Pawn doctor, LordJob_Ritual lordJobRitual, RitualRoleAssignments assignments, bool preventLetter, ref Thing __result)
         {
             // Check if the pawn has genes. If not, just let the regular method run.
             if (disableBirthPatch || geneticMother?.genes == null)
@@ -98,7 +98,11 @@ namespace BigAndSmall
                         {
                             newBabyGenes = BSInheritanceWrapper.GetChildGenes(geneticMother, father);
                         }
-                        PregnancyUtility.ApplyBirthOutcome(outcome, adjustedQuality, ritual, genes, geneticMother, birtherThing, father, doctor, lordJobRitual, assignments, preventLetter);
+                        // The resulting baby is used by growth vats to apply biostarvation, and other mods might
+                        // have postfixes of their own. If the Thing is not returned, it can cause null pointers. 
+                        // This prefix doesn't use it, but go ahead and return the value for downstream callers.
+                        Thing baby = PregnancyUtility.ApplyBirthOutcome(outcome, adjustedQuality, ritual, genes, geneticMother, birtherThing, father, doctor, lordJobRitual, assignments, preventLetter);
+                        __result ??= baby;
                         newBabyGenes = null;
                     }
                 }
